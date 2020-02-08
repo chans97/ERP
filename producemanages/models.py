@@ -1,0 +1,104 @@
+from django.db import models
+import math
+from core.models import TimeStampedModel
+from orders import models as orders_models
+from users import models as users_models
+from django.utils import timezone
+
+
+class ProduceRegister(TimeStampedModel):
+
+    예비작업 = "예비작업"
+    조립 = "조립"
+    검사 = "검사"
+    현재공정_CHOICES = (
+        (예비작업, "예비작업"),
+        (조립, "조립"),
+        (검사, "검사"),
+    )
+    사영 = "0%"
+    사일 = "25%"
+    사이 = "50%"
+    사삼 = "75%"
+    사사 = "100%"
+    현재공정달성율_CHOICES = (
+        (사영, "0%"),
+        (사일, "25%"),
+        (사이, "50%"),
+        (사삼, "75%"),
+        (사사, "100%"),
+    )
+
+    생산계획등록코드 = models.CharField(max_length=50)
+    생산의뢰 = models.ForeignKey(
+        orders_models.OrderProduce,
+        related_name="생산계획",
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+    현재공정 = models.CharField(
+        choices=현재공정_CHOICES, max_length=10, null=True, blank=True, default=예비작업
+    )
+    현재공정달성율 = models.CharField(
+        choices=현재공정달성율_CHOICES, max_length=10, null=True, blank=True, default=사영
+    )
+    계획생산량 = models.IntegerField(null=True)
+    일일생산량 = models.IntegerField(null=True)
+    누적생산량 = models.IntegerField(null=True, blank=True)
+    특이사항 = models.CharField(max_length=100, null=True, blank=True)
+
+    class Meta:
+        verbose_name = "생산계획등록"
+        verbose_name_plural = "생산계획등록"
+
+    def __str__(self):
+        return f" '{self.생산의뢰.생산의뢰코드}' 의 생산계획 : {self.생산계획등록코드}"
+
+    def successrate(self):
+        if self.누적생산량 is None:
+            return f"0%"
+        else:
+            rate = (self.누적생산량 / self.계획생산량) * 100
+            rate = round(rate, 2)
+            return f"{rate}%"
+
+    successrate.short_description = "계획 생산량 달성율"
+
+
+class WorkOrder(TimeStampedModel):
+    생산계획 = models.ForeignKey(
+        "ProduceRegister", related_name="작업지시서", on_delete=models.SET_NULL, null=True,
+    )
+    작업지시코드 = models.CharField(max_length=30, null=True)
+    수량 = models.IntegerField(null=True)
+    특이사항 = models.CharField(max_length=100, null=True, blank=True)
+
+    class Meta:
+        verbose_name = "작업지시서"
+        verbose_name_plural = "작업지시서"
+
+    def __str__(self):
+        return f" '{self.생산계획.생산계획등록코드}' 의 작업지시서 : {self.작업지시코드}"
+
+
+class WorkOrderRegister(TimeStampedModel):
+
+    작업지시서 = models.ForeignKey(
+        "WorkOrder", related_name="작업지시서등록", on_delete=models.SET_NULL, null=True,
+    )
+    생산담당자 = models.ForeignKey(
+        users_models.User, related_name="작업지시서등록", on_delete=models.SET_NULL, null=True,
+    )
+    생산일시 = models.DateField(
+        auto_now=False, auto_now_add=False, default=timezone.now().date()
+    )
+    생산수량 = models.IntegerField(null=True)
+    특이사항 = models.CharField(max_length=100, null=True, blank=True)
+
+    class Meta:
+        verbose_name = "작업지시서등록"
+        verbose_name_plural = "작업지시서등록"
+
+    def __str__(self):
+        return f" '{self.작업지시서.작업지시코드}' 의 작업지시서 등록"
+

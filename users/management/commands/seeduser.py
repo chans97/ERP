@@ -12,9 +12,9 @@ class Command(BaseCommand):
         number = 30
 
         seeder = Seed.seeder()
-        seeder.add_entity(Company, number, {"is_staff": False, "is_superuser": False,})
+        seeder.add_entity(Company, number)
         seeder.execute()
-        seeder.add_entity(Part, number, {"is_staff": False, "is_superuser": False,})
+        seeder.add_entity(Part, number)
         seeder.execute()
         seeder.add_entity(User, number, {"is_staff": False, "is_superuser": False,})
         seeder.execute()

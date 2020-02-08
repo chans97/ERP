@@ -1,8 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from core.models import TimeStampedModel
 
 
-class User(AbstractUser):
+class User(AbstractUser,TimeStampedModel):
     """custom user """
 
     부서 = models.ForeignKey(
@@ -17,7 +18,7 @@ class User(AbstractUser):
         return self.first_name
 
 
-class Company(models.Model):
+class Company(TimeStampedModel):
     """회사명"""
 
     회사명 = models.CharField(max_length=12, null=True, blank=True)
@@ -31,7 +32,7 @@ class Company(models.Model):
         return self.회사명
 
 
-class Part(models.Model):
+class Part(TimeStampedModel):
     """부서"""
 
     해당회사 = models.ForeignKey(

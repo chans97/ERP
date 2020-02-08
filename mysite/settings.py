@@ -41,8 +41,20 @@ DJANGO_APPS = [
 PROJECT_APPS = [
     "users.apps.UsersConfig",
     "StandardInformation.apps.StandardInformationConfig",
+    "core.apps.CoreConfig",
+    "orders.apps.OrdersConfig",
+    "producemanages.apps.ProducemanagesConfig",
+    "qualitycontrols.apps.QualitycontrolsConfig",
+    "stockmanages.apps.StockmanagesConfig",
+    "measures.apps.MeasuresConfig",
+    "specials.apps.SpecialsConfig",
+    "afterservices.apps.AfterservicesConfig",
 ]
-INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS
+
+THIRD_PARTY_APPS = ["django_seed"]
+
+
+INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -125,12 +137,12 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-MEDIA_ROOT= (os.path.join(BASE_DIR, "uploads"))
+MEDIA_ROOT = os.path.join(BASE_DIR, "uploads")
 MEDIA_URL = "/media/"
 
 STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, "mysite", "static"))

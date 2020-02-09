@@ -1,0 +1,8 @@
+C:\virtualenvs\benedict\Scripts\activate.bat
+
+django-admin startapp -
+
+
+git add .
+git commit -m "-"
+git push origin master

@@ -4,6 +4,7 @@ from orders import models as orders_models
 from users import models as users_models
 from StandardInformation import models as SI_models
 from producemanages import models as proms_models
+from afterservices import models as AS_models
 
 
 class FinalCheck(TimeStampedModel):
@@ -87,11 +88,29 @@ class FinalCheckRegister(TimeStampedModel):
 
 
 class RepairRegister(TimeStampedModel):
+    최종검사결과 = "최종검사결과"
+    AS = "AS"
+
+    수리요청_CHOICES = (
+        (최종검사결과, "최종검사결과"),
+        (AS, "AS"),
+    )
     최종검사결과 = models.ForeignKey(
         "FinalCheckRegister",
         related_name="부적합등록",
         on_delete=models.SET_NULL,
         null=True,
+        blank=True,
+    )
+    AS수리의뢰 = models.ForeignKey(
+        AS_models.ASVisitContents,
+        related_name="수리내역서",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+    수리최종 = models.CharField(
+        choices=수리요청_CHOICES, max_length=10, default=최종검사결과, null=True, blank=True,
     )
     불량위치및자재 = models.TextField(max_length=300)
     특이사항 = models.TextField(max_length=300, null=True, blank=True,)
@@ -108,15 +127,6 @@ class RepairRegister(TimeStampedModel):
 
 
 class MaterialCheckRegister(TimeStampedModel):
-    자재 = "자재"
-    부분품 = "부분품"
-    상품 = "상품"
-
-    품목_CHOICES = (
-        (자재, "자재"),
-        (부분품, "부분품"),
-        (상품, "상품"),
-    )
 
     수입검사의뢰코드 = models.CharField(max_length=30)
     의뢰자 = models.ForeignKey(

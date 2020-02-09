@@ -66,8 +66,19 @@ class ProduceRegister(TimeStampedModel):
 
 
 class WorkOrder(TimeStampedModel):
+    생산계획 = "생산계획"
+    AS = "AS"
+
+    수리생산_CHOICES = (
+        (생산계획, "생산계획"),
+        (AS, "AS"),
+    )
+
     생산계획 = models.ForeignKey(
         "ProduceRegister", related_name="작업지시서", on_delete=models.SET_NULL, null=True,
+    )
+    수리생산 = models.CharField(
+        choices=수리생산_CHOICES, max_length=10, default=생산계획, null=True, blank=True,
     )
     작업지시코드 = models.CharField(max_length=30, null=True)
     수량 = models.IntegerField(null=True)

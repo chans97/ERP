@@ -28,8 +28,8 @@ class Partner(TimeStampedModel):
     )
     연락처 = models.IntegerField()
     이메일 = models.EmailField(max_length=254)
-    사업장주소 = models.CharField(max_length=90, blank=True)
-    사업자등록증첨부 = models.FileField(blank=True)
+    사업장주소 = models.CharField(max_length=90, blank=True, null=True)
+    사업자등록증첨부 = models.FileField(blank=True, null=True)
     특이사항 = models.TextField(blank=True)
     사용여부 = models.BooleanField(default=False)
 
@@ -62,6 +62,21 @@ class Partner(TimeStampedModel):
 
                 super().save(*args, **kwargs)
             else:
+                S = SupplyPartner.objects.get(거래처코드=self.거래처코드)
+                S.공급처작성자 = self.작성자
+                S.작성일 = self.작성일
+                S.거래처구분 = self.거래처구분
+                S.거래처코드 = self.거래처코드
+                S.거래처명 = self.거래처명
+                S.사업자등록번호 = self.사업자등록번호
+                S.공급처담당자 = self.담당자
+                S.연락처 = self.연락처
+                S.이메일 = self.이메일
+                S.사업장주소 = self.사업장주소
+                S.사업자등록증첨부 = self.사업자등록증첨부
+                S.특이사항 = self.특이사항
+                S.사용여부 = self.사용여부
+                S.save()
                 super().save(*args, **kwargs)
         elif self.거래처구분 == "고객":
             if CustomerPartner.objects.get_or_none(거래처코드=self.거래처코드) is None:
@@ -83,6 +98,21 @@ class Partner(TimeStampedModel):
 
                 super().save(*args, **kwargs)
             else:
+                S = CustomerPartner.objects.get(거래처코드=self.거래처코드)
+                S.고객작성자 = self.작성자
+                S.작성일 = self.작성일
+                S.거래처구분 = self.거래처구분
+                S.거래처코드 = self.거래처코드
+                S.거래처명 = self.거래처명
+                S.사업자등록번호 = self.사업자등록번호
+                S.고객담당자 = self.담당자
+                S.연락처 = self.연락처
+                S.이메일 = self.이메일
+                S.사업장주소 = self.사업장주소
+                S.사업자등록증첨부 = self.사업자등록증첨부
+                S.특이사항 = self.특이사항
+                S.사용여부 = self.사용여부
+                S.save()
                 super().save(*args, **kwargs)
 
         else:
@@ -233,10 +263,10 @@ class SingleProduct(TimeStampedModel):
 
 class SingleProductMaterial(TimeStampedModel):
     단품모델 = models.ForeignKey(
-        "SingleProduct", related_name="단품구성자재", on_delete=models.CASCADE, blank=True,
+        "SingleProduct", related_name="단품구성자재", on_delete=models.CASCADE,
     )
-    단품구성자재 = models.ManyToManyField("Material", related_name="단품구성자재", blank=True,)
-    수량 = models.IntegerField(null=True)
+    단품구성자재 = models.ManyToManyField("Material", related_name="단품구성자재",)
+    수량 = models.IntegerField(default=0)
 
     class Meta:
 
@@ -244,9 +274,12 @@ class SingleProductMaterial(TimeStampedModel):
         verbose_name_plural = "단품제품구성자재"
 
     def __str__(self):
-        자재품명 = self.단품구성자재.values()[0]["자재품명"]
-        단위 = self.단품구성자재.values()[0]["단위"]
-        return f"{자재품명} : {self.수량} {단위}"
+        try:
+            자재품명 = self.단품구성자재.values()[0]["자재품명"]
+            단위 = self.단품구성자재.values()[0]["단위"]
+            return f"{자재품명} : {self.수량} {단위}"
+        except:
+            return "입력값을 확인해주십시오."
 
 
 class RackProduct(TimeStampedModel):
@@ -270,9 +303,18 @@ class RackProduct(TimeStampedModel):
 
 
 class RackProductMaterial(TimeStampedModel):
+    단품 = "단품"
+    자재 = "자재"
+
+    랙구성_CHOICES = (
+        (단품, "단품"),
+        (자재, "자재"),
+    )
+
     랙모델 = models.ForeignKey(
         "RackProduct", related_name="랙구성단품", on_delete=models.CASCADE, blank=True,
     )
+    랙구성 = models.CharField(choices=랙구성_CHOICES, max_length=4, blank=True, default=단품)
     랙구성단품 = models.ManyToManyField("SingleProduct", related_name="랙구성단품", blank=True,)
     랙구성자재 = models.ManyToManyField("Material", related_name="랙구성자재", blank=True,)
     수량 = models.IntegerField(null=True)
@@ -282,9 +324,26 @@ class RackProductMaterial(TimeStampedModel):
         verbose_name_plural = "랙구성단품및자재"
 
     def __str__(self):
-        자재품명 = self.랙구성단품.values()[0]["모델명"]
-        단위 = self.랙구성단품.values()[0]["단위"]
-        return f"{자재품명} : {self.수량} {단위}"
+        try:
+            if self.랙구성 == "단품":
+                단품품명 = self.랙구성단품.values()[0]["모델명"]
+                단위 = self.랙구성단품.values()[0]["단위"]
+                return f"{단품품명} : {self.수량} {단위}"
+            else:
+                자재품명 = self.랙구성자재.values()[0]["자재품명"]
+                단위 = self.랙구성자재.values()[0]["단위"]
+                return f"{자재품명} : {self.수량} {단위}"
+        except:
+            return self.랙구성
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.랙구성자재.values().__str__().find("id") != 13:
+            self.랙구성 = "단품"
+            super().save(*args, **kwargs)
+        else:
+            self.랙구성 = "자재"
+            super().save(*args, **kwargs)
 
 
 class Measure(TimeStampedModel):
@@ -296,7 +355,7 @@ class Measure(TimeStampedModel):
     사용공정명 = models.CharField(max_length=40, blank=True)
     설치장소 = models.CharField(max_length=40, blank=True)
     file = models.ImageField(
-        upload_to="images", blank=True, help_text="계측기의 사진을 첨부해주세요."
+        upload_to="images", blank=True, null=True, help_text="계측기의 사진을 첨부해주세요."
     )
 
     class Meta:

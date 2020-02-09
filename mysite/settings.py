@@ -49,6 +49,9 @@ PROJECT_APPS = [
     "measures.apps.MeasuresConfig",
     "specials.apps.SpecialsConfig",
     "afterservices.apps.AfterservicesConfig",
+    "stocksingle.apps.StocksingleConfig",
+    "stockrock.apps.StockrockConfig",
+    "parts.apps.PartsConfig",
 ]
 
 THIRD_PARTY_APPS = ["django_seed"]

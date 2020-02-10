@@ -94,7 +94,7 @@ class WorkOrder(TimeStampedModel):
 
 class WorkOrderRegister(TimeStampedModel):
 
-    작업지시서 = models.ForeignKey(
+    작업지시서 = models.OneToOneField(
         "WorkOrder", related_name="작업지시서등록", on_delete=models.SET_NULL, null=True,
     )
     생산담당자 = models.ForeignKey(

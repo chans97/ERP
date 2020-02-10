@@ -8,7 +8,7 @@ from afterservices import models as AS_models
 
 
 class FinalCheck(TimeStampedModel):
-    작업지시서 = models.ForeignKey(
+    작업지시서 = models.OneToOneField(
         proms_models.WorkOrderRegister,
         related_name="최종검사",
         on_delete=models.SET_NULL,
@@ -46,7 +46,7 @@ class FinalCheckRegister(TimeStampedModel):
         (NO, "NO"),
     )
 
-    최종검사의뢰 = models.ForeignKey(
+    최종검사의뢰 = models.OneToOneField(
         "FinalCheck", related_name="최종검사등록", on_delete=models.SET_NULL, null=True,
     )
     검시자 = models.ForeignKey(
@@ -84,7 +84,12 @@ class FinalCheckRegister(TimeStampedModel):
         verbose_name_plural = "최종검사결과등록"
 
     def __str__(self):
-        return f" '{self.최종검사의뢰.작업지시서.작업지시서.작업지시코드}' 의 최종검사결과"
+        if self.최종검사의뢰.작업지시서 is None:
+            return f"수리최종확인-{self.최종검사의뢰.수리내역서}"
+
+        else:
+
+            return f" '{self.최종검사의뢰.작업지시서.작업지시서.작업지시코드}' 의 최종검사결과"
 
 
 class RepairRegister(TimeStampedModel):
@@ -95,14 +100,14 @@ class RepairRegister(TimeStampedModel):
         (최종검사결과, "최종검사결과"),
         (AS, "AS"),
     )
-    최종검사결과 = models.ForeignKey(
+    최종검사결과 = models.OneToOneField(
         "FinalCheckRegister",
-        related_name="부적합등록",
+        related_name="수리내역서",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )
-    AS수리의뢰 = models.ForeignKey(
+    AS수리의뢰 = models.OneToOneField(
         AS_models.ASVisitContents,
         related_name="수리내역서",
         on_delete=models.SET_NULL,
@@ -123,7 +128,10 @@ class RepairRegister(TimeStampedModel):
         verbose_name_plural = "수리내역서"
 
     def __str__(self):
-        return f"수리내역서 -'{self.최종검사결과}'"
+        if self.수리최종 == "최종검사결과":
+            return f"수리내역서 -'{self.최종검사결과}'"
+        else:
+            return f"수리내역서 -'{self.AS수리의뢰}'"
 
 
 class MaterialCheckRegister(TimeStampedModel):

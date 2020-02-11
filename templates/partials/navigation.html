@@ -1,0 +1,18 @@
+{% load static%}
+
+<ul class="flex items-center text-sm font-medium h-full">
+        {% if user.is_authenticated %}
+
+        <li class="nav_link"><a href="#"></a></li>
+
+
+        <li class="nav_link"><a href="#"></a></li>
+        <li class="nav_link"><a href="#">프로필</a></li>
+        <li class="nav_link"><a href="#">로그아웃</a></li>
+
+
+        {% else %}
+        <li class="nav_link"><a href="#">로그인</a></li>
+        <li class="nav_link"><a href="#">계정생성</a></li>
+        {% endif %}
+</ul>

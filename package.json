@@ -1,0 +1,23 @@
+{
+  "name": "mysite",
+  "version": "1.0.0",
+  "description": "ERP system",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chans97/ERP.git"
+  },
+  "scripts": {
+    "css": "gulp"
+  },
+  "homepage": "https://github.com/chans97/ERP#readme",
+  "devDependencies": {
+    "gulp": "^4.0.2",
+    "gulp-csso": "^4.0.1",
+    "gulp-postcss": "^8.0.0",
+    "gulp-sass": "^4.0.2",
+    "node-sass": "^4.13.1"
+  },
+  "dependencies": {
+    "tailwindcss": "^1.2.0"
+  }
+}

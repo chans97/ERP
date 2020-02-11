@@ -1,0 +1,101 @@
+@tailwind base;
+@tailwind components;
+.search-box{
+    transition: box-shadow 0.2s linear;
+}
+.nav_link {
+    @apply ml-8 border-b-2 border-transparent h-full flex items-center;
+    &:hover{
+        @apply border-gray-600;
+    }
+    a{
+        @apply py-10 px-5;
+    }
+}
+.btn{
+    @apply text-center rounded-sm py-3 w-full font-light text-lg;
+}
+
+.btn-link{
+    @apply text-center py-3 rounded-lg py-3 w-full font-light text-lg text-white bg-red-400;
+
+
+}
+textarea{
+    resize: none;
+    height: 100px;
+    width: 150px;
+
+}
+.input{
+    @apply rounded-sm py-2 w-full text-left border border-gray-600 px-4;
+    &:focus{
+        @apply outline-none border-red-800
+    }
+}
+form {
+    .input{
+        @apply mb-3;
+        &.has_error {
+            @apply bg-red-400 bg-red-300 border border-gray-400;
+            input {
+              @apply bg-red-300;
+              &:focus {
+                @apply border-gray-600;
+              }
+            }
+          }
+        }
+      }
+    @keyframes messageFadein{
+    0%{
+        opacity: 0;
+        transform: translateY(-40px);
+    }
+    15%{
+        opacity: 1;
+        transform: translateY(15px);
+    }
+    85%{
+        opacity: 1;
+        transform: translateY(15px);
+    }
+    100%{
+        opacity: 0;
+        transform: translateY(-40px);
+    }
+    }
+    .border_section{
+        @apply flex w-full border-b border-gray-400 pb-8 mt-8;
+    }
+    .cal-grid{
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        grid-gap : 10px;
+        justify-items: center;
+    }
+
+
+    .message{
+        animation: messageFadein 4s ease-in-out forwards;
+        &.error{
+            @apply bg-red-600;
+        }
+        &.debug{
+            @apply bg-red-600;
+        }
+        &.info{
+            @apply bg-blue-300 text-gray-800;
+
+        }
+        &.success{
+            @apply bg-green-600;
+
+        }
+        &.warning{
+            @apply bg-yellow-600;
+
+        }
+    }
+      
+@tailwind utilities;

@@ -141,7 +141,7 @@ class SupplyPartner(TimeStampedModel):
     )
     연락처 = models.CharField(max_length=50, blank=True)
     이메일 = models.EmailField(max_length=254, blank=True)
-    사업장주소 = models.CharField(max_length=70, blank=True)
+    사업장주소 = models.CharField(max_length=70, blank=True, null=True)
     사업자등록증첨부 = models.FileField(blank=True)
     특이사항 = models.TextField(blank=True)
     사용여부 = models.BooleanField(default=False)

@@ -60,8 +60,6 @@ class UploadPartnerView(user_mixins.LoggedInOnlyView, FormView):
         partner = form.save()
         user = self.request.user
         request = self.request
-        print(self)
-        print(user)
 
         partner.작성자 = user
         partner.save()
@@ -123,6 +121,5 @@ class PartnerSearchView(ListView):
                 )
         context = self.get_context_data()
         context["ss"] = request.GET.get("search")
-        print(context)
         return self.render_to_response(context)
 

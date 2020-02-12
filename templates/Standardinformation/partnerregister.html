@@ -1,6 +1,6 @@
 {%extends "orders/ordershome.html"%}
 {% block page_title%}
-파트너
+거래처등록
 {%endblock%}
 
 
@@ -15,6 +15,7 @@
 
     <div class="flex flex-col p-6 w-full">
         <span class="border-b w-full mb-3 border-gray-600 pb-2 font-semiboldtext-base">거래처 등록 </span>
+
         {% include 'mixins/normal/normal_form.html' with form=form cta="거래처 등록"%}
     </div>
 

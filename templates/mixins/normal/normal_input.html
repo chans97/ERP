@@ -5,7 +5,7 @@
 <div
     class="rounded-sm py-2 w-full text-left border border-gray-600 px-4 font-light text-sm w-full {% if field.errors %}has_error{% endif %}">
 
-    {{field}}</div>
+    {{field}}</div><span class="font-serif text-xs text-teal-700">{{field.help_text}}</span>
 {% if field.errors %}
 {% for error in field.errors %}
 <span class="text-red-700 font-light text-sm">{{error}}</span>

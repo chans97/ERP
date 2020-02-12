@@ -19,18 +19,18 @@ class Partner(TimeStampedModel):
         "users.User", related_name="거래처작성자", on_delete=models.SET_NULL, null=True
     )
     작성일 = models.DateField(auto_now=True, auto_now_add=False)
-    거래처구분 = models.CharField(choices=거래처_CHOICES, max_length=4, blank=True, default=공급처)
-    거래처코드 = models.IntegerField(null=True)
-    거래처명 = models.CharField(max_length=50, blank=True)
-    사업자등록번호 = models.IntegerField(null=True)
+    거래처구분 = models.CharField(choices=거래처_CHOICES, max_length=4, default=공급처)
+    거래처코드 = models.CharField(null=True, max_length=20)
+    거래처명 = models.CharField(max_length=50, null=True)
+    사업자등록번호 = models.CharField(max_length=50, null=True)
     담당자 = models.ForeignKey(
         "users.User", related_name="거래처담당자", on_delete=models.SET_NULL, null=True
     )
-    연락처 = models.IntegerField()
+    연락처 = models.CharField(max_length=50, blank=True)
     이메일 = models.EmailField(max_length=254)
     사업장주소 = models.CharField(max_length=90, blank=True, null=True)
     사업자등록증첨부 = models.FileField(blank=True, null=True)
-    특이사항 = models.TextField(blank=True)
+    특이사항 = models.TextField(blank=True, null=True)
     사용여부 = models.BooleanField(default=False)
 
     class Meta:
@@ -132,15 +132,15 @@ class SupplyPartner(TimeStampedModel):
         "users.User", related_name="공급처거래처작성자", on_delete=models.SET_NULL, null=True
     )
     작성일 = models.DateField(auto_now=True, auto_now_add=False)
-    거래처구분 = models.CharField(choices=거래처_CHOICES, max_length=4, blank=True, default=공급처)
-    거래처코드 = models.IntegerField(null=True)
-    거래처명 = models.CharField(max_length=70, blank=True)
-    사업자등록번호 = models.IntegerField(null=True)
+    거래처구분 = models.CharField(choices=거래처_CHOICES, max_length=4, default=공급처)
+    거래처코드 = models.CharField(max_length=50, null=True)
+    거래처명 = models.CharField(max_length=70, null=True)
+    사업자등록번호 = models.CharField(max_length=50, null=True)
     공급처담당자 = models.ForeignKey(
         "users.User", related_name="공급처거래처담당자", on_delete=models.SET_NULL, null=True
     )
-    연락처 = models.IntegerField()
-    이메일 = models.EmailField(max_length=254)
+    연락처 = models.CharField(max_length=50, blank=True)
+    이메일 = models.EmailField(max_length=254, blank=True)
     사업장주소 = models.CharField(max_length=70, blank=True)
     사업자등록증첨부 = models.FileField(blank=True)
     특이사항 = models.TextField(blank=True)
@@ -167,18 +167,18 @@ class CustomerPartner(TimeStampedModel):
         "users.User", related_name="고객거래처작성자", on_delete=models.SET_NULL, null=True
     )
     작성일 = models.DateField(auto_now=True, auto_now_add=False)
-    거래처구분 = models.CharField(choices=거래처_CHOICES, max_length=4, blank=True, default=공급처)
-    거래처코드 = models.IntegerField(null=True)
-    거래처명 = models.CharField(max_length=70, blank=True)
-    사업자등록번호 = models.IntegerField(null=True)
+    거래처구분 = models.CharField(choices=거래처_CHOICES, max_length=4, default=공급처)
+    거래처코드 = models.CharField(max_length=50, null=True)
+    거래처명 = models.CharField(max_length=70, null=True)
+    사업자등록번호 = models.CharField(max_length=50, null=True)
     고객담당자 = models.ForeignKey(
         "users.User", related_name="고객거래처담당자", on_delete=models.SET_NULL, null=True
     )
-    연락처 = models.IntegerField()
+    연락처 = models.CharField(max_length=50, blank=True)
     이메일 = models.EmailField(max_length=254)
-    사업장주소 = models.CharField(max_length=70, blank=True)
-    사업자등록증첨부 = models.FileField(blank=True)
-    특이사항 = models.TextField(blank=True)
+    사업장주소 = models.CharField(max_length=70, blank=True, null=True)
+    사업자등록증첨부 = models.FileField(blank=True, null=True)
+    특이사항 = models.TextField(blank=True, null=True)
     사용여부 = models.BooleanField(default=False)
 
     class Meta:

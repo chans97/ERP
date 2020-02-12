@@ -6,8 +6,8 @@ from . import models
 @admin.register(models.User)
 class CustomUserAdmin(admin.ModelAdmin):
     list_display = (
-        "first_name",
         "email",
+        "first_name",
         "부서",
         "is_active",
         # "username",

@@ -16,6 +16,12 @@ import urllib.request
 
 def firstindecide(request):
     user = request.user
-    print(user.is_authenticated)
+    if user.is_authenticated:
+        if user.부서.부서명 == "영업부":
+            return render(request, "orders/ordershome.html")
+        else:
+            return render(request, "base.html")
 
-    return render(request, "users/login.html")
+    else:
+        return redirect(reverse("users:login"))
+

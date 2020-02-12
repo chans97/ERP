@@ -17,7 +17,7 @@
 }
 
 .btn-link{
-    @apply text-center py-3 rounded-lg py-3 w-full font-light text-lg text-white bg-red-400;
+    @apply mb-3 text-center py-px rounded-lg w-24 font-light text-sm text-white bg-blue-800;
 
 
 }
@@ -54,11 +54,11 @@ form {
     }
     15%{
         opacity: 1;
-        transform: translateY(15px);
+        transform: translateY(0px);
     }
     85%{
         opacity: 1;
-        transform: translateY(15px);
+        transform: translateY(0px);
     }
     100%{
         opacity: 0;

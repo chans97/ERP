@@ -1,5 +1,4 @@
 from django.shortcuts import render
-
 import os
 import requests, json
 from django.contrib.auth.views import PasswordChangeView
@@ -27,30 +26,33 @@ class LoginView(FormView):
         user = authenticate(self.request, username=email, password=password)
         if user is not None:
             login(self.request, user)
+            messages.info(
+                self.request, f"안녕하세요. {self.request.user.first_name} 님. 로그인 되었습니다."
+            )
         return super().form_valid(form)
 
     def get_success_url(self):
-        next_arg = self.request.GET.get("next")
-        if next_arg is not None:
-            return next_arg
-        else:
-            return reverse("users:login")
+        return reverse("core:home")
 
-    """ FormView = View
-    def get(self, request):
-        form =forms.LoginForm(initial={"email": "papajuju123@naver.com"})
-        return render(request, "users/login.html", {"form" : form}) 
 
-    def post(self,request):
-        form =forms.LoginForm(request.POST)
-        if form.is_valid():
-            email = form.cleaned_data.get("email")
-            password = form.cleaned_data.get("password")
-            print(email, password)
-            user = authenticate(request, username=email, password =password)
-            if user is not None:
-                login(request,user)
-                return redirect(reverse("core:home"))
+class SignUpView(FormView):
 
-        return render(request, "users/login.html", {"form":form})"""
+    template_name = "users/signup.html"
+    form_class = forms.SignUpForm
+    success_url = reverse_lazy("core:home")
 
+    def form_valid(self, form):
+        form.save()
+        email = form.cleaned_data.get("email")
+        password = form.cleaned_data.get("password")
+        print(1, email, password)
+        user = authenticate(self.request, username=email, password=password)
+        if user is not None:
+            login(self.request, user)
+        return super().form_valid(form)
+
+
+def log_out(request):
+    logout(request)
+    messages.info(request, "정상적으로 로그아웃 되었습니다.")
+    return redirect(reverse("core:home"))

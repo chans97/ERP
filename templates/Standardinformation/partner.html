@@ -1,0 +1,93 @@
+{%extends "orders/ordershome.html"%}
+{% load static%}
+{% block page_title%}
+파트너
+{%endblock%}
+
+
+{%block head_title%}
+</a><i class="fas fa-angle-right mx-1 text-base"></i>기준정보등록<i class="fas fa-angle-right text-base mx-1"></i>
+거래처
+{%endblock head_title %}
+
+
+{%block main_contens%}
+
+<div class="w-11/12 h-full ml-32 -mt-6 pt-12 flex flex-row justify-between">
+
+    <div class="p-6 flex flex-col">
+        <div class="flex flex-row justify-between">
+            <div class="justify-between ">
+                <div class=" border-b w-64 mb-3 font-semibold border-gray-600 pb-2">거래처 </div>
+
+            </div>
+            <div class="mt-2 ">
+                <a href="{%url "StandardInformation:partnerregister"%}">
+                    <div class="btn-link">
+                        거래처 추가 </div>
+                </a>
+            </div>
+        </div>
+        <div class="w-64 border h-6 mb-2">
+
+            <form method="get" action="{%url "StandardInformation:partnersearch" %}" class="w-full flex ">
+                <button class="w-4 h-4 mt-1 ml-1  rounded-xl bg-cover bg-center"
+                    style="background-image:url({% static 'img/search.png' %});"></button>
+
+                <input name="search" placeholder="search"
+                    class="ml-1 w-full border-none search-box text-xs font-medium placeholder-red-400 focus: outline-none" />
+
+            </form>
+        </div>
+        <div class="w-full rounded text-xs">
+            <table class="table-fixed">
+                <thead>
+                    <tr>
+                        <th class="border bg-gray-200 px-4 py-2 w-24">거래처코드</th>
+                        <th class="border bg-gray-200 px-4 py-2 w-40">거래처명</th>
+                        <th class="border bg-gray-200 px-4 py-2">담당자</th>
+                        <th class="border bg-gray-200 px-4 py-2">연락처</th>
+                        <th class="border bg-gray-200 px-4 py-2 w-64">사업장주소</th>
+                        <th class="border bg-gray-200 px-4 py-2">거래선구분</th>
+                        <th class="border bg-gray-200 px-4 py-2">작성자</th>
+                        <th class="border bg-gray-200 px-4 py-2">작성일</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {%for list in lists%}
+                    <tr>
+                        <td class="border px-4 py-2">{{list.거래처코드}}</td>
+                        <td class="border px-4 py-2">{{list.거래처명}}</td>
+                        <td class="border px-4 py-2">{{list.담당자}}</td>
+                        <td class="border px-4 py-2">{{list.연락처}}</td>
+                        <td class="border px-4 py-2">{{list.사업장주소}}</td>
+                        <td class="border px-4 py-2">{{list.거래처구분}}</td>
+                        <td class="border px-4 py-2">{{list.작성자}}</td>
+                        <td class="border px-4 py-2">{{list.작성일}}</td>
+                    </tr>
+                    {%endfor%}
+
+                </tbody>
+            </table>
+            <div class="flex ml-2">
+                {% if page_obj.has_previous %}
+                <a href="?page={{page_obj.previous_page_number}}" class="text-teal-700"><i
+                        class="fas fa-arrow-left fa-lg mt-2"></i></a>
+                {% endif %}
+                <span class="mx-3 font-medium  text-base">{{page_obj.number}} of
+                    {{page_obj.paginator.num_pages}}</span>
+
+                {% if page_obj.has_next %}
+                <a href="?page={{page_obj.next_page_number}}" class="text-teal-700"><i
+                        class="fas fa-arrow-right fa-lg mt-2"></i></a>
+                {% endif %}
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+</div>
+{%endblock main_contens %}

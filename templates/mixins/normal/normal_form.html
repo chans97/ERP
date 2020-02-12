@@ -1,0 +1,17 @@
+<form method="POST" class="w-full" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+    {% for error in form.non_field_errors %}
+    <span class="text-red-700 font-light text-sm">{{error}}</span>
+    {% endfor %}
+    {% endif %}
+    <div class="flex flex-wrap ">
+        {% for field in form %}<div class="w-1/2 py-1 pr-40">
+            {% include 'mixins/normal/normal_input.html' with field=field %}</div>
+        {%endfor%}
+    </div>
+
+
+    <button class="btn bg-blue-800 text-white">{{cta}}</button>
+</form>

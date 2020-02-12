@@ -85,7 +85,6 @@ class PartnerSearchView(ListView):
     model = models.Partner
     paginate_by = 6
     paginate_orphans = 2
-    ordering = "created"
     context_object_name = "lists"
     template_name = "Standardinformation/partnersearch.html"
 
@@ -99,9 +98,8 @@ class PartnerSearchView(ListView):
             | Q(담당자__first_name=r)
             | Q(사업장주소__contains=r)
             | Q(작성자__first_name=r)
-        )
+        ).order_by("-created")
 
-        qs.order_by("-created")
         return qs
 
     def get(self, request, *args, **kwargs):

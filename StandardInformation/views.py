@@ -307,17 +307,11 @@ class SingleDetialView(DetailView):
         single = models.SingleProduct.objects.get(pk=pk)
 
         material = single.단품구성자재.all()
-        materialnamenum = []
-        for mate in material:
-            mn = list(mate.단품구성자재.all())[0]
-            num = mate.수량
-            materialnamenum.append([mn, num])
-
         user = request.user
         return render(
             request,
             "Standardinformation/singledetail.html",
-            {"single": single, "user": user, "materialnamenum": materialnamenum,},
+            {"single": single, "user": user, "material": material},
         )
 
 
@@ -327,9 +321,10 @@ def singlematerial(request, pk):
     if form.is_valid():
         단품구성자재 = form.cleaned_data.get("단품구성자재")
         수량 = form.cleaned_data.get("수량")
-        print(single, 단품구성자재, 수량)
-        SM = models.SingleProductMaterial.objects.create(단품모델=single, 수량=수량)
-        SM.단품구성자재.set(단품구성자재)
+        SM = models.SingleProductMaterial.objects.create(
+            단품모델=single, 단품구성자재=단품구성자재, 수량=수량
+        )
+        # SM.단품구성자재.set(단품구성자재) m2m 입력하기
         SM.save()
 
         messages.success(request, "단품등록이 완료되었습니다..")

@@ -268,7 +268,9 @@ class SingleProductMaterial(TimeStampedModel):
     단품모델 = models.ForeignKey(
         "SingleProduct", related_name="단품구성자재", on_delete=models.CASCADE,
     )
-    단품구성자재 = models.ManyToManyField("Material", related_name="단품구성자재",)
+    단품구성자재 = models.ForeignKey(
+        "Material", related_name="단품구성자재", on_delete=models.SET_NULL, null=True
+    )
     수량 = models.IntegerField(default=0)
 
     class Meta:
@@ -278,8 +280,8 @@ class SingleProductMaterial(TimeStampedModel):
 
     def __str__(self):
         try:
-            자재품명 = self.단품구성자재.values()[0]["자재품명"]
-            단위 = self.단품구성자재.values()[0]["단위"]
+            자재품명 = self.단품구성자재
+            단위 = self.단품구성자재.단위
             return f"{자재품명} : {self.수량} {단위}"
         except:
             return "입력값을 확인해주십시오."

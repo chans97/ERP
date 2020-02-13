@@ -43,8 +43,6 @@ class SingleProductMeterial(admin.ModelAdmin):
         "단품모델",
     )
 
-    filter_horizontal = ("단품구성자재",)
-
 
 @admin.register(models.RackProduct)
 class RackProduct(admin.ModelAdmin):

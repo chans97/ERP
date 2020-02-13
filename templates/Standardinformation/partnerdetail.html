@@ -1,0 +1,123 @@
+{%extends "orders/ordershome.html"%}
+{% load static%}
+{% block page_title%}
+파트너상세
+{%endblock%}
+
+
+{%block head_title%}
+</a><i class="fas fa-angle-right mx-1 text-base"></i>기준정보등록<i class="fas fa-angle-right text-base mx-1"></i>
+거래처<i class="fas fa-angle-right mx-1 text-base"></i><span class="text-gray-700">{{partner}}</span>
+{%endblock head_title %}
+
+
+{%block main_contens%}
+
+<div class="w-11/12 h-full ml-32 -mt-6 pt-12 flex flex-row">
+
+    <div class="p-6 flex flex-col w-full">
+        <div class="flex flex-col w-full">
+            <div class="flex flex-row justify-between w-full ">
+                <div class=" border-b w-64 mb-3 font-semibold border-gray-600 pb-2">거래처 - {{partner}} </div>
+
+                <div class="flex flex-row">
+                    <div class="mt-2">
+                        <a href="{%url "StandardInformation:partneredit" partner.pk%}">
+                            <div class="btn-link bg-teal-800">
+                                거래처 수정 </div>
+                        </a>
+                    </div>
+                    <div class="mt-2">
+                        <a href="{%url "StandardInformation:partnerdeleteensure" partner.pk %}">
+                            <div class="btn-link  bg-red-800 ml-5">
+                                거래처 삭제 </div>
+                        </a>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="item-center">
+                <table class="table-fixed text-sm">
+                    <thead>
+                        <tr>
+                            <th class="border border-r-0 bg-gray-200  py-2 w-40 text-right"> </th>
+                            <th class="border border-l-0 bg-gray-200 px-6  py-2 w-9/12 text-left">{{partner}}의 상세정보</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="border px-4 py-2">작성자</td>
+                            <td class="border px-4 py-2">{{partner.작성자}}</td>
+                        </tr>
+                        <tr>
+                            <td class="border px-4 py-2">작성일</td>
+                            <td class="border px-4 py-2">{{partner.작성일}}</td>
+                        </tr>
+                        <tr>
+                            <td class="border px-4 py-2">거래처구분</td>
+                            <td class="border px-4 py-2">{{partner.거래처구분}}</td>
+                        </tr>
+                        <tr>
+                            <td class="border px-4 py-2">거래처코드</td>
+                            <td class="border px-4 py-2">{{partner.거래처코드}}</td>
+                        </tr>
+                        <tr>
+                            <td class="border px-4 py-2">거래처명</td>
+                            <td class="border px-4 py-2">{{partner.거래처명}}</td>
+                        </tr>
+                        <tr>
+                            <td class="border px-4 py-2">사업자등록번호</td>
+                            <td class="border px-4 py-2">{{partner.사업자등록번호}}</td>
+                        </tr>
+                        <tr>
+                            <td class="border px-4 py-2">연락처</td>
+                            <td class="border px-4 py-2">{{partner.연락처}}</td>
+                        </tr>
+                        <tr>
+                            <td class="border px-4 py-2">이메일</td>
+                            <td class="border px-4 py-2">{{partner.이메일}}</td>
+                        </tr>
+                        <tr>
+                            <td class="border px-4 py-2">사업장주소</td>
+                            <td class="border px-4 py-2">{{partner.사업장주소}}</td>
+                        </tr>
+                        <tr>
+                            <td class="border px-4 py-2">사업자등록증첨부</td>
+                            <td class="border px-4 py-2 hover:text-blue-700">
+                                <a href="{%url "StandardInformation:partnerdownload" partner.pk%}">
+                                    {{partner.사업자등록증첨부}}</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="border px-4 py-2">특이사항</td>
+                            <td class="border px-4 py-2">{{partner.특이사항}}</td>
+                        </tr>
+                        <tr>
+                            <td class="border px-4 py-2">사용여부</td>
+                            <td class="border px-4 py-2">
+                                {%if partner.사용여부%} 사용함
+                                {%else%}사용 안함
+                                {%endif%}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="border px-4 py-2">담당자</td>
+                            <td class="border px-4 py-2">{{partner.담당자}}</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+</div>
+{%endblock main_contens %}

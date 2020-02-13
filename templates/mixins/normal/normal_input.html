@@ -1,13 +1,14 @@
-<span class="font-light text-sm">
+<span class="font-semibold text-sm">
     {{field.name}}:
 
 </span>
 <div
-    class="rounded-sm py-2 w-full text-left border border-gray-600 px-4 font-light text-sm w-full {% if field.errors %}has_error{% endif %}">
+    class="rounded-sm py-1 text-left border border-gray-600 px-4   font-medium text-sm w-full {% if field.errors %}has_error{% endif %}">
 
-    {{field}}</div><span class="font-serif text-xs text-teal-700">{{field.help_text}}</span>
+    {{field}}</div>
+<div class="font-light text-xs text-teal-700">{{field.help_text}}</div>
 {% if field.errors %}
 {% for error in field.errors %}
-<span class="text-red-700 font-light text-sm">{{error}}</span>
+<span class="text-red-700 font-light text-xs">*{{error}}</span>
 {% endfor %}
 {% endif %}

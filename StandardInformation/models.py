@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.shortcuts import reverse
 from core.models import TimeStampedModel
 
 
@@ -29,13 +29,16 @@ class Partner(TimeStampedModel):
     연락처 = models.CharField(max_length=50, blank=True)
     이메일 = models.EmailField(max_length=254)
     사업장주소 = models.CharField(max_length=90, blank=True, null=True)
-    사업자등록증첨부 = models.FileField(blank=True, null=True)
+    사업자등록증첨부 = models.FileField(blank=True, null=True, upload_to="partnerregister")
     특이사항 = models.TextField(blank=True, null=True)
     사용여부 = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = "거래처"
         verbose_name_plural = "거래처"
+
+    def get_absolute_url(self):
+        return reverse("StandardInformation:partnerdetail", kwargs={"pk": self.pk})
 
     def __str__(self):
         return self.거래처명

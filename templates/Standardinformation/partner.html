@@ -6,7 +6,7 @@
 
 
 {%block head_title%}
-</a><i class="fas fa-angle-right mx-1 text-base"></i>기준정보등록<i class="fas fa-angle-right text-base mx-1"></i>
+</a><i class="fas fa-angle-right mx-1 text-base"></i>기준정보<i class="fas fa-angle-right text-base mx-1"></i>
 거래처
 {%endblock head_title %}
 
@@ -21,7 +21,7 @@
                 <div class=" border-b w-64 mb-3 font-semibold border-gray-600 pb-2">거래처 </div>
 
             </div>
-            <div class="mt-2 ">
+            <div class="mt-2">
                 <a href="{%url "StandardInformation:partnerregister"%}">
                     <div class="btn-link">
                         거래처 추가 </div>
@@ -56,7 +56,8 @@
                 <tbody>
                     {%for list in lists%}
                     <tr>
-                        <td class="border px-4 py-2">{{list.거래처코드}}</td>
+                        <td class="border px-4 py-2 hover:text-blue-700"><a
+                                href="{%url "StandardInformation:partnerdetail" list.pk %}">{{list.거래처코드}}</a></td>
                         <td class="border px-4 py-2">{{list.거래처명}}</td>
                         <td class="border px-4 py-2">{{list.담당자}}</td>
                         <td class="border px-4 py-2">{{list.연락처}}</td>

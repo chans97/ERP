@@ -1,0 +1,91 @@
+{%extends "orders/ordershome.html"%}
+{% load static%}
+{% block page_title%}
+단품검색
+{%endblock%}
+
+
+{%block head_title%}
+</a><i class="fas fa-angle-right mx-1 text-base"></i>기준정보등록<i class="fas fa-angle-right text-base mx-1"></i>
+<a href="{%url "StandardInformation:partner"%}">단품</a><i
+    class="fas fa-angle-right text-base mx-1 text-gray-600"></i><span class="text-gray-600">검색결과</span>
+{%endblock head_title %}
+
+
+{%block main_contens%}
+
+<div class="w-11/12 h-full ml-32 -mt-6 pt-12 flex flex-row justify-between">
+
+    <div class="p-6 flex flex-col">
+        <div class="flex flex-row justify-between">
+            <div class="justify-between ">
+                <div class=" border-b w-64 mb-3 font-semibold border-gray-600 pb-2">단품 </div>
+
+            </div>
+            <div class="mt-2 ">
+                <a href="{%url "StandardInformation:singleregister"%}">
+                    <div class="btn-link">
+                        단품 추가</div>
+                </a>
+            </div>
+        </div>
+        <div class="w-64 border h-6 mb-2">
+
+            <form method="get" action="{%url "StandardInformation:singlesearch" %}" class="w-full flex ">
+                <button class="w-4 h-4 mt-1 ml-1  rounded-xl bg-cover bg-center"
+                    style="background-image:url({% static 'img/search.png' %});"></button>
+
+                <input name="search" placeholder={{ss}}
+                    class="ml-1 w-full border-none search-box text-xs font-medium placeholder-red-400 focus: outline-none" />
+
+            </form>
+        </div>
+        <div class="w-full rounded text-xs">
+            <table class="table-fixed">
+                <thead>
+                    <tr>
+                        <th class="border bg-gray-200 px-4 py-2 w-24">모델코드</th>
+                        <th class="border bg-gray-200 px-4 py-2 w-40">모델명</th>
+                        <th class="border bg-gray-200 px-4 py-2 w-40">규격</th>
+                        <th class="border bg-gray-200 px-4 py-2">단위</th>
+                        <th class="border bg-gray-200 px-4 py-2 w-24">단가</th>
+                        <th class="border bg-gray-200 px-4 py-2">작성자</th>
+                        <th class="border bg-gray-200 px-4 py-2">작성일</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {%for list in lists%}
+                    <tr>
+                        <td class="border px-4 py-2 hover:text-blue-700"><a
+                                href="{%url "StandardInformation:singledetail" list.pk %}">{{list.모델코드}}</a></td>
+                        <td class="border px-4 py-2">{{list.모델명}}</td>
+                        <td class="border px-4 py-2">{{list.규격}}</td>
+                        <td class="border px-4 py-2">{{list.단위}}</td>
+                        <td class="border px-4 py-2">{{list.단가}}</td>
+                        <td class="border px-4 py-2">{{list.작성자}}</td>
+                        <td class="border px-4 py-2">{{list.작성일}}</td>
+                    </tr>
+                    {%endfor%}
+
+                </tbody>
+            </table>
+            <div class="flex ml-2">
+                {% if page_obj.has_previous %}
+                <a href="?search={{ss}}&page={{page_obj.previous_page_number}}" class="text-teal-700"><i
+                        class="fas fa-arrow-left fa-lg mt-2"></i></a>
+                {% endif %}
+                <span class="mx-3 font-medium  text-base">{{page_obj.number}} of
+                    {{page_obj.paginator.num_pages}}</span>
+
+                {% if page_obj.has_next %}
+                <a href="?search={{ss}}&page={{page_obj.next_page_number}}" class="text-teal-700"><i
+                        class="fas fa-arrow-right fa-lg mt-2"></i></a>
+                {% endif %}
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+{%endblock main_contens %}

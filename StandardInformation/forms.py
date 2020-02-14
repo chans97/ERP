@@ -65,7 +65,7 @@ class UploadSingleForm(forms.ModelForm):
             self.add_error("모델코드", forms.ValidationError("해당 모델코드는 이미 존재합니다."))
         elif code != "SP":
             self.add_error("모델코드", forms.ValidationError("거래처 코드는 SP로 시작해야 합니다."))
-
+        else:
             return self.cleaned_data
 
     def save(self, *arg, **kwargs):
@@ -73,14 +73,17 @@ class UploadSingleForm(forms.ModelForm):
         return single
 
 
-class UploadSingleMaterialForm(forms.ModelForm):
-    class Meta:
-        model = models.SingleProductMaterial
-        fields = (
-            "단품구성자재",
-            "수량",
-        )
+class UploadSingleMaterialForm(forms.Form):
+    단품구성자재 = forms.CharField()
+    수량 = forms.CharField()
 
-    def save(self, *arg, **kwargs):
-        singlematerial = super().save(commit=False)
-        return singlematerial
+    def clean(self):
+        singlematerial = self.cleaned_data.get("단품구성자재")
+        material = models.Material.objects.get_or_none(자재코드=singlematerial)
+
+        if material is None:
+            self.add_error("단품구성자재", forms.ValidationError("해당 자재코드는 없는 자재코드입니다."))
+        else:
+            self.cleaned_data["단품구성자재"] = material
+            return self.cleaned_data
+

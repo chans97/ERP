@@ -25,9 +25,10 @@ from django.db.models import Q
 from users import mixins as user_mixins
 from users import models as user_models
 from django.http import HttpResponse
+import math
 
 
-class PartnerView(ListView):
+class PartnerView(user_mixins.LoggedInOnlyView, ListView):
     """HomeView Def"""
 
     model = models.Partner
@@ -36,6 +37,51 @@ class PartnerView(ListView):
     ordering = "-created"
     context_object_name = "lists"
     template_name = "Standardinformation/partner.html"
+    # extra_context = {"search": "검색"}
+
+    def get_queryset(self):
+
+        search = self.request.GET.get("search")
+        if search is None:
+            return super().get_queryset()
+        else:
+            qs = models.Partner.objects.filter(
+                Q(거래처코드=search)
+                | Q(거래처구분=search)
+                | Q(거래처명__contains=search)
+                | Q(담당자__first_name=search)
+                | Q(사업장주소__contains=search)
+                | Q(작성자__first_name=search)
+            ).order_by("-created")
+
+            return qs
+
+    def get(self, request, *args, **kwargs):
+        self.object_list = self.get_queryset()
+        allow_empty = self.get_allow_empty()
+        if not allow_empty:
+            # When pagination is enabled and object_list is a queryset,
+            # it's better to do a cheap query than to load the unpaginated
+            # queryset in memory.
+            if self.get_paginate_by(self.object_list) is not None and hasattr(
+                self.object_list, "exists"
+            ):
+                is_empty = not self.object_list.exists()
+            else:
+                is_empty = not self.object_list
+            if is_empty:
+                raise Http404(
+                    _("Empty list and “%(class_name)s.allow_empty” is False.")
+                    % {"class_name": self.__class__.__name__,}
+                )
+        context = self.get_context_data()
+        if self.request.GET.get("search") is None:
+            context["search"] = "search"
+            context["s_bool"] = False
+        else:
+            context["search"] = self.request.GET.get("search")
+            context["s_bool"] = True
+        return self.render_to_response(context)
 
 
 class UploadPartnerView(user_mixins.LoggedInOnlyView, FormView):
@@ -77,49 +123,7 @@ class UploadPartnerView(user_mixins.LoggedInOnlyView, FormView):
         )
 
 
-class PartnerSearchView(ListView):
-
-    model = models.Partner
-    paginate_by = 6
-    paginate_orphans = 2
-    context_object_name = "lists"
-    template_name = "Standardinformation/partnersearch.html"
-
-    def get_queryset(self):
-        r = self.request.GET.get("search")
-
-        qs = models.Partner.objects.filter(
-            Q(거래처코드=r)
-            | Q(거래처구분=r)
-            | Q(거래처명__contains=r)
-            | Q(담당자__first_name=r)
-            | Q(사업장주소__contains=r)
-            | Q(작성자__first_name=r)
-        ).order_by("-created")
-
-        return qs
-
-    def get(self, request, *args, **kwargs):
-        self.object_list = self.get_queryset()
-        allow_empty = self.get_allow_empty()
-        if not allow_empty:
-            if self.get_paginate_by(self.object_list) is not None and hasattr(
-                self.object_list, "exists"
-            ):
-                is_empty = not self.object_list.exists()
-            else:
-                is_empty = not self.object_list
-            if is_empty:
-                raise Http404(
-                    _("Empty list and “%(class_name)s.allow_empty” is False.")
-                    % {"class_name": self.__class__.__name__,}
-                )
-        context = self.get_context_data()
-        context["ss"] = request.GET.get("search")
-        return self.render_to_response(context)
-
-
-class PartnerDetialView(DetailView):
+class PartnerDetialView(user_mixins.LoggedInOnlyView, DetailView):
     model = models.Partner
 
     def get(self, request, *args, **kwargs):
@@ -202,19 +206,6 @@ class EditPartnerView(user_mixins.LoggedInOnlyView, UpdateView):
     template_name = "Standardinformation/partneredit.html"
 
 
-def clean(self):
-    code = self.cleaned_data.get("거래처코드")
-    partner = models.Partner.objects.filter(거래처코드=code)
-    partner = list(partner)
-    code = code[0:2]
-    if partner:
-        self.add_error("거래처코드", forms.ValidationError("해당 거래처코드는 이미 존재합니다."))
-    elif code != "PN":
-        self.add_error("거래처코드", forms.ValidationError("거래처 코드는 PN으로 시작해야 합니다."))
-
-        return self.cleaned_data
-
-
 class SingleView(ListView):
     """SingleView Def"""
 
@@ -225,28 +216,29 @@ class SingleView(ListView):
     context_object_name = "lists"
     template_name = "Standardinformation/single.html"
 
-
-class SingleSearchView(ListView):
-
-    model = models.SingleProduct
-    paginate_by = 6
-    paginate_orphans = 2
-    context_object_name = "lists"
-    template_name = "Standardinformation/singlesearch.html"
-
     def get_queryset(self):
-        r = self.request.GET.get("search")
 
-        qs = models.SingleProduct.objects.filter(
-            Q(모델코드=r) | Q(모델명__contains=r) | Q(규격=r) | Q(단위=r) | Q(작성자__first_name=r)
-        ).order_by("-created")
+        search = self.request.GET.get("search")
+        if search is None:
+            return super().get_queryset()
+        else:
+            qs = models.SingleProduct.objects.filter(
+                Q(모델코드=search)
+                | Q(모델명__contains=search)
+                | Q(규격=search)
+                | Q(단위=search)
+                | Q(작성자__first_name=search)
+            ).order_by("-created")
 
-        return qs
+            return qs
 
     def get(self, request, *args, **kwargs):
         self.object_list = self.get_queryset()
         allow_empty = self.get_allow_empty()
         if not allow_empty:
+            # When pagination is enabled and object_list is a queryset,
+            # it's better to do a cheap query than to load the unpaginated
+            # queryset in memory.
             if self.get_paginate_by(self.object_list) is not None and hasattr(
                 self.object_list, "exists"
             ):
@@ -259,7 +251,12 @@ class SingleSearchView(ListView):
                     % {"class_name": self.__class__.__name__,}
                 )
         context = self.get_context_data()
-        context["ss"] = request.GET.get("search")
+        if self.request.GET.get("search") is None:
+            context["search"] = "search"
+            context["s_bool"] = False
+        else:
+            context["search"] = self.request.GET.get("search")
+            context["s_bool"] = True
         return self.render_to_response(context)
 
 
@@ -285,7 +282,7 @@ class UploadSingleView(user_mixins.LoggedInOnlyView, FormView):
         form.save_m2m()
         pk = single.pk
 
-        messages.success(request, "해당 단품에 포함되는 자재를 기입해주세요.")
+        messages.success(request, "해당 단품에 포함되는 자재를 추가해주세요.")
         return redirect(
             reverse("StandardInformation:singlematerial", kwargs={"pk": pk})
         )
@@ -299,7 +296,7 @@ class UploadSingleView(user_mixins.LoggedInOnlyView, FormView):
         )
 
 
-class SingleDetialView(DetailView):
+class SingleDetialView(user_mixins.LoggedInOnlyView, DetailView):
     model = models.SingleProduct
 
     def get(self, request, *args, **kwargs):
@@ -318,21 +315,99 @@ class SingleDetialView(DetailView):
 def singlematerial(request, pk):
     single = models.SingleProduct.objects.get(pk=pk)
     form = forms.UploadSingleMaterialForm(request.POST)
+
+    search = request.GET.get("search")
+    if search is None:
+        material = models.Material.objects.all().order_by("-created")
+        s_bool = False
+    else:
+        s_bool = True
+        qs = models.Material.objects.filter(
+            Q(자재코드=search)
+            | Q(자재품명__contains=search)
+            | Q(품목__contains=search)
+            | Q(자재공급업체__거래처명__contains=search)
+        ).order_by("-created")
+        material = qs
+
     if form.is_valid():
         단품구성자재 = form.cleaned_data.get("단품구성자재")
         수량 = form.cleaned_data.get("수량")
         SM = models.SingleProductMaterial.objects.create(
             단품모델=single, 단품구성자재=단품구성자재, 수량=수량
         )
-        # SM.단품구성자재.set(단품구성자재) m2m 입력하기
-        SM.save()
 
-        messages.success(request, "단품등록이 완료되었습니다..")
-
-        return redirect(reverse("StandardInformation:single"))
-
+        return redirect(
+            reverse("StandardInformation:singlematerial", kwargs={"pk": pk})
+        )
+    pagediv = 10
+    totalpage = int(math.ceil(len(material) / pagediv))
+    paginator = Paginator(material, pagediv, orphans=0)
+    page = request.GET.get("page", "1")
+    material = paginator.get_page(page)
+    nextpage = int(page) + 1
+    previouspage = int(page) - 1
+    notsamebool = True
+    materialofsingle = single.단품구성자재.all()
+    if int(page) == totalpage:
+        notsamebool = False
+    if search is None:
+        search = "search"
     return render(
         request,
         "Standardinformation/singlematerial.html",
-        {"single": single, "form": form},
+        {
+            "single": single,
+            "form": form,
+            "material": material,
+            "search": search,
+            "page": page,
+            "totalpage": totalpage,
+            "notsamebool": notsamebool,
+            "nextpage": nextpage,
+            "previouspage": previouspage,
+            "s_bool": s_bool,
+            "materialofsingle": materialofsingle,
+        },
     )
+
+
+def deletematerialofsingle(request, pk, m_pk):
+
+    materialofsingle = models.SingleProductMaterial.objects.get(pk=m_pk)
+    materialofsingle.delete()
+    return redirect(reverse("StandardInformation:singlematerial", kwargs={"pk": pk}))
+
+
+def singledeleteensure(request, pk):
+
+    single = models.SingleProduct.objects.get_or_none(pk=pk)
+    return render(
+        request, "Standardinformation/singledeleteensure.html", {"single": single},
+    )
+
+
+def singledelete(request, pk):
+    single = models.SingleProduct.objects.get_or_none(pk=pk)
+    single.delete()
+
+    messages.success(request, "해당 단품이 삭제되었습니다.")
+
+    return redirect(reverse("StandardInformation:single"))
+
+
+class EditSingleView(user_mixins.LoggedInOnlyView, UpdateView):
+    model = models.SingleProduct
+    fields = (
+        "모델코드",
+        "모델명",
+        "규격",
+        "단위",
+        "단가",
+    )
+    template_name = "Standardinformation/singleedit.html"
+
+    def get_success_url(self):
+        pk = self.kwargs.get(self.pk_url_kwarg)
+        return reverse("StandardInformation:singlematerial", kwargs={"pk": pk})
+

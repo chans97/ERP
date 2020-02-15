@@ -75,7 +75,9 @@ class PartnerView(user_mixins.LoggedInOnlyView, ListView):
                     % {"class_name": self.__class__.__name__,}
                 )
         context = self.get_context_data()
-        if self.request.GET.get("search") is None:
+        if (self.request.GET.get("search") is None) or (
+            self.request.GET.get("search") == ""
+        ):
             context["search"] = "search"
             context["s_bool"] = False
         else:
@@ -251,7 +253,9 @@ class SingleView(ListView):
                     % {"class_name": self.__class__.__name__,}
                 )
         context = self.get_context_data()
-        if self.request.GET.get("search") is None:
+        if (self.request.GET.get("search") is None) or (
+            self.request.GET.get("search") == ""
+        ):
             context["search"] = "search"
             context["s_bool"] = False
         else:
@@ -337,9 +341,6 @@ def singlematerial(request, pk):
             단품모델=single, 단품구성자재=단품구성자재, 수량=수량
         )
 
-        return redirect(
-            reverse("StandardInformation:singlematerial", kwargs={"pk": pk})
-        )
     pagediv = 10
     totalpage = int(math.ceil(len(material) / pagediv))
     paginator = Paginator(material, pagediv, orphans=0)
@@ -351,7 +352,7 @@ def singlematerial(request, pk):
     materialofsingle = single.단품구성자재.all()
     if int(page) == totalpage:
         notsamebool = False
-    if search is None:
+    if (search is None) or (search == ""):
         search = "search"
     return render(
         request,
@@ -411,3 +412,267 @@ class EditSingleView(user_mixins.LoggedInOnlyView, UpdateView):
         pk = self.kwargs.get(self.pk_url_kwarg)
         return reverse("StandardInformation:singlematerial", kwargs={"pk": pk})
 
+
+class RackView(ListView):
+    """RackView Def"""
+
+    model = models.RackProduct
+    paginate_by = 6
+    paginate_orphans = 2
+    ordering = "-created"
+    context_object_name = "lists"
+    template_name = "Standardinformation/rack.html"
+
+    def get_queryset(self):
+
+        search = self.request.GET.get("search")
+        if search is None:
+            return super().get_queryset()
+        else:
+            qs = models.RackProduct.objects.filter(
+                Q(랙시리얼코드=search)
+                | Q(랙모델명__contains=search)
+                | Q(규격=search)
+                | Q(단위=search)
+                | Q(작성자__first_name=search)
+            ).order_by("-created")
+
+            return qs
+
+    def get(self, request, *args, **kwargs):
+        self.object_list = self.get_queryset()
+        allow_empty = self.get_allow_empty()
+        if not allow_empty:
+            # When pagination is enabled and object_list is a queryset,
+            # it's better to do a cheap query than to load the unpaginated
+            # queryset in memory.
+            if self.get_paginate_by(self.object_list) is not None and hasattr(
+                self.object_list, "exists"
+            ):
+                is_empty = not self.object_list.exists()
+            else:
+                is_empty = not self.object_list
+            if is_empty:
+                raise Http404(
+                    _("Empty list and “%(class_name)s.allow_empty” is False.")
+                    % {"class_name": self.__class__.__name__,}
+                )
+        context = self.get_context_data()
+        if (self.request.GET.get("search") is None) or (
+            self.request.GET.get("search") == ""
+        ):
+            context["search"] = "search"
+            context["s_bool"] = False
+        else:
+            context["search"] = self.request.GET.get("search")
+            context["s_bool"] = True
+        return self.render_to_response(context)
+
+
+class RackDetialView(user_mixins.LoggedInOnlyView, DetailView):
+    model = models.RackProduct
+
+    def get(self, request, *args, **kwargs):
+        pk = kwargs["pk"]
+        rack = models.RackProduct.objects.get(pk=pk)
+
+        single = rack.랙구성단품.filter(랙구성="단품")
+        material = rack.랙구성단품.filter(랙구성="자재")
+        user = request.user
+        return render(
+            request,
+            "Standardinformation/rackdetail.html",
+            {"rack": rack, "user": user, "material": material, "single": single},
+        )
+
+
+class UploadRackView(user_mixins.LoggedInOnlyView, FormView):
+    model = models.RackProduct
+    fields = (
+        "랙시리얼코드",
+        "랙모델명",
+        "규격",
+        "단위",
+        "단가",
+    )
+    template_name = "Standardinformation/rackregister.html"
+    form_class = forms.UploadRackForm
+
+    def form_valid(self, form):
+        rack = form.save()
+        user = self.request.user
+        request = self.request
+
+        rack.작성자 = user
+        rack.save()
+        form.save_m2m()
+        pk = rack.pk
+
+        messages.success(request, "해당 랙에 포함되는 단품을 추가해주세요.")
+        return redirect(reverse("StandardInformation:racksingle", kwargs={"pk": pk}))
+
+    def get(self, request, *args, **kwargs):
+        user = self.request.user
+        form = forms.UploadRackForm
+
+        return render(request, "Standardinformation/rackregister.html", {"form": form},)
+
+
+def racksingle(request, pk):
+    rack = models.RackProduct.objects.get(pk=pk)
+    form = forms.UploadRackSingleForm(request.POST)
+
+    search = request.GET.get("search")
+    if search is None:
+        single = models.SingleProduct.objects.all().order_by("-created")
+        s_bool = False
+    else:
+        s_bool = True
+        qs = models.SingleProduct.objects.filter(
+            Q(모델코드=search)
+            | Q(모델명__contains=search)
+            | Q(규격=search)
+            | Q(단위=search)
+            | Q(작성자__first_name=search)
+        ).order_by("-created")
+        single = qs
+
+    if form.is_valid():
+        랙구성단품 = form.cleaned_data.get("랙구성단품")
+        수량 = form.cleaned_data.get("수량")
+        SM = models.RackProductMaterial.objects.create(
+            랙모델=rack, 랙구성="단품", 랙구성단품=랙구성단품, 수량=수량
+        )
+
+    pagediv = 10
+    totalpage = int(math.ceil(len(single) / pagediv))
+    paginator = Paginator(single, pagediv, orphans=0)
+    page = request.GET.get("page", "1")
+    single = paginator.get_page(page)
+    nextpage = int(page) + 1
+    previouspage = int(page) - 1
+    notsamebool = True
+    singleofrack = rack.랙구성단품.filter(랙구성="단품")
+    if int(page) == totalpage:
+        notsamebool = False
+    if (search is None) or (search == ""):
+        search = "search"
+    return render(
+        request,
+        "Standardinformation/racksingle.html",
+        {
+            "single": single,
+            "form": form,
+            "rack": rack,
+            "search": search,
+            "page": page,
+            "totalpage": totalpage,
+            "notsamebool": notsamebool,
+            "nextpage": nextpage,
+            "previouspage": previouspage,
+            "s_bool": s_bool,
+            "singleofrack": singleofrack,
+        },
+    )
+
+
+def rackmaterial(request, pk):
+    rack = models.RackProduct.objects.get(pk=pk)
+    form = forms.UploadRackMaterialForm(request.POST)
+
+    search = request.GET.get("search")
+    if search is None:
+        material = models.Material.objects.all().order_by("-created")
+        s_bool = False
+    else:
+        s_bool = True
+        qs = models.Material.objects.filter(
+            Q(자재코드=search)
+            | Q(자재품명__contains=search)
+            | Q(품목__contains=search)
+            | Q(자재공급업체__거래처명__contains=search)
+        ).order_by("-created")
+        material = qs
+
+    if form.is_valid():
+        랙구성자재 = form.cleaned_data.get("랙구성자재")
+        수량 = form.cleaned_data.get("수량")
+        SM = models.RackProductMaterial.objects.create(
+            랙모델=rack, 랙구성="자재", 랙구성자재=랙구성자재, 수량=수량
+        )
+
+    pagediv = 10
+    totalpage = int(math.ceil(len(material) / pagediv))
+    paginator = Paginator(material, pagediv, orphans=0)
+    page = request.GET.get("page", "1")
+    material = paginator.get_page(page)
+    nextpage = int(page) + 1
+    previouspage = int(page) - 1
+    notsamebool = True
+    materialofrack = rack.랙구성단품.filter(랙구성="자재")
+    if int(page) == totalpage:
+        notsamebool = False
+    if (search is None) or (search == ""):
+        search = "search"
+    return render(
+        request,
+        "Standardinformation/rackmaterial.html",
+        {
+            "material": material,
+            "form": form,
+            "rack": rack,
+            "search": search,
+            "page": page,
+            "totalpage": totalpage,
+            "notsamebool": notsamebool,
+            "nextpage": nextpage,
+            "previouspage": previouspage,
+            "s_bool": s_bool,
+            "materialofrack": materialofrack,
+        },
+    )
+
+
+def deletesingleofrack(request, pk, m_pk):
+
+    singleofrack = models.RackProductMaterial.objects.get(pk=m_pk)
+    singleofrack.delete()
+    return redirect(reverse("StandardInformation:racksingle", kwargs={"pk": pk}))
+
+
+def deletematerialofrack(request, pk, m_pk):
+
+    materialofrack = models.RackProductMaterial.objects.get(pk=m_pk)
+    materialofrack.delete()
+    return redirect(reverse("StandardInformation:rackmaterial", kwargs={"pk": pk}))
+
+
+class EditRackView(user_mixins.LoggedInOnlyView, UpdateView):
+    model = models.RackProduct
+    fields = (
+        "랙시리얼코드",
+        "랙모델명",
+        "규격",
+        "단위",
+        "단가",
+    )
+    template_name = "Standardinformation/rackedit.html"
+
+    def get_success_url(self):
+        pk = self.kwargs.get(self.pk_url_kwarg)
+        return reverse("StandardInformation:racksingle", kwargs={"pk": pk})
+
+
+def rackdeleteensure(request, pk):
+
+    rack = models.RackProduct.objects.get_or_none(pk=pk)
+    return render(request, "Standardinformation/rackdeleteensure.html", {"rack": rack},)
+
+
+def rackdelete(request, pk):
+    rack = models.RackProduct.objects.get_or_none(pk=pk)
+    rack.delete()
+
+    messages.success(request, "해당 랙이 삭제되었습니다.")
+
+    return redirect(reverse("StandardInformation:rack"))

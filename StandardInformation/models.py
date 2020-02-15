@@ -320,8 +320,20 @@ class RackProductMaterial(TimeStampedModel):
         "RackProduct", related_name="랙구성단품", on_delete=models.CASCADE, blank=True,
     )
     랙구성 = models.CharField(choices=랙구성_CHOICES, max_length=4, blank=True, default=단품)
-    랙구성단품 = models.ManyToManyField("SingleProduct", related_name="랙구성단품", blank=True,)
-    랙구성자재 = models.ManyToManyField("Material", related_name="랙구성자재", blank=True,)
+    랙구성단품 = models.ForeignKey(
+        "SingleProduct",
+        related_name="랙구성단품",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
+    랙구성자재 = models.ForeignKey(
+        "Material",
+        related_name="랙구성자재",
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+    )
     수량 = models.IntegerField(null=True)
 
     class Meta:
@@ -331,19 +343,19 @@ class RackProductMaterial(TimeStampedModel):
     def __str__(self):
         try:
             if self.랙구성 == "단품":
-                단품품명 = self.랙구성단품.values()[0]["모델명"]
-                단위 = self.랙구성단품.values()[0]["단위"]
+                단품품명 = self.랙구성단품.모델명
+                단위 = self.랙구성단품.단위
                 return f"{단품품명} : {self.수량} {단위}"
             else:
-                자재품명 = self.랙구성자재.values()[0]["자재품명"]
-                단위 = self.랙구성자재.values()[0]["단위"]
+                자재품명 = self.랙구성자재.자재품명
+                단위 = self.랙구성자재.단위
                 return f"{자재품명} : {self.수량} {단위}"
         except:
             return self.랙구성
 
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        if self.랙구성자재.values().__str__().find("id") != 13:
+
+        if self.랙구성단품:
             self.랙구성 = "단품"
             super().save(*args, **kwargs)
         else:

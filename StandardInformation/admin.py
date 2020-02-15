@@ -62,7 +62,6 @@ class RackProductMaterial(admin.ModelAdmin):
         "__str__",
         "랙모델",
     )
-    filter_horizontal = ("랙구성단품",)
 
 
 @admin.register(models.Measure)

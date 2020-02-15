@@ -37,4 +37,24 @@ urlpatterns = [
     ),
     path("singledelete/<int:pk>/", views.singledelete, name="singledelete",),
     path("singleedit/<int:pk>/", views.EditSingleView.as_view(), name="singleedit",),
+    path("rack/", views.RackView.as_view(), name="rack"),
+    path("rackdetail/<int:pk>/", views.RackDetialView.as_view(), name="rackdetail",),
+    path("rackregister/", views.UploadRackView.as_view(), name="rackregister"),
+    path("racksingle/<int:pk>/", views.racksingle, name="racksingle",),
+    path("rackmaterial/<int:pk>/", views.rackmaterial, name="rackmaterial",),
+    path(
+        "deletesingleofrack/<int:pk>/<int:m_pk>/",
+        views.deletesingleofrack,
+        name="deletesingleofrack",
+    ),
+    path(
+        "deletematerialofrack/<int:pk>/<int:m_pk>/",
+        views.deletematerialofrack,
+        name="deletematerialofrack",
+    ),
+    path("rackedit/<int:pk>/", views.EditRackView.as_view(), name="rackedit",),
+    path(
+        "rackdeleteensure/<int:pk>/", views.rackdeleteensure, name="rackdeleteensure",
+    ),
+    path("rackdelete/<int:pk>/", views.rackdelete, name="rackdelete",),
 ]

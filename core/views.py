@@ -18,7 +18,7 @@ def firstindecide(request):
     user = request.user
     if user.is_authenticated:
         if user.부서.부서명 == "영업부":
-            return render(request, "orders/ordershome.html")
+            return redirect(reverse("orders:ordershome"))
         else:
             return render(request, "base.html")
 

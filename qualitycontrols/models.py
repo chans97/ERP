@@ -29,11 +29,11 @@ class FinalCheck(TimeStampedModel):
 
     def __str__(self):
         if self.작업지시서 is None:
-            return f"수리완료-{self.수리내역서.최종검사결과.최종검사의뢰}"
+            return f"수리완료-{self.수리내역서}"
 
         else:
 
-            return f" '{self.작업지시서.작업지시서.작업지시코드}' 의 최종검사의뢰 "
+            return f" '{self.작업지시서}' 의 최종검사의뢰 "
 
 
 class FinalCheckRegister(TimeStampedModel):
@@ -84,12 +84,7 @@ class FinalCheckRegister(TimeStampedModel):
         verbose_name_plural = "최종검사결과등록"
 
     def __str__(self):
-        if self.최종검사의뢰.작업지시서 is None:
-            return f"수리최종확인-{self.최종검사의뢰.수리내역서}"
-
-        else:
-
-            return f" '{self.최종검사의뢰.작업지시서.작업지시서.작업지시코드}' 의 최종검사결과"
+        return f" '{self.최종검사의뢰}' 의 최종검사결과"
 
 
 class RepairRegister(TimeStampedModel):

@@ -30,7 +30,7 @@ class ProduceRegister(TimeStampedModel):
     )
 
     생산계획등록코드 = models.CharField(max_length=50)
-    생산의뢰 = models.ForeignKey(
+    생산의뢰 = models.OneToOneField(
         orders_models.OrderProduce,
         related_name="생산계획",
         on_delete=models.SET_NULL,
@@ -52,7 +52,7 @@ class ProduceRegister(TimeStampedModel):
         verbose_name_plural = "생산계획등록"
 
     def __str__(self):
-        return f" '{self.생산의뢰.생산의뢰코드}' 의 생산계획 : {self.생산계획등록코드}"
+        return f" '{self.생산의뢰}' 의 생산계획 : {self.생산계획등록코드}"
 
     def successrate(self):
         if self.누적생산량 is None:
@@ -74,11 +74,15 @@ class WorkOrder(TimeStampedModel):
         (AS, "AS"),
     )
 
-    생산계획 = models.ForeignKey(
-        "ProduceRegister", related_name="작업지시서", on_delete=models.SET_NULL, null=True,
+    생산계획 = models.OneToOneField(
+        "ProduceRegister",
+        related_name="작업지시서",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
     )
     수리생산 = models.CharField(
-        choices=수리생산_CHOICES, max_length=10, default=생산계획, null=True, blank=True,
+        choices=수리생산_CHOICES, max_length=10, default=생산계획, null=True
     )
     작업지시코드 = models.CharField(max_length=30, null=True)
     수량 = models.IntegerField(null=True)
@@ -89,7 +93,7 @@ class WorkOrder(TimeStampedModel):
         verbose_name_plural = "작업지시서"
 
     def __str__(self):
-        return f" '{self.생산계획.생산계획등록코드}' 의 작업지시서 : {self.작업지시코드}"
+        return f" '{self.생산계획}' 의 작업지시서 : {self.작업지시코드}"
 
 
 class WorkOrderRegister(TimeStampedModel):
@@ -111,5 +115,5 @@ class WorkOrderRegister(TimeStampedModel):
         verbose_name_plural = "작업지시서등록"
 
     def __str__(self):
-        return f" '{self.작업지시서.작업지시코드}' 의 작업지시서 등록"
+        return f" '{self.작업지시서}' 의 작업지시서 등록"
 

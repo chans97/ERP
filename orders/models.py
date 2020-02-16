@@ -1,6 +1,7 @@
 from django.db import models
 from core.models import TimeStampedModel
 from StandardInformation import models as SI_models
+from users import models as users_models
 
 
 class OrderRegister(TimeStampedModel):
@@ -27,7 +28,13 @@ class OrderRegister(TimeStampedModel):
         (단품, "단품"),
         (랙, "랙"),
     )
-
+    작성자 = models.ForeignKey(
+        users_models.User,
+        related_name="수주등록",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
     수주코드 = models.CharField(max_length=50)
     영업구분 = models.CharField(choices=영업구분_CHOICES, max_length=10, blank=True, default=입찰)
     제품구분 = models.CharField(choices=제품구분_CHOICES, max_length=10, blank=True, default=단품)
@@ -72,6 +79,26 @@ class OrderRegister(TimeStampedModel):
         else:
             return f"{self.고객사명}의 수주 : {self.수주코드}"
 
+    def process(self):
+        try:
+            pro = self.생산요청
+            try:
+                cess = self.생산요청.생산계획.현재공정
+                pro = self.생산요청.생산계획.현재공정달성율
+                try:
+                    pro = self.생산요청.생산계획.작업지시서.작업지시서등록.최종검사
+                    try:
+                        pro = self.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록
+                        return "최종검사완료"
+                    except:
+                        return "최종검사의뢰완료"
+                except:
+                    return f"생산중({cess}:{pro})"
+            except:
+                return "생산의뢰완료"
+        except:
+            return "수주등록완료"
+
 
 class OrderProduce(TimeStampedModel):
 
@@ -83,7 +110,7 @@ class OrderProduce(TimeStampedModel):
         (긴급, "긴급"),
     )
 
-    생산의뢰수주 = models.ForeignKey(
+    생산의뢰수주 = models.OneToOneField(
         "OrderRegister",
         related_name="생산요청",
         on_delete=models.SET_NULL,
@@ -100,5 +127,5 @@ class OrderProduce(TimeStampedModel):
         verbose_name_plural = "생산의뢰등록"
 
     def __str__(self):
-        return f" '{self.생산의뢰수주.수주코드}' 의 생산의뢰 : {self.생산의뢰코드}"
+        return f" '{self.생산의뢰수주}' 의 생산의뢰 : {self.생산의뢰코드}"
 

@@ -1,0 +1,326 @@
+{%extends "orders/ordershome.html"%}
+{%load static%}
+{% block page_title%}
+수주수정
+{%endblock%}
+
+
+{%block head_title%}
+</a><i class="fas fa-angle-right mx-1 text-base"></i>수주등록<i class="fas fa-angle-right text-base mx-1"></i>
+수주등록
+{%endblock head_title %}
+
+
+{%block main_contens%}
+<div class="w-11/12 h-full ml-32 -mt-6 font-normal pt-12 flex flex-row">
+
+    <div class="flex flex-col p-6 w-full ">
+        <span class="border-b w-1/3 mb-3 border-gray-600 pb-2 font-semibold text-base">수주 수정 - {{i수주코드}} </span>
+        <div class="w-64 border h-6 mb-2">
+
+            <form method="get" action="" class="w-full flex ">
+                <button class="w-4 h-4 mt-1 ml-1  rounded-xl bg-cover bg-center"
+                    style="background-image:url({% static 'img/search.png' %});"></button>
+
+                <input name="search" placeholder={{search}}
+                    class="ml-1 w-full border-none search-box text-xs font-medium placeholder-red-400 focus: outline-none" />
+
+            </form>
+        </div>
+        <div class="flex ">
+            <div class="flew flex-col">
+                <table class="table-fixed font-light text-xs w-full">
+                    <thead>
+                        <tr>
+                            <th class="border bg-gray-200 px-4 py-2 w-24">거래처코드</th>
+                            <th class="border bg-gray-200 px-4 py-2 w-40">거래처명</th>
+                            <th class="border bg-gray-200 px-4 py-2 w-48">사업장주소</th>
+                            <th class="border bg-gray-200 px-4 py-2 w-24">고객작성자</th>
+                            <th class="border bg-gray-200 px-4 py-2 w-24">고객담당자</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {%for list in customer%}
+                        <tr>
+                            <td class="border px-4 py-2 hover:text-blue-700">
+                                {{list.거래처코드}}</td>
+                            <td class="border px-4 py-2">{{list.거래처명}}</td>
+                            <td class="border px-4 py-2">{{list.사업장주소}}</td>
+                            <td class="border px-4 py-2">{{list.고객작성자}}</td>
+                            <td class="border px-4 py-2">{{list.고객담당자}}</td>
+                        </tr>
+                        {%endfor%}
+
+                    </tbody>
+                </table>
+                <div class="flex ml-2">
+                    {% if page != '1' %}
+                    {%if s_bool%}
+                    <a href="?search={{search}}&page={{previouspage}}" class="text-teal-700"><i
+                            class="fas fa-arrow-left fa-lg mt-2"></i></a>
+                    {%else%}
+                    <a href="?page={{previouspage}}" class="text-teal-700"><i
+                            class="fas fa-arrow-left fa-lg mt-2"></i></a>
+                    {% endif %}{% endif %}
+                    <span class="mx-3 font-medium  text-base">{{page}} of
+                        {{totalpage}}</span>
+
+                    {% if notsamebool %}
+                    {%if s_bool%}
+                    <a href="?search={{search}}&page={{nextpage}}" class="text-teal-700"><i
+                            class="fas fa-arrow-right fa-lg mt-2"></i></a>
+                    {%else%}
+                    <a href="?page={{nextpage}}" class="text-teal-700"><i class="fas fa-arrow-right fa-lg mt-2"></i></a>
+                    {% endif %}{% endif %}
+                </div>
+            </div>
+            <div class=" flex flex-col px-12 justify-center items-center">
+
+                <form method="POST" class="w-full flex flex-col justify-center" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+
+                    <div class="w-full justify-center flex flex-col">
+
+
+                        <table class="table-fixed text-sm w-full">
+                            <thead>
+                                <tr>
+                                    <th class="border border-r-0 bg-gray-200 px-4 py-2 w-32"></th>
+                                    <th class="border border-l-0 bg-gray-200 px-4 py-2 w-56 text-left">수주수정
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+
+
+                                <tr>
+                                    <td class="border border-gray-400 px-4 py-2">
+                                        영업구분
+                                    </td>
+                                    <td class="border border-gray-400 px-4 py-2">
+
+                                        <div class="   ">
+                                            <ul id="id_영업구분">
+                                                <li><label for="id_영업구분_0"><input type="radio" name="영업구분" value="입찰"
+                                                            required="" id="id_영업구분_0" {%if 입찰%}checked{%endif%}>
+                                                        입찰</label>
+
+                                                </li>
+                                                <li><label for="id_영업구분_1"><input type="radio" name="영업구분" value="대리점"
+                                                            required="" id="id_영업구분_1" {%if 대리점%}checked{%endif%}>
+                                                        대리점</label>
+
+                                                </li>
+                                                <li><label for="id_영업구분_2"><input type="radio" name="영업구분" value="A/S"
+                                                            required="" id="id_영업구분_2" {%if AS%}checked{%endif%}>
+                                                        A/S</label>
+
+                                                </li>
+                                                <li><label for="id_영업구분_3"><input type="radio" name="영업구분" value="내부계획"
+                                                            required="" id="id_영업구분_3" {%if 내부계획%}checked{%endif%}>
+                                                        내부계획</label>
+
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="text-xs text-green-700 ">
+
+
+                                        </div>
+
+
+                                        <div class="text-red-700 font-light text-xs">*This field is required.</div>
+
+
+
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="border border-gray-400 px-4 py-2">
+                                        제품구분
+                                    </td>
+                                    <td class="border border-gray-400 px-4 py-2">
+
+                                        <div class="   ">
+                                            <ul id="id_제품구분">
+                                                <li><label for="id_제품구분_0"><input type="radio" name="제품구분" value="단품"
+                                                            required="" id="id_제품구분_0" {%if 단품%}checked{%endif%}>
+                                                        단품</label>
+
+                                                </li>
+                                                <li><label for="id_제품구분_1"><input type="radio" name="제품구분" value="랙"
+                                                            required="" id="id_제품구분_1" {%if 랙%}checked{%endif%}>
+                                                        랙</label>
+
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="text-xs text-green-700 ">
+
+
+                                        </div>
+
+
+                                        <div class="text-red-700 font-light text-xs">*This field is required.</div>
+
+
+
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="border border-gray-400 px-4 py-2">
+                                        사업장구분
+                                    </td>
+                                    <td class="border border-gray-400 px-4 py-2">
+
+                                        <div class="   ">
+                                            <ul id="id_사업장구분">
+                                                <li><label for="id_사업장구분_0"><input type="radio" name="사업장구분"
+                                                            value="삼형전자" required="" id="id_사업장구분_0"
+                                                            {%if 삼형전자%}checked{%endif%}>
+                                                        삼형전자</label>
+
+                                                </li>
+                                                <li><label for="id_사업장구분_1"><input type="radio" name="사업장구분"
+                                                            value="엠에스텔레콤" required="" id="id_사업장구분_1"
+                                                            {%if 엠에스텔레콤%}checked{%endif%}>
+                                                        엠에스텔레콤</label>
+
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="text-xs text-green-700 ">
+
+
+                                        </div>
+
+
+                                        <div class="text-red-700 font-light text-xs">*This field is required.</div>
+
+
+
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="border border-gray-400 px-4 py-2">
+                                        수주일자
+                                    </td>
+                                    <td class="border border-gray-400 px-4 py-2">
+
+                                        <div class="   border hover:border-gray-500 w-full  ">
+                                            <input type="text" name="수주일자" required=""
+                                                value={{i수주일자.year}}-{{i수주일자.month}}-{{i수주일자.day}} id="id_수주일자">
+                                        </div>
+                                        <div class="text-xs text-green-700 ">
+
+                                            *형식 : (yyyy-mm-dd)
+                                        </div>
+
+
+                                        <div class="text-red-700 font-light text-xs">*This field is required.</div>
+
+
+
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="border border-gray-400 px-4 py-2">
+                                        거래처코드
+                                    </td>
+                                    <td class="border border-gray-400 px-4 py-2">
+
+                                        <div class="   border hover:border-gray-500 w-full  ">
+                                            <input type="text" name="거래처코드" maxlength="20" value={{i거래처코드}} required=""
+                                                id="id_거래처코드">
+                                        </div>
+                                        <div class="text-xs text-green-700 ">
+
+                                            *거래처 코드로 입력해주시길 바랍니다.
+                                        </div>
+
+
+                                        <div class="text-red-700 font-light text-xs">*This field is required.</div>
+
+
+
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="border border-gray-400 px-4 py-2">
+                                        현장명
+                                    </td>
+                                    <td class="border border-gray-400 px-4 py-2">
+
+                                        <div class="   border hover:border-gray-500 w-full  ">
+                                            <input type="text" name="현장명" required="" value={{i현장명}} id="id_현장명"></div>
+                                        <div class="text-xs text-green-700 ">
+
+
+                                        </div>
+
+
+                                        <div class="text-red-700 font-light text-xs">*This field is required.</div>
+
+
+
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="border border-gray-400 px-4 py-2">
+                                        납품요청일
+                                    </td>
+                                    <td class="border border-gray-400 px-4 py-2">
+
+                                        <div class="   border hover:border-gray-500 w-full  ">
+                                            <input type="text" name="납품요청일" id="id_납품요청일"
+                                                value={%if i납품요청일 is not None %}{{i납품요청일.year}}-{{i납품요청일.month}}-{{i납품요청일.day}}{%endif%}>
+                                        </div>
+                                        <div class="text-xs text-green-700 ">
+
+                                            *형식 : (yyyy-mm-dd)
+                                        </div>
+
+
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="border border-gray-400 px-4 py-2">
+                                        특이사항
+                                    </td>
+                                    <td class="border border-gray-400 px-4 py-2">
+
+                                        <div class="   border hover:border-gray-500 w-full  ">
+                                            <input type="text" name="특이사항" size="24" id="id_특이사항" value={{i특이사항}}></div>
+                                        <div class="text-xs text-green-700 ">
+
+
+                                        </div>
+
+
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class=" flex flex-row justify-around -mx-12">
+                        <button class="btn-link bg-blue-800 text-white w-9/12 h-12 self-center my-3 pt-0 pb-1">
+                            <div class="text-base font-medium">단품/랙 수정하기</div>
+                        </button </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+</div>
+{%endblock main_contens %}

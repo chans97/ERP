@@ -137,7 +137,7 @@ def ordersingle(request, pk):
 
         messages.success(request, "단품수주가 등록되었습니다.")
 
-        return redirect(reverse("core:home"))
+        return redirect(reverse("orders:ordershome"))
 
     pagediv = 10
     totalpage = int(math.ceil(len(customer) / pagediv))
@@ -197,7 +197,7 @@ def orderrack(request, pk):
 
         messages.success(request, "랙수주가 등록되었습니다.")
 
-        return redirect(reverse("core:home"))
+        return redirect(reverse("orders:ordershome"))
 
     pagediv = 10
     totalpage = int(math.ceil(len(customer) / pagediv))
@@ -234,11 +234,15 @@ def ordershome(request):
     search = request.GET.get("search")
 
     if search_m is None:
-        order_m = models.OrderRegister.objects.filter(작성자=user).order_by("-created")
+        order_m = (
+            models.OrderRegister.objects.filter(작성자=user)
+            .filter(출하구분="출하미완료")
+            .order_by("-created")
+        )
         s_bool_m = False
     else:
         s_bool_m = True
-        qs_m = models.OrderRegister.objects.filter(작성자=user)
+        qs_m = models.OrderRegister.objects.filter(작성자=user).filter(출하구분="출하미완료")
         qs = qs_m.filter(
             Q(수주코드__contains=search_m)
             | Q(영업구분=search_m)
@@ -526,7 +530,7 @@ def ordersingleedit(request, pk):
         SM.납품수량 = 납품수량
         SM.save()
         messages.success(request, "단품수주가 수정되었습니다.")
-        return redirect(reverse("core:home"))
+        return redirect(reverse("orders:ordershome"))
     pagediv = 10
     totalpage = int(math.ceil(len(customer) / pagediv))
     paginator = Paginator(customer, pagediv, orphans=0)
@@ -592,7 +596,7 @@ def orderrackedit(request, pk):
 
         messages.success(request, "랙수주가 등록되었습니다.")
 
-        return redirect(reverse("core:home"))
+        return redirect(reverse("orders:ordershome"))
 
     pagediv = 10
     totalpage = int(math.ceil(len(customer) / pagediv))
@@ -623,3 +627,252 @@ def orderrackedit(request, pk):
             "납품수량": 납품수량,
         },
     )
+
+
+def orderdeleteensure(request, pk):
+
+    order = models.OrderRegister.objects.get_or_none(pk=pk)
+    return render(request, "orders/orderdeleteensure.html", {"order": order},)
+
+
+def orderdelete(request, pk):
+    order = models.OrderRegister.objects.get_or_none(pk=pk)
+    order.delete()
+
+    messages.success(request, "해당 수주가 삭제되었습니다.")
+
+    return redirect(reverse("orders:ordershome"))
+
+
+def orderproduce(request):
+    user = request.user
+    search = request.GET.get("search")
+
+    if search is None:
+        s_order = []
+        order = (
+            models.OrderRegister.objects.filter(작성자=user)
+            .filter(출하구분="출하미완료")
+            .order_by("-created")
+        )
+        for s in order:
+            if s.process() == "수주등록완료":
+                s_order.append(s)
+            else:
+                print("didnt")
+                pass
+
+        s_bool = False
+    else:
+        s_bool = True
+        order = (
+            models.OrderRegister.objects.filter(작성자=user)
+            .filter(출하구분="출하미완료")
+            .filter(
+                Q(수주코드__contains=search)
+                | Q(영업구분=search)
+                | Q(제품구분=search)
+                | Q(사업장구분=search)
+                | Q(고객사명__거래처명__contains=search)
+                | Q(단품모델__모델명=search)
+                | Q(랙모델__랙모델명=search)
+            )
+            .order_by("-created")
+        )
+
+        s_order = []
+        for s in order:
+            if s.process() == "수주등록완료":
+                s_order.append(s)
+            else:
+                pass
+
+    pagediv = 7
+
+    totalpage = int(math.ceil(len(s_order) / pagediv))
+    paginator = Paginator(s_order, pagediv, orphans=3)
+    page = request.GET.get("page", "1")
+    s_order = paginator.get_page(page)
+    nextpage = int(page) + 1
+    previouspage = int(page) - 1
+    notsamebool = True
+    nonpage = False
+    if totalpage == 0:
+        nonpage = True
+    if int(page) == totalpage:
+        notsamebool = False
+    if (search is None) or (search == ""):
+        search = "search"
+    return render(
+        request,
+        "orders/orderproduce.html",
+        {
+            "s_order": s_order,
+            "search": search,
+            "page": page,
+            "totalpage": totalpage,
+            "notsamebool": notsamebool,
+            "nextpage": nextpage,
+            "previouspage": previouspage,
+            "s_bool": s_bool,
+            "nonpage": nonpage,
+        },
+    )
+
+
+def orderproduceregister(request, pk):
+    order = models.OrderRegister.objects.get_or_none(pk=pk)
+
+    form = forms.UploadOrderProduceForm(request.POST)
+
+    if form.is_valid():
+        생산의뢰코드 = form.cleaned_data.get("생산의뢰코드")
+        긴급도 = form.cleaned_data.get("긴급도")
+        생산목표수량 = form.cleaned_data.get("생산목표수량")
+        SM = models.OrderProduce.objects.create(
+            생산의뢰수주=order, 생산의뢰코드=생산의뢰코드, 긴급도=긴급도, 생산목표수량=생산목표수량,
+        )
+        SM.save()
+
+        messages.success(request, "생산의뢰 등록이 완료되었습니다.")
+
+        return redirect(reverse("orders:ordershome"))
+    return render(
+        request,
+        "orders/orderproduceregister.html",
+        {"form": form, "order": order, "긴급도": "긴급도", "생산목표수량": "생산목표수량", "단품": "단품"},
+    )
+
+
+def orderproduceedit(request, pk):
+    order = models.OrderRegister.objects.get_or_none(pk=pk)
+    produce = order.생산요청
+    form = forms.EditOrderProduceForm(request.POST)
+    일반 = False
+    긴급 = False
+    생산의뢰코드 = produce.생산의뢰코드
+    생산목표수량 = produce.생산목표수량
+    if produce.긴급도 == "일반":
+        일반 = True
+    elif produce.긴급도 == "긴급":
+        긴급 = True
+    else:
+        pass
+
+    if form.is_valid():
+        긴급도 = form.cleaned_data.get("긴급도")
+        생산목표수량 = form.cleaned_data.get("생산목표수량")
+        produce.긴급도 = 긴급도
+        produce.생산목표수량 = 생산목표수량
+        produce.save()
+
+        messages.success(request, "생산의뢰가 수정되었습니다.")
+
+        return redirect(reverse("orders:orderdetail", kwargs={"pk": pk}))
+    return render(
+        request,
+        "orders/orderproduceedit.html",
+        {
+            "form": form,
+            "order": order,
+            "긴급도": "긴급도",
+            "생산목표수량": "생산목표수량",
+            "단품": "단품",
+            "일반": 일반,
+            "긴급": 긴급,
+            "생산의뢰코드": 생산의뢰코드,
+            "생산목표수량": 생산목표수량,
+        },
+    )
+
+
+def orderproducedeleteensure(request, pk):
+
+    orderproduce = models.OrderProduce.objects.get_or_none(pk=pk)
+    return render(
+        request, "orders/orderproducedeleteensure.html", {"orderproduce": orderproduce},
+    )
+
+
+def orderproducedelete(request, pk):
+    orderproduce = models.OrderProduce.objects.get_or_none(pk=pk)
+    pk = orderproduce.생산의뢰수주.pk
+    orderproduce.delete()
+
+    messages.success(request, "해당 생산의뢰가 삭제되었습니다.")
+
+    return redirect(reverse("orders:orderdetail", kwargs={"pk": pk}))
+
+
+def endorder(request):
+    user = request.user
+    search = request.GET.get("search")
+
+    if search is None:
+        order = (
+            models.OrderRegister.objects.filter(작성자=user)
+            .filter(출하구분="출하미완료")
+            .order_by("-created")
+        )
+
+        s_bool = False
+    else:
+        s_bool = True
+        order = (
+            models.OrderRegister.objects.filter(작성자=user)
+            .filter(출하구분="출하미완료")
+            .filter(
+                Q(수주코드__contains=search)
+                | Q(영업구분=search)
+                | Q(제품구분=search)
+                | Q(사업장구분=search)
+                | Q(고객사명__거래처명__contains=search)
+                | Q(단품모델__모델명=search)
+                | Q(랙모델__랙모델명=search)
+            )
+            .order_by("-created")
+        )
+
+    pagediv = 7
+
+    totalpage = int(math.ceil(len(order) / pagediv))
+    paginator = Paginator(order, pagediv, orphans=3)
+    page = request.GET.get("page", "1")
+    order = paginator.get_page(page)
+    nextpage = int(page) + 1
+    previouspage = int(page) - 1
+    notsamebool = True
+    nonpage = False
+    if totalpage == 0:
+        nonpage = True
+    if int(page) == totalpage:
+        notsamebool = False
+    if (search is None) or (search == ""):
+        search = "search"
+    return render(
+        request,
+        "orders/endorder.html",
+        {
+            "order": order,
+            "search": search,
+            "page": page,
+            "totalpage": totalpage,
+            "notsamebool": notsamebool,
+            "nextpage": nextpage,
+            "previouspage": previouspage,
+            "s_bool": s_bool,
+            "nonpage": nonpage,
+            "최종검사완료": "최종검사완료",
+            "최종검사의뢰완료": "최종검사의뢰완료",
+            "수주등록완료": "수주등록완료",
+            "생산의뢰완료": "생산의뢰완료",
+        },
+    )
+
+
+def endorderforout(request, pk):
+    order = models.OrderRegister.objects.get_or_none(pk=pk)
+    order.출하구분 = "출하완료"
+    order.save()
+    messages.success(request, "해당 수주는 최종출하완료 처리되었습니다.")
+    return redirect(reverse("orders:endorder"))

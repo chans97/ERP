@@ -21,6 +21,14 @@ class OrderRegister(TimeStampedModel):
         (엠에스텔레콤, "엠에스텔레콤"),
     )
 
+    출하완료 = "출하완료"
+    출하미완료 = "출하미완료"
+
+    출하구분_CHOICES = (
+        (출하완료, "출하완료"),
+        (출하미완료, "출하미완료"),
+    )
+
     단품 = "단품"
     랙 = "랙"
 
@@ -66,6 +74,9 @@ class OrderRegister(TimeStampedModel):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
+    )
+    출하구분 = models.CharField(
+        choices=출하구분_CHOICES, max_length=10, blank=True, default=출하미완료
     )
 
     class Meta:

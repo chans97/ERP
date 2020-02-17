@@ -14,7 +14,7 @@
 <div class="flex">
     <div class="w-32 mx-auto h-10/12 fixed items-center font-semibold justify-center pt-5 bg-gray-700 mt-6">
         <div class="font-base text-sm text-left text-orange-100 py-px">
-            <i class="fas fa-bars mr-2 ml-3"></i>수주등록
+            <i class="fas fa-bars mr-2 ml-3"></i><a href="{%url "orders:ordershome"%}">수주등록</a>
             <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
             <div class="text-left ml-4 mb-4">
                 <div>
@@ -22,9 +22,13 @@
                         <span class=" font-light text-xs text-orange-100 hover:font-bold">
                             <i class="fas fa-angle-right mr-1"></i></i>수주등록</span></a></div>
                 <div>
-                    <a href="#">
+                    <a href="{%url "orders:orderproduce"%}">
                         <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
                             <i class="fas fa-angle-right mr-1"></i></i>생산의뢰등록</span></a></div>
+                <div>
+                    <a href="{%url "orders:endorder"%}">
+                        <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                            <i class="fas fa-angle-right mr-1"></i></i>최종출하완료</span></a></div>
 
             </div>
         </div>

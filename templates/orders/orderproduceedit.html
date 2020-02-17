@@ -1,0 +1,100 @@
+{%extends "orders/ordershome.html"%}
+{%load static%}
+{% block page_title%}
+생산의뢰등록
+{%endblock%}
+
+
+{%block head_title%}
+</a><i class="fas fa-angle-right mx-1 text-base"></i>수주등록<i class="fas fa-angle-right text-base mx-1"></i>생산의뢰수정</div>
+{%endblock head_title %}
+
+
+{%block main_contens%}
+<div class="w-11/12 h-full ml-32 -mt-6 font-normal pt-12 flex flex-row">
+
+    <div class="flex flex-col p-6 w-full ">
+        <span class="border-b w-1/3 mb-3 border-gray-600 pb-2 font-semibold text-base">'{{order}}'- 생산의뢰수정 </span>
+
+        <div class="flex ">
+
+            <div class=" flex flex-col px-12 justify-center">
+
+
+
+                <form method="POST" class="flex flex-col justify-center " enctype="multipart/form-data">
+                    {% csrf_token %}
+
+
+                    <div class="w-8/12 flex flex-col justify-center ">
+                        <table class="table-fixed text-sm">
+
+                            <tbody>
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200 w-64 ">생산의뢰품목</td>
+
+                                    <td class="border px-4 py-2 bg-gray-200 w-48">생산목표수량</td>
+                                    <td class="border px-4 py-2 bg-gray-200 w-48">긴급도</td>
+                                </tr>
+
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200 text-center">
+                                        {%if order.제품구분 == 단품%}
+                                        {{order.단품모델}}
+                                        {%else%}
+                                        {{order.랙모델}}
+                                        {%endif%}
+                                    </td>
+
+
+                                    <td class="border px-4 py-2">
+                                        <div class="border hover:border-gray-500 w-full">
+                                            <input type="number" name="생산목표수량" required="" id="id_생산목표수량"
+                                                value={{생산목표수량}}>
+                                        </div>
+                                        <div class="text-xs text-teal-700">
+
+                                        </div>
+
+
+
+
+                                    </td>
+                                    <td class="border px-4 py-2">
+                                        <div class="hover:border-gray-500 w-full">
+                                            <ul id="id_긴급도">
+                                                <li><label for="id_긴급도_0"><input type="radio" name="긴급도" value="일반"
+                                                            required="" id="id_긴급도_0" {%if 일반%} checked{%endif%}>
+                                                        일반</label>
+
+                                                </li>
+                                                <li><label for="id_긴급도_1"><input type="radio" name="긴급도" value="긴급"
+                                                            required="" id="id_긴급도_1" {%if 긴급%} checked{%endif%}>
+                                                        긴급</label>
+
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="text-xs text-teal-700">
+
+                                        </div>
+
+
+
+                                    </td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <button class="btn-link felx mt-5 h-10 w-2/4   ml-20">
+                        <div class="text-sm forn-bold">생산의뢰등록</div>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+{%endblock main_contens %}

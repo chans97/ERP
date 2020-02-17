@@ -31,7 +31,7 @@
                         </a>
                     </div>
                     <div class="mt-2">
-                        <a href="{%url "StandardInformation:partnerdeleteensure" order.pk %}">
+                        <a href="{%url "orders:orderdeleteensure" order.pk %}">
                             <div class="btn-link  bg-red-800 ml-5">
                                 수주 삭제 </div>
                         </a>
@@ -93,15 +93,15 @@
                 {%if obj_user == user%}
                 <div class="flex flex-row">
                     <div class="mt-2">
-                        <a href="{%url "StandardInformation:partneredit" order.pk%}">
+                        <a href="{%url "orders:orderproduceedit" order.pk%}">
                             <div class="btn-link bg-teal-800">
-                                요청 수정 </div>
+                                의뢰 수정 </div>
                         </a>
                     </div>
                     <div class="mt-2">
-                        <a href="{%url "StandardInformation:partnerdeleteensure" order.pk %}">
+                        <a href="{%url "orders:orderproducedeleteensure" order.생산요청.pk %}">
                             <div class="btn-link  bg-red-800 ml-5">
-                                요청 삭제 </div>
+                                의뢰 삭제 </div>
                         </a>
                     </div>
 

@@ -173,3 +173,65 @@ class OrderRackForm(forms.Form):
     def save(self, *arg, **kwargs):
         order = super().save(commit=False)
         return order
+
+
+class UploadOrderProduceForm(forms.ModelForm):
+    일반 = "일반"
+    긴급 = "긴급"
+
+    긴급도_CHOICES = (
+        (일반, "일반"),
+        (긴급, "긴급"),
+    )
+
+    긴급도 = forms.ChoiceField(choices=긴급도_CHOICES, widget=forms.RadioSelect())
+
+    class Meta:
+        model = models.OrderProduce
+        fields = (
+            "생산의뢰코드",
+            "생산목표수량",
+        )
+        help_texts = {
+            "생산의뢰코드": "*생산의뢰코드 앞에 OP을 붙여주시길 바랍니다.(한 번 설정하면, 바꿀 수 없습니다.)",
+        }
+        widgets = {}
+
+    def clean(self):
+        code = self.cleaned_data.get("생산의뢰코드")
+        partner = models.OrderProduce.objects.filter(생산의뢰코드=code)
+        partner = list(partner)
+        if code:
+            code = code[0:2]
+            if partner:
+                self.add_error("생산의뢰코드", forms.ValidationError("*해당 생산의뢰코드는 이미 존재합니다."))
+            elif code != "OP":
+                self.add_error(
+                    "생산의뢰코드", forms.ValidationError("*생산의뢰코드는 OP으로 시작해야 합니다.")
+                )
+
+                return self.cleaned_data
+
+    def save(self, *arg, **kwargs):
+        partner = super().save(commit=False)
+        return partner
+
+
+class EditOrderProduceForm(forms.ModelForm):
+    일반 = "일반"
+    긴급 = "긴급"
+
+    긴급도_CHOICES = (
+        (일반, "일반"),
+        (긴급, "긴급"),
+    )
+
+    긴급도 = forms.ChoiceField(choices=긴급도_CHOICES, widget=forms.RadioSelect())
+
+    class Meta:
+        model = models.OrderProduce
+        fields = ("생산목표수량",)
+
+    def save(self, *arg, **kwargs):
+        partner = super().save(commit=False)
+        return partner

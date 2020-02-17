@@ -7,7 +7,7 @@
 
 {% block content %}
 <div class="w-full bg-gray-400 h-10 items-center -mt-4 font-normal fixed justify-center text-sm py-2 pl-8 ">
-    <a href="{% url "core:home"%}">
+    <a class="hover:font-bold" href="{% url "core:home"%}">
         <div class="">영업관리
     </a>{%block head_title%} {%endblock head_title %}</div>
 </div>
@@ -28,7 +28,7 @@
                 <div>
                     <a href="{%url "orders:endorder"%}">
                         <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
-                            <i class="fas fa-angle-right mr-1"></i></i>최종출하완료</span></a></div>
+                            <i class="fas fa-angle-right mr-1"></i></i>출하완료등록</span></a></div>
 
             </div>
         </div>
@@ -136,7 +136,9 @@
                                     <td class="border px-4 py-2">
                                         {{list.수주일자.year}}-{{list.수주일자.month}}-{{list.수주일자.day}}</td>
                                     <td class="border px-4 py-2">
-                                        {{list.납품요청일.year}}-{{list.납품요청일.month}}-{{list.납품요청일.day}}</td>
+                                        {%if list.납품요청일 is None%}
+                                        {%else%}
+                                        {{list.납품요청일.year}}-{{list.납품요청일.month}}-{{list.납품요청일.day}}{%endif%}</td>
                                 </tr>
                                 {%endfor%}
 

@@ -874,5 +874,74 @@ def endorderforout(request, pk):
     order = models.OrderRegister.objects.get_or_none(pk=pk)
     order.출하구분 = "출하완료"
     order.save()
-    messages.success(request, "해당 수주는 최종출하완료 처리되었습니다.")
+    messages.success(request, "해당 수주는 출하완료 처리되었습니다.")
+    return redirect(reverse("orders:endorder"))
+
+
+def endorderlist(request):
+    user = request.user
+    search = request.GET.get("search")
+
+    if search is None:
+        order = models.OrderRegister.objects.filter(출하구분="출하완료").order_by("-created")
+
+        s_bool = False
+    else:
+        s_bool = True
+        order = (
+            models.OrderRegister.objects.filter(출하구분="출하완료")
+            .filter(
+                Q(수주코드__contains=search)
+                | Q(영업구분=search)
+                | Q(제품구분=search)
+                | Q(사업장구분=search)
+                | Q(고객사명__거래처명__contains=search)
+                | Q(단품모델__모델명=search)
+                | Q(랙모델__랙모델명=search)
+            )
+            .order_by("-created")
+        )
+
+    pagediv = 7
+
+    totalpage = int(math.ceil(len(order) / pagediv))
+    paginator = Paginator(order, pagediv, orphans=3)
+    page = request.GET.get("page", "1")
+    order = paginator.get_page(page)
+    nextpage = int(page) + 1
+    previouspage = int(page) - 1
+    notsamebool = True
+    nonpage = False
+    if totalpage == 0:
+        nonpage = True
+    if int(page) == totalpage:
+        notsamebool = False
+    if (search is None) or (search == ""):
+        search = "search"
+    return render(
+        request,
+        "orders/endorderlist.html",
+        {
+            "order": order,
+            "search": search,
+            "page": page,
+            "totalpage": totalpage,
+            "notsamebool": notsamebool,
+            "nextpage": nextpage,
+            "previouspage": previouspage,
+            "s_bool": s_bool,
+            "nonpage": nonpage,
+            "최종검사완료": "최종검사완료",
+            "최종검사의뢰완료": "최종검사의뢰완료",
+            "수주등록완료": "수주등록완료",
+            "생산의뢰완료": "생산의뢰완료",
+        },
+    )
+
+
+def endorderforin(request, pk):
+    order = models.OrderRegister.objects.get_or_none(pk=pk)
+    order.출하구분 = "출하미완료"
+    order.save()
+    messages.success(request, "해당 수주의 출하완료가 철회되었습니다.")
     return redirect(reverse("orders:endorder"))

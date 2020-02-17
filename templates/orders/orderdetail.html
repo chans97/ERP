@@ -73,7 +73,9 @@
                         <td class="border px-4 py-2">
                             {{order.수주일자.year}}-{{order.수주일자.month}}-{{order.수주일자.day}}</td>
                         <td class="border px-4 py-2">
-                            {{order.납품요청일.year}}-{{order.납품요청일.month}}-{{order.납품요청일.day}}</td>
+                            {%if order.납품요청일 is None%}
+                            {%else%}
+                            {{order.납품요청일.year}}-{{order.납품요청일.month}}-{{order.납품요청일.day}}{%endif%}</td>
                     </tr>
 
                 </tbody>

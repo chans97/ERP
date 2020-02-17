@@ -39,4 +39,6 @@ urlpatterns = [
     ),
     path("endorder/", views.endorder, name="endorder"),
     path("endorderforout/<int:pk>/", views.endorderforout, name="endorderforout",),
+    path("endorderlist/", views.endorderlist, name="endorderlist"),
+    path("endorderforin/<int:pk>/", views.endorderforin, name="endorderforin",),
 ]

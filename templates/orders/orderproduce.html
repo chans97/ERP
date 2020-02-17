@@ -6,8 +6,10 @@
 
 
 {%block head_title%}
-</a><i class="fas fa-angle-right mx-1 text-base"></i>수주등록<i class="fas fa-angle-right text-base mx-1"></i>
-생산의뢰 등록
+<i class="fas fa-angle-right mx-1 text-base"></i>수주등록<i class="fas fa-angle-right text-base mx-1"></i>
+<a href="{%url "orders:orderproduce"%}" class="hover:font-bold">
+    생산의뢰 등록
+</a>
 {%endblock head_title %}
 
 
@@ -78,7 +80,9 @@
                             <td class="border px-4 py-2">
                                 {{list.수주일자.year}}-{{list.수주일자.month}}-{{list.수주일자.day}}</td>
                             <td class="border px-4 py-2">
-                                {{list.납품요청일.year}}-{{list.납품요청일.month}}-{{list.납품요청일.day}}</td>
+                                {%if list.납품요청일 is None%}
+                                {%else%}
+                                {{list.납품요청일.year}}-{{list.납품요청일.month}}-{{list.납품요청일.day}}{%endif%}</td>
                         </tr>
                         {%endfor%}
 

@@ -1,0 +1,162 @@
+{%extends "orders/ordershome.html"%}
+{%load static%}
+{% block page_title%}
+단품출하요청
+{%endblock%}
+
+
+{%block head_title%}
+</a><i class="fas fa-angle-right mx-1 text-base"></i>재고출하<i class="fas fa-angle-right text-base mx-1"></i>단품출하요청</div>
+{%endblock head_title %}
+
+
+{%block main_contens%}
+<div class="w-11/12 h-full ml-32 -mt-6 font-normal pt-12 flex flex-row">
+
+    <div class="flex flex-col p-6 w-full ">
+        <span class="border-b w-1/3 mb-3 border-gray-600 pb-2 font-semibold text-base">'{{order}}'- 단품출하요청 </span>
+
+        <div class="flex ">
+
+            <div class=" flex flex-col px-12 justify-center">
+
+
+
+                <form method="POST" class="flex flex-col justify-center " enctype="multipart/form-data">
+                    {% csrf_token %}
+
+
+                    <div class="w-8/12 flex flex-col justify-center ">
+                        <table class="table-fixed font-light text-xs w-full">
+                            <thead>
+                                <tr>
+                                    <th class="border bg-gray-200 px-2 py-2 w-20">제품재고<div>수량</div>
+                                    </th>
+                                    <th class="border bg-gray-200 px-2 py-2 w-20">남은납품<div>수량</div>
+
+                                    </th>
+                                    <th class="border bg-gray-200 px-2 py-2 w-20">출하예정<div>제외수량</div>
+                                    </th>
+                                    <th class="border bg-gray-200 px-2 py-2 w-20">요청완료<div>수량</div>
+                                    </th>
+
+                                    <th class="border bg-gray-200 px-4 py-2 w-20 text-xs">총 납품<div>수량</div>
+                                    </th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-32">제품코드</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">제품명</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">수주코드</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">사업장구분</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">영업구분</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">고객사명</th>
+
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">수주일자</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">납품요청일</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                <tr>
+                                    <td class="border px-4 py-2
+                                        {%if list.singlestock < list.needtoout%}
+                                        text-red-600 font-semibold
+                                        {%else%}
+                                        text-green-700 font-semibold
+                                        {%endif%} {%if list.needtoout <= 0%} bg-gray-500 text-white{%endif%}">
+                                        {{list.singlestock}}</td>
+                                    <td class="border px-4 py-2
+                                {%if list.singlestockincludeexception < list.needtoout%}
+                                text-red-600 font-semibold
+                                {%else%}
+                                text-green-700 font-semibold
+                                {%endif%} {%if list.needtoout <= 0%} bg-gray-500 text-white{%endif%}">
+                                        {{list.singlestockincludeexception}}</td>
+                                    <td
+                                        class="border px-4 py-2 {%if list.needtoout <= 0%} bg-gray-500 text-white{%endif%}">
+                                        {{list.needtoout}}</td>
+                                    <td
+                                        class="border px-4 py-2 {%if list.needtoout <= 0%} bg-gray-500 text-white{%endif%}">
+                                        {{list.leftsingle}}</td>
+                                    <td
+                                        class="border px-4 py-2 {%if list.needtoout <= 0%} bg-gray-500 text-white{%endif%}">
+                                        {{list.납품수량}}</td>
+                                    <td
+                                        class="border px-4 py-2 {%if list.needtoout <= 0%} bg-gray-500 text-white{%endif%}">
+                                        {{list.단품모델.모델코드}}</td>
+                                    <td
+                                        class="border px-4 py-2 {%if list.needtoout <= 0%} bg-gray-500 text-white{%endif%}">
+                                        {{list.단품모델.모델명}}</td>
+
+                                    <td
+                                        class="border px-4 py-2 {%if list.needtoout <= 0%} bg-gray-500 text-white{%endif%}  hover:text-blue-700 hover:font-bold ">
+                                        <a href="{%url "orders:orderdetail" list.pk %}">
+                                            {{list.수주코드}}</a></td>
+                                    <td
+                                        class="border px-4 py-2 {%if list.needtoout <= 0%} bg-gray-500 text-white{%endif%}">
+                                        {{list.사업장구분}}</td>
+                                    <td
+                                        class="border px-4 py-2 {%if list.needtoout <= 0%} bg-gray-500 text-white{%endif%}">
+                                        {{list.영업구분}}</td>
+                                    <td
+                                        class="border px-4 py-2 {%if list.needtoout <= 0%} bg-gray-500 text-white{%endif%}">
+                                        {{list.고객사명}}</td>
+
+
+
+                                    <td
+                                        class="border px-4 py-2 {%if list.needtoout <= 0%} bg-gray-500 text-white{%endif%}">
+                                        {{list.수주일자.year}}-{{list.수주일자.month}}-{{list.수주일자.day}}</td>
+                                    <td
+                                        class="border px-4 py-2 {%if list.needtoout <= 0%} bg-gray-500 text-white{%endif%}">
+                                        {%if list.납품요청일 is None%}
+                                        {%else%}
+                                        {{list.납품요청일.year}}-{{list.납품요청일.month}}-{{list.납품요청일.day}}{%endif%}</td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                        <table class="table-fixed text-sm mt-10">
+
+                            <tbody>
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200 w-48">단품출하품목</td>
+                                    <td class="border px-4 py-2 bg-gray-200 w-48">출하요청수량</td>
+
+                                    <td class="border px-4 py-2 bg-gray-200 w-48">출하희망일</td>
+                                </tr>
+
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200 text-center">
+                                        {{order.단품모델}}
+                                    </td>{% for field in form %}
+
+                                    <td class="border px-4 py-2">
+                                        <div
+                                            class="{%if field.name == 긴급도%}{%else%}border{%endif%} hover:border-gray-500 w-full">
+                                            {{field}}</div>
+                                        <div class="text-xs text-teal-700">{{field.help_text}}
+
+                                        </div>
+                                        {% if field.errors %}
+                                        {% for error in field.errors %}
+                                        <div class="text-red-700 font-light text-xs">*{{error}}</div>
+                                        {% endfor %}
+                                        {% endif %}
+
+                                        {%endfor%}
+                                    </td>
+
+                            </tbody>
+                        </table>
+                        <span class="text-sm text-red-700 ml-4">*출하요청수량은 출하요청제외수량보다 많을 수 없고, 남은납품수량보다 많을 수 없습니다.</span>
+                    </div>
+
+                    <button class="btn-link felx mt-5 h-10 w-2/4   ml-20">
+                        <div class="text-sm forn-bold">단품출하요청</div>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+{%endblock main_contens %}

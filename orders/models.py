@@ -110,6 +110,23 @@ class OrderRegister(TimeStampedModel):
         except:
             return "수주등록완료"
 
+    def singlestock(self):
+        return self.단품모델.단품재고.실수량
+
+    def singlestockincludeexception(self):
+        return self.단품모델.단품재고.출하요청제외수량
+
+    def leftsingle(self):
+        left = 0
+        for q in self.단품출하요청.all():
+            left += q.출하요청수량
+
+        return left
+
+    def needtoout(self):
+        needtoout = self.납품수량 - self.leftsingle()
+        return needtoout
+ 
 
 class OrderProduce(TimeStampedModel):
 

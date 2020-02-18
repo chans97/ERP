@@ -53,7 +53,16 @@
                                             {{field}}</div>
                                         <div class="text-xs text-teal-700">{{field.help_text}}
                                             {%if field.name == 생산목표수량%}
-                                            *납품수량은 {{order.납품수량}} 입니다.
+                                            *납품요청수량은 {{order.납품수량}} 입니다.
+                                            <div>
+                                                {%if order.제품구분 == 단품%}
+                                                *해당 품목의 출하요청제외수량는 {{order.singlestock}} 입니다.
+                                                {%else%}
+                                                *해당 품목은 랙모델입니다.$수정$
+                                                {%endif%}
+
+
+                                            </div>
                                             {%endif%}
                                         </div>
                                         {% if field.errors %}

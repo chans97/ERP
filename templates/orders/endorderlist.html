@@ -20,10 +20,7 @@
         <div class=" mb-0 flex justify-between">
 
             <span class="border-b w-1/3 mb-3 border-gray-600 pb-2 font-semibold text-base">최종출하완료 </span>
-            <a class="" href="{%url "orders:endorder"%}">
-                <span
-                    class="btn-link h-8 w-56 self-center text-center text-sm font-semibold py-2 px-5 hover:bg-blue-900">돌아가기
-                </span></a>
+
         </div>
         <div class="w-64 border h-6 mb-2">
 
@@ -59,11 +56,16 @@
                         <tr>
                             <td class="border px-2 py-2 font-bold 
                             text-blue-800 justify-center">
+                                {%if user == list.작성자%}
                                 <a href="{%url "orders:endorderforin" list.pk %}">
                                     <div class="btn-link bg-red-700 hover:bg-red-800 hover:font-bold mt-1 mb-0 ml-3">
                                         출하 철회
                                     </div>
                                 </a>
+                                {%else%}
+                                <span class="text-red-700 text-xs font-light text-center">본인 수주만 <div>철회할 수 있습니다.</div>
+                                </span>
+                                {%endif%}
                             </td>
 
 

@@ -27,6 +27,7 @@ from users import models as user_models
 from django.http import HttpResponse
 import math
 from StandardInformation import models as SI_models
+from stocksingle import models as SS_models
 
 
 def orderregister(request):
@@ -349,6 +350,15 @@ class OrderDetail(user_mixins.LoggedInOnlyView, DetailView):
         else:
             pass
 
+        ordersingle = order.단품출하요청.all()
+        pklist = []
+        for orderi in ordersingle:
+            pklist.append(orderi.pk)
+        ordersingle = []
+        for pki in pklist:
+            SS = SS_models.StockOfSingleProductOutRequest.objects.get_or_none(pk=pki)
+            ordersingle.append(SS)
+
         return render(
             request,
             "orders/orderdetail.html",
@@ -359,6 +369,9 @@ class OrderDetail(user_mixins.LoggedInOnlyView, DetailView):
                 "inproduce": inproduce,
                 "orderproduce": orderproduce,
                 "obj_user": obj_user,
+                "출하완료": "출하완료",
+                "ordersingle": ordersingle,
+                "no": 0,
             },
         )
 
@@ -674,12 +687,13 @@ def orderproduce(request):
                 | Q(제품구분=search)
                 | Q(사업장구분=search)
                 | Q(고객사명__거래처명__contains=search)
-                | Q(단품모델__모델명=search)
-                | Q(랙모델__랙모델명=search)
+                | Q(단품모델__모델명__contains=search)
+                | Q(단품모델__모델코드__contains=search)
+                | Q(랙모델__랙모델명__contains=search)
+                | Q(랙모델__랙시리얼코드__contains=search)
             )
             .order_by("-created")
         )
-
         s_order = []
         for s in order:
             if s.process() == "수주등록완료":
@@ -787,8 +801,9 @@ def orderproduceedit(request, pk):
 
 
 def orderproducedeleteensure(request, pk):
+    order = models.OrderRegister.objects.get_or_none(pk=pk)
 
-    orderproduce = models.OrderProduce.objects.get_or_none(pk=pk)
+    orderproduce = order.생산요청
     return render(
         request, "orders/orderproducedeleteensure.html", {"orderproduce": orderproduce},
     )
@@ -827,8 +842,10 @@ def endorder(request):
                 | Q(제품구분=search)
                 | Q(사업장구분=search)
                 | Q(고객사명__거래처명__contains=search)
-                | Q(단품모델__모델명=search)
-                | Q(랙모델__랙모델명=search)
+                | Q(단품모델__모델명__contains=search)
+                | Q(단품모델__모델코드__contains=search)
+                | Q(랙모델__랙모델명__contains=search)
+                | Q(랙모델__랙시리얼코드__contains=search)
             )
             .order_by("-created")
         )
@@ -878,6 +895,14 @@ def endorderforout(request, pk):
     return redirect(reverse("orders:endorder"))
 
 
+def endorderforoutforstock(request, pk):
+    order = models.OrderRegister.objects.get_or_none(pk=pk)
+    order.출하구분 = "출하완료"
+    order.save()
+    messages.success(request, "해당 수주는 출하완료 처리되었습니다.")
+    return redirect(reverse("stocksingle:ordersingleout"))
+
+
 def endorderlist(request):
     user = request.user
     search = request.GET.get("search")
@@ -896,8 +921,10 @@ def endorderlist(request):
                 | Q(제품구분=search)
                 | Q(사업장구분=search)
                 | Q(고객사명__거래처명__contains=search)
-                | Q(단품모델__모델명=search)
-                | Q(랙모델__랙모델명=search)
+                | Q(단품모델__모델명__contains=search)
+                | Q(단품모델__모델코드__contains=search)
+                | Q(랙모델__랙모델명__contains=search)
+                | Q(랙모델__랙시리얼코드__contains=search)
             )
             .order_by("-created")
         )
@@ -935,6 +962,7 @@ def endorderlist(request):
             "최종검사의뢰완료": "최종검사의뢰완료",
             "수주등록완료": "수주등록완료",
             "생산의뢰완료": "생산의뢰완료",
+            "user": user,
         },
     )
 
@@ -944,4 +972,4 @@ def endorderforin(request, pk):
     order.출하구분 = "출하미완료"
     order.save()
     messages.success(request, "해당 수주의 출하완료가 철회되었습니다.")
-    return redirect(reverse("orders:endorder"))
+    return redirect(reverse("orders:endorderlist"))

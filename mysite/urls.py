@@ -27,6 +27,7 @@ urlpatterns = [
         include("StandardInformation.urls", namespace="StandardInformation"),
     ),
     path("orders/", include("orders.urls", namespace="orders"),),
+    path("stocksingle/", include("stocksingle.urls", namespace="stocksingle"),),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

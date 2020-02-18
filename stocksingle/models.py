@@ -140,18 +140,21 @@ class StockOfSingleProductOutRequest(TimeStampedModel):
         related_name="단품출하요청",
         on_delete=models.CASCADE,
         null=True,
+        blank=True,
     )
     수주 = models.ForeignKey(
         orders_models.OrderRegister,
         related_name="단품출하요청",
         on_delete=models.CASCADE,
         null=True,
+        blank=True,
     )
     AS = models.ForeignKey(
         AS_models.ASVisitContents,
         related_name="단품출하요청",
         on_delete=models.CASCADE,
         null=True,
+        blank=True,
     )
 
     고객사 = models.ForeignKey(
@@ -165,7 +168,7 @@ class StockOfSingleProductOutRequest(TimeStampedModel):
     출하요청자 = models.ForeignKey(
         users_models.User, related_name="단품출하요청", on_delete=models.SET_NULL, null=True,
     )
-    출하요청일 = models.DateField(auto_now=False, auto_now_add=False)
+    출하요청일 = models.DateField(auto_now=False, auto_now_add=True)
     출하희망일 = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True)
 
     class Meta:
@@ -194,6 +197,13 @@ class StockOfSingleProductOutRequest(TimeStampedModel):
             except:
 
                 StockOfSingleProduct.objects.create(단품=self.단품, 출하요청제외수량=-self.출하요청수량)
+
+    def unexport(self):
+        try:
+            self.단품출하등록
+            return False
+        except:
+            return True
 
 
 class StockOfSingleProductOut(TimeStampedModel):

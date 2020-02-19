@@ -9,6 +9,13 @@ from stockmanages import models as SM_models
 
 
 class StockOfRackProductOutRequest(TimeStampedModel):
+    수주 = models.ForeignKey(
+        orders_models.OrderRegister,
+        related_name="랙출하요청",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
     랙 = models.ForeignKey(
         SI_models.RackProduct,
         related_name="랙출하요청",
@@ -26,7 +33,7 @@ class StockOfRackProductOutRequest(TimeStampedModel):
     출하요청자 = models.ForeignKey(
         users_models.User, related_name="랙출하요청", on_delete=models.SET_NULL, null=True,
     )
-    출하요청일 = models.DateField(auto_now=False, auto_now_add=False)
+    출하요청일 = models.DateField(auto_now=False, auto_now_add=True)
     출하희망일 = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True)
 
     class Meta:
@@ -47,7 +54,7 @@ class StockOfRackProductOutRequest(TimeStampedModel):
             for com in self.랙.랙구성단품.all():
                 if com.랙구성 == "자재":
                     num = com.수량
-                    single = com.랙구성자재.all()[0]
+                    single = com.랙구성자재
                     출하요청자재수량 = num * self.출하요청수량
                     try:
                         single.자재재고.출고요청제외수량 -= 출하요청자재수량
@@ -59,7 +66,7 @@ class StockOfRackProductOutRequest(TimeStampedModel):
                         )
                 else:
                     num = com.수량
-                    single = com.랙구성단품.all()[0]
+                    single = com.랙구성단품
                     출하요청단품수량 = num * self.출하요청수량
                     print(single)
                     try:
@@ -71,6 +78,13 @@ class StockOfRackProductOutRequest(TimeStampedModel):
                         )
 
         super().save(*args, **kwargs)
+
+    def unexport(self):
+        try:
+            self.랙출하등록
+            return False
+        except:
+            return True
 
 
 class StockOfRackProductOut(TimeStampedModel):
@@ -104,8 +118,7 @@ class StockOfRackProductOut(TimeStampedModel):
             for com in self.랙출하요청.랙.랙구성단품.all():
                 if com.랙구성 == "자재":
                     num = com.수량
-                    single = com.랙구성자재.all()[0]
-                    print(single)
+                    single = com.랙구성자재
                     출하자재수량 = num * self.출하수량
                     출하요청자재수량 = num * self.랙출하요청.출하요청수량
                     single.자재재고.실수량 -= 출하자재수량
@@ -113,20 +126,15 @@ class StockOfRackProductOut(TimeStampedModel):
                     single.자재재고.출고요청제외수량 += 차이
                     single.자재재고.입고요청포함수량 -= 출하자재수량
                     single.자재재고.save()
-                    print("goodjob")
                 else:
                     num = com.수량
-                    single = com.랙구성단품.all()[0]
-                    print(single)
+                    single = com.랙구성단품
                     출하단품수량 = num * self.출하수량
                     출하요청단품수량 = num * self.랙출하요청.출하요청수량
                     single.단품재고.실수량 -= 출하단품수량
                     차이 = 출하요청단품수량 - 출하단품수량
-                    print(차이)
                     single.단품재고.출하요청제외수량 += 차이
-                    print(single.단품재고.출하요청제외수량)
                     single.단품재고.입고요청포함수량 -= 출하단품수량
-                    print(single.단품재고.입고요청포함수량)
                     single.단품재고.save()
         except:
             pass

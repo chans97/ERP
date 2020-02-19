@@ -30,13 +30,13 @@ from StandardInformation import models as SI_models
 from orders import models as OR_models
 
 
-def ordersingleout(request):
+def orderrackout(request):
     user = request.user
     search = request.GET.get("search")
 
     if search is None:
         order = (
-            OR_models.OrderRegister.objects.filter(제품구분="단품")
+            OR_models.OrderRegister.objects.filter(제품구분="랙")
             .filter(작성자=user)
             .filter(출하구분="출하미완료")
             .order_by("-created")
@@ -46,7 +46,7 @@ def ordersingleout(request):
     else:
         s_bool = True
         order = (
-            OR_models.OrderRegister.objects.filter(제품구분="단품")
+            OR_models.OrderRegister.objects.filter(제품구분="랙")
             .filter(작성자=user)
             .filter(출하구분="출하미완료")
             .filter(
@@ -81,7 +81,7 @@ def ordersingleout(request):
         search = "search"
     return render(
         request,
-        "stocksingle/ordersingleout.html",
+        "stockrack/orderrackout.html",
         {
             "order": order,
             "search": search,
@@ -102,8 +102,8 @@ def ordersingleout(request):
     )
 
 
-def ordersingleoutregister(request, pk):
-    form = forms.UploadSingleOutForm(request.POST)
+def orderrackoutregister(request, pk):
+    form = forms.UploadRackOutForm(request.POST)
     order = OR_models.OrderRegister.objects.get_or_none(pk=pk)
     user = request.user
 
@@ -111,117 +111,142 @@ def ordersingleoutregister(request, pk):
 
         출하희망일 = form.cleaned_data.get("출하희망일")
         출하요청수량 = form.cleaned_data.get("출하요청수량")
-        if order.singlestockincludeexception() < 출하요청수량:
-            messages.error(request, "출하요청수량이 출하요청제외수량보다 더 많습니다.")
+        if order.rackstockincludeexception() < 출하요청수량:
+            messages.error(request, "출하요청수량이 출하예정제외랙추정수량보다 더 많습니다.")
             return render(
                 request,
-                "stocksingle/ordersingleoutregister.html",
+                "stockrack/orderrackoutregister.html",
                 {"form": form, "order": order, "list": order,},
             )
-        elif order.needtoout() < 출하요청수량:
+        elif order.needtooutrack() < 출하요청수량:
             messages.error(request, "출하요청수량이 남은남품수량보다 더 많습니다.")
             return render(
                 request,
-                "stocksingle/ordersingleoutregister.html",
+                "stockrack/orderrackoutregister.html",
                 {"form": form, "order": order, "list": order,},
             )
         수주 = order
-        단품 = order.단품모델
+        랙 = order.랙모델
         고객사 = order.고객사명
         출하요청자 = user
-        SM = models.StockOfSingleProductOutRequest.objects.create(
-            출하희망일=출하희망일, 출하요청수량=출하요청수량, 수주=수주, 단품=단품, 고객사=고객사, 출하요청자=출하요청자,
+        SM = models.StockOfRackProductOutRequest.objects.create(
+            출하희망일=출하희망일, 출하요청수량=출하요청수량, 수주=수주, 랙=랙, 고객사=고객사, 출하요청자=출하요청자,
         )
         messages.success(request, "출하요청 등록이 완료되었습니다.")
-        return redirect(reverse("stocksingle:ordersingleout"))
+        return redirect(reverse("stockrack:orderrackout"))
     return render(
         request,
-        "stocksingle/ordersingleoutregister.html",
+        "stockrack/orderrackoutregister.html",
         {"form": form, "order": order, "list": order,},
     )
 
 
-def orderstocksingledelete(request, pk):
-    orderstocksingle = models.StockOfSingleProductOutRequest.objects.get(pk=pk)
-    order = orderstocksingle.수주
+def orderstockrackdelete(request, pk):
+    orderstockrack = models.StockOfRackProductOutRequest.objects.get(pk=pk)
+    order = orderstockrack.수주
     pk = order.pk
-    출하요청수량 = orderstocksingle.출하요청수량
-    단품 = orderstocksingle.단품
-    재고 = 단품.단품재고
-    재고.출하요청제외수량 += 출하요청수량
-    재고.save()
-
+    출하요청수량 = orderstockrack.출하요청수량
+    for com in orderstockrack.랙.랙구성단품.all():
+        if com.랙구성 == "자재":
+            num = com.수량
+            material = com.랙구성자재
+            realnum = 출하요청수량 * num
+            material.자재재고.출고요청제외수량 += realnum
+            material.자재재고.save()
+        else:
+            num = com.수량
+            single = com.랙구성단품
+            realnum = 출하요청수량 * num
+            single.단품재고.출하요청제외수량 += realnum
+            single.단품재고.save()
+    orderstockrack.delete()
     messages.success(request, "출하요청이 철회되었습니다.")
 
-    orderstocksingle.delete()
     return redirect(reverse("orders:orderdetail", kwargs={"pk": pk}))
 
 
-def orderstocksingleedit(request, pk):
-    form = forms.UploadSingleOutForm(request.POST)
-    orderstocksingle = models.StockOfSingleProductOutRequest.objects.get(pk=pk)
-    order = orderstocksingle.수주
+def orderstockrackedit(request, pk):
+
+    form = forms.UploadRackOutForm(request.POST)
+    orderstockrack = models.StockOfRackProductOutRequest.objects.get(pk=pk)
+    order = orderstockrack.수주
     pk = order.pk
     user = request.user
-    출하요청수량 = orderstocksingle.출하요청수량
-    if orderstocksingle.출하희망일 is None:
+    출하요청수량 = orderstockrack.출하요청수량
+    if orderstockrack.출하희망일 is None:
         출하희망일 = ""
     else:
-        출하희망일 = f"{orderstocksingle.출하희망일.year}-{orderstocksingle.출하희망일.month}-{orderstocksingle.출하희망일.day}"
+        출하희망일 = f"{orderstockrack.출하희망일.year}-{orderstockrack.출하희망일.month}-{orderstockrack.출하희망일.day}"
 
     if form.is_valid():
 
         출하희망일f = form.cleaned_data.get("출하희망일")
         출하요청수량f = form.cleaned_data.get("출하요청수량")
-        if (order.singlestockincludeexception() + 출하요청수량) < 출하요청수량f:
-            messages.error(request, "출하요청수량이 출하요청제외수량보다 더 많습니다.")
+        print()
+        if (order.rackstockincludeexception() + 출하요청수량) < 출하요청수량f:
+            messages.error(request, "출하요청수량이 출하예정제외랙추정수량보다 더 많습니다.")
             return render(
                 request,
-                "stocksingle/orderstocksingleedit.html",
+                "stockrack/orderstockrackedit.html",
                 {
                     "form": form,
                     "order": order,
                     "list": order,
-                    "single": orderstocksingle.단품,
                     "출하요청수량": 출하요청수량,
                     "출하희망일": 출하희망일,
+                    "rack": orderstockrack.랙,
                 },
             )
-        elif (order.needtoout() + 출하요청수량) < 출하요청수량f:
+
+        elif (order.needtooutrack() + 출하요청수량) < 출하요청수량f:
             messages.error(request, "출하요청수량이 남은남품수량보다 더 많습니다.")
             return render(
                 request,
-                "stocksingle/orderstocksingleedit.html",
+                "stockrack/orderstockrackedit.html",
                 {
                     "form": form,
                     "order": order,
                     "list": order,
-                    "single": orderstocksingle.단품,
                     "출하요청수량": 출하요청수량,
                     "출하희망일": 출하희망일,
+                    "rack": orderstockrack.랙,
                 },
             )
-        단품 = orderstocksingle.단품
-        재고 = 단품.단품재고
-        재고.출하요청제외수량 += 출하요청수량
-        재고.save()
+        for com in orderstockrack.랙.랙구성단품.all():
+            if com.랙구성 == "자재":
+                num = com.수량
+                material = com.랙구성자재
+                realnum = (출하요청수량 - 출하요청수량f) * num
+                print(material.자재재고.출고요청제외수량)
+                material.자재재고.출고요청제외수량 += realnum
+                material.자재재고.save()
+                print(material.자재재고.출고요청제외수량)
+            else:
+                num = com.수량
+                single = com.랙구성단품
+                print(single)
+                realnum = (출하요청수량 - 출하요청수량f) * num
+                print(single.단품재고.출하요청제외수량)
+                single.단품재고.출하요청제외수량 += realnum
+                single.단품재고.save()
+                print(single.단품재고.출하요청제외수량)
 
-        orderstocksingle.출하희망일 = 출하희망일f
-        orderstocksingle.출하요청수량 = 출하요청수량f
-        orderstocksingle.save()
+        orderstockrack.출하희망일 = 출하희망일f
+        orderstockrack.출하요청수량 = 출하요청수량f
+        orderstockrack.save()
 
         messages.success(request, "출하요청 수정이 완료되었습니다.")
         return redirect(reverse("orders:orderdetail", kwargs={"pk": pk}))
 
     return render(
         request,
-        "stocksingle/orderstocksingleedit.html",
+        "stockrack/orderstockrackedit.html",
         {
             "form": form,
             "order": order,
             "list": order,
-            "single": orderstocksingle.단품,
             "출하요청수량": 출하요청수량,
             "출하희망일": 출하희망일,
+            "rack": orderstockrack.랙,
         },
     )

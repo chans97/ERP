@@ -240,19 +240,15 @@
                         <td class="border px-4 py-2">
                             {%if list.unexport%}
                             <div class="flex justify-center flex-col items-center">
-                                {%if order.제품구분 == "단품"%}
                                 <a href="{%url "stocksingle:orderstocksingleedit" list.pk %} ">
-                                    {%else%} <a href="#">{%endif%}
-                                        <div class="btn-link bg-teal-800 hover:font-bold mt-1 mb-0 ml-3 w-40">
-                                            출하요청수정
-                                        </div>
-                                    </a>
-                                    {%if order.제품구분 == "단품"%}
-                                    <a href="{%url "stocksingle:orderstocksingledelete" list.pk %}">{%else%} <a
-                                            href="#">{%endif%}
-                                            <div class="btn-link bg-red-800 hover:font-bold mt-1 mb-0 ml-3 w-40">
-                                                출하요청철회
-                                            </div>
+                                    <div class="btn-link bg-teal-800 hover:font-bold mt-1 mb-0 ml-3 w-40">
+                                        출하요청수정
+                                    </div>
+                                </a>
+                                <a href="{%url "stocksingle:orderstocksingledelete" list.pk %}">
+                                    <div class="btn-link bg-red-800 hover:font-bold mt-1 mb-0 ml-3 w-40">
+                                        출하요청철회
+                                    </div>
                             </div>
                             {%else%}
                             <span class="text-red-700">이미 출하완료되었습니다.</span>
@@ -267,14 +263,73 @@
 
 
 
+        </div>
+        {%endif%}
 
+
+
+        {%if order.leftrack != no %}
+        <div class="flex flex-col w-full  my-12">
+
+            <div class="flex flex-col  w-full border-black border-dashed pt-8   border-t">
+                <div class=" border-b w-64 mb-3 font-semibold border-gray-600 pb-2 mt-6">출하 요청 내역</div><span
+                    class="text-red-700 text-xs -mt-2 mb-1">*출하요청철회시 바로 철회됩니다.</span>
+            </div>
+            <table class="table-fixed font-light text-xs w-full">
+                <thead>
+                    <tr>
+                        <th class="border bg-gray-200 px-4 py-2 w-24">요청일</th>
+                        <th class="border bg-gray-200 px-4 py-2 w-24">요청수량</th>
+                        <th class="border bg-gray-200 px-4 py-2 w-24">제품명</th>
+                        <th class="border bg-gray-200 px-4 py-2 w-24"></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {%for list in orderrack%}
+                    <tr>
+                        <td class="border px-4 py-2">{%if list.출하요청일 is None%}
+                            {%else%}
+                            {{list.출하요청일.year}}-{{list.출하요청일.month}}-{{list.출하요청일.day}}{%endif%}</td>
+                        <td class="border px-4 py-2">{{list.출하요청수량}}</td>
+                        {%if order.제품구분 == "단품"%}
+                        <td class="border px-4 py-2">{{list.단품}}</td>
+                        {%else%}
+                        <td class="border px-4 py-2">{{list.랙}}</td>
+                        {%endif%}
+                        <td class="border px-4 py-2">
+                            {%if list.unexport%}
+                            <div class="flex justify-center flex-col items-center">
+                                <a href="{%url "stockrack:orderstockrackedit" list.pk %} ">
+                                    <div class="btn-link bg-teal-800 hover:font-bold mt-1 mb-0 ml-3 w-40">
+                                        출하요청수정
+                                    </div>
+                                </a>
+                                <a href="{%url "stockrack:orderstockrackdelete" list.pk %}">
+                                    <div class="btn-link bg-red-800 hover:font-bold mt-1 mb-0 ml-3 w-40">
+                                        출하요청철회
+                                    </div>
+                            </div>
+                            {%else%}
+                            <span class="text-red-700">이미 출하완료되었습니다.</span>
+                            {%endif%}
+                            </a>
+                        </td>
+                    </tr>
+                    {%endfor%}
+
+                </tbody>
+            </table>
 
 
         </div>
+
         {%endif%}
+
+
+
+
+
+
     </div>
-
-
-
-</div>
-{%endblock main_contens %}
+    {%endblock main_contens %}

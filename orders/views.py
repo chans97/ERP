@@ -28,6 +28,7 @@ from django.http import HttpResponse
 import math
 from StandardInformation import models as SI_models
 from stocksingle import models as SS_models
+from stockrack import models as SM_models
 
 
 def orderregister(request):
@@ -359,6 +360,15 @@ class OrderDetail(user_mixins.LoggedInOnlyView, DetailView):
             SS = SS_models.StockOfSingleProductOutRequest.objects.get_or_none(pk=pki)
             ordersingle.append(SS)
 
+        orderrack = order.랙출하요청.all()
+        rpk = []
+        for orderr in orderrack:
+            rpk.append(orderr.pk)
+        orderrack = []
+        for pki in rpk:
+            SS = SM_models.StockOfRackProductOutRequest.objects.get_or_none(pk=pki)
+            orderrack.append(SS)
+
         return render(
             request,
             "orders/orderdetail.html",
@@ -372,6 +382,7 @@ class OrderDetail(user_mixins.LoggedInOnlyView, DetailView):
                 "출하완료": "출하완료",
                 "ordersingle": ordersingle,
                 "no": 0,
+                'orderrack':orderrack,
             },
         )
 
@@ -666,6 +677,7 @@ def orderproduce(request):
         order = (
             models.OrderRegister.objects.filter(작성자=user)
             .filter(출하구분="출하미완료")
+            .filter(제품구분="단품")
             .order_by("-created")
         )
         for s in order:
@@ -681,6 +693,7 @@ def orderproduce(request):
         order = (
             models.OrderRegister.objects.filter(작성자=user)
             .filter(출하구분="출하미완료")
+            .filter(제품구분="단품")
             .filter(
                 Q(수주코드__contains=search)
                 | Q(영업구분=search)

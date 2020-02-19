@@ -50,7 +50,7 @@ PROJECT_APPS = [
     "specials.apps.SpecialsConfig",
     "afterservices.apps.AfterservicesConfig",
     "stocksingle.apps.StocksingleConfig",
-    "stockrock.apps.StockrockConfig",
+    "stockrack.apps.StockrackConfig",
     "parts.apps.PartsConfig",
 ]
 

@@ -118,15 +118,68 @@ class OrderRegister(TimeStampedModel):
 
     def leftsingle(self):
         left = 0
-        for q in self.단품출하요청.all():
-            left += q.출하요청수량
+        try:
+            for q in self.단품출하요청.all():
+                left += q.출하요청수량
+        except:
+            pass
 
         return left
 
     def needtoout(self):
         needtoout = self.납품수량 - self.leftsingle()
         return needtoout
- 
+
+    def rackstock(self):
+        rackstock = []
+        for com in self.랙모델.랙구성단품.all():
+            if com.랙구성 == "자재":
+                num = com.수량
+                single = com.랙구성자재
+                number = int(single.자재재고.실수량 / num)
+                rackstock.append(number)
+            else:
+                num = com.수량
+                single = com.랙구성단품
+                number = int(single.단품재고.실수량 / num)
+                rackstock.append(number)
+        stock = min(rackstock)
+        if stock < 0:
+            stock = 0
+        return stock
+
+    def rackstockincludeexception(self):
+        rackstock = []
+        for com in self.랙모델.랙구성단품.all():
+            if com.랙구성 == "자재":
+                num = com.수량
+                single = com.랙구성자재
+                number = int(single.자재재고.출고요청제외수량 / num)
+                rackstock.append(number)
+            else:
+                num = com.수량
+                single = com.랙구성단품
+                number = int(single.단품재고.출하요청제외수량 / num)
+                rackstock.append(number)
+        stock = min(rackstock)
+        if stock < 0:
+            stock = 0
+        return stock
+
+    def leftrack(self):
+        left = 0
+        try:
+            for q in self.랙출하요청.all():
+                left += q.출하요청수량
+        except:
+            pass
+
+        return left
+
+    def needtooutrack(self):
+        needtoout = self.납품수량 - self.leftrack()
+        return needtoout
+
 
 class OrderProduce(TimeStampedModel):
 

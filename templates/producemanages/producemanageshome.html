@@ -1,0 +1,85 @@
+{%extends "base.html"%}
+{%load static%}
+{% block page_title%}
+생산관리
+{%endblock%}
+
+
+{% block content %}
+<div class="w-full bg-gray-400 h-10 items-center -mt-4 font-normal fixed justify-center text-sm py-2 pl-8 ">
+    <a class="hover:font-bold" href="{% url "core:home"%}">
+        <div class="">생산관리
+    </a>{%block head_title%} {%endblock head_title %}</div>
+</div>
+<div class="flex">
+    <div class="w-32 mx-auto h-10/12 fixed items-center font-semibold justify-center pt-5 bg-gray-700 mt-6">
+        <div class="font-base text-sm text-left text-orange-100 py-px">
+            <i class="fas fa-bars mr-2 ml-3"></i><a href="#">수주등록</a>
+            <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
+            <div class="text-left ml-4 mb-4">
+                <div>
+                    <a href="#">
+                        <span class=" font-light text-xs text-orange-100 hover:font-bold">
+                            <i class="fas fa-angle-right mr-1"></i></i>수주등록</span></a></div>
+                <div>
+                    <a href="#">
+                        <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                            <i class="fas fa-angle-right mr-1"></i></i>생산의뢰등록</span></a></div>
+                <div>
+                    <a href="#">
+                        <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                            <i class="fas fa-angle-right mr-1"></i></i>출하완료등록</span></a></div>
+
+            </div>
+        </div>
+        <div class="font-base text-sm text-left text-orange-100 py-px">
+            <i class="fas fa-bars mr-2 ml-3"></i>재고출하
+            <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
+            <div class="text-left ml-4 mb-4">
+                <div>
+                    <a href="#">
+                        <span class=" font-light text-xs text-orange-100  hover:font-bold">
+                            <i class="fas fa-angle-right mr-1"></i></i>단품출하요청</span></a></div>
+                <div>
+                    <a href="#">
+                        <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                            <i class="fas fa-angle-right mr-1"></i></i>랙출하요청</span></a></div>
+
+            </div>
+        </div>
+        <div class="font-base text-sm text-left text-orange-100 py-px mb-10">
+            <i class="fas fa-bars mr-2 ml-3"></i>기준정보
+            <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
+            <div class="text-left ml-4">
+                <div>
+                    <a href="#">
+                        <span class=" font-light text-xs text-orange-100  hover:font-bold">
+                            <i class="fas fa-angle-right mr-1"></i></i>거래처</span></a></div>
+                <div>
+                    <a href="#">
+                        <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                            <i class="fas fa-angle-right mr-1"></i></i>단품제품</span></a></div>
+                <div>
+                    <a href="#">
+                        <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                            <i class="fas fa-angle-right mr-1"></i></i>랙제품</span></a></div>
+            </div>
+        </div>
+
+    </div>
+    {%block main_contens%}
+    <div class="flex flex-col">
+        <div class="w-11/12 h-full ml-32 -mt-6 font-semibold pt-12 flex flex-col">
+            <div class="flex flex-col">
+                <div class="p-6">
+                    <div class="border-b w-64 mb-3 border-gray-600 pb-2">내 생산 현황 </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    {%endblock main_contens %}
+</div>
+</div>
+{%endblock content %}

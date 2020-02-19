@@ -19,6 +19,8 @@ def firstindecide(request):
     if user.is_authenticated:
         if user.부서.부서명 == "영업부":
             return redirect(reverse("orders:ordershome"))
+        elif user.부서.부서명 == "생산관리부":
+            return redirect(reverse("producemanages:producemanageshome"))
         else:
             return render(request, "base.html")
 

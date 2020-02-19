@@ -119,7 +119,7 @@ def orderrackoutregister(request, pk):
                 {"form": form, "order": order, "list": order,},
             )
         elif order.needtooutrack() < 출하요청수량:
-            messages.error(request, "출하요청수량이 남은남품수량보다 더 많습니다.")
+            messages.error(request, "출하요청수량이 남은납품수량보다 더 많습니다.")
             return render(
                 request,
                 "stockrack/orderrackoutregister.html",

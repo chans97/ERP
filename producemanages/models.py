@@ -28,7 +28,13 @@ class ProduceRegister(TimeStampedModel):
         (사삼, "75%"),
         (사사, "100%"),
     )
-
+    작성자 = models.ForeignKey(
+        users_models.User,
+        related_name="생산계획등록",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
     생산계획등록코드 = models.CharField(max_length=50)
     생산의뢰 = models.OneToOneField(
         orders_models.OrderProduce,
@@ -63,6 +69,12 @@ class ProduceRegister(TimeStampedModel):
             return f"{rate}%"
 
     successrate.short_description = "계획 생산량 달성율"
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.현재공정 is None:
+            self.현재공정 = "예비작업"
+            self.현재공정달성율 = "0%"
 
 
 class WorkOrder(TimeStampedModel):

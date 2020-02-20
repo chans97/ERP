@@ -382,7 +382,7 @@ class OrderDetail(user_mixins.LoggedInOnlyView, DetailView):
                 "출하완료": "출하완료",
                 "ordersingle": ordersingle,
                 "no": 0,
-                'orderrack':orderrack,
+                "orderrack": orderrack,
             },
         )
 

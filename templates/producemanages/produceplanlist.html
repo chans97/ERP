@@ -1,0 +1,122 @@
+{%extends "producemanages/producemanageshome.html"%}
+{%load static%}
+{% block page_title%}
+생산계획
+{%endblock%}
+
+
+{%block head_title%}
+<i class="fas fa-angle-right text-base mx-1"></i>
+<a href="{%url "orders:orderproduce"%}" class="hover:font-bold">
+    생산계획등록
+</a>
+{%endblock head_title %}
+
+
+{%block main_contens%}
+<div class="flex flex-col">
+    <div class="w-11/12 h-full ml-32 -mt-6 font-semibold pt-12 flex flex-col">
+
+        <div class="flex flex-col p-6 w-full ">
+            <span class="border-b w-1/3 mb-3 border-gray-600 pb-2 font-semibold text-base">생산의뢰 목록 </span>
+            <div class="w-64 border h-6 mb-2">
+
+                <form method="get" action="" class="w-full flex ">
+                    <button class="w-4 h-4 mt-1 ml-1  rounded-xl bg-cover bg-center"
+                        style="background-image:url({% static 'img/search.png' %});"></button>
+
+                    <input name="search" placeholder={{search}}
+                        class="ml-1 w-full border-none search-box text-xs font-medium placeholder-red-400 focus: outline-none" />
+
+                </form>
+            </div>
+            <div class="flex ">
+                <div class="flew flex-col">
+                    <table class="table-fixed font-light text-xs w-full">
+                        <thead>
+                            <tr>
+                                <th class="border bg-gray-200 px-2 py-2 w-32">생산계획등록</th>
+                                <th class="border bg-gray-200 px-2 py-2 w-24">진행과정</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-24">수주코드</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-24">사업장구분</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-24">영업구분</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-24">고객사명</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-32">제품코드</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-24">제품명</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-24">납품수량</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-24">수주일자</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-24">납품요청일</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {%for list in s_order%}
+                            <tr>
+                                <td class="border px-2 py-2 font-bold 
+                            text-blue-800 justify-center">
+                                    <a href="{%url "producemanages:produceplanregister" list.pk %}">
+                                        <div class="btn-link hover:bg-teal-800 hover:font-bold mt-1 mb-0 ml-3">생산계획등록
+                                        </div>
+                                    </a>
+                                </td>
+
+
+                                <td class="border px-2 py-2 font-bold 
+                            text-blue-800 ">
+                                    {{list.process}}</td>
+                                <td class="border px-4 py-2  hover:text-blue-700 hover:font-bold "><a
+                                        href="{%url "producemanages:orderdetail" list.pk %}">
+                                        {{list.수주코드}}</a></td>
+                                <td class="border px-4 py-2">{{list.사업장구분}}</td>
+                                <td class="border px-4 py-2">{{list.영업구분}}</td>
+                                <td class="border px-4 py-2">{{list.고객사명}}</td>
+                                {%if list.제품구분 == "단품"%}
+                                <td class="border px-4 py-2">{{list.단품모델.모델코드}}</td>
+                                <td class="border px-4 py-2">{{list.단품모델.모델명}}</td>
+                                {%else%}
+                                <td class="border px-4 py-2">{{list.랙모델.랙시리얼코드}}</td>
+                                <td class="border px-4 py-2">{{list.랙모델.랙모델명}}</td>
+                                {%endif%}
+
+                                <td class="border px-4 py-2">{{list.납품수량}}</td>
+                                <td class="border px-4 py-2">
+                                    {{list.수주일자.year}}-{{list.수주일자.month}}-{{list.수주일자.day}}</td>
+                                <td class="border px-4 py-2">
+                                    {%if list.납품요청일 is None%}
+                                    {%else%}
+                                    {{list.납품요청일.year}}-{{list.납품요청일.month}}-{{list.납품요청일.day}}{%endif%}</td>
+                            </tr>
+                            {%endfor%}
+
+                        </tbody>
+                    </table>
+                    {%if nonpage%}
+                    {%else%}
+                    <div class="flex ml-2">
+                        {% if page != '1' %}
+                        {%if s_bool%}
+                        <a href="?search={{search}}&page={{previouspage}}" class="text-teal-700"><i
+                                class="fas fa-arrow-left fa-lg mt-2"></i></a>
+                        {%else%}
+                        <a href="?page={{previouspage}}" class="text-teal-700"><i
+                                class="fas fa-arrow-left fa-lg mt-2"></i></a>
+                        {% endif %}{% endif %}
+                        <span class="mx-3 font-medium  text-base">{{page}} of
+                            {{totalpage}}</span>
+
+                        {% if notsamebool %}
+                        {%if s_bool%}
+                        <a href="?search={{search}}&page={{nextpage}}" class="text-teal-700"><i
+                                class="fas fa-arrow-right fa-lg mt-2"></i></a>
+                        {%else%}
+                        <a href="?page={{nextpage}}" class="text-teal-700"><i
+                                class="fas fa-arrow-right fa-lg mt-2"></i></a>
+                        {% endif %}{% endif %}
+                    </div>
+                    {%endif%}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{%endblock main_contens %}

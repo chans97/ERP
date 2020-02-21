@@ -124,3 +124,15 @@ class UploadWorkOrderForm(forms.ModelForm):
     def save(self, *arg, **kwargs):
         partner = super().save(commit=False)
         return partner
+
+class EditWorkOrderForm(forms.ModelForm):
+    class Meta:
+        model = models.WorkOrder
+        fields = (
+            "수량",
+            "특이사항",
+        )
+
+    def save(self, *arg, **kwargs):
+        partner = super().save(commit=False)
+        return partner

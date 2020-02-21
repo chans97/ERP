@@ -23,14 +23,14 @@ urlpatterns = [
         name="produceplantotalupdate",
     ),
     path(
-        "produceplanupdeleteensure/<int:pk>/",
-        views.produceplanupdeleteensure,
-        name="produceplanupdeleteensure",
+        "produceplandeleteensure/<int:pk>/",
+        views.produceplandeleteensure,
+        name="produceplandeleteensure",
     ),
     path(
-        "produceplanupdelete/<int:pk>/",
-        views.produceplanupdelete,
-        name="produceplanupdelete",
+        "produceplandelete/<int:pk>/",
+        views.produceplandelete,
+        name="produceplandelete",
     ),
     path("workorderlist/", views.workorderlist, name="workorderlist"),
     path(
@@ -38,4 +38,21 @@ urlpatterns = [
         views.workorder,
         name="workorder",
     ),
+    path(
+        "workorderupdate/<int:pk>/",
+        views.workorderupdate.as_view(),
+        name="workorderupdate",
+    ),
+    path(
+        "workorderdeleteensure/<int:pk>/",
+        views.workorderdeleteensure,
+        name="workorderdeleteensure",
+    ),
+    path(
+        "workorderdelete/<int:pk>/",
+        views.workorderdelete,
+        name="workorderdelete",
+    ),
+    path("producehome/", views.producehome, name="producehome"),
+    
 ]

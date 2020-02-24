@@ -1,12 +1,12 @@
-{%extends "producemanages/producemanageshome.html"%}
+{%extends "producemanages/producehome.html"%}
 {%load static%}
 {% block page_title%}
-작업지시서등록
+수리내역서 등록
 {%endblock%}
 
 
 {%block head_title%}
-<i class="fas fa-angle-right text-base mx-1"></i>작업지시서등록</div>
+<i class="fas fa-angle-right text-base mx-1"></i>수리내역서 등록</div>
 {%endblock head_title %}
 
 
@@ -14,8 +14,8 @@
 <div class="w-11/12 h-full ml-32 -mt-6 font-normal pt-12 flex flex-row">
 
     <div class="flex flex-col p-6 w-full ">
-        <span class="border-b w-1/3 mb-3 border-gray-600 pb-2 font-semibold text-base">'{{produceplan.생산계획등록코드}}' 생산계획 -
-            작업지시서 등록
+        <span class="border-b w-1/3 mb-3 border-gray-600 pb-2 font-semibold text-base">'{{finalcheck.최종검사코드}}' 검사결과 -
+            수리내역서 등록
         </span>
 
         <div class="flex ">
@@ -29,30 +29,29 @@
 
 
                     <div class="w-8/12 flex flex-col justify-center ">
-                        <table class="table-fixed text-sm w-full">
+                        <table class="table-fixed text-sm w-full -ml-12">
 
                             <tbody>
                                 <tr>
-                                    <td class="border px-4 py-2 bg-gray-200 w-40">생산계획품목</td>
-                                    <td class="border px-4 py-2 bg-gray-200 w-48">작업지시코드</td>
-                                    <td class="border px-4 py-2 bg-gray-200 w-48">수량</td>
+                                    <td class="border px-4 py-2 bg-gray-200 w-40">수리내역서</td>
+                                    <td class="border px-4 py-2 bg-gray-200 w-48">불량위치및자재</td>
+                                    <td class="border px-4 py-2 bg-gray-200 w-48">수리내용</td>
+                                    <td class="border px-4 py-2 bg-gray-200 w-48">실수리수량</td>
+                                    <td class="border px-4 py-2 bg-gray-200 w-48">폐기수량</td>
                                     <td class="border px-4 py-2 bg-gray-200 w-48">특이사항</td>
+
                                 </tr>
 
                                 <tr>
                                     <td class="border px-4 py-2 bg-gray-200 text-center">
 
-                                        {{order.단품모델}}
+                                        {{finalcheck.제품}}
                                     </td>{% for field in form %}
 
                                     <td class="border px-4 py-2">
                                         <div class="border hover:border-gray-500 w-full">
                                             {{field}}</div>
                                         <div class="text-xs text-teal-700">{{field.help_text}}
-                                            {%if field.name == "수량"%}
-                                            *계획생산량은 {{produceplan.계획생산량}} 입니다.
-
-                                            {%endif%}
                                         </div>
                                         {% if field.errors %}
                                         {% for error in field.errors %}
@@ -68,7 +67,7 @@
                     </div>
 
                     <button class="btn-link felx mt-5 h-10 w-2/4   ml-20">
-                        <div class="text-sm forn-bold">작업지시등록</div>
+                        <div class="text-sm forn-bold">수리내역서등록</div>
                     </button>
                 </form>
             </div>

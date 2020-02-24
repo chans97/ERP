@@ -117,7 +117,11 @@ class WorkOrderRegister(TimeStampedModel):
         users_models.User, related_name="작업지시서등록", on_delete=models.SET_NULL, null=True,
     )
     생산일시 = models.DateField(
-        auto_now=False, auto_now_add=False, default=timezone.now().date()
+        auto_now=False,
+        auto_now_add=False,
+        default=timezone.now().date(),
+        blank=True,
+        null=True,
     )
     생산수량 = models.IntegerField(null=True)
     특이사항 = models.CharField(max_length=100, null=True, blank=True)

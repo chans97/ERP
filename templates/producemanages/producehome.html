@@ -18,11 +18,11 @@
             <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
             <div class="text-left ml-4 mb-4">
                 <div>
-                    <a href="{% url "producemanages:produceplanlist"%}">
+                    <a href="{% url "producemanages:worklist"%}">
                         <span class=" font-light text-xs text-orange-100 hover:font-bold">
                             <i class="fas fa-angle-right mr-1"></i>공정진행등록</span></a></div>
                 <div>
-                    <a href="{% url "producemanages:workorderlist"%}">
+                    <a href="{% url "producemanages:workdonelist"%}">
                         <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
                             <i class="fas fa-angle-right mr-1"></i>최종검사의뢰</span></a></div>
 
@@ -33,13 +33,17 @@
             <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
             <div class="text-left ml-4 mb-4">
                 <div>
-                    <a href="{% url "producemanages:produceplanlist"%}">
+                    <a href="{% url "producemanages:finalchecklist"%}">
                         <span class=" font-light text-xs text-orange-100 hover:font-bold">
                             <i class="fas fa-angle-right mr-1"></i>부적합 수리</span></a></div>
                 <div>
-                    <a href="{% url "producemanages:workorderlist"%}">
+                    <a href="#">
                         <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
                             <i class="fas fa-angle-right mr-1"></i>AS수리</span></a></div>
+                <div>
+                    <a href="{% url "producemanages:repairlist"%}">
+                        <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                            <i class="fas fa-angle-right mr-1"></i>수리완료목록</span></a></div>
 
             </div>
         </div>
@@ -51,7 +55,7 @@
         <div class="w-11/12 h-full ml-32 -mt-6 font-semibold pt-12 flex flex-col">
             <div class="flex flex-col">
                 <div class="p-6">
-                    <div class="border-b w-64 mb-3 border-gray-600 pb-2">내 생산 현황 </div>
+                    <div class="border-b w-64 mb-3 border-gray-600 pb-2">최종검사의뢰현황 </div>
                     <div class="flew flex-col">
                         <div class="w-64 border h-6 mb-2">
 
@@ -100,10 +104,10 @@
                                     text-red-700 ">
                                         {{list.process}}</td>
                                     <td class="border px-4 py-2  hover:text-blue-700 hover:font-bold "><a
-                                            href="{%url "producemanages:orderdetail" list.pk %}">
+                                            href="{%url "producemanages:orderdetailforwork" list.pk %}">
                                             {{list.생산요청.생산계획.생산계획등록코드}}</a></td>
                                     <td class="border px-4 py-2  hover:text-blue-700 hover:font-bold "><a
-                                            href="{%url "producemanages:orderdetail" list.pk %}">
+                                            href="{%url "producemanages:orderdetailforwork" list.pk %}">
                                             {{list.수주코드}}</a></td>
                                     <td class="border px-4 py-2">{{list.단품모델.모델코드}}</td>
                                     <td class="border px-4 py-2">{{list.단품모델.모델명}}</td>
@@ -156,7 +160,7 @@
         <div class="w-11/12 h-full ml-32 font-semibold flex flex-col">
             <div class="flex flex-col">
                 <div class="p-6 pt-0">
-                    <div class="border-b w-64 mb-3 border-gray-600 pb-2">전체 생산 현황 </div>
+                    <div class="border-b w-64 mb-3 border-gray-600 pb-2">전체 공정 현황 </div>
                     <div class="flew flex-col">
                         <div class="w-64 border h-6 mb-2">
 
@@ -205,10 +209,10 @@
                                     text-red-700 ">
                                         {{list.process}}</td>
                                     <td class="border px-4 py-2  hover:text-blue-700 hover:font-bold "><a
-                                            href="{%url "producemanages:orderdetail" list.pk %}">
+                                            href="{%url "producemanages:orderdetailforwork" list.pk %}">
                                             {{list.생산요청.생산계획.생산계획등록코드}}</a></td>
                                     <td class="border px-4 py-2  hover:text-blue-700 hover:font-bold "><a
-                                            href="{%url "producemanages:orderdetail" list.pk %}">
+                                            href="{%url "producemanages:orderdetailforwork" list.pk %}">
                                             {{list.수주코드}}</a></td>
                                     <td class="border px-4 py-2">{{list.단품모델.모델코드}}</td>
                                     <td class="border px-4 py-2">{{list.단품모델.모델명}}</td>

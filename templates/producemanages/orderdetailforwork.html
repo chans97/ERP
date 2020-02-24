@@ -1,4 +1,4 @@
-{%extends "producemanages/producemanageshome.html"%}
+{%extends "producemanages/producehome.html"%}
 {% load static%}
 {% block page_title%}
 수주정보
@@ -174,7 +174,8 @@
                     {%endif%}
                 </div>
             </div>
-            {%endif%}{%endif%}
+            {%endif%}
+            {%endif%}
             <table class="table-fixed font-light text-xs w-full -mt-6">
                 <thead>
                     <tr>
@@ -223,7 +224,8 @@
                     </div>
                 </div>
             </div>
-            {%endif%}{%endif%}
+            {%endif%}
+            {%endif%}
             <table class="table-fixed font-light text-xs w-full -mt-6">
                 <thead>
                     <tr>
@@ -247,29 +249,30 @@
             </table>
             {%endif%}
             {%if workdoneboolean%}
-            <div class="w-full flex justify-center"><i class="fas fa-caret-down text-3xl"></i> </div>
-            {%if order.생산요청.생산계획.작업지시서.작업지시서등록.생산담당자 == user%}
-            {%if orderfinalboolean%}
-            {%else%}
-            <div class="flex justify-end">
-                <div class="flex flex-row">
+            <div class="flex justify-center flex-col">
+                <div class="w-full flex justify-center"><i class="fas fa-caret-down text-3xl"></i> </div>
 
-                    <div class=" w-full">
-                        <a href="{%url "producemanages:workorderupdate" order.생산요청.생산계획.작업지시서.pk %}">
+                {%if order.생산요청.생산계획.작업지시서.작업지시서등록.생산담당자 == user%}
+                {%if orderfinalboolean%}
+                {%else%}
+                <div class="flex justify-end w-full">
+
+                    <div class="">
+                        <a href="{%url "producemanages:workupdate" order.생산요청.생산계획.작업지시서.작업지시서등록.pk %}">
                             <div class="btn-link w-32 bg-blue-800 ml-5 hover:font-bold">
                                 공정진행수정 </div>
                         </a>
                     </div>
                     <div class="">
-                        <a href="{%url "producemanages:workorderdeleteensure" order.생산요청.생산계획.작업지시서.pk %}">
+                        <a href="{%url "producemanages:workdeleteensure" order.pk %}">
                             <div class="btn-link w-32 bg-red-800 ml-5 hover:font-bold">
                                 공정진행삭제 </div>
                         </a>
                     </div>
                 </div>
+                {%endif%}
+                {%endif%}
             </div>
-            {%endif%}
-            {%endif%}
             <table class="table-fixed font-light text-xs w-full">
                 <thead>
                     <tr>
@@ -300,16 +303,23 @@
             {%if orderfinalboolean%}
             <div class="w-full flex justify-center"><i class="fas fa-caret-down text-3xl"></i> </div>
             {%if order.생산요청.생산계획.작업지시서.작업지시서등록.생산담당자 == user%}
-            <div class="flex justify-end">
+            {%if final%}
+            {%else%}
+            <div class="flex justify-between">
+                <div class="px-2">
+                    <i class="fas fa-angle-down mr-1"></i><span
+                        class="font-medium  text-gray-700   text-sm hover:font-bold">최종검사의뢰</span>
+                </div>
                 <div class="flex flex-row">
                     <div class="">
-                        <a href="{%url "producemanages:workorderdeleteensure" order.생산요청.생산계획.작업지시서.pk %}">
+                        <a href="{%url "producemanages:orderfinaldelete" order.pk %}">
                             <div class="btn-link w-32 bg-red-800 ml-5 hover:font-bold">
                                 최종검사의뢰철회 </div>
                         </a>
                     </div>
                 </div>
             </div>
+            {%endif%}
             {%endif%}
             <table class="table-fixed font-light text-xs w-full">
                 <thead>
@@ -350,11 +360,54 @@
 
                 </tbody>
             </table>
+            {%if repairboolean %}
+            <div class="w-full flex justify-center"><i class="fas fa-caret-down text-3xl"></i> </div>
+            <div class="flex justify-between">
+                <a href="#">
+                    <div class="px-2">
+                        <i class="fas fa-angle-down mr-1"></i><span
+                            class="font-medium  text-gray-700   text-sm hover:font-bold">수리내역서</span>
+                    </div>
+                </a>
+                {%if order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.수리내역서.작성자 ==  user%}
+                <div class="flex flex-row">
+
+                    <div class=" w-full">
+                        <a
+                            href="{%url "producemanages:repairupdate" order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.수리내역서.pk %}">
+                            <div class="btn-link w-32 bg-blue-800 ml-5 hover:font-bold">
+                                수리내역서수정 </div>
+                        </a>
+                    </div>
+                </div>
+                {%endif%}
+            </div>
+            <table class="table-fixed font-light text-xs w-full -mt-6">
+                <thead>
+                    <tr>
+                        <th class="border bg-gray-200 px-4 py-2 w-24">작성자</th>
+                        <th class="border bg-gray-200 px-4 py-2 w-24">수리내용</th>
+                        <th class="border bg-gray-200 px-4 py-2 w-24">실수리수량</th>
+                        <th class="border bg-gray-200 px-4 py-2 w-24">폐기수량</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="border px-4 py-2">
+                            {{order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.수리내역서.작성자}}</td>.
+                        <td class="border px-4 py-2 hover:font-bold">
+                            <a href="#"> {{order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.수리내역서.수리내용}}</a></td>
+                        <td class="border px-4 py-2">
+                            {{order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.수리내역서.실수리수량}}
+                        </td>
+                        <td class="border px-4 py-2">{{order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.수리내역서.폐기수량}}</td>
+                    </tr>
+
+                </tbody>
+            </table>
 
 
-
-
-
+            {%endif%}
 
 
         </div>

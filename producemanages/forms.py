@@ -1,6 +1,7 @@
 from django import forms
 from . import models
 from StandardInformation import models as SI_models
+from qualitycontrols import models as QC_models
 
 
 class UploadProducePlanForm(forms.ModelForm):
@@ -125,6 +126,7 @@ class UploadWorkOrderForm(forms.ModelForm):
         partner = super().save(commit=False)
         return partner
 
+
 class EditWorkOrderForm(forms.ModelForm):
     class Meta:
         model = models.WorkOrder
@@ -132,6 +134,43 @@ class EditWorkOrderForm(forms.ModelForm):
             "수량",
             "특이사항",
         )
+
+    def save(self, *arg, **kwargs):
+        partner = super().save(commit=False)
+        return partner
+
+
+class UploadWorkForm(forms.ModelForm):
+    class Meta:
+        model = models.WorkOrderRegister
+        fields = (
+            "생산일시",
+            "생산수량",
+            "특이사항",
+        )
+        help_texts = {
+            "생산일시": "*형식 : (yyyy-mm-dd)",
+        }
+
+    def save(self, *arg, **kwargs):
+        partner = super().save(commit=False)
+        return partner
+
+
+class UploadRepairForm(forms.ModelForm):
+    class Meta:
+        model = QC_models.RepairRegister
+        fields = (
+            "불량위치및자재",
+            "수리내용",
+            "실수리수량",
+            "폐기수량",
+            "특이사항",
+        )
+        widgets = {
+            "실수리수량": forms.NumberInput(attrs={"size": "10", "min": "0"}),
+            "폐기수량": forms.NumberInput(attrs={"size": "10", "min": "0"}),
+        }
 
     def save(self, *arg, **kwargs):
         partner = super().save(commit=False)

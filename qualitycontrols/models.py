@@ -15,7 +15,7 @@ class FinalCheck(TimeStampedModel):
         null=True,
         blank=True,
     )
-    수리내역서 = models.ForeignKey(
+    수리내역서 = models.OneToOneField(
         "RepairRegister",
         related_name="최종검사",
         on_delete=models.SET_NULL,
@@ -45,7 +45,7 @@ class FinalCheckRegister(TimeStampedModel):
         (OK, "OK"),
         (NO, "NO"),
     )
-
+    최종검사코드 = models.CharField(max_length=20, null=True, blank=True,)
     최종검사의뢰 = models.OneToOneField(
         "FinalCheck", related_name="최종검사등록", on_delete=models.SET_NULL, null=True,
     )
@@ -78,6 +78,12 @@ class FinalCheckRegister(TimeStampedModel):
     REMARK = models.TextField(max_length=80)
     부적합수량 = models.IntegerField()
     적합수량 = models.IntegerField()
+    제품 = models.ForeignKey(
+        SI_models.SingleProduct,
+        related_name="최종검사등록",
+        on_delete=models.SET_NULL,
+        null=True,
+    )
 
     class Meta:
         verbose_name = "최종검사결과등록"
@@ -111,6 +117,9 @@ class RepairRegister(TimeStampedModel):
     )
     수리최종 = models.CharField(
         choices=수리요청_CHOICES, max_length=10, default=최종검사결과, null=True, blank=True,
+    )
+    작성자 = models.ForeignKey(
+        users_models.User, related_name="수리내역서", on_delete=models.SET_NULL, null=True
     )
     불량위치및자재 = models.TextField(max_length=300)
     특이사항 = models.TextField(max_length=300, null=True, blank=True,)

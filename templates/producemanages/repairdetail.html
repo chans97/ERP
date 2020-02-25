@@ -7,7 +7,12 @@
 
 {%block head_title%}
 </a><i class="fas fa-angle-right mx-1 text-base"></i>수리완료목록<i class="fas fa-angle-right text-base mx-1"></i>
-<span class="text-gray-700">{{repair.최종검사결과.최종검사코드}}</span>
+<span class="text-gray-700">{%if repair.수리최종 == "최종검사결과"%}
+    최종검사({{repair.최종검사결과.최종검사코드}})의
+    {%else%}
+    AS요청 ({{repair.AS수리의뢰.수리요청코드}})의
+    {%endif%}
+    수리내역서</span>
 {%endblock head_title %}
 
 
@@ -18,36 +23,63 @@
     <div class="p-6 flex flex-col w-full">
         <div class="flex flex-col w-full">
             <div class="flex flex-row justify-between w-full ">
-                <div class=" border-b w-64 mb-3 font-semibold border-gray-600 pb-2">최종검사({{repair.최종검사결과.최종검사코드}})의
+                <div class=" border-b w-64 mb-3 font-semibold border-gray-600 pb-2">
+                    {%if repair.수리최종 == "최종검사결과"%}
+                    최종검사({{repair.최종검사결과.최종검사코드}})의
+                    {%else%}
+                    AS요청 ({{repair.AS수리의뢰.수리요청코드}})의
+                    {%endif%}
                     수리내역서
+                    -{{repair.finalcheckboolean}}
                 </div>
 
                 <div class="flex flex-row">
                     {%if finalcheckboolean %}
+                    {%if repair.수리최종 == "최종검사결과"%}
                     <div class="mt-2">
                         <a href="{%url "producemanages:repairupdateindetail" repair.pk%}">
                             <div class="btn-link bg-teal-800 hover:font-bold">
                                 수리 수정 </div>
                         </a>
                     </div>
+                    {%else%}
+                    <div class="mt-2">
+                        <a href="{%url "producemanages:repairupdateindetailAS" repair.pk%}">
+                            <div class="btn-link bg-teal-800 hover:font-bold">
+                                수리 수정 </div>
+                        </a>
+                    </div>
+                    {%endif%}
+
                     <div class="mt-2 ml-3">
                         <a href="{%url "producemanages:repairdeleteensure" repair.pk%}">
                             <div class="btn-link bg-red-800 hover:font-bold">
                                 수리 삭제 </div>
                         </a>
                     </div>
+
+
+
                     {%endif%}
+                    {%if repair.finalcheckboolean == "최종검사의뢰완료" %}
+                    <div class="mt-2 ml-3">
+                        <a href="{%url "producemanages:finalcheckrequestdelete" repair.최종검사.pk%}">
+                            <div class="btn-link bg-green-800 hover:font-bold w-40 p-1 px-2">
+                                최종검사의뢰 철회 </div>
+                        </a>
+                    </div> {%endif%}
 
                 </div>
 
             </div>
-            <div class="flex">
+            <div class="flex ">
+                {%if repair.수리최종 == "최종검사결과"%}
                 <table class="table-fixed text-sm">
                     <thead>
                         <tr>
                             <th class="border border-r-0 bg-gray-400  py-2 w-40 text-right">{{repair.최종검사결과.최종검사코드}}
                             </th>
-                            <th class="border border-l-0 bg-gray-400  py-2 w-56 text-left">의 최종결과</th>
+                            <th class="border border-l-0 bg-gray-400  py-2 w-56 text-left">의 최종검사</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -157,6 +189,36 @@
                         </tr>
                     </tbody>
                 </table>
+                {%else%}
+                <table class="table-fixed text-sm">
+                    <thead>
+                        <tr>
+                            <th class="border border-r-0 bg-gray-400  py-2 w-40 text-right">{{repair.AS수리의뢰.수리요청코드}}
+                            </th>
+                            <th class="border border-l-0 bg-gray-400  py-2 w-56 text-left">의 수리요청</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="border px-4 py-2 bg-gray-200">수리요청코드</td>
+                            <td class="border px-4 py-2">{{repair.AS수리의뢰.수리요청코드}}</td>
+                        </tr>
+                        <tr>
+                            <td class="border px-4 py-2 bg-gray-200">신청자</td>
+                            <td class="border px-4 py-2">{{repair.AS수리의뢰.신청자}}</td>
+                        </tr>
+                        <tr>
+                            <td class="border px-4 py-2 bg-gray-200">신청품목</td>
+                            <td class="border px-4 py-2">{{repair.AS수리의뢰.신청품목}}</td>
+                        </tr>
+                        <tr>
+                            <td class="border px-4 py-2 bg-gray-200">신청수량</td>
+                            <td class="border px-4 py-2">{{repair.AS수리의뢰.신청수량}}</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+                {%endif%}
                 <table class="table-fixed text-sm ml-12">
                     <thead>
                         <tr>
@@ -168,6 +230,17 @@
                         <tr>
                             <td class="border px-4 py-2 bg-gray-200">작성자</td>
                             <td class="border px-4 py-2">{{repair.작성자}}</td>
+                        </tr>
+                        <tr>
+                            <td class="border px-4 py-2 bg-gray-200">제품</td>
+                            <td class="border px-4 py-2">
+                                {%if repair.수리최종 == "AS"%}
+
+                                {{repair.AS수리의뢰.신청품목.모델명}}
+                                {%else%}
+                                {{repair.최종검사결과.제품.모델명}}
+                                {%endif%}
+                            </td>
                         </tr>
                         <tr>
                             <td class="border px-4 py-2 bg-gray-200">불량위치및자재</td>
@@ -188,6 +261,10 @@
                         <tr>
                             <td class="border px-4 py-2 bg-gray-200">특이사항</td>
                             <td class="border px-4 py-2">{{repair.특이사항}}</td>
+                        </tr>
+                        <tr>
+                            <td class="border px-4 py-2 bg-gray-200">작성일</td>
+                            <td class="border px-4 py-2">{{repair.created.date}}</td>
                         </tr>
 
 
@@ -216,11 +293,138 @@
 
 
             </div>
+            {%if finalcheckboolean %}
+            {%else%}
+            {%if repair.finalcheckboolean == "최종검사완료" %}
+            <div class="flex flex-row justify-between w-full border-t border-dashed pt-5 mt-5 border-black ">
+                <div class=" border-b w-64 mb-3 font-semibold border-gray-600 pb-2">
+                    수리내역서의 최종검사
+                </div>
 
+
+            </div>
+
+
+            <table class="table-fixed text-sm w-9/12">
+                <thead>
+                    <tr>
+                        <th class="border border-r-0 bg-gray-400  py-2 w-40 text-right">수리내역에
+                        </th>
+                        <th class="border border-l-0 bg-gray-400  py-2 w-56 text-left">대한 최종검사</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <td class="border px-4 py-2 bg-gray-200">최종검사코드</td>
+                        <td class="border px-4 py-2">{{repair.최종검사.최종검사등록.최종검사코드}}</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2 bg-gray-200">부적합수량</td>
+                        <td class="border px-4 py-2">{{repair.최종검사.최종검사등록.부적합수량}}</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2 bg-gray-200">적합수량</td>
+                        <td class="border px-4 py-2">{{repair.최종검사.최종검사등록.적합수량}}</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2 bg-gray-200">검시자</td>
+                        <td class="border px-4 py-2">{{repair.최종검사.최종검사등록.검시자}}</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2 bg-gray-200">검시일</td>
+                        <td class="border px-4 py-2">{{repair.최종검사.최종검사등록.검시일}}</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2 bg-gray-200">CR</td>
+                        <td class="border px-4 py-2">{{repair.최종검사.최종검사등록.CR}}</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2 bg-gray-200">MA</td>
+                        <td class="border px-4 py-2">{{repair.최종검사.최종검사등록.MA}}</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2 bg-gray-200">MI</td>
+                        <td class="border px-4 py-2">{{repair.최종검사.최종검사등록.MI}}</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2 bg-gray-200">검사수준</td>
+                        <td class="border px-4 py-2">{{repair.최종검사.최종검사등록.검사수준}}</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2 bg-gray-200">Sample방식</td>
+                        <td class="border px-4 py-2">{{repair.최종검사.최종검사등록.Sample방식}}</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2 bg-gray-200">결점수</td>
+                        <td class="border px-4 py-2">{{repair.최종검사.최종검사등록.결점수}}</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2 bg-gray-200">전원전압</td>
+                        <td class="border px-4 py-2">{{repair.최종검사.최종검사등록.전원전압}}</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2 bg-gray-200">POWERTRANS</td>
+                        <td class="border px-4 py-2">{{repair.최종검사.최종검사등록.POWERTRANS}}</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2 bg-gray-200">FUSE_전_ULUSA</td>
+                        <td class="border px-4 py-2">{{repair.최종검사.최종검사등록.FUSE_전_ULUSA}}</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2 bg-gray-200">LABEL_인쇄물</td>
+                        <td class="border px-4 py-2">{{repair.최종검사.최종검사등록.LABEL_인쇄물}}</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2 bg-gray-200">기타출하위치</td>
+                        <td class="border px-4 py-2">{{repair.최종검사.최종검사등록.기타출하위치}}</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2 bg-gray-200">내용물</td>
+                        <td class="border px-4 py-2">{{repair.최종검사.최종검사등록.내용물}}</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2 bg-gray-200">포장검사</td>
+                        <td class="border px-4 py-2">{{repair.최종검사.최종검사등록.포장검사}}</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2 bg-gray-200">동작검사</td>
+                        <td class="border px-4 py-2">{{repair.최종검사.최종검사등록.동작검사}}</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2 bg-gray-200">내부검사</td>
+                        <td class="border px-4 py-2">{{repair.최종검사.최종검사등록.내부검사}}</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2 bg-gray-200">외관검사</td>
+                        <td class="border px-4 py-2">{{repair.최종검사.최종검사등록.외관검사}}</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2 bg-gray-200">내압검사</td>
+                        <td class="border px-4 py-2">{{repair.최종검사.최종검사등록.내압검사}}</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2 bg-gray-200">내용물확인</td>
+                        <td class="border px-4 py-2">{{repair.최종검사.최종검사등록.내용물확인}}</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2 bg-gray-200">가_감전압</td>
+                        <td class="border px-4 py-2">{{repair.최종검사.최종검사등록.가_감전압}}</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2 bg-gray-200">HI_POT_내부검사</td>
+                        <td class="border px-4 py-2">{{repair.최종검사.최종검사등록.HI_POT_내부검사}}</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2 bg-gray-200">REMARK</td>
+                        <td class="border px-4 py-2">{{repair.최종검사.최종검사등록.REMARK}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            {%endif%}
+            {%endif%}
         </div>
-
     </div>
-
 
 
 </div>

@@ -144,6 +144,32 @@ class ASVisitContents(TimeStampedModel):
         return f"AS현장방문 -'{self.AS현장방문요청.AS접수.의뢰처}'"
 
 
+class ASRepairRequest(TimeStampedModel):
+    수리요청코드 = models.CharField(max_length=50, null=True, blank=True,)
+
+    AS현장방문 = models.ForeignKey(
+        "ASVisitContents", related_name="AS수리요청", on_delete=models.SET_NULL, null=True
+    )
+    신청자 = models.ForeignKey(
+        users_models.User, related_name="AS수리요청", on_delete=models.SET_NULL, null=True
+    )
+    신청품목 = models.ForeignKey(
+        SI_models.SingleProduct,
+        related_name="AS수리요청",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+    신청수량 = models.IntegerField()
+
+    class Meta:
+        verbose_name = "AS수리요청"
+        verbose_name_plural = "AS수리요청"
+
+    def __str__(self):
+        return f"AS수리요청 -'{self.AS현장방문.AS현장방문요청.AS접수.의뢰처}' : {self.신청품목}({self.신청수량}) "
+
+
 class ASReVisitContents(TimeStampedModel):
 
     제품수리 = "제품수리"

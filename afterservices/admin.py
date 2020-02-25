@@ -18,6 +18,11 @@ class ASVisitContents(admin.ModelAdmin):
     empty_value_display = "입력 값 없음"
 
 
+@admin.register(models.ASRepairRequest)
+class ASRepairRequest(admin.ModelAdmin):
+    empty_value_display = "입력 값 없음"
+
+
 @admin.register(models.ASReVisitContents)
 class ASReVisitContents(admin.ModelAdmin):
     empty_value_display = "입력 값 없음"

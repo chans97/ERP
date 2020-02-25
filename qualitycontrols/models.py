@@ -97,7 +97,7 @@ class RepairRegister(TimeStampedModel):
     최종검사결과 = "최종검사결과"
     AS = "AS"
 
-    수리요청_CHOICES = (
+    수리최종_CHOICES = (
         (최종검사결과, "최종검사결과"),
         (AS, "AS"),
     )
@@ -109,14 +109,14 @@ class RepairRegister(TimeStampedModel):
         blank=True,
     )
     AS수리의뢰 = models.OneToOneField(
-        AS_models.ASVisitContents,
+        AS_models.ASRepairRequest,
         related_name="수리내역서",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )
     수리최종 = models.CharField(
-        choices=수리요청_CHOICES, max_length=10, default=최종검사결과, null=True, blank=True,
+        choices=수리최종_CHOICES, max_length=10, default=최종검사결과, null=True, blank=True,
     )
     작성자 = models.ForeignKey(
         users_models.User, related_name="수리내역서", on_delete=models.SET_NULL, null=True
@@ -136,6 +136,17 @@ class RepairRegister(TimeStampedModel):
             return f"수리내역서 -'{self.최종검사결과}'"
         else:
             return f"수리내역서 -'{self.AS수리의뢰}'"
+
+    def finalcheckboolean(self):
+        try:
+            self.최종검사
+            try:
+                self.최종검사.최종검사등록
+                return "최종검사완료"
+            except:
+                return "최종검사의뢰완료"
+        except:
+            return "수리완료"
 
 
 class MaterialCheckRegister(TimeStampedModel):

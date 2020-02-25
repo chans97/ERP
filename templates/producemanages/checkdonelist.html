@@ -1,14 +1,14 @@
 {%extends "producemanages/producehome.html"%}
 {%load static%}
 {% block page_title%}
-최종검사 의뢰
+최종검사확인
 {%endblock%}
 
 
 {%block head_title%}
 <i class="fas fa-angle-right text-base mx-1"></i>
-<a href="{%url "producemanages:workdonelist"%}" class="hover:font-bold">
-    최종검사 의뢰
+<a href="{%url "producemanages:checkdonelist"%}" class="hover:font-bold">
+    최종검사 확인
 </a>
 {%endblock head_title %}
 
@@ -18,7 +18,7 @@
     <div class="w-11/12 h-full ml-32 -mt-6 font-semibold pt-12 flex flex-col">
 
         <div class="flex flex-col p-6 w-full ">
-            <span class="border-b w-1/3 mb-3 border-gray-600 pb-2 font-semibold text-base">공정완료 목록 </span>
+            <span class="border-b w-1/3 mb-3 border-gray-600 pb-2 font-semibold text-base">최종검사확인 : 공정완료 </span>
             <div class="w-64 border h-6 mb-2">
 
                 <form method="get" action="" class="w-full flex ">
@@ -35,7 +35,6 @@
                     <table class="table-fixed font-light text-xs w-full">
                         <thead>
                             <tr>
-                                <th class="border bg-gray-200 px-2 py-2 w-32">최종검사의뢰</th>
                                 <th class="border bg-gray-200 px-2 py-2 w-24">진행과정</th>
                                 <th class="border bg-gray-200 px-4 py-2 w-24">수주코드</th>
                                 <th class="border bg-gray-200 px-4 py-2 w-24">사업장구분</th>
@@ -51,15 +50,6 @@
                         <tbody>
                             {%for list in s_order_m%}
                             <tr>
-                                <td class="border px-2 py-2 font-bold 
-                            text-blue-800 justify-center">
-                                    <a href="{%url "producemanages:orderfinalcheck" list.pk %}">
-                                        <div
-                                            class="btn-link hover:bg-blue-800 bg-teal-700 hover:font-bold mt-1 mb-0  w-full">
-                                            최종검사의뢰
-                                        </div>
-                                    </a>
-                                </td>
 
 
                                 <td class="border px-2 py-2 font-bold 
@@ -123,7 +113,8 @@
     <div class="w-11/12 h-full ml-32 -mt-6 font-semibold pt-12 flex flex-col">
 
         <div class="flex flex-col p-6 w-full ">
-            <span class="border-b w-1/3 mb-3 border-gray-600 pb-2 font-semibold text-base">수리완료 목록 : 최종검사 부적합 </span>
+            <span class="border-b w-1/3 mb-3 border-gray-600 pb-2 font-semibold text-base">최종검사확인 : 수리완료(최종검사 부적합)
+            </span>
             <div class="w-64 border h-6 mb-2">
 
                 <form method="get" action="" class="w-full flex ">
@@ -138,7 +129,7 @@
             <table class="table-fixed font-light text-xs w-full">
                 <thead>
                     <tr>
-                        <th class="border bg-gray-200 px-2 py-2 w-32">최종검사의뢰</th>
+                        <th class="border bg-gray-200 px-4 py-2 w-32">진행상태</th>
                         <th class="border bg-gray-200 px-4 py-2 w-24">최종검사코드</th>
                         <th class="border bg-gray-200 px-4 py-2 w-32">제품코드</th>
                         <th class="border bg-gray-200 px-4 py-2 w-24">제품명</th>
@@ -151,15 +142,14 @@
                 </thead>
                 <tbody>
                     {%for list in s_order%}
+
                     <tr>
-                        <td class="border px-2 py-2 font-bold 
-                        text-blue-800 justify-center">
-                            <a href="{%url "producemanages:orderfinalcheckforrepair" list.pk %}">
-                                <div class="btn-link hover:bg-blue-800 bg-teal-700 hover:font-bold mt-1 mb-0  w-full">
-                                    최종검사의뢰
-                                </div>
-                            </a>
+                        <td
+                            class="border px-4 py-2 font-semibold {%if list.finalcheckboolean == "최종검사완료"%} text-blue-700 {%endif%}
+                            {%if list.finalcheckboolean == "수리완료"%} text-yellow-700 {%endif%} {%if list.finalcheckboolean == "최종검사의뢰완료"%} text-green-700 {%endif%}">
+                            {{list.finalcheckboolean}}
                         </td>
+
                         <td class="border px-4 py-2  hover:text-blue-700 hover:font-bold "><a
                                 href="{%url "producemanages:repairdetail" list.pk%}">
                                 {{list.최종검사결과.최종검사코드}}</a></td>
@@ -199,7 +189,7 @@
             {%endif%}
         </div>
         <div class="flex flex-col p-6 w-full ">
-            <span class="border-b w-1/3 mb-3 border-gray-600 pb-2 font-semibold text-base">수리완료 목록 : AS요청 </span>
+            <span class="border-b w-1/3 mb-3 border-gray-600 pb-2 font-semibold text-base">최종검사확인 : 수리완료(AS요청) </span>
             <div class="w-64 border h-6 mb-2">
 
                 <form method="get" action="" class="w-full flex ">
@@ -214,7 +204,7 @@
             <table class="table-fixed font-light text-xs w-full">
                 <thead>
                     <tr>
-                        <th class="border bg-gray-200 px-2 py-2 w-32">최종검사의뢰</th>
+                        <th class="border bg-gray-200 px-4 py-2 w-32">진행상태</th>
                         <th class="border bg-gray-200 px-4 py-2 w-24">수리요청코드</th>
                         <th class="border bg-gray-200 px-4 py-2 w-32">제품코드</th>
                         <th class="border bg-gray-200 px-4 py-2 w-24">제품명</th>
@@ -227,15 +217,11 @@
                 <tbody>
                     {%for list in s_order_t%}
                     <tr>
-                        <td class="border px-2 py-2 font-bold 
-                        text-blue-800 justify-center">
-                            <a href="{%url "producemanages:orderfinalcheckforrepair" list.pk %}">
-                                <div class="btn-link hover:bg-blue-800 bg-teal-700 hover:font-bold mt-1 mb-0  w-full">
-                                    최종검사의뢰
-                                </div>
-                            </a>
+                        <td
+                            class="border px-4 py-2 font-semibold {%if list.finalcheckboolean == "최종검사완료"%} text-blue-700 {%endif%}
+                            {%if list.finalcheckboolean == "수리완료"%} text-yellow-700 {%endif%} {%if list.finalcheckboolean == "최종검사의뢰완료"%} text-green-700 {%endif%}">
+                            {{list.finalcheckboolean}}
                         </td>
-
                         <td class="border px-4 py-2  hover:text-blue-700 hover:font-bold "><a
                                 href="{%url "producemanages:repairdetail" list.pk%}">
                                 {{list.AS수리의뢰.수리요청코드}}</a></td>

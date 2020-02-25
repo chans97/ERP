@@ -336,13 +336,11 @@
 
             <div class="flex flex-col  w-full ">
                 <div class=" border-b w-64 mb-3 font-semibold border-gray-600 pb-2">최종검사결과</div>
-
-
-
             </div>
             <table class="table-fixed font-light text-xs w-full">
                 <thead>
                     <tr>
+                        <th class="border bg-gray-200 px-4 py-2 w-24">최종검사코드</th>
                         <th class="border bg-gray-200 px-4 py-2 w-24">검시자</th>
                         <th class="border bg-gray-200 px-4 py-2 w-24">검시일</th>
                         <th class="border bg-gray-200 px-4 py-2 w-24">적합수량</th>
@@ -351,8 +349,14 @@
                 </thead>
                 <tbody>
                     <tr>
+                        <td class="border px-4 py-2 hover:font-bold">
+                            <a
+                                href="{%url "producemanages:finalcheckdetail" order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.pk %}">
+
+                                {{order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.최종검사코드}}</a></td>
+
                         <td class="border px-4 py-2">
-                            {{order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.검시자}}</a></td>.
+                            {{order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.검시자}}</td>
                         <td class="border px-4 py-2">{{order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.검시일}}</td>
                         <td class="border px-4 py-2">{{order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.적합수량}}</td>
                         <td class="border px-4 py-2">{{order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.부적합수량}}</td>
@@ -370,6 +374,7 @@
                     </div>
                 </a>
                 {%if order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.수리내역서.작성자 ==  user%}
+                {%if order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.수리내역서.finalcheckboolean == "수리완료"%}
                 <div class="flex flex-row">
 
                     <div class=" w-full">
@@ -380,6 +385,7 @@
                         </a>
                     </div>
                 </div>
+                {%endif%}
                 {%endif%}
             </div>
             <table class="table-fixed font-light text-xs w-full -mt-6">
@@ -393,10 +399,12 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="border px-4 py-2">
-                            {{order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.수리내역서.작성자}}</td>.
                         <td class="border px-4 py-2 hover:font-bold">
-                            <a href="#"> {{order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.수리내역서.수리내용}}</a></td>
+                            <a
+                                href="{%url "producemanages:repairdetail" order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.수리내역서.pk %}">{{order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.수리내역서.작성자}}</a>
+                        </td>.
+                        <td class="border px-4 py-2 hover:font-bold">
+                            {{order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.수리내역서.수리내용}}</td>
                         <td class="border px-4 py-2">
                             {{order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.수리내역서.실수리수량}}
                         </td>

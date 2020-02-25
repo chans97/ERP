@@ -32,6 +32,7 @@ from stockrack import models as SM_models
 from orders import models as OR_models
 from django.utils import timezone
 from qualitycontrols import models as QC_models
+from afterservices import models as AS_models
 
 
 class OrderDetail(user_mixins.LoggedInOnlyView, DetailView):
@@ -201,8 +202,8 @@ class OrderDetailForWork(user_mixins.LoggedInOnlyView, DetailView):
 def producemanageshome(request):
 
     user = request.user
-    search_m = request.GET.get("search_m")
     search = request.GET.get("search")
+    search_m = request.GET.get("search_m")
 
     if search_m is None:
         order = OR_models.OrderRegister.objects.all().order_by("-created")
@@ -743,70 +744,71 @@ def producehome(request):
     search = request.GET.get("search")
     search_m = request.GET.get("search_m")
 
-    if search_m is None:
-        s_order = []
+    if search is None:
         l_order = []
         order = OR_models.OrderRegister.objects.filter(제품구분="단품").order_by("-created")
 
         for s in order:
             try:
-                s.생산요청.생산계획.작업지시서.작업지시서등록.최종검사
-                l_order.append(s)
+                s.생산요청.생산계획.작업지시서
+                try:
+                    s.생산요청.생산계획.작업지시서.작업지시서등록
+                except:
+                    l_order.append(s)
+
             except:
                 pass
-        for s in l_order:
-            if s.생산요청.생산계획.작업지시서.작업지시서등록.생산담당자 == user:
-                s_order.append(s)
-        s_bool_m = False
+
+        s_bool = False
     else:
-        s_bool_m = True
+        s_bool = True
         order = (
             OR_models.OrderRegister.objects.filter(제품구분="단품")
             .filter(
-                Q(수주코드__contains=search_m)
-                | Q(영업구분=search_m)
-                | Q(제품구분=search_m)
-                | Q(사업장구분=search_m)
-                | Q(고객사명__거래처명__contains=search_m)
-                | Q(단품모델__모델명__contains=search_m)
-                | Q(단품모델__모델코드__contains=search_m)
-                | Q(랙모델__랙모델명__contains=search_m)
-                | Q(랙모델__랙시리얼코드__contains=search_m)
+                Q(수주코드__contains=search)
+                | Q(영업구분=search)
+                | Q(제품구분=search)
+                | Q(사업장구분=search)
+                | Q(고객사명__거래처명__contains=search)
+                | Q(단품모델__모델명__contains=search)
+                | Q(단품모델__모델코드__contains=search)
+                | Q(랙모델__랙모델명__contains=search)
+                | Q(랙모델__랙시리얼코드__contains=search)
             )
             .order_by("-created")
         )
-        s_order = []
-        l_order = []
 
+        l_order = []
         for s in order:
             try:
-                s.생산요청.생산계획.작업지시서.작업지시서등록.최종검사
-                l_order.append(s)
+                s.생산요청.생산계획.작업지시서
+                try:
+                    s.생산요청.생산계획.작업지시서.작업지시서등록
+                except:
+                    l_order.append(s)
+
             except:
                 pass
-        for s in l_order:
-            if s.생산요청.생산계획.작업지시서.작업지시서등록.생산담당자 == user:
-                s_order.append(s)
 
-    if search is None:
-        s_bool = False
+    if search_m is None:
+        s_bool_m = False
         order = OR_models.OrderRegister.objects.all().order_by("-created")
         a_order = []
         for s in order:
             if str(s.process())[0:3] == "생산중":
                 a_order.append(s)
     else:
-        s_bool = True
+        s_bool_m = True
         order = OR_models.OrderRegister.objects.filter(
-            Q(수주코드__contains=search)
-            | Q(영업구분=search)
-            | Q(제품구분=search)
-            | Q(사업장구분=search)
-            | Q(고객사명__거래처명__contains=search)
-            | Q(단품모델__모델명__contains=search)
-            | Q(단품모델__모델코드__contains=search)
-            | Q(랙모델__랙모델명__contains=search)
-            | Q(랙모델__랙시리얼코드__contains=search)
+            Q(수주코드__contains=search_m)
+            | Q(영업구분=search_m)
+            | Q(제품구분=search_m)
+            | Q(사업장구분=search_m)
+            | Q(고객사명__거래처명__contains=search_m)
+            | Q(단품모델__모델명__contains=search_m)
+            | Q(단품모델__모델코드__contains=search_m)
+            | Q(랙모델__랙모델명__contains=search_m)
+            | Q(랙모델__랙시리얼코드__contains=search_m)
         ).order_by("-created")
         a_order = []
         for s in order:
@@ -814,17 +816,19 @@ def producehome(request):
                 a_order.append(s)
 
     pagediv = 7
-    totalpage_m = int(math.ceil(len(s_order) / pagediv))
-    paginator_m = Paginator(s_order, pagediv, orphans=3)
+
+    totalpage_m = int(math.ceil(len(a_order) / pagediv))
+    paginator_m = Paginator(a_order, pagediv, orphans=3)
     page_m = request.GET.get("page_m", "1")
-    s_order = paginator_m.get_page(page_m)
+    a_order = paginator_m.get_page(page_m)
     nextpage_m = int(page_m) + 1
     previouspage_m = int(page_m) - 1
     notsamebool_m = True
-    totalpage = int(math.ceil(len(a_order) / pagediv))
-    paginator = Paginator(a_order, pagediv, orphans=3)
+
+    totalpage = int(math.ceil(len(l_order) / pagediv))
+    paginator = Paginator(l_order, pagediv, orphans=3)
     page = request.GET.get("page", "1")
-    a_order = paginator.get_page(page)
+    l_order = paginator.get_page(page)
     nextpage = int(page) + 1
     previouspage = int(page) - 1
     notsamebool = True
@@ -842,7 +846,7 @@ def producehome(request):
         request,
         "producemanages/producehome.html",
         {
-            "order_m": s_order,
+            "order_m": l_order,
             "search_m": search_m,
             "page_m": page_m,
             "totalpage_m": totalpage_m,
@@ -990,6 +994,8 @@ def workdonelist(request):
     user = request.user
     search = request.GET.get("search")
     search_m = request.GET.get("search_m")
+    search_t = request.GET.get("search_t")
+
     if search_m is None:
         s_order_m = []
         l_order_m = []
@@ -1042,7 +1048,11 @@ def workdonelist(request):
                 s_order_m.append(s)
 
     if search is None:
-        order = QC_models.RepairRegister.objects.filter(작성자=user).order_by("-created")
+        order = (
+            QC_models.RepairRegister.objects.filter(작성자=user)
+            .filter(수리최종="최종검사결과")
+            .order_by("-created")
+        )
         s_order = []
         for s in order:
             try:
@@ -1054,6 +1064,7 @@ def workdonelist(request):
         s_bool = True
         order = (
             QC_models.RepairRegister.objects.filter(작성자=user)
+            .filter(수리최종="최종검사결과")
             .filter(
                 Q(최종검사결과__최종검사코드__contains=search)
                 | Q(최종검사결과__제품__모델명__contains=search)
@@ -1072,7 +1083,56 @@ def workdonelist(request):
             except:
                 s_order.append(s)
 
+    if search_t is None:
+        s_order_t = []
+        order = (
+            QC_models.RepairRegister.objects.filter(작성자=user)
+            .filter(수리최종="AS")
+            .order_by("-created")
+        )
+        for s in order:
+            try:
+                s.최종검사
+            except:
+                s_order_t.append(s)
+        s_bool_t = False
+    else:
+        s_bool_t = True
+        s_order_t = []
+        order = (
+            QC_models.RepairRegister.objects.filter(작성자=user)
+            .filter(수리최종="AS")
+            .filter(
+                Q(AS수리의뢰__수리요청코드__contains=search_t)
+                | Q(AS수리의뢰__신청품목__모델명__contains=search_t)
+                | Q(AS수리의뢰__신청품목__모델코드__contains=search_t)
+                | Q(작성자__first_name__contains=search_t)
+                | Q(불량위치및자재__contains=search_t)
+                | Q(수리내용__contains=search_t)
+            )
+            .order_by("-created")
+        )
+        for s in order:
+            try:
+                s.최종검사
+            except:
+                s_order_t.append(s)
+
     pagediv = 7
+    totalpage_t = int(math.ceil(len(s_order_t) / pagediv))
+    paginator_t = Paginator(s_order_t, pagediv, orphans=3)
+    page_t = request.GET.get("page_t", "1")
+    s_order_t = paginator_t.get_page(page_t)
+    nextpage_t = int(page_t) + 1
+    previouspage_t = int(page_t) - 1
+    nonpage_t = False
+    notsamebool_t = True
+    if totalpage_t == 0:
+        nonpage_t = True
+    if int(page_t) == totalpage_t:
+        notsamebool_t = False
+    if (search_t is None) or (search_t == ""):
+        search_t = "search"
 
     totalpage_m = int(math.ceil(len(s_order_m) / pagediv))
     paginator_m = Paginator(s_order_m, pagediv, orphans=3)
@@ -1107,6 +1167,7 @@ def workdonelist(request):
         request,
         "producemanages/workdonelist.html",
         {
+            "s_order_t": s_order_t,
             "s_order": s_order,
             "search": search,
             "page": page,
@@ -1125,6 +1186,15 @@ def workdonelist(request):
             "previouspage_m": previouspage_m,
             "s_bool_m": s_bool_m,
             "nonpage_m": nonpage_m,
+            "s_order_t": s_order_t,
+            "search_t": search_t,
+            "page_t": page_t,
+            "totalpage_t": totalpage_t,
+            "notsamebool_t": notsamebool_t,
+            "nextpage_t": nextpage_t,
+            "previouspage_t": previouspage_t,
+            "s_bool_t": s_bool_t,
+            "nonpage_t": nonpage_t,
         },
     )
 
@@ -1387,6 +1457,30 @@ class repairupdate(user_mixins.LoggedInOnlyView, UpdateView):
 def repairlist(request):
     user = request.user
     search = request.GET.get("search")
+    search_m = request.GET.get("search_m")
+    if search_m is None:
+        s_order_m = (
+            QC_models.RepairRegister.objects.filter(작성자=user)
+            .filter(수리최종="AS")
+            .order_by("-created")
+        )
+        s_bool_m = False
+    else:
+        s_bool_m = True
+
+        s_order_m = (
+            QC_models.RepairRegister.objects.filter(작성자=user)
+            .filter(수리최종="AS")
+            .filter(
+                Q(AS수리의뢰__수리요청코드__contains=search_m)
+                | Q(AS수리의뢰__신청품목__모델명__contains=search_m)
+                | Q(AS수리의뢰__신청품목__모델코드__contains=search_m)
+                | Q(작성자__first_name__contains=search_m)
+                | Q(불량위치및자재__contains=search_m)
+                | Q(수리내용__contains=search_m)
+            )
+            .order_by("-created")
+        )
 
     if search is None:
         l_order = (
@@ -1399,6 +1493,7 @@ def repairlist(request):
         s_bool = True
         l_order = (
             QC_models.RepairRegister.objects.filter(작성자=user)
+            .filter(수리최종="최종검사결과")
             .filter(
                 Q(최종검사결과__최종검사코드__contains=search)
                 | Q(최종검사결과__제품__모델명__contains=search)
@@ -1411,6 +1506,21 @@ def repairlist(request):
         )
 
     pagediv = 7
+
+    totalpage_m = int(math.ceil(len(s_order_m) / pagediv))
+    paginator_m = Paginator(s_order_m, pagediv, orphans=3)
+    page_m = request.GET.get("page_m", "1")
+    s_order_m = paginator_m.get_page(page_m)
+    nextpage_m = int(page_m) + 1
+    previouspage_m = int(page_m) - 1
+    nonpage_m = False
+    notsamebool_m = True
+    if totalpage_m == 0:
+        nonpage_m = True
+    if int(page_m) == totalpage_m:
+        notsamebool_m = False
+    if (search_m is None) or (search_m == ""):
+        search_m = "search"
 
     totalpage = int(math.ceil(len(l_order) / pagediv))
     paginator = Paginator(l_order, pagediv, orphans=3)
@@ -1439,6 +1549,15 @@ def repairlist(request):
             "previouspage": previouspage,
             "s_bool": s_bool,
             "nonpage": nonpage,
+            "s_order_m": s_order_m,
+            "search_m": search_m,
+            "page_m": page_m,
+            "totalpage_m": totalpage_m,
+            "notsamebool_m": notsamebool_m,
+            "nextpage_m": nextpage_m,
+            "previouspage_m": previouspage_m,
+            "s_bool_m": s_bool_m,
+            "nonpage_m": nonpage_m,
         },
     )
 
@@ -1466,6 +1585,25 @@ class repairupdateindetail(repairupdate):
         return reverse("producemanages:repairdetail", kwargs={"pk": pk})
 
 
+class repairupdateindetailAS(repairupdateindetail):
+    template_name = "producemanages/repaireditAS.html"
+
+    def render_to_response(self, context, **response_kwargs):
+
+        response_kwargs.setdefault("content_type", self.content_type)
+        pk = self.kwargs.get("pk")
+        repair = QC_models.RepairRegister.objects.get_or_none(pk=pk)
+        ASrequest = repair.AS수리의뢰
+        context["ASrequest"] = ASrequest
+        return self.response_class(
+            request=self.request,
+            template=self.get_template_names(),
+            context=context,
+            using=self.template_engine,
+            **response_kwargs
+        )
+
+
 def repairdeleteensure(request, pk):
     repair = QC_models.RepairRegister.objects.get_or_none(pk=pk)
     return render(
@@ -1487,3 +1625,323 @@ def orderfinalcheckforrepair(request, pk):
     messages.success(request, "최종검사의뢰가 완료되었습니다.")
 
     return redirect(reverse("producemanages:workdonelist"))
+
+
+def checkdonelist(request):
+    user = request.user
+    search = request.GET.get("search")
+    search_m = request.GET.get("search_m")
+    search_t = request.GET.get("search_t")
+
+    if search_m is None:
+        s_order_m = []
+        l_order_m = []
+        order = OR_models.OrderRegister.objects.filter(제품구분="단품").order_by("-created")
+
+        for s in order:
+            try:
+                s.생산요청.생산계획.작업지시서.작업지시서등록.최종검사
+                l_order_m.append(s)
+            except:
+                pass
+
+        for s in l_order_m:
+            if s.생산요청.생산계획.작업지시서.작업지시서등록.생산담당자 == user:
+                s_order_m.append(s)
+        s_bool_m = False
+    else:
+        s_bool_m = True
+        order = (
+            OR_models.OrderRegister.objects.filter(제품구분="단품")
+            .filter(
+                Q(수주코드__contains=search_m)
+                | Q(영업구분=search_m)
+                | Q(제품구분=search_m)
+                | Q(사업장구분=search_m)
+                | Q(고객사명__거래처명__contains=search_m)
+                | Q(단품모델__모델명__contains=search_m)
+                | Q(단품모델__모델코드__contains=search_m)
+                | Q(랙모델__랙모델명__contains=search_m)
+                | Q(랙모델__랙시리얼코드__contains=search_m)
+            )
+            .order_by("-created")
+        )
+        s_order_m = []
+        l_order_m = []
+
+        for s in order:
+            try:
+                s.생산요청.생산계획.작업지시서.작업지시서등록.최종검사
+                l_order_m.append(s)
+            except:
+                pass
+        for s in l_order_m:
+            if s.생산요청.생산계획.작업지시서.작업지시서등록.생산담당자 == user:
+                s_order_m.append(s)
+
+    if search is None:
+        order = (
+            QC_models.RepairRegister.objects.filter(작성자=user)
+            .filter(수리최종="최종검사결과")
+            .order_by("-created")
+        )
+        s_order = []
+        for s in order:
+            try:
+                s.최종검사
+                s_order.append(s)
+            except:
+                pass
+        s_bool = False
+    else:
+        s_bool = True
+        order = (
+            QC_models.RepairRegister.objects.filter(작성자=user)
+            .filter(수리최종="최종검사결과")
+            .filter(
+                Q(최종검사결과__최종검사코드__contains=search)
+                | Q(최종검사결과__제품__모델명__contains=search)
+                | Q(최종검사결과__제품__모델코드__contains=search)
+                | Q(작성자__first_name__contains=search)
+                | Q(불량위치및자재__contains=search)
+                | Q(수리내용__contains=search)
+            )
+            .order_by("-created")
+        )
+
+        s_order = []
+        for s in order:
+            try:
+                s.최종검사
+                s_order.append(s)
+            except:
+                pass
+
+    if search_t is None:
+        s_order_t = []
+        order = (
+            QC_models.RepairRegister.objects.filter(작성자=user)
+            .filter(수리최종="AS")
+            .order_by("-created")
+        )
+        for s in order:
+            try:
+                s.최종검사
+                s_order_t.append(s)
+            except:
+                pass
+        s_bool_t = False
+    else:
+        s_bool_t = True
+        s_order_t = []
+        order = (
+            QC_models.RepairRegister.objects.filter(작성자=user)
+            .filter(수리최종="AS")
+            .filter(
+                Q(AS수리의뢰__수리요청코드__contains=search_t)
+                | Q(AS수리의뢰__신청품목__모델명__contains=search_t)
+                | Q(AS수리의뢰__신청품목__모델코드__contains=search_t)
+                | Q(작성자__first_name__contains=search_t)
+                | Q(불량위치및자재__contains=search_t)
+                | Q(수리내용__contains=search_t)
+            )
+            .order_by("-created")
+        )
+        for s in order:
+            try:
+                s.최종검사
+                s_order_t.append(s)
+            except:
+                pass
+
+    pagediv = 7
+    totalpage_t = int(math.ceil(len(s_order_t) / pagediv))
+    paginator_t = Paginator(s_order_t, pagediv, orphans=3)
+    page_t = request.GET.get("page_t", "1")
+    s_order_t = paginator_t.get_page(page_t)
+    nextpage_t = int(page_t) + 1
+    previouspage_t = int(page_t) - 1
+    nonpage_t = False
+    notsamebool_t = True
+    if totalpage_t == 0:
+        nonpage_t = True
+    if int(page_t) == totalpage_t:
+        notsamebool_t = False
+    if (search_t is None) or (search_t == ""):
+        search_t = "search"
+
+    totalpage_m = int(math.ceil(len(s_order_m) / pagediv))
+    paginator_m = Paginator(s_order_m, pagediv, orphans=3)
+    page_m = request.GET.get("page_m", "1")
+    s_order_m = paginator_m.get_page(page_m)
+    nextpage_m = int(page_m) + 1
+    previouspage_m = int(page_m) - 1
+    nonpage_m = False
+    notsamebool_m = True
+    if totalpage_m == 0:
+        nonpage_m = True
+    if int(page_m) == totalpage_m:
+        notsamebool_m = False
+    if (search_m is None) or (search_m == ""):
+        search_m = "search"
+
+    totalpage = int(math.ceil(len(s_order) / pagediv))
+    paginator = Paginator(s_order, pagediv, orphans=3)
+    page = request.GET.get("page", "1")
+    s_order = paginator.get_page(page)
+    nextpage = int(page) + 1
+    previouspage = int(page) - 1
+    notsamebool = True
+    nonpage = False
+    if totalpage == 0:
+        nonpage = True
+    if int(page) == totalpage:
+        notsamebool = False
+    if (search is None) or (search == ""):
+        search = "search"
+    return render(
+        request,
+        "producemanages/checkdonelist.html",
+        {
+            "s_order_t": s_order_t,
+            "s_order": s_order,
+            "search": search,
+            "page": page,
+            "totalpage": totalpage,
+            "notsamebool": notsamebool,
+            "nextpage": nextpage,
+            "previouspage": previouspage,
+            "s_bool": s_bool,
+            "nonpage": nonpage,
+            "s_order_m": s_order_m,
+            "search_m": search_m,
+            "page_m": page_m,
+            "totalpage_m": totalpage_m,
+            "notsamebool_m": notsamebool_m,
+            "nextpage_m": nextpage_m,
+            "previouspage_m": previouspage_m,
+            "s_bool_m": s_bool_m,
+            "nonpage_m": nonpage_m,
+            "s_order_t": s_order_t,
+            "search_t": search_t,
+            "page_t": page_t,
+            "totalpage_t": totalpage_t,
+            "notsamebool_t": notsamebool_t,
+            "nextpage_t": nextpage_t,
+            "previouspage_t": previouspage_t,
+            "s_bool_t": s_bool_t,
+            "nonpage_t": nonpage_t,
+        },
+    )
+
+
+def finalcheckdetail(request, pk):
+    finalcheck = QC_models.FinalCheckRegister.objects.get_or_none(pk=pk)
+    user = request.user
+    return render(
+        request, "producemanages/finalcheckdetail.html", {"finalcheck": finalcheck,},
+    )
+
+
+def ASrequestlist(request):
+    user = request.user
+    search = request.GET.get("search")
+
+    if search is None:
+        s_order = []
+        order = AS_models.ASRepairRequest.objects.all().order_by("-created")
+        for s in order:
+            try:
+                s.수리내역서
+            except:
+                s_order.append(s)
+
+        s_bool = False
+    else:
+        s_bool = True
+        order = AS_models.ASRepairRequest.objects.filter(
+            Q(신청자__contains=search)
+            | Q(신청품목__모델명__contains=search)
+            | Q(신청품목__모델코드__contains=search)
+            | Q(수리요청코드__contains=search)
+        ).order_by("-created")
+        s_order = []
+        for s in order:
+            try:
+                s.수리내역서
+            except:
+                s_order.append(s)
+
+    pagediv = 7
+
+    totalpage = int(math.ceil(len(s_order) / pagediv))
+    paginator = Paginator(s_order, pagediv, orphans=3)
+    page = request.GET.get("page", "1")
+    s_order = paginator.get_page(page)
+    nextpage = int(page) + 1
+    previouspage = int(page) - 1
+    notsamebool = True
+    nonpage = False
+    if totalpage == 0:
+        nonpage = True
+    if int(page) == totalpage:
+        notsamebool = False
+    if (search is None) or (search == ""):
+        search = "search"
+    return render(
+        request,
+        "producemanages/ASrequestlist.html",
+        {
+            "s_order": s_order,
+            "search": search,
+            "page": page,
+            "totalpage": totalpage,
+            "notsamebool": notsamebool,
+            "nextpage": nextpage,
+            "previouspage": previouspage,
+            "s_bool": s_bool,
+            "nonpage": nonpage,
+        },
+    )
+
+
+def repairregisterAS(request, pk):
+    user = request.user
+    ASrequest = AS_models.ASRepairRequest.objects.get_or_none(pk=pk)
+
+    form = forms.UploadRepairForm(request.POST)
+
+    if form.is_valid():
+        불량위치및자재 = form.cleaned_data.get("불량위치및자재")
+        수리내용 = form.cleaned_data.get("수리내용")
+        실수리수량 = form.cleaned_data.get("실수리수량")
+        폐기수량 = form.cleaned_data.get("폐기수량")
+        특이사항 = form.cleaned_data.get("특이사항")
+
+        SM = QC_models.RepairRegister.objects.create(
+            AS수리의뢰=ASrequest,
+            수리최종="AS",
+            작성자=user,
+            불량위치및자재=불량위치및자재,
+            특이사항=특이사항,
+            수리내용=수리내용,
+            실수리수량=실수리수량,
+            폐기수량=폐기수량,
+        )
+
+        messages.success(request, "수리내역서 등록이 완료되었습니다.")
+        return redirect(reverse("producemanages:producehome"))
+    return render(
+        request,
+        "producemanages/repairregisterAS.html",
+        {"form": form, "ASrequest": ASrequest,},
+    )
+
+
+def finalcheckrequestdelete(request, pk):
+    finalcheckrequest = QC_models.FinalCheck.objects.get_or_none(pk=pk)
+    pk = finalcheckrequest.수리내역서.pk
+    finalcheckrequest.delete()
+    messages.success(request, "최종검사 의뢰가 철회되었습니다.")
+    return redirect(reverse("producemanages:repairdetail", kwargs={"pk": pk}))
+

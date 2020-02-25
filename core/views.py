@@ -23,6 +23,8 @@ def firstindecide(request):
             return redirect(reverse("producemanages:producemanageshome"))
         elif user.부서.부서명 == "공정관리부":
             return redirect(reverse("producemanages:producehome"))
+        elif user.부서.부서명 == "품질부":
+            return redirect(reverse("qualitycontrols:qualitycontrolshome"))
         else:
             return render(request, "base.html")
 

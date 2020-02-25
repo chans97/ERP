@@ -1,0 +1,78 @@
+{%extends "producemanages/producehome.html"%}
+{%load static%}
+{% block page_title%}
+수리내역서 등록
+{%endblock%}
+
+
+{%block head_title%}
+<i class="fas fa-angle-right text-base mx-1"></i>수리내역서 등록</div>
+{%endblock head_title %}
+
+
+{%block main_contens%}
+<div class="w-11/12 h-full ml-32 -mt-6 font-normal pt-12 flex flex-row">
+
+    <div class="flex flex-col p-6 w-full ">
+        <span class="border-b w-1/3 mb-3 border-gray-600 pb-2 font-semibold text-base">'{{ASrequest.수리요청코드}}' 수리신청-
+            수리내역서 등록
+        </span>
+
+        <div class="flex ">
+
+            <div class=" flex flex-col px-12 justify-center">
+
+
+
+                <form method="POST" class="flex flex-col justify-center " enctype="multipart/form-data">
+                    {% csrf_token %}
+
+
+                    <div class="w-8/12 flex flex-col justify-center ">
+                        <table class="table-fixed text-sm w-full -ml-12">
+
+                            <tbody>
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200 w-40">수리내역서</td>
+                                    <td class="border px-4 py-2 bg-gray-200 w-48">불량위치및자재</td>
+                                    <td class="border px-4 py-2 bg-gray-200 w-48">수리내용</td>
+                                    <td class="border px-4 py-2 bg-gray-200 w-48">실수리수량</td>
+                                    <td class="border px-4 py-2 bg-gray-200 w-48">폐기수량</td>
+                                    <td class="border px-4 py-2 bg-gray-200 w-48">특이사항</td>
+
+                                </tr>
+
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200 text-center">
+
+                                        {{ASrequest.신청품목}}
+                                    </td>{% for field in form %}
+
+                                    <td class="border px-4 py-2">
+                                        <div class="border hover:border-gray-500 w-full">
+                                            {{field}}</div>
+                                        <div class="text-xs text-teal-700">{{field.help_text}}
+                                        </div>
+                                        {% if field.errors %}
+                                        {% for error in field.errors %}
+                                        <div class="text-red-700 font-light text-xs">*{{error}}</div>
+                                        {% endfor %}
+                                        {% endif %}
+
+                                        {%endfor%}
+                                    </td>
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <button class="btn-link felx mt-5 h-10 w-2/4   ml-20">
+                        <div class="text-sm forn-bold">수리내역서등록</div>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+{%endblock main_contens %}

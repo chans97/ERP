@@ -56,42 +56,18 @@ urlpatterns = [
         name="orderdetailforwork",
     ),
     path(
-        "orderfinaldelete/<int:pk>/",
-        views.orderfinaldelete,
-        name="orderfinaldelete",
+        "orderfinaldelete/<int:pk>/", views.orderfinaldelete, name="orderfinaldelete",
     ),
     path(
-        "workdeleteensure/<int:pk>/",
-        views.workdeleteensure,
-        name="workdeleteensure",
+        "workdeleteensure/<int:pk>/", views.workdeleteensure, name="workdeleteensure",
     ),
-    path(
-        "workdelete/<int:pk>/",
-        views.workdelete,
-        name="workdelete",
-    ),
-    path(
-        "workupdate/<int:pk>/",
-        views.workupdate.as_view(),
-        name="workupdate",
-    ),
+    path("workdelete/<int:pk>/", views.workdelete, name="workdelete",),
+    path("workupdate/<int:pk>/", views.workupdate.as_view(), name="workupdate",),
     path("finalchecklist/", views.finalchecklist, name="finalchecklist"),
-    path(
-        "repairregister/<int:pk>/",
-        views.repairregister,
-        name="repairregister",
-    ),
-    path(
-        "repairupdate/<int:pk>/",
-        views.repairupdate.as_view(),
-        name="repairupdate",
-    ),
+    path("repairregister/<int:pk>/", views.repairregister, name="repairregister",),
+    path("repairupdate/<int:pk>/", views.repairupdate.as_view(), name="repairupdate",),
     path("repairlist/", views.repairlist, name="repairlist"),
-    path(
-        "repairdetail/<int:pk>/",
-        views.repairdetail,
-        name="repairdetail",
-    ),
+    path("repairdetail/<int:pk>/", views.repairdetail, name="repairdetail",),
     path(
         "repairupdateindetail/<int:pk>/",
         views.repairupdateindetail.as_view(),
@@ -102,21 +78,28 @@ urlpatterns = [
         views.repairdeleteensure,
         name="repairdeleteensure",
     ),
-    path(
-        "repairdelete/<int:pk>/",
-        views.repairdelete,
-        name="repairdelete",
-    ),
+    path("repairdelete/<int:pk>/", views.repairdelete, name="repairdelete",),
     path(
         "orderfinalcheckforrepair/<int:pk>/",
         views.orderfinalcheckforrepair,
         name="orderfinalcheckforrepair",
     ),
-    
-
-    
-    
-    
-    
-
+    path("checkdonelist/", views.checkdonelist, name="checkdonelist"),
+    path(
+        "finalcheckdetail/<int:pk>/", views.finalcheckdetail, name="finalcheckdetail",
+    ),
+    path("ASrequestlist/", views.ASrequestlist, name="ASrequestlist"),
+    path(
+        "repairregisterAS/<int:pk>/", views.repairregisterAS, name="repairregisterAS",
+    ),
+    path(
+        "finalcheckrequestdelete/<int:pk>/",
+        views.finalcheckrequestdelete,
+        name="finalcheckrequestdelete",
+    ),
+    path(
+        "repairupdateindetailAS/<int:pk>/",
+        views.repairupdateindetailAS.as_view(),
+        name="repairupdateindetailAS",
+    ),
 ]

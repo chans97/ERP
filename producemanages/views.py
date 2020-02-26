@@ -92,6 +92,11 @@ class OrderDetail(user_mixins.LoggedInOnlyView, DetailView):
             orderfinalboolean = True
         except:
             orderfinalboolean = False
+        try:
+            order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.수리내역서
+            repairboolean = True
+        except:
+            repairboolean = False
 
         return render(
             request,
@@ -110,6 +115,7 @@ class OrderDetail(user_mixins.LoggedInOnlyView, DetailView):
                 "workboolean": workboolean,
                 "workdoneboolean": workdoneboolean,
                 "orderfinalboolean": orderfinalboolean,
+                "repairboolean": repairboolean,
             },
         )
 
@@ -824,6 +830,9 @@ def producehome(request):
     nextpage_m = int(page_m) + 1
     previouspage_m = int(page_m) - 1
     notsamebool_m = True
+    nonpage_m = False
+    if totalpage_m == 0:
+        nonpage_m = True
 
     totalpage = int(math.ceil(len(l_order) / pagediv))
     paginator = Paginator(l_order, pagediv, orphans=3)
@@ -832,6 +841,9 @@ def producehome(request):
     nextpage = int(page) + 1
     previouspage = int(page) - 1
     notsamebool = True
+    nonpage = False
+    if totalpage == 0:
+        nonpage = True
 
     if int(page_m) == totalpage_m:
         notsamebool_m = False
@@ -862,6 +874,8 @@ def producehome(request):
             "nextpage": nextpage,
             "previouspage": previouspage,
             "s_bool": s_bool,
+            "nonpage": nonpage,
+            "nonpage_m": nonpage_m,
             "최종검사완료": "최종검사완료",
             "최종검사의뢰완료": "최종검사의뢰완료",
             "수주등록완료": "수주등록완료",
@@ -1207,7 +1221,7 @@ def orderfinalcheck(request, pk):
     workorder = produceplan.작업지시서
     work = workorder.작업지시서등록
 
-    SM = QC_models.FinalCheck.objects.create(작업지시서=work)
+    SM = QC_models.FinalCheck.objects.create(작업지시서=work, 제품=order.단품모델)
 
     messages.success(request, "최종검사의뢰가 완료되었습니다.")
 
@@ -1394,6 +1408,7 @@ def repairregister(request, pk):
             수리내용=수리내용,
             실수리수량=실수리수량,
             폐기수량=폐기수량,
+            제품=finalcheck.제품,
         )
 
         messages.success(request, "수리내역서 등록이 완료되었습니다.")
@@ -1573,7 +1588,7 @@ def repairdetail(request, pk):
     return render(
         request,
         "producemanages/repairdetail.html",
-        {"repair": repair, "finalcheckboolean": finalcheckboolean,},
+        {"repair": repair, "finalcheckboolean": finalcheckboolean, "user": user,},
     )
 
 
@@ -1620,7 +1635,7 @@ def repairdelete(request, pk):
 
 def orderfinalcheckforrepair(request, pk):
     repair = QC_models.RepairRegister.objects.get_or_none(pk=pk)
-    SM = QC_models.FinalCheck.objects.create(수리내역서=repair)
+    SM = QC_models.FinalCheck.objects.create(수리내역서=repair, 제품=repair.제품)
 
     messages.success(request, "최종검사의뢰가 완료되었습니다.")
 
@@ -1927,6 +1942,7 @@ def repairregisterAS(request, pk):
             수리내용=수리내용,
             실수리수량=실수리수량,
             폐기수량=폐기수량,
+            제품=ASrequest.신청품목,
         )
 
         messages.success(request, "수리내역서 등록이 완료되었습니다.")

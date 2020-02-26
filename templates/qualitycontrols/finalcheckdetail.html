@@ -1,0 +1,175 @@
+{%extends "qualitycontrols/qualitycontrolshome.html"%}
+{% load static%}
+{% block page_title%}
+최종검사상세
+{%endblock%}
+
+
+{%block head_title%}
+<i class="fas fa-angle-right text-base mx-1"></i>
+<span class="text-gray-700">
+    최종검사({{finalcheck.최종검사코드}}) 상세보기
+    {%endblock head_title %}
+
+
+    {%block main_contens%}
+
+    <div class="w-11/12 h-full ml-32 -mt-6 pt-12 flex flex-row">
+
+        <div class="p-6 flex flex-col w-full">
+            <div class="flex flex-col w-full">
+                <div class="flex flex-row justify-between w-full ">
+                    <div class=" border-b w-64 mb-3 font-semibold border-gray-600 pb-2">
+                        최종검사 : {{finalcheck.최종검사코드}} - 상세보기
+                    </div>
+                    {%if finalcheck.검시자 == user%}
+                    {%if repairbool%}
+                    {%else%}
+
+                    <div class="flex">
+                        <div class=" w-full">
+                            <a href="{%url "qualitycontrols:finalcheckedit" finalcheck.pk%}">
+                                <div class="btn-link w-40 bg-blue-800 ml-5 hover:font-bold">
+                                    최종검사결과수정 </div>
+                            </a>
+                        </div>
+                        <div class="">
+                            <a href="{%url "qualitycontrols:finalcheckdeleteensure" finalcheck.pk%}">
+                                <div class="btn-link w-40 bg-red-800 ml-5 hover:font-bold">
+                                    최종검사결과삭제 </div>
+                            </a>
+                        </div>
+                    </div>
+                    {%endif%}
+                    {%endif%}
+
+
+                </div>
+                <div class="flex ">
+                    <table class="table-fixed text-sm">
+                        <thead>
+                            <tr>
+                                <th class="border border-r-0 bg-gray-400  py-2 w-40 text-right">{{finalcheck.최종검사코드}}
+                                </th>
+                                <th class="border border-l-0 bg-gray-400  py-2 w-56 text-left">의 최종검사</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="border px-4 py-2 bg-gray-200">최종검사코드</td>
+                                <td class="border px-4 py-2">{{finalcheck.최종검사코드}}</td>
+                            </tr>
+                            <tr>
+                                <td class="border px-4 py-2 bg-gray-200">제품</td>
+                                <td class="border px-4 py-2">{{finalcheck.제품}}</td>
+                            </tr>
+                            <tr>
+                                <td class="border px-4 py-2 bg-gray-200">부적합수량</td>
+                                <td class="border px-4 py-2">{{finalcheck.부적합수량}}</td>
+                            </tr>
+                            <tr>
+                                <td class="border px-4 py-2 bg-gray-200">적합수량</td>
+                                <td class="border px-4 py-2">{{finalcheck.적합수량}}</td>
+                            </tr>
+                            <tr>
+                                <td class="border px-4 py-2 bg-gray-200">검시자</td>
+                                <td class="border px-4 py-2">{{finalcheck.검시자}}</td>
+                            </tr>
+                            <tr>
+                                <td class="border px-4 py-2 bg-gray-200">검시일</td>
+                                <td class="border px-4 py-2">{{finalcheck.검시일}}</td>
+                            </tr>
+                            <tr>
+                                <td class="border px-4 py-2 bg-gray-200">CR</td>
+                                <td class="border px-4 py-2">{{finalcheck.CR}}</td>
+                            </tr>
+                            <tr>
+                                <td class="border px-4 py-2 bg-gray-200">MA</td>
+                                <td class="border px-4 py-2">{{finalcheck.MA}}</td>
+                            </tr>
+                            <tr>
+                                <td class="border px-4 py-2 bg-gray-200">MI</td>
+                                <td class="border px-4 py-2">{{finalcheck.MI}}</td>
+                            </tr>
+                            <tr>
+                                <td class="border px-4 py-2 bg-gray-200">검사수준</td>
+                                <td class="border px-4 py-2">{{finalcheck.검사수준}}</td>
+                            </tr>
+                            <tr>
+                                <td class="border px-4 py-2 bg-gray-200">Sample방식</td>
+                                <td class="border px-4 py-2">{{finalcheck.Sample방식}}</td>
+                            </tr>
+                            <tr>
+                                <td class="border px-4 py-2 bg-gray-200">결점수</td>
+                                <td class="border px-4 py-2">{{finalcheck.결점수}}</td>
+                            </tr>
+                            <tr>
+                                <td class="border px-4 py-2 bg-gray-200">전원전압</td>
+                                <td class="border px-4 py-2">{{finalcheck.전원전압}}</td>
+                            </tr>
+                            <tr>
+                                <td class="border px-4 py-2 bg-gray-200">POWERTRANS</td>
+                                <td class="border px-4 py-2">{{finalcheck.POWERTRANS}}</td>
+                            </tr>
+                            <tr>
+                                <td class="border px-4 py-2 bg-gray-200">FUSE_전_ULUSA</td>
+                                <td class="border px-4 py-2">{{finalcheck.FUSE_전_ULUSA}}</td>
+                            </tr>
+                            <tr>
+                                <td class="border px-4 py-2 bg-gray-200">LABEL_인쇄물</td>
+                                <td class="border px-4 py-2">{{finalcheck.LABEL_인쇄물}}</td>
+                            </tr>
+                            <tr>
+                                <td class="border px-4 py-2 bg-gray-200">기타출하위치</td>
+                                <td class="border px-4 py-2">{{finalcheck.기타출하위치}}</td>
+                            </tr>
+                            <tr>
+                                <td class="border px-4 py-2 bg-gray-200">내용물</td>
+                                <td class="border px-4 py-2">{{finalcheck.내용물}}</td>
+                            </tr>
+                            <tr>
+                                <td class="border px-4 py-2 bg-gray-200">포장검사</td>
+                                <td class="border px-4 py-2">{{finalcheck.포장검사}}</td>
+                            </tr>
+                            <tr>
+                                <td class="border px-4 py-2 bg-gray-200">동작검사</td>
+                                <td class="border px-4 py-2">{{finalcheck.동작검사}}</td>
+                            </tr>
+                            <tr>
+                                <td class="border px-4 py-2 bg-gray-200">내부검사</td>
+                                <td class="border px-4 py-2">{{finalcheck.내부검사}}</td>
+                            </tr>
+                            <tr>
+                                <td class="border px-4 py-2 bg-gray-200">외관검사</td>
+                                <td class="border px-4 py-2">{{finalcheck.외관검사}}</td>
+                            </tr>
+                            <tr>
+                                <td class="border px-4 py-2 bg-gray-200">내압검사</td>
+                                <td class="border px-4 py-2">{{finalcheck.내압검사}}</td>
+                            </tr>
+                            <tr>
+                                <td class="border px-4 py-2 bg-gray-200">내용물확인</td>
+                                <td class="border px-4 py-2">{{finalcheck.내용물확인}}</td>
+                            </tr>
+                            <tr>
+                                <td class="border px-4 py-2 bg-gray-200">가_감전압</td>
+                                <td class="border px-4 py-2">{{finalcheck.가_감전압}}</td>
+                            </tr>
+                            <tr>
+                                <td class="border px-4 py-2 bg-gray-200">HI_POT_내부검사</td>
+                                <td class="border px-4 py-2">{{finalcheck.HI_POT_내부검사}}</td>
+                            </tr>
+                            <tr>
+                                <td class="border px-4 py-2 bg-gray-200">REMARK</td>
+                                <td class="border px-4 py-2">{{finalcheck.REMARK}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+                </div>
+            </div>
+
+
+        </div>
+        {%endblock main_contens %}

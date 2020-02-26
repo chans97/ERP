@@ -1,4 +1,4 @@
-{%extends "producemanages/producehome.html"%}
+{%extends "qualitycontrols/qualitycontrolshome.html"%}
 {% load static%}
 {% block page_title%}
 수리상세
@@ -315,7 +315,9 @@
 
                     <tr>
                         <td class="border px-4 py-2 bg-gray-200">최종검사코드</td>
-                        <td class="border px-4 py-2">{{repair.최종검사.최종검사등록.최종검사코드}}</td>
+                        <td class="border px-4 py-2 hover:font-bold">
+                            <a href="{%url "qualitycontrols:finalcheckdetail" repair.최종검사.최종검사등록.pk%}">
+                                {{repair.최종검사.최종검사등록.최종검사코드}}</a></td>
                     </tr>
                     <tr>
                         <td class="border px-4 py-2 bg-gray-200">부적합수량</td>

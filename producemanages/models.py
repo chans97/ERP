@@ -43,10 +43,10 @@ class ProduceRegister(TimeStampedModel):
         null=True,
     )
     현재공정 = models.CharField(
-        choices=현재공정_CHOICES, max_length=10, null=True, blank=True, default=예비작업
+        choices=현재공정_CHOICES, max_length=10, null=True, default=예비작업
     )
     현재공정달성율 = models.CharField(
-        choices=현재공정달성율_CHOICES, max_length=10, null=True, blank=True, default=사영
+        choices=현재공정달성율_CHOICES, max_length=10, null=True, default=사영
     )
     계획생산량 = models.IntegerField(null=True)
     일일생산량 = models.IntegerField(null=True)

@@ -22,6 +22,12 @@ class FinalCheck(TimeStampedModel):
         null=True,
         blank=True,
     )
+    제품 = models.ForeignKey(
+        SI_models.SingleProduct,
+        related_name="최종검사",
+        on_delete=models.SET_NULL,
+        null=True,
+    )
 
     class Meta:
         verbose_name = "최종검사"
@@ -90,7 +96,7 @@ class FinalCheckRegister(TimeStampedModel):
         verbose_name_plural = "최종검사결과등록"
 
     def __str__(self):
-        return f" '{self.최종검사의뢰}' 의 최종검사결과"
+        return f" '{self.최종검사코드}' 의 최종검사결과"
 
 
 class RepairRegister(TimeStampedModel):
@@ -126,6 +132,12 @@ class RepairRegister(TimeStampedModel):
     수리내용 = models.TextField(max_length=300, null=True, blank=True,)
     실수리수량 = models.IntegerField()
     폐기수량 = models.IntegerField()
+    제품 = models.ForeignKey(
+        SI_models.SingleProduct,
+        related_name="수리내역서",
+        on_delete=models.SET_NULL,
+        null=True,
+    )
 
     class Meta:
         verbose_name = "수리내역서"

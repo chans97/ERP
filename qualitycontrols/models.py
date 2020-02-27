@@ -5,6 +5,7 @@ from users import models as users_models
 from StandardInformation import models as SI_models
 from producemanages import models as proms_models
 from afterservices import models as AS_models
+from django.utils import timezone
 
 
 class FinalCheck(TimeStampedModel):
@@ -182,18 +183,26 @@ class MaterialCheckRegister(TimeStampedModel):
 
 class MaterialCheck(TimeStampedModel):
     수입검사코드 = models.CharField(max_length=20)
-    수입검사의뢰 = models.ForeignKey("MaterialCheckRegister", on_delete=models.CASCADE)
+    수입검사의뢰 = models.OneToOneField(
+        "MaterialCheckRegister",
+        related_name="수입검사",
+        on_delete=models.SET_NULL,
+        null=True,
+    )
     검사지침서번호 = models.CharField(max_length=20)
     검사자 = models.ForeignKey(
         users_models.User, related_name="수입검사", on_delete=models.SET_NULL, null=True
     )
-    검사일자 = models.DateField(auto_now=False, auto_now_add=False)
+    검사일자 = models.DateField(auto_now=False, auto_now_add=False, blank=True, null=True)
     검사항목 = models.CharField(max_length=20, null=True, blank=True,)
     판정기준 = models.CharField(max_length=20, null=True, blank=True,)
     시료크기 = models.IntegerField()
     합격수량 = models.IntegerField()
     불합격수량 = models.IntegerField()
     불합격내용 = models.TextField(max_length=100, null=True, blank=True,)
+    자재 = models.ForeignKey(
+        SI_models.Material, related_name="수입검사", on_delete=models.SET_NULL, null=True
+    )
 
     class Meta:
         verbose_name = "수입검사"
@@ -201,6 +210,13 @@ class MaterialCheck(TimeStampedModel):
 
     def __str__(self):
         return f"수입검사 -'{self.수입검사의뢰.자재}'"
+
+    def process(self):
+        try:
+            self.자재부적합보고서
+            return "자재부적합등록완료"
+        except:
+            return "수입검사등록완료"
 
 
 class LowMetarial(TimeStampedModel):
@@ -222,15 +238,27 @@ class LowMetarial(TimeStampedModel):
         (기타, "기타"),
     )
 
-    자재부적합보고서번호 = models.CharField(max_length=20)
-    수입검사 = models.ForeignKey("MaterialCheck", on_delete=models.SET_NULL, null=True)
+    자재부적합코드 = models.CharField(max_length=20)
+    수입검사 = models.OneToOneField(
+        "MaterialCheck", related_name="자재부적합보고서", on_delete=models.SET_NULL, null=True
+    )
     검토자 = models.ForeignKey(
         users_models.User, related_name="자재부적합보고서", on_delete=models.SET_NULL, null=True
     )
-    검토일 = models.DateField(auto_now=False, auto_now_add=False)
+    검토일 = models.DateField(
+        auto_now=False,
+        auto_now_add=False,
+        blank=True,
+        default=timezone.now().date(),
+        null=True,
+    )
     부적합자재의내용과검토방안 = models.TextField(max_length=150, null=True, blank=True,)
-    처리방안 = models.CharField(
-        choices=처리방안_CHOICES, max_length=10, default=기타, null=True, blank=True,
+    처리방안 = models.CharField(choices=처리방안_CHOICES, max_length=10, default=기타, null=True,)
+    자재 = models.ForeignKey(
+        SI_models.Material,
+        related_name="자재부적합보고서",
+        on_delete=models.SET_NULL,
+        null=True,
     )
 
     class Meta:
@@ -238,4 +266,4 @@ class LowMetarial(TimeStampedModel):
         verbose_name_plural = "자재부적합보고서"
 
     def __str__(self):
-        return f"자재부적합보고서 -'{self.수입검사.수입검사의뢰.자재}'"
+        return f"자재부적합보고서 -'{self.자재부적합코드}'"

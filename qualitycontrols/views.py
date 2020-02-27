@@ -35,7 +35,7 @@ from qualitycontrols import models as QC_models
 from afterservices import models as AS_models
 
 
-class qualitycontrolshome(View):
+class qualitycontrolshome(View, user_mixins.LoggedInOnlyView):
     def get_first_queryset(self, request):
         self.search = request.GET.get("search")
         if self.search is None:
@@ -172,7 +172,7 @@ class qualitycontrolshome(View):
         self.queryset = self.get_first_queryset(self.request)
         self.pagediv = 7
         self.totalpage = int(math.ceil(len(self.queryset) / self.pagediv))
-        self.paginator = Paginator(self.queryset, self.pagediv, orphans=3)
+        self.paginator = Paginator(self.queryset, self.pagediv, orphans=0)
         self.page = self.request.GET.get("page", "1")
         self.queryset = self.paginator.get_page(self.page)
         self.nextpage = int(self.page) + 1
@@ -190,7 +190,7 @@ class qualitycontrolshome(View):
         self.queryset2 = self.get_second_queryset(self.request)
         self.pagediv2 = 7
         self.totalpage2 = int(math.ceil(len(self.queryset2) / self.pagediv2))
-        self.paginator2 = Paginator(self.queryset2, self.pagediv2, orphans=3)
+        self.paginator2 = Paginator(self.queryset2, self.pagediv2, orphans=0)
         self.page2 = self.request.GET.get("page2", "1")
         self.queryset2 = self.paginator2.get_page(self.page2)
         self.nextpage2 = int(self.page2) + 1
@@ -208,7 +208,7 @@ class qualitycontrolshome(View):
         self.queryset3 = self.get_third_queryset(self.request)
         self.pagediv3 = 7
         self.totalpage3 = int(math.ceil(len(self.queryset3) / self.pagediv3))
-        self.paginator3 = Paginator(self.queryset3, self.pagediv3, orphans=3)
+        self.paginator3 = Paginator(self.queryset3, self.pagediv3, orphans=0)
         self.page3 = self.request.GET.get("page3", "1")
         self.queryset3 = self.paginator3.get_page(self.page3)
         self.nextpage3 = int(self.page3) + 1
@@ -755,7 +755,7 @@ class finalcheckdonelist(qualitycontrolshome):
         )
 
 
-class finalcheckedit(UpdateView):
+class finalcheckedit(user_mixins.LoggedInOnlyView, UpdateView):
     model = QC_models.FinalCheckRegister
     template_name = "qualitycontrols/finalcheckedit.html"
     form_class = forms.FinalCheckEditForm
@@ -856,3 +856,360 @@ def finalcheckdelete(request, pk):
     messages.success(request, "최종검사 삭제가 완료되었습니다.")
     return redirect(reverse("qualitycontrols:qualitycontrolshome"))
 
+
+class materialchecklist(View, user_mixins.LoggedInOnlyView):
+    templatename = "qualitycontrols/materialchecklist.html"
+
+    def get_first_queryset(self, request):
+        self.search = request.GET.get("search")
+        if self.search is None:
+            materialchecklist = QC_models.MaterialCheckRegister.objects.all().order_by(
+                "-created"
+            )
+            queryset = []
+            for s in materialchecklist:
+                try:
+                    s.수입검사
+                except:
+                    queryset.append(s)
+            self.s_bool = False
+        else:
+            self.s_bool = True
+            materialchecklist = QC_models.MaterialCheckRegister.objects.filter(
+                Q(수입검사의뢰코드__contains=self.search)
+                | Q(의뢰자__first_name__contains=self.search)
+                | Q(자재__자재코드__contains=self.search)
+                | Q(자재__자재품명__contains=self.search)
+            ).order_by("-created")
+            queryset = []
+            for s in materialchecklist:
+                try:
+                    s.수입검사
+                except:
+                    queryset.append(s)
+        return queryset
+
+    def get_page(self):
+        self.queryset = self.get_first_queryset(self.request)
+        self.pagediv = 7
+        self.totalpage = int(math.ceil(len(self.queryset) / self.pagediv))
+        self.paginator = Paginator(self.queryset, self.pagediv, orphans=0)
+        self.page = self.request.GET.get("page", "1")
+        self.queryset = self.paginator.get_page(self.page)
+        self.nextpage = int(self.page) + 1
+        self.previouspage = int(self.page) - 1
+        self.notsamebool = True
+        self.nonpage = False
+        if self.totalpage == 0:
+            self.nonpage = True
+        if int(self.page) == self.totalpage:
+            self.notsamebool = False
+        if (self.search is None) or (self.search == ""):
+            self.search = "search"
+
+    def get(self, request):
+        self.get_page()
+        return render(
+            request,
+            self.templatename,
+            {
+                "queryset": self.queryset,
+                "page": self.page,
+                "totalpage": self.totalpage,
+                "notsamebool": self.notsamebool,
+                "nextpage": self.nextpage,
+                "previouspage": self.previouspage,
+                "nonpage": self.nonpage,
+                "search": self.search,
+                "s_bool": self.s_bool,
+            },
+        )
+
+
+def materialcheckregister(request, pk):
+    user = request.user
+    materialcheck = QC_models.MaterialCheckRegister.objects.get_or_none(pk=pk)
+
+    form = forms.MaterialCheckRegisterForm(request.POST)
+
+    if form.is_valid():
+        수입검사코드 = form.cleaned_data.get("수입검사코드")
+        검사지침서번호 = form.cleaned_data.get("검사지침서번호")
+        검사일자 = form.cleaned_data.get("검사일자")
+        검사항목 = form.cleaned_data.get("검사항목")
+        판정기준 = form.cleaned_data.get("판정기준")
+        시료크기 = form.cleaned_data.get("시료크기")
+        합격수량 = form.cleaned_data.get("합격수량")
+        불합격수량 = form.cleaned_data.get("불합격수량")
+        불합격내용 = form.cleaned_data.get("불합격내용")
+        if 검사일자 is None:
+            검사일자 = timezone.now().date()
+
+        SM = models.MaterialCheck.objects.create(
+            자재=materialcheck.자재,
+            수입검사의뢰=materialcheck,
+            검사자=user,
+            수입검사코드=수입검사코드,
+            검사지침서번호=검사지침서번호,
+            검사일자=검사일자,
+            검사항목=검사항목,
+            판정기준=판정기준,
+            시료크기=시료크기,
+            합격수량=합격수량,
+            불합격수량=불합격수량,
+            불합격내용=불합격내용,
+        )
+
+        messages.success(request, "수입검사 등록이 완료되었습니다.")
+
+        return redirect(reverse("qualitycontrols:materialchecklist"))
+    return render(
+        request,
+        "qualitycontrols/materialcheckregister.html",
+        {"form": form, "materialcheck": materialcheck,},
+    )
+
+
+class lowmateriallist(materialchecklist):
+    templatename = "qualitycontrols/materialcheckdonelist.html"
+
+    def get_first_queryset(self, request):
+        self.search = request.GET.get("search")
+        if self.search is None:
+            materialchecklist = QC_models.MaterialCheck.objects.exclude(
+                불합격수량=0
+            ).order_by("-created")
+            queryset = []
+            for s in materialchecklist:
+                try:
+                    s.자재부적합보고서
+                except:
+                    queryset.append(s)
+            self.s_bool = False
+        else:
+            self.s_bool = True
+            materialchecklist = (
+                QC_models.MaterialCheck.objects.exclude(불합격수량=0)
+                .filter(
+                    Q(수입검사코드__contains=self.search)
+                    | Q(검사지침서번호__contains=self.search)
+                    | Q(판정기준__contains=self.search)
+                    | Q(검사항목__contains=self.search)
+                    | Q(검사자__first_name__contains=self.search)
+                    | Q(자재__자재코드__contains=self.search)
+                    | Q(자재__자재품명__contains=self.search)
+                    | Q(불합격내용__contains=self.search)
+                )
+                .order_by("-created")
+            )
+            queryset = []
+            for s in materialchecklist:
+                try:
+                    s.자재부적합보고서
+                except:
+                    queryset.append(s)
+        return queryset
+
+
+def lowmaterialregister(request, pk):
+    user = request.user
+    materialcheck = QC_models.MaterialCheck.objects.get_or_none(pk=pk)
+    form = forms.LowMetarialRegisterForm(request.POST)
+
+    if form.is_valid():
+        자재부적합코드 = form.cleaned_data.get("자재부적합코드")
+        검토일 = form.cleaned_data.get("검토일")
+        부적합자재의내용과검토방안 = form.cleaned_data.get("부적합자재의내용과검토방안")
+        처리방안 = form.cleaned_data.get("처리방안")
+        if 검토일 is None:
+            검토일 = timezone.now().date()
+
+        SM = models.LowMetarial.objects.create(
+            자재부적합코드=자재부적합코드,
+            수입검사=materialcheck,
+            검토자=user,
+            검토일=검토일,
+            부적합자재의내용과검토방안=부적합자재의내용과검토방안,
+            처리방안=처리방안,
+            자재=materialcheck.자재,
+        )
+
+        messages.success(request, "자재부적합 보고서 등록이 완료되었습니다.")
+
+        return redirect(reverse("qualitycontrols:lowmateriallist"))
+    return render(
+        request,
+        "qualitycontrols/lowmaterialregister.html",
+        {"form": form, "materialcheck": materialcheck,},
+    )
+
+
+class materialcheckalllist(materialchecklist):
+    templatename = "qualitycontrols/materialcheckalllist.html"
+
+    def get_first_queryset(self, request):
+        self.search = request.GET.get("search")
+        if self.search is None:
+            queryset = QC_models.MaterialCheck.objects.all().order_by("-created")
+
+            self.s_bool = False
+        else:
+            self.s_bool = True
+            queryset = QC_models.MaterialCheck.objects.filter(
+                Q(수입검사코드__contains=self.search)
+                | Q(검사지침서번호__contains=self.search)
+                | Q(판정기준__contains=self.search)
+                | Q(검사항목__contains=self.search)
+                | Q(검사자__first_name__contains=self.search)
+                | Q(자재__자재코드__contains=self.search)
+                | Q(자재__자재품명__contains=self.search)
+                | Q(불합격내용__contains=self.search)
+            ).order_by("-created")
+        return queryset
+
+
+def materialcheckdetail(request, pk):
+    materialcheck = QC_models.MaterialCheck.objects.get_or_none(pk=pk)
+    user = request.user
+
+    return render(
+        request,
+        "qualitycontrols/materialcheckdetail.html",
+        {"materialcheck": materialcheck, "user": user},
+    )
+
+
+class lowmetarialedit(user_mixins.LoggedInOnlyView, UpdateView):
+    model = QC_models.LowMetarial
+    template_name = "qualitycontrols/lowmaterialedit.html"
+    form_class = forms.LowMetarialEditForm
+
+    def render_to_response(self, context, **response_kwargs):
+
+        response_kwargs.setdefault("content_type", self.content_type)
+        pk = self.kwargs.get("pk")
+        lowmetarial = QC_models.LowMetarial.objects.get_or_none(pk=pk)
+        context["lowmetarial"] = lowmetarial
+        return self.response_class(
+            request=self.request,
+            template=self.get_template_names(),
+            context=context,
+            using=self.template_engine,
+            **response_kwargs
+        )
+
+    def get_success_url(self):
+        pk = self.kwargs.get(self.pk_url_kwarg)
+        lowmetarial = QC_models.LowMetarial.objects.get_or_none(pk=pk)
+        matrialcheck = lowmetarial.수입검사
+        pk = matrialcheck.pk
+        return reverse("qualitycontrols:materialcheckdetail", kwargs={"pk": pk})
+
+    def form_valid(self, form):
+        self.object = form.save()
+        자재부적합코드 = form.cleaned_data.get("자재부적합코드")
+        검토일 = form.cleaned_data.get("검토일")
+        부적합자재의내용과검토방안 = form.cleaned_data.get("부적합자재의내용과검토방안")
+        처리방안 = form.cleaned_data.get("처리방안")
+        if 검토일 is None:
+            검토일 = timezone.now().date()
+
+        pk = self.kwargs.get("pk")
+        lowmetarial = QC_models.LowMetarial.objects.get_or_none(pk=pk)
+        lowmetarial.자재부적합코드 = 자재부적합코드
+        lowmetarial.검토일 = 검토일
+        lowmetarial.부적합자재의내용과검토방안 = 부적합자재의내용과검토방안
+        lowmetarial.처리방안 = 처리방안
+
+        lowmetarial.save()
+        messages.success(self.request, "자재부적합보고서 수정이 완료되었습니다.")
+
+        return super().form_valid(form)
+
+
+def lowmetarialdeleteensure(request, pk):
+    lowmetarial = QC_models.LowMetarial.objects.get_or_none(pk=pk)
+    return render(
+        request,
+        "qualitycontrols/lowmetarialdeleteensure.html",
+        {"lowmetarial": lowmetarial},
+    )
+
+
+def lowmetarialdelete(request, pk):
+    lowmetarial = QC_models.LowMetarial.objects.get_or_none(pk=pk)
+    materialcheck = lowmetarial.수입검사
+    pk = materialcheck.pk
+    lowmetarial.delete()
+    messages.success(request, "자재부적합보고서 삭제가 완료되었습니다.")
+    return redirect(reverse("qualitycontrols:materialcheckdetail", kwargs={"pk": pk}))
+
+
+class materialcheckedit(user_mixins.LoggedInOnlyView, UpdateView):
+    model = QC_models.MaterialCheck
+    template_name = "qualitycontrols/materialcheckedit.html"
+    form_class = forms.MaterialCheckEditForm
+
+    def render_to_response(self, context, **response_kwargs):
+
+        response_kwargs.setdefault("content_type", self.content_type)
+        pk = self.kwargs.get("pk")
+        materialcheck = QC_models.MaterialCheck.objects.get_or_none(pk=pk)
+        context["materialcheck"] = materialcheck
+        return self.response_class(
+            request=self.request,
+            template=self.get_template_names(),
+            context=context,
+            using=self.template_engine,
+            **response_kwargs
+        )
+
+    def get_success_url(self):
+        pk = self.kwargs.get(self.pk_url_kwarg)
+        materialcheck = QC_models.MaterialCheck.objects.get_or_none(pk=pk)
+        pk = materialcheck.pk
+        return reverse("qualitycontrols:materialcheckdetail", kwargs={"pk": pk})
+
+    def form_valid(self, form):
+        self.object = form.save()
+        수입검사코드 = form.cleaned_data.get("수입검사코드")
+        검사지침서번호 = form.cleaned_data.get("검사지침서번호")
+        검사일자 = form.cleaned_data.get("검사일자")
+        검사항목 = form.cleaned_data.get("검사항목")
+        판정기준 = form.cleaned_data.get("판정기준")
+        시료크기 = form.cleaned_data.get("시료크기")
+        합격수량 = form.cleaned_data.get("합격수량")
+        불합격수량 = form.cleaned_data.get("불합격수량")
+        불합격내용 = form.cleaned_data.get("불합격내용")
+        if 검사일자 is None:
+            검사일자 = timezone.now().date()
+        pk = self.kwargs.get("pk")
+        materialcheck = QC_models.MaterialCheck.objects.get_or_none(pk=pk)
+        materialcheck.수입검사코드 = form.cleaned_data.get("수입검사코드")
+        materialcheck.검사지침서번호 = form.cleaned_data.get("검사지침서번호")
+        materialcheck.검사일자 = form.cleaned_data.get("검사일자")
+        materialcheck.검사항목 = form.cleaned_data.get("검사항목")
+        materialcheck.판정기준 = form.cleaned_data.get("판정기준")
+        materialcheck.시료크기 = form.cleaned_data.get("시료크기")
+        materialcheck.합격수량 = form.cleaned_data.get("합격수량")
+        materialcheck.불합격수량 = form.cleaned_data.get("불합격수량")
+        materialcheck.불합격내용 = form.cleaned_data.get("불합격내용")
+        materialcheck.save()
+        messages.success(self.request, "수입검사결과 수정이 완료되었습니다.")
+        return super().form_valid(form)
+
+
+def materialcheckdeleteensure(request, pk):
+    materialcheck = QC_models.MaterialCheck.objects.get_or_none(pk=pk)
+    return render(
+        request,
+        "qualitycontrols/materialcheckdeleteensure.html",
+        {"materialcheck": materialcheck},
+    )
+
+
+def materialcheckdelete(request, pk):
+    materialcheck = QC_models.MaterialCheck.objects.get_or_none(pk=pk)
+    materialcheck.delete()
+    messages.success(request, "수입검사결과 삭제가 완료되었습니다.")
+    return redirect(reverse("qualitycontrols:qualitycontrolshome"))

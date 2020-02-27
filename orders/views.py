@@ -275,14 +275,14 @@ def ordershome(request):
 
     pagediv = 7
     totalpage_m = int(math.ceil(len(order_m) / pagediv))
-    paginator_m = Paginator(order_m, pagediv, orphans=3)
+    paginator_m = Paginator(order_m, pagediv, orphans=0)
     page_m = request.GET.get("page_m", "1")
     order_m = paginator_m.get_page(page_m)
     nextpage_m = int(page_m) + 1
     previouspage_m = int(page_m) - 1
     notsamebool_m = True
     totalpage = int(math.ceil(len(order) / pagediv))
-    paginator = Paginator(order, pagediv, orphans=3)
+    paginator = Paginator(order, pagediv, orphans=0)
     page = request.GET.get("page", "1")
     order = paginator.get_page(page)
     nextpage = int(page) + 1
@@ -717,7 +717,7 @@ def orderproduce(request):
     pagediv = 7
 
     totalpage = int(math.ceil(len(s_order) / pagediv))
-    paginator = Paginator(s_order, pagediv, orphans=3)
+    paginator = Paginator(s_order, pagediv, orphans=0)
     page = request.GET.get("page", "1")
     s_order = paginator.get_page(page)
     nextpage = int(page) + 1
@@ -866,7 +866,7 @@ def endorder(request):
     pagediv = 7
 
     totalpage = int(math.ceil(len(order) / pagediv))
-    paginator = Paginator(order, pagediv, orphans=3)
+    paginator = Paginator(order, pagediv, orphans=0)
     page = request.GET.get("page", "1")
     order = paginator.get_page(page)
     nextpage = int(page) + 1
@@ -945,7 +945,7 @@ def endorderlist(request):
     pagediv = 7
 
     totalpage = int(math.ceil(len(order) / pagediv))
-    paginator = Paginator(order, pagediv, orphans=3)
+    paginator = Paginator(order, pagediv, orphans=0)
     page = request.GET.get("page", "1")
     order = paginator.get_page(page)
     nextpage = int(page) + 1

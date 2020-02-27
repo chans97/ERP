@@ -271,14 +271,14 @@ def producemanageshome(request):
 
     pagediv = 7
     totalpage_m = int(math.ceil(len(s_order) / pagediv))
-    paginator_m = Paginator(s_order, pagediv, orphans=3)
+    paginator_m = Paginator(s_order, pagediv, orphans=0)
     page_m = request.GET.get("page_m", "1")
     s_order = paginator_m.get_page(page_m)
     nextpage_m = int(page_m) + 1
     previouspage_m = int(page_m) - 1
     notsamebool_m = True
     totalpage = int(math.ceil(len(a_order) / pagediv))
-    paginator = Paginator(a_order, pagediv, orphans=3)
+    paginator = Paginator(a_order, pagediv, orphans=0)
     page = request.GET.get("page", "1")
     a_order = paginator.get_page(page)
     nextpage = int(page) + 1
@@ -368,7 +368,7 @@ def produceplanlist(request):
     pagediv = 7
 
     totalpage = int(math.ceil(len(s_order) / pagediv))
-    paginator = Paginator(s_order, pagediv, orphans=3)
+    paginator = Paginator(s_order, pagediv, orphans=0)
     page = request.GET.get("page", "1")
     s_order = paginator.get_page(page)
     nextpage = int(page) + 1
@@ -616,7 +616,7 @@ def workorderlist(request):
     pagediv = 7
 
     totalpage = int(math.ceil(len(s_order) / pagediv))
-    paginator = Paginator(s_order, pagediv, orphans=3)
+    paginator = Paginator(s_order, pagediv, orphans=0)
     page = request.GET.get("page", "1")
     s_order = paginator.get_page(page)
     nextpage = int(page) + 1
@@ -824,7 +824,7 @@ def producehome(request):
     pagediv = 7
 
     totalpage_m = int(math.ceil(len(a_order) / pagediv))
-    paginator_m = Paginator(a_order, pagediv, orphans=3)
+    paginator_m = Paginator(a_order, pagediv, orphans=0)
     page_m = request.GET.get("page_m", "1")
     a_order = paginator_m.get_page(page_m)
     nextpage_m = int(page_m) + 1
@@ -835,7 +835,7 @@ def producehome(request):
         nonpage_m = True
 
     totalpage = int(math.ceil(len(l_order) / pagediv))
-    paginator = Paginator(l_order, pagediv, orphans=3)
+    paginator = Paginator(l_order, pagediv, orphans=0)
     page = request.GET.get("page", "1")
     l_order = paginator.get_page(page)
     nextpage = int(page) + 1
@@ -937,7 +937,7 @@ def worklist(request):
     pagediv = 7
 
     totalpage = int(math.ceil(len(l_order) / pagediv))
-    paginator = Paginator(l_order, pagediv, orphans=3)
+    paginator = Paginator(l_order, pagediv, orphans=0)
     page = request.GET.get("page", "1")
     l_order = paginator.get_page(page)
     nextpage = int(page) + 1
@@ -1134,7 +1134,7 @@ def workdonelist(request):
 
     pagediv = 7
     totalpage_t = int(math.ceil(len(s_order_t) / pagediv))
-    paginator_t = Paginator(s_order_t, pagediv, orphans=3)
+    paginator_t = Paginator(s_order_t, pagediv, orphans=0)
     page_t = request.GET.get("page_t", "1")
     s_order_t = paginator_t.get_page(page_t)
     nextpage_t = int(page_t) + 1
@@ -1149,7 +1149,7 @@ def workdonelist(request):
         search_t = "search"
 
     totalpage_m = int(math.ceil(len(s_order_m) / pagediv))
-    paginator_m = Paginator(s_order_m, pagediv, orphans=3)
+    paginator_m = Paginator(s_order_m, pagediv, orphans=0)
     page_m = request.GET.get("page_m", "1")
     s_order_m = paginator_m.get_page(page_m)
     nextpage_m = int(page_m) + 1
@@ -1164,7 +1164,7 @@ def workdonelist(request):
         search_m = "search"
 
     totalpage = int(math.ceil(len(s_order) / pagediv))
-    paginator = Paginator(s_order, pagediv, orphans=3)
+    paginator = Paginator(s_order, pagediv, orphans=0)
     page = request.GET.get("page", "1")
     s_order = paginator.get_page(page)
     nextpage = int(page) + 1
@@ -1356,7 +1356,7 @@ def finalchecklist(request):
     pagediv = 7
 
     totalpage = int(math.ceil(len(l_order) / pagediv))
-    paginator = Paginator(l_order, pagediv, orphans=3)
+    paginator = Paginator(l_order, pagediv, orphans=0)
     page = request.GET.get("page", "1")
     l_order = paginator.get_page(page)
     nextpage = int(page) + 1
@@ -1523,7 +1523,7 @@ def repairlist(request):
     pagediv = 7
 
     totalpage_m = int(math.ceil(len(s_order_m) / pagediv))
-    paginator_m = Paginator(s_order_m, pagediv, orphans=3)
+    paginator_m = Paginator(s_order_m, pagediv, orphans=0)
     page_m = request.GET.get("page_m", "1")
     s_order_m = paginator_m.get_page(page_m)
     nextpage_m = int(page_m) + 1
@@ -1538,7 +1538,7 @@ def repairlist(request):
         search_m = "search"
 
     totalpage = int(math.ceil(len(l_order) / pagediv))
-    paginator = Paginator(l_order, pagediv, orphans=3)
+    paginator = Paginator(l_order, pagediv, orphans=0)
     page = request.GET.get("page", "1")
     l_order = paginator.get_page(page)
     nextpage = int(page) + 1
@@ -1771,7 +1771,7 @@ def checkdonelist(request):
 
     pagediv = 7
     totalpage_t = int(math.ceil(len(s_order_t) / pagediv))
-    paginator_t = Paginator(s_order_t, pagediv, orphans=3)
+    paginator_t = Paginator(s_order_t, pagediv, orphans=0)
     page_t = request.GET.get("page_t", "1")
     s_order_t = paginator_t.get_page(page_t)
     nextpage_t = int(page_t) + 1
@@ -1786,7 +1786,7 @@ def checkdonelist(request):
         search_t = "search"
 
     totalpage_m = int(math.ceil(len(s_order_m) / pagediv))
-    paginator_m = Paginator(s_order_m, pagediv, orphans=3)
+    paginator_m = Paginator(s_order_m, pagediv, orphans=0)
     page_m = request.GET.get("page_m", "1")
     s_order_m = paginator_m.get_page(page_m)
     nextpage_m = int(page_m) + 1
@@ -1801,7 +1801,7 @@ def checkdonelist(request):
         search_m = "search"
 
     totalpage = int(math.ceil(len(s_order) / pagediv))
-    paginator = Paginator(s_order, pagediv, orphans=3)
+    paginator = Paginator(s_order, pagediv, orphans=0)
     page = request.GET.get("page", "1")
     s_order = paginator.get_page(page)
     nextpage = int(page) + 1
@@ -1890,7 +1890,7 @@ def ASrequestlist(request):
     pagediv = 7
 
     totalpage = int(math.ceil(len(s_order) / pagediv))
-    paginator = Paginator(s_order, pagediv, orphans=3)
+    paginator = Paginator(s_order, pagediv, orphans=0)
     page = request.GET.get("page", "1")
     s_order = paginator.get_page(page)
     nextpage = int(page) + 1

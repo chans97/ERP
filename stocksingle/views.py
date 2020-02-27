@@ -66,7 +66,7 @@ def ordersingleout(request):
     pagediv = 7
 
     totalpage = int(math.ceil(len(order) / pagediv))
-    paginator = Paginator(order, pagediv, orphans=3)
+    paginator = Paginator(order, pagediv, orphans=0)
     page = request.GET.get("page", "1")
     order = paginator.get_page(page)
     nextpage = int(page) + 1

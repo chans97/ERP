@@ -1,0 +1,187 @@
+{%extends "qualitycontrols/qualitycontrolshome.html"%}
+{% load static%}
+{% block page_title%}
+수입검사상세
+{%endblock%}
+
+
+{%block head_title%}
+<i class="fas fa-angle-right text-base mx-1"></i>
+<span class="text-gray-700">
+    수입검사({{materialcheck.수입검사코드}}) 상세보기
+    {%endblock head_title %}
+
+
+    {%block main_contens%}
+
+    <div class="w-11/12 h-full ml-32 -mt-6 pt-12 flex flex-row">
+
+        <div class="p-6 flex flex-col w-full">
+            <div class="flex flex-col w-full">
+                <div class="flex flex-row justify-between w-full ">
+                    <div class=" border-b w-64 mb-3 font-semibold border-gray-600 pb-2">
+                        수입검사 : {{materialcheck.수입검사코드}} - 상세보기
+                    </div>
+
+
+                </div>
+                <div class="flex {%if materialcheck.process == "자재부적합등록완료"%} justify-around{%endif%}">
+                    <div>
+                        {%if materialcheck.검사자 == user%}
+                        {%if materialcheck.process == "수입검사등록완료"%}
+
+                        <div class="flex">
+                            <div class=" w-full">
+                                <a href="{%url "qualitycontrols:materialcheckedit" materialcheck.pk%}">
+                                    <div class="btn-link w-40 bg-blue-800 ml-5 hover:font-bold">
+                                        수입검사수정 </div>
+                                </a>
+                            </div>
+                            <div class="">
+                                <a href="{%url "qualitycontrols:materialcheckdeleteensure" materialcheck.pk%}">
+                                    <div class="btn-link w-40 bg-red-800 ml-5 hover:font-bold">
+                                        수입검사삭제 </div>
+                                </a>
+                            </div>
+                        </div>
+                        {%endif%}
+                        {%endif%}
+                        <table class="table-fixed text-sm">
+                            <thead>
+                                <tr>
+                                    <th class="border border-r-0 bg-gray-400  py-2 w-40 text-right">
+                                        {{materialcheck.수입검사코드}}-
+                                    </th>
+                                    <th class="border border-l-0 bg-gray-400  py-2 w-56 text-left">최종검사</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200">수입검사코드</td>
+                                    <td class="border px-4 py-2">{{materialcheck.수입검사코드}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200">검사지침서번호</td>
+                                    <td class="border px-4 py-2">{{materialcheck.검사지침서번호}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200">검사자</td>
+                                    <td class="border px-4 py-2">{{materialcheck.검사자}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200">검사일자</td>
+                                    <td class="border px-4 py-2">{%if materialcheck.검사일자 is None%}
+                                        {%else%}
+                                        {{materialcheck.검사일자.year}}-{{materialcheck.검사일자.month}}-{{materialcheck.검사일자.day}}{%endif%}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200">검사항목</td>
+                                    <td class="border px-4 py-2">{{materialcheck.검사항목}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200">판정기준</td>
+                                    <td class="border px-4 py-2">{{materialcheck.판정기준}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200">시료크기</td>
+                                    <td class="border px-4 py-2">{{materialcheck.시료크기}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200">합격수량</td>
+                                    <td class="border px-4 py-2">{{materialcheck.합격수량}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200">불합격수량</td>
+                                    <td class="border px-4 py-2">{{materialcheck.불합격수량}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200">불합격내용</td>
+                                    <td class="border px-4 py-2">{{materialcheck.불합격내용}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200">자재코드</td>
+                                    <td class="border px-4 py-2">{{materialcheck.자재.자재코드}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200">자재명</td>
+                                    <td class="border px-4 py-2">{{materialcheck.자재.자재품명}}</td>
+                                </tr>
+
+                        </table>
+                    </div>
+                    {%if materialcheck.process == "자재부적합등록완료"%}
+                    <div class="w-px border border-black"></div>
+                    <div>
+                        {%if materialcheck.자재부적합보고서.검토자 == user%}
+
+                        <div class="flex">
+                            <div class=" w-full">
+                                <a href="{%url "qualitycontrols:lowmetarialedit" materialcheck.자재부적합보고서.pk%}">
+                                    <div class="btn-link w-40 bg-blue-800 ml-5 hover:font-bold">
+                                        부적합보고서수정 </div>
+                                </a>
+                            </div>
+                            <div class="">
+                                <a href="{%url "qualitycontrols:lowmetarialdeleteensure" materialcheck.자재부적합보고서.pk%}">
+                                    <div class="btn-link w-40 bg-red-800 ml-5 hover:font-bold">
+                                        부적합보고서삭제 </div>
+                                </a>
+                            </div>
+                        </div>
+                        {%endif%}
+                        <table class="table-fixed text-sm">
+                            <thead>
+                                <tr>
+                                    <th class="border border-r-0 bg-gray-400  py-2 w-40 text-right">
+                                        {{materialcheck.자재부적합보고서.자재부적합코드}}-
+                                    </th>
+                                    <th class="border border-l-0 bg-gray-400  py-2 w-56 text-left">부적합보고서</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200">자재부적합코드</td>
+                                    <td class="border px-4 py-2">{{materialcheck.자재부적합보고서.자재부적합코드}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200">검토자</td>
+                                    <td class="border px-4 py-2">{{materialcheck.자재부적합보고서.검토자}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200">검토일</td>
+                                    <td class="border px-4 py-2">{%if materialcheck.자재부적합보고서.검토일 is None%}
+                                        {%else%}
+                                        {{materialcheck.자재부적합보고서.검토일.year}}-{{materialcheck.자재부적합보고서.검토일.month}}-{{materialcheck.자재부적합보고서.검토일.day}}{%endif%}
+                                    </td>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200">부적합자재의내용과검토방안</td>
+                                    <td class="border px-4 py-2">{{materialcheck.자재부적합보고서.부적합자재의내용과검토방안}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200">처리방안</td>
+                                    <td class="border px-4 py-2">{{materialcheck.자재부적합보고서.처리방안}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200">자재코드</td>
+                                    <td class="border px-4 py-2">{{materialcheck.자재.자재코드}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200">자재명</td>
+                                    <td class="border px-4 py-2">{{materialcheck.자재.자재품명}}</td>
+                                </tr>
+
+
+                        </table>
+                    </div>
+                    {%endif%}
+
+
+                </div>
+            </div>
+
+
+        </div>
+        {%endblock main_contens %}

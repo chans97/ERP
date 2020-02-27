@@ -38,4 +38,60 @@ urlpatterns = [
     path(
         "finalcheckdelete/<int:pk>/", views.finalcheckdelete, name="finalcheckdelete",
     ),
+    path(
+        "materialchecklist/",
+        views.materialchecklist.as_view(),
+        name="materialchecklist",
+    ),
+    path(
+        "materialcheckregister/<int:pk>/",
+        views.materialcheckregister,
+        name="materialcheckregister",
+    ),
+    path("lowmateriallist/", views.lowmateriallist.as_view(), name="lowmateriallist",),
+    path(
+        "lowmaterialregister/<int:pk>/",
+        views.lowmaterialregister,
+        name="lowmaterialregister",
+    ),
+    path(
+        "materialcheckalllist/",
+        views.materialcheckalllist.as_view(),
+        name="materialcheckalllist",
+    ),
+    path(
+        "materialcheckdetail/<int:pk>/",
+        views.materialcheckdetail,
+        name="materialcheckdetail",
+    ),
+    path(
+        "lowmetarialedit/<int:pk>/",
+        views.lowmetarialedit.as_view(),
+        name="lowmetarialedit",
+    ),
+    path(
+        "lowmetarialdeleteensure/<int:pk>/",
+        views.lowmetarialdeleteensure,
+        name="lowmetarialdeleteensure",
+    ),
+    path(
+        "lowmetarialdelete/<int:pk>/",
+        views.lowmetarialdelete,
+        name="lowmetarialdelete",
+    ),
+    path(
+        "materialcheckedit/<int:pk>/",
+        views.materialcheckedit.as_view(),
+        name="materialcheckedit",
+    ),
+    path(
+        "materialcheckdeleteensure/<int:pk>/",
+        views.materialcheckdeleteensure,
+        name="materialcheckdeleteensure",
+    ),
+    path(
+        "materialcheckdelete/<int:pk>/",
+        views.materialcheckdelete,
+        name="materialcheckdelete",
+    ),
 ]

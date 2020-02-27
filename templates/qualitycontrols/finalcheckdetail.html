@@ -77,7 +77,10 @@
                             </tr>
                             <tr>
                                 <td class="border px-4 py-2 bg-gray-200">검시일</td>
-                                <td class="border px-4 py-2">{{finalcheck.검시일}}</td>
+                                <td class="border px-4 py-2">{%if finalcheck.검시일 is None%}
+                                    {%else%}
+                                    {{finalcheck.검시일.year}}-{{finalcheck.검시일.month}}-{{finalcheck.검시일.day}}{%endif%}
+                                </td>
                             </tr>
                             <tr>
                                 <td class="border px-4 py-2 bg-gray-200">CR</td>

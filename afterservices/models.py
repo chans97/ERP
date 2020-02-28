@@ -4,7 +4,7 @@ from orders import models as orders_models
 from users import models as users_models
 from StandardInformation import models as SI_models
 
-# Create your models here.
+
 class ASRegisters(TimeStampedModel):
     단품 = "단품"
     랙 = "랙"
@@ -38,13 +38,14 @@ class ASRegisters(TimeStampedModel):
         users_models.User, related_name="AS등록", on_delete=models.SET_NULL, null=True
     )
     현상 = models.CharField(max_length=100, null=True,)
-    접수제품분류 = models.CharField(
-        choices=접수제품분류_CHOICES, max_length=10, blank=True, default=단품
-    )
     불량분류코드 = models.CharField(max_length=20, null=True,)
     불량분류 = models.CharField(
         choices=불량분류_CHOICES, max_length=10, blank=True, default=사용법미숙지
     )
+    접수제품분류 = models.CharField(
+        choices=접수제품분류_CHOICES, max_length=10, blank=True, default=단품
+    )
+
     단품 = models.ForeignKey(
         SI_models.SingleProduct,
         related_name="AS등록",
@@ -69,7 +70,7 @@ class ASRegisters(TimeStampedModel):
         null=True,
         blank=True,
     )
-    의뢰자전화번호 = models.IntegerField(null=True)
+    의뢰자전화번호 = models.CharField(max_length=20, null=True)
     방문요청일 = models.DateField(auto_now=False, auto_now_add=False, blank=True, null=True)
 
     class Meta:
@@ -103,6 +104,14 @@ class ASVisitRequests(TimeStampedModel):
 
 class ASVisitContents(TimeStampedModel):
 
+    단품 = "단품"
+    랙 = "랙"
+
+    접수제품분류_CHOICES = (
+        (단품, "단품"),
+        (랙, "랙"),
+    )
+
     제품수리 = "제품수리"
     제품교체 = "제품교체"
     제품취소 = "제품취소"
@@ -122,7 +131,7 @@ class ASVisitContents(TimeStampedModel):
         (완료, "완료"),
         (재방문, "재방문"),
     )
-    AS현장방문요청 = models.ForeignKey(
+    AS현장방문요청 = models.OneToOneField(
         "ASVisitRequests", related_name="AS현장방문", on_delete=models.SET_NULL, null=True
     )
     AS날짜 = models.DateField(auto_now=False, auto_now_add=False, blank=True, null=True)
@@ -134,6 +143,27 @@ class ASVisitContents(TimeStampedModel):
     특이사항 = models.TextField(null=True, blank=True)
     재방문여부 = models.CharField(
         choices=재방문여부_CHOICES, max_length=10, blank=True, default=완료
+    )
+    수리기사 = models.ForeignKey(
+        users_models.User, related_name="AS현장방문", on_delete=models.SET_NULL, null=True
+    )
+    접수제품분류 = models.CharField(
+        choices=접수제품분류_CHOICES, max_length=10, blank=True, default=단품
+    )
+
+    단품 = models.ForeignKey(
+        SI_models.SingleProduct,
+        related_name="AS현장방문",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+    랙 = models.ForeignKey(
+        SI_models.RackProduct,
+        related_name="AS현장방문",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
     )
 
     class Meta:
@@ -171,6 +201,13 @@ class ASRepairRequest(TimeStampedModel):
 
 
 class ASReVisitContents(TimeStampedModel):
+    단품 = "단품"
+    랙 = "랙"
+
+    접수제품분류_CHOICES = (
+        (단품, "단품"),
+        (랙, "랙"),
+    )
 
     제품수리 = "제품수리"
     제품교체 = "제품교체"
@@ -182,7 +219,7 @@ class ASReVisitContents(TimeStampedModel):
         (기타, "기타"),
     )
 
-    전AS현장방문 = models.ForeignKey(
+    전AS현장방문 = models.OneToOneField(
         "ASVisitContents", related_name="AS재방문", on_delete=models.SET_NULL, null=True
     )
     AS날짜 = models.DateField(auto_now=False, auto_now_add=False, blank=True, null=True)
@@ -192,6 +229,27 @@ class ASReVisitContents(TimeStampedModel):
     고객이름 = models.CharField(max_length=50, null=True)
     AS처리내역 = models.TextField(null=True)
     특이사항 = models.TextField(null=True, blank=True)
+    수리기사 = models.ForeignKey(
+        users_models.User, related_name="AS재방문", on_delete=models.SET_NULL, null=True
+    )
+    접수제품분류 = models.CharField(
+        choices=접수제품분류_CHOICES, max_length=10, blank=True, default=단품
+    )
+
+    단품 = models.ForeignKey(
+        SI_models.SingleProduct,
+        related_name="AS재방문",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+    랙 = models.ForeignKey(
+        SI_models.RackProduct,
+        related_name="AS재방문",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
 
     class Meta:
         verbose_name = "AS재현장방문"

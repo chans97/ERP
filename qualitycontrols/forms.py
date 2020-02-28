@@ -39,7 +39,7 @@ class FinalCheckRegisterForm(forms.ModelForm):
         )
         help_texts = {
             "최종검사코드": "*최종검사코드 앞에 FC를 붙여주시길 바랍니다.(한 번 설정하면, 바꿀 수 없습니다.)",
-            "검시일": "*형식 : yyyy-mm-dd",
+            "검시일": "*형식 : yyyy-mm-dd(기본값은 오늘입니다.)",
         }
         widgets = {
             "포장검사": forms.RadioSelect(),

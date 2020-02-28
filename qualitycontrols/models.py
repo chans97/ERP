@@ -59,7 +59,7 @@ class FinalCheckRegister(TimeStampedModel):
     검시자 = models.ForeignKey(
         users_models.User, related_name="최종검사등록", on_delete=models.SET_NULL, null=True,
     )
-    검시일 = models.DateField(auto_now=False, auto_now_add=False)
+    검시일 = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True)
     CR = models.CharField(max_length=20, null=True, blank=True,)
     MA = models.CharField(max_length=20, null=True, blank=True,)
     MI = models.CharField(max_length=20, null=True, blank=True,)

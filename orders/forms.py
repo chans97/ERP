@@ -115,7 +115,6 @@ class EditOrderForm(forms.Form):
                 self.add_error("거래처코드", forms.ValidationError("*해당 고객사를 찾을 수 없습니다."))
             else:
                 self.cleaned_data["거래처코드"] = customer
-                print(customer)
                 return self.cleaned_data
 
     def save(self, *arg, **kwargs):

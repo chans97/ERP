@@ -178,3 +178,298 @@ class afterserviceshome(View, user_mixins.LoggedInOnlyView):
                 "s_bool2": self.s_bool2,
             },
         )
+
+
+def ASregister(request):
+    form = forms.ASRegisterForm(request.POST)
+    search = request.GET.get("search")
+    if search is None:
+        customer = SI_models.CustomerPartner.objects.all().order_by("-created")
+        s_bool = False
+    else:
+        s_bool = True
+        qs = SI_models.CustomerPartner.objects.filter(
+            Q(고객작성자__first_name=search)
+            | Q(거래처구분=search)
+            | Q(거래처코드=search)
+            | Q(거래처명__contains=search)
+            | Q(고객담당자__first_name=search)
+            | Q(사업장주소__contains=search)
+        ).order_by("-created")
+        customer = qs
+
+    if form.is_valid():
+        접수번호 = form.cleaned_data.get("접수번호")
+        접수일 = form.cleaned_data.get("접수일")
+        현상 = form.cleaned_data.get("현상")
+        불량분류코드 = form.cleaned_data.get("불량분류코드")
+        불량분류 = form.cleaned_data.get("불량분류")
+        접수제품분류 = form.cleaned_data.get("접수제품분류")
+        대응유형 = form.cleaned_data.get("대응유형")
+        의뢰처 = form.cleaned_data.get("의뢰처")
+        의뢰자전화번호 = form.cleaned_data.get("의뢰자전화번호")
+        방문요청일 = form.cleaned_data.get("방문요청일")
+        if 접수일 is None:
+            접수일 = timezone.now().date()
+        SM = AS_models.ASRegisters.objects.create(
+            접수번호=접수번호,
+            접수일=접수일,
+            접수자=request.user,
+            현상=현상,
+            불량분류코드=불량분류코드,
+            불량분류=불량분류,
+            접수제품분류=접수제품분류,
+            대응유형=대응유형,
+            의뢰처=의뢰처,
+            의뢰자전화번호=의뢰자전화번호,
+            방문요청일=방문요청일,
+        )
+
+        pk = SM.pk
+
+        if SM.접수제품분류 == "단품":
+            return redirect(
+                reverse("afterservices:afterservicesingle", kwargs={"pk": pk})
+            )
+        else:
+            return redirect(
+                reverse("afterservices:afterservicesrack", kwargs={"pk": pk})
+            )
+
+    pagediv = 10
+    totalpage = int(math.ceil(len(customer) / pagediv))
+    paginator = Paginator(customer, pagediv, orphans=0)
+    page = request.GET.get("page", "1")
+    customer = paginator.get_page(page)
+    nextpage = int(page) + 1
+    previouspage = int(page) - 1
+    notsamebool = True
+    seletelist = [
+        "불량분류",
+        "접수제품분류",
+        "대응유형",
+    ]
+    if int(page) == totalpage:
+        notsamebool = False
+    if (search is None) or (search == ""):
+        search = "search"
+    return render(
+        request,
+        "afterservices/ASregister.html",
+        {
+            "customer": customer,
+            "form": form,
+            "search": search,
+            "page": page,
+            "totalpage": totalpage,
+            "notsamebool": notsamebool,
+            "nextpage": nextpage,
+            "previouspage": previouspage,
+            "s_bool": s_bool,
+            "seletelist": seletelist,
+        },
+    )
+
+
+def afterservicesingle(request, pk):
+    form = forms.ASSingleForm(request.POST)
+    search = request.GET.get("search")
+    if search is None:
+        customer = SI_models.SingleProduct.objects.all().order_by("-created")
+        s_bool = False
+    else:
+        s_bool = True
+        qs = SI_models.SingleProduct.objects.filter(
+            Q(모델코드=search)
+            | Q(모델명__contains=search)
+            | Q(규격=search)
+            | Q(단위=search)
+            | Q(작성자__first_name=search)
+        ).order_by("-created")
+        customer = qs
+
+    if form.is_valid():
+        단품모델코드 = form.cleaned_data.get("단품모델코드")
+        SM = models.ASRegisters.objects.get(pk=pk)
+        SM.단품 = 단품모델코드
+        SM.save()
+
+        messages.success(request, "AS접수가 등록되었습니다.")
+
+        return redirect(reverse("afterservices:afterserviceshome"))
+
+    pagediv = 10
+    totalpage = int(math.ceil(len(customer) / pagediv))
+    paginator = Paginator(customer, pagediv, orphans=0)
+    page = request.GET.get("page", "1")
+    customer = paginator.get_page(page)
+    nextpage = int(page) + 1
+    previouspage = int(page) - 1
+    notsamebool = True
+
+    if int(page) == totalpage:
+        notsamebool = False
+    if (search is None) or (search == ""):
+        search = "search"
+    return render(
+        request,
+        "afterservices/afterservicesingle.html",
+        {
+            "customer": customer,
+            "form": form,
+            "search": search,
+            "page": page,
+            "totalpage": totalpage,
+            "notsamebool": notsamebool,
+            "nextpage": nextpage,
+            "previouspage": previouspage,
+            "s_bool": s_bool,
+        },
+    )
+
+
+def afterservicesrack(request, pk):
+    form = forms.ASRackForm(request.POST)
+
+    search = request.GET.get("search")
+    if search is None:
+        customer = SI_models.RackProduct.objects.all().order_by("-created")
+        s_bool = False
+    else:
+        s_bool = True
+        qs = SI_models.RackProduct.objects.filter(
+            Q(랙시리얼코드=search)
+            | Q(랙모델명__contains=search)
+            | Q(규격=search)
+            | Q(단위=search)
+            | Q(작성자__first_name=search)
+        ).order_by("-created")
+        customer = qs
+
+    if form.is_valid():
+        랙시리얼코드 = form.cleaned_data.get("랙시리얼코드")
+        SM = models.ASRegisters.objects.get(pk=pk)
+        SM.랙 = 랙시리얼코드
+        SM.save()
+
+        messages.success(request, "AS접수가 등록되었습니다.")
+
+        return redirect(reverse("afterservices:afterserviceshome"))
+
+    pagediv = 10
+    totalpage = int(math.ceil(len(customer) / pagediv))
+    paginator = Paginator(customer, pagediv, orphans=0)
+    page = request.GET.get("page", "1")
+    customer = paginator.get_page(page)
+    nextpage = int(page) + 1
+    previouspage = int(page) - 1
+    notsamebool = True
+    if int(page) == totalpage:
+        notsamebool = False
+    if (search is None) or (search == ""):
+        search = "search"
+    return render(
+        request,
+        "afterservices/afterservicesrack.html",
+        {
+            "customer": customer,
+            "form": form,
+            "search": search,
+            "page": page,
+            "totalpage": totalpage,
+            "notsamebool": notsamebool,
+            "nextpage": nextpage,
+            "previouspage": previouspage,
+            "s_bool": s_bool,
+        },
+    )
+
+
+class ASvisitrequestslist(core_views.onelist):
+    templatename = "afterservices/ASvisitrequestslist.html"
+
+    def get_first_queryset(self, request):
+        self.search = request.GET.get("search")
+        if self.search is None:
+            requestslist = AS_models.ASRegisters.objects.exclude(대응유형="내부처리").order_by(
+                "-created"
+            )
+            queryset = []
+            for s in requestslist:
+                try:
+                    s.AS현장방문요청
+                except:
+                    queryset.append(s)
+            self.s_bool = False
+        else:
+            self.s_bool = True
+            requestslist = (
+                AS_models.ASRegisters.objects.exclude(대응유형="내부처리")
+                .filter(
+                    Q(접수번호__contains=self.search)
+                    | Q(현상__contains=self.search)
+                    | Q(대응유형__contains=self.search)
+                    | Q(불량분류코드__contains=self.search)
+                    | Q(불량분류__contains=self.search)
+                    | Q(접수자__first_name__contains=self.search)
+                    | Q(단품__모델코드__contains=self.search)
+                    | Q(단품__모델명__contains=self.search)
+                    | Q(랙__랙시리얼코드__contains=self.search)
+                    | Q(랙__랙모델명__contains=self.search)
+                    | Q(의뢰처__고객사명__contains=self.search)
+                )
+                .order_by("-created")
+            )
+            queryset = []
+            for s in requestslist:
+                try:
+                    s.AS현장방문요청
+                except:
+                    queryset.append(s)
+        return queryset
+
+
+def ASvisitrequests(request, pk):
+    asregister = AS_models.ASRegisters.objects.get_or_none(pk=pk)
+    AS_models.ASVisitRequests.objects.create(AS접수=asregister)
+    messages.success(request, "AS방문요청이 완료되었습니다.")
+    return redirect(reverse("afterservices:ASvisitrequestslist"))
+
+
+class ASregisterall(core_views.onelist):
+    templatename = "afterservices/ASvisitrequestsalllist.html"
+
+    def get_first_queryset(self, request):
+        self.search = request.GET.get("search")
+        if self.search is None:
+            queryset = AS_models.ASRegisters.objects.all().order_by("-created")
+
+            self.s_bool = False
+        else:
+            self.s_bool = True
+            queryset = (
+                AS_models.ASRegisters.objects.all()
+                .filter(
+                    Q(접수번호__contains=self.search)
+                    | Q(현상__contains=self.search)
+                    | Q(대응유형__contains=self.search)
+                    | Q(불량분류코드__contains=self.search)
+                    | Q(불량분류__contains=self.search)
+                    | Q(접수자__first_name__contains=self.search)
+                    | Q(단품__모델코드__contains=self.search)
+                    | Q(단품__모델명__contains=self.search)
+                    | Q(랙__랙시리얼코드__contains=self.search)
+                    | Q(랙__랙모델명__contains=self.search)
+                    | Q(의뢰처__고객사명__contains=self.search)
+                )
+                .order_by("-created")
+            )
+        return queryset
+
+
+def ASrequestdetail(request, pk):
+    asregister = AS_models.ASRegisters.objects.get_or_none(pk=pk)
+    return render(
+        request, "afterservices/ASrequestdetail.html", {"asregister": asregister,}
+    )
+

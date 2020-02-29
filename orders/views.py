@@ -33,7 +33,6 @@ from stockrack import models as SM_models
 
 def orderregister(request):
     form = forms.UploadOrderForm(request.POST)
-
     search = request.GET.get("search")
     if search is None:
         customer = SI_models.CustomerPartner.objects.all().order_by("-created")

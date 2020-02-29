@@ -33,18 +33,14 @@ class ASRegisters(TimeStampedModel):
     )
 
     접수번호 = models.CharField(max_length=20, null=True,)
-    접수일 = models.DateField(auto_now=False, auto_now_add=False, null=True)
+    접수일 = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True)
     접수자 = models.ForeignKey(
         users_models.User, related_name="AS등록", on_delete=models.SET_NULL, null=True
     )
     현상 = models.CharField(max_length=100, null=True,)
     불량분류코드 = models.CharField(max_length=20, null=True,)
-    불량분류 = models.CharField(
-        choices=불량분류_CHOICES, max_length=10, blank=True, default=사용법미숙지
-    )
-    접수제품분류 = models.CharField(
-        choices=접수제품분류_CHOICES, max_length=10, blank=True, default=단품
-    )
+    불량분류 = models.CharField(choices=불량분류_CHOICES, max_length=10, default=사용법미숙지)
+    접수제품분류 = models.CharField(choices=접수제품분류_CHOICES, max_length=10, default=단품)
 
     단품 = models.ForeignKey(
         SI_models.SingleProduct,
@@ -60,9 +56,7 @@ class ASRegisters(TimeStampedModel):
         null=True,
         blank=True,
     )
-    대응유형 = models.CharField(
-        choices=대응유형_CHOICES, max_length=10, blank=True, default=내부처리
-    )
+    대응유형 = models.CharField(choices=대응유형_CHOICES, max_length=10, default=내부처리)
     의뢰처 = models.ForeignKey(
         SI_models.CustomerPartner,
         related_name="AS등록",
@@ -70,7 +64,7 @@ class ASRegisters(TimeStampedModel):
         null=True,
         blank=True,
     )
-    의뢰자전화번호 = models.CharField(max_length=20, null=True)
+    의뢰자전화번호 = models.CharField(max_length=20, null=True, blank=True)
     방문요청일 = models.DateField(auto_now=False, auto_now_add=False, blank=True, null=True)
 
     class Meta:
@@ -80,9 +74,40 @@ class ASRegisters(TimeStampedModel):
     def __str__(self):
         return f"AS접수 -'{self.의뢰처}'"
 
+    def process(self):
+        try:
+            self.AS현장방문요청
+            try:
+                self.AS현장방문요청.AS현장방문
+                try:
+                    self.AS현장방문요청.AS현장방문.AS재방문
+                    try:
+                        self.AS현장방문요청.AS현장방문.AS재방문.AS완료
+                        return "AS완료"
+
+                    except:
+                        return "재방문완료"
+
+                except:
+                    try:
+                        self.AS현장방문요청.AS현장방문AS완료
+                        return "AS완료"
+                    except:
+                        return "현장방문완료"
+
+            except:
+                return "현장방문요청완료"
+
+        except:
+            try:
+                self.AS완료
+                return "AS완료"
+            except:
+                return "AS접수완료"
+
 
 class ASVisitRequests(TimeStampedModel):
-    AS접수 = models.ForeignKey(
+    AS접수 = models.OneToOneField(
         ASRegisters,
         related_name="AS현장방문요청",
         on_delete=models.SET_NULL,
@@ -270,21 +295,21 @@ class ASResults(TimeStampedModel):
         (재방문, "재방문"),
     )
 
-    내부처리 = models.ForeignKey(
+    내부처리 = models.OneToOneField(
         "ASRegisters",
         related_name="AS완료",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )
-    제품취소 = models.ForeignKey(
+    제품취소 = models.OneToOneField(
         "ASVisitContents",
         related_name="AS완료",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )
-    재방문 = models.ForeignKey(
+    재방문 = models.OneToOneField(
         "ASReVisitContents",
         related_name="AS완료",
         on_delete=models.SET_NULL,

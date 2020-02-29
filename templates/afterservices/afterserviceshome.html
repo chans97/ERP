@@ -7,7 +7,7 @@ AS관리
 
 {% block content %}
 <div class="w-full bg-gray-400 h-10 items-center -mt-4 font-normal fixed justify-center text-sm py-2 pl-8 ">
-    <a class="hover:font-bold" href="{% url "qualitycontrols:qualitycontrolshome"%}">
+    <a class="hover:font-bold" href="{% url "afterservices:afterserviceshome"%}">
         <div class="">AS관리
     </a>{%block head_title%} {%endblock head_title %}</div>
 </div>
@@ -18,15 +18,15 @@ AS관리
             <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
             <div class="text-left ml-4 mb-4">
                 <div>
-                    <a href="{% url "qualitycontrols:finalchecklist"%}">
+                    <a href="{% url "afterservices:ASregister"%}">
                         <span class=" font-light text-xs text-orange-100 hover:font-bold">
                             <i class="fas fa-angle-right mr-1"></i>AS접수</span></a></div>
                 <div>
-                    <a href="{% url "qualitycontrols:finalchecklist"%}">
+                    <a href="{% url "afterservices:ASvisitrequestslist"%}">
                         <span class=" font-light text-xs text-orange-100 hover:font-bold">
-                            <i class="fas fa-angle-right mr-1"></i>AS담당자의뢰</span></a></div>
+                            <i class="fas fa-angle-right mr-1"></i>AS방문요청</span></a></div>
                 <div>
-                    <a href="{% url "qualitycontrols:finalcheckdonelist"%}">
+                    <a href="{% url "afterservices:ASregisterall"%}">
                         <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
                             <i class="fas fa-angle-right mr-1"></i>AS접수확인</span></a></div>
 
@@ -93,7 +93,6 @@ AS관리
                                         <th class="border bg-gray-200 px-4 py-2 w-24">의뢰처</th>
                                         <th class="border bg-gray-200 px-4 py-2 w-24">제품코드</th>
                                         <th class="border bg-gray-200 px-4 py-2 w-24">제품명</th>
-                                        <th class="border bg-gray-200 px-2 py-2 w-24">AS담당자</th>
                                         <th class="border bg-gray-200 px-4 py-2 w-24">접수일</th>
                                         <th class="border bg-gray-200 px-4 py-2 w-24">방문요청일</th>
                                     </tr>
@@ -115,7 +114,6 @@ AS관리
                                         <td class="border px-4 py-2">{{list.AS접수.랙.랙시리얼코드}}</td>
                                         <td class="border px-4 py-2">{{list.AS접수.랙.랙모델명}}</td>
                                         {%endif%}
-                                        <td class="border px-4 py-2 ">{{list.AS담당자}}</td>
                                         <td class="border px-4 py-2">
                                             {{list.AS접수.접수일.year}}-{{list.AS접수.접수일.month}}-{{list.AS접수.접수일.day}}</td>
                                         <td class="border px-4 py-2">

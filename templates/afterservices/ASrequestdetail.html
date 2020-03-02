@@ -21,25 +21,25 @@ AS접수 상세보기
                 <div class=" border-b w-64 mb-3 font-semibold border-gray-600 pb-2">
                     {%if asregister.process != "AS접수완료"%}<i class="fas fa-angle-double-down text-lg"></i> {%endif%}AS접수
                     정보 - {{asregister.접수번호}} <div class="text-indigo-700">"{{asregister.process}}"</div>
-                    {%if asregister.process == "AS완료"%} <div class="text-red-700">"AS완료"</div> {%endif%} </div>
-                {%if asregister.process == "AS접수완료"%}
+                </div>
                 {%if asregister.접수자 == user%}
                 <div class="flex flex-row">
                     <div class="mt-2">
-                        <a href="{%url "orders:orderedit" asregister.pk%}">
+                        <a href="{%url "afterservices:ASRegistersedit" asregister.pk%}">
                             <div class="btn-link bg-teal-800 hover:font-bold">
                                 접수 수정 </div>
                         </a>
                     </div>
+                    {%if asregister.process == "AS접수완료" or asregister.process == "현장방문요청완료"%}
                     <div class="mt-2">
-                        <a href="{%url "orders:orderdeleteensure" asregister.pk %}">
+                        <a href="{%url "afterservices:ASRegisterdeleteensure" asregister.pk %}">
                             <div class="btn-link  bg-red-800 ml-5 hover:font-bold">
                                 접수 삭제 </div>
                         </a>
                     </div>
-
+                    {%endif%}
                 </div>
-                {%endif%}{%endif%}
+                {%endif%}
             </div>
             <table class="table-fixed font-light text-xs w-full">
                 <thead>
@@ -88,469 +88,270 @@ AS접수 상세보기
 
         </div>
 
-        {%if orderproduce%}
+        {%if asregister.AS현장방문요청%}
         <div class="flex flex-col w-full mt-5">
-
-            <div class="flex flex-row justify-between  w-full ">
-                <div class=" border-b w-64 mb-3 font-semibold border-gray-600 pb-2">{%if inproduce%}<i
-                        class="fas fa-angle-double-down text-lg"></i> {%endif%}생산의뢰 - {{order.생산요청.생산의뢰코드}}</div>
-                {%if inproduce%}
-                {%else%}
-                {%if obj_user == user%}
-                <div class="flex flex-row">
-                    <div class="mt-2">
-                        <a href="{%url "orders:orderproduceedit" order.pk%}">
-                            <div class="btn-link bg-teal-800 hover:font-bold">
-                                의뢰 수정 </div>
-                        </a>
-                    </div>
-                    <div class="mt-2">
-                        <a href="{%url "orders:orderproducedeleteensure" order.pk %}">
-                            <div class="btn-link  bg-red-800 ml-5 hover:font-bold">
-                                의뢰 삭제 </div>
-                        </a>
-                    </div>
-
-                </div>
-                {%endif%}{%endif%}
-
-
-            </div>
             <table class="table-fixed font-light text-xs w-full">
                 <thead>
                     <tr>
-                        <th class="border bg-gray-200 px-4 py-2 w-24">생산의뢰코드</th>
-                        <th class="border bg-gray-200 px-4 py-2 w-24">긴급도</th>
-                        <th class="border bg-gray-200 px-4 py-2 w-24">생산목표수량</th>
+                        <th class="border bg-gray-400 px-4 py-2 w-24">현장방문요청완료</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td class="border px-4 py-2  ">
-                            {{order.생산요청.생산의뢰코드}}</a></td>
-                        <td class="border px-4 py-2">{{order.생산요청.긴급도}}</td>
-                        <td class="border px-4 py-2">{{order.생산요청.생산목표수량}}</td>
-                    </tr>
-
-                </tbody>
             </table>
-
-
         </div>
         {%endif%}
-        {%if inproduce%}
+
+        {%if asregister.AS현장방문요청.AS현장방문%}
         <div class="flex flex-col w-full  mt-5">
             <div class="flex flex-row justify-between w-full ">
-                <div class="flex flex-col  w-full ">
-                    <div class=" border-b w-64 mb-3 font-semibold border-gray-600 pb-2">{%if final%}<i
-                            class="fas fa-angle-double-down text-lg"></i> {%endif%}생산 중 - {{order.생산요청.생산계획.생산계획등록코드}}
-                    </div>
+                <div class=" border-b w-64 mb-10 font-semibold border-gray-600 pb-2">
+                    {%if asregister.process != "현장방문완료"%}<i class="fas fa-angle-double-down text-lg"></i>
+                    {%endif%}현장방문 정보
                 </div>
 
-
-            </div>
-            {%if order.생산요청.생산계획.작성자 == user%}
-            {%if orderfinalboolean%}
-            {%else%}
-            <div class="flex justify-end">
-                <div class="flex flex-row">
-                    <div class="">
-                        <a href="{%url "producemanages:produceplanupdate" order.생산요청.생산계획.pk%}">
-                            <div class="btn-link bg-teal-800 hover:font-bold">
-                                업데이트 </div>
-                        </a>
-                    </div>
-                    <div class="">
-                        <a href="{%url "producemanages:produceplantotalupdate" order.생산요청.생산계획.pk %}">
-                            <div class="btn-link  bg-blue-800 ml-5 hover:font-bold">
-                                생산계획수정 </div>
-                        </a>
-                    </div>
-                    {%if workboolean%}
-                    {%else%}
-                    <div class="">
-                        <a href="{%url "producemanages:produceplandeleteensure" order.생산요청.생산계획.pk %}">
-                            <div class="btn-link  bg-red-800 ml-5 hover:font-bold">
-                                생산계획삭제 </div>
-                        </a>
-                    </div>
-                    {%endif%}
-                </div>
-            </div>
-            {%endif%}
-            {%endif%}
-            <table class="table-fixed font-light text-xs w-full -mt-6">
-                <thead>
-                    <tr>
-                        <th class="border bg-gray-200 px-4 py-2 w-24">생산계획등록코드</th>
-                        <th class="border bg-gray-200 px-4 py-2 w-24">현재공정</th>
-                        <th class="border bg-gray-200 px-4 py-2 w-24">현재공정달성율</th>
-                        <th class="border bg-gray-200 px-4 py-2 w-24">계획생산량</th>
-                        <th class="border bg-gray-200 px-4 py-2 w-24">누적생산량</th>
-                        <th class="border bg-gray-200 px-4 py-2 w-24">진척도</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="border px-4 py-2  ">
-                            {{order.생산요청.생산계획.생산계획등록코드}}</a></td>.
-                        <td class="border px-4 py-2">{{order.생산요청.생산계획.현재공정}}</td>
-                        <td class="border px-4 py-2">{{order.생산요청.생산계획.현재공정달성율}}</td>
-                        <td class="border px-4 py-2">{{order.생산요청.생산계획.계획생산량}}</td>
-                        <td class="border px-4 py-2">{{order.생산요청.생산계획.누적생산량}}</td>
-                        <td class="border px-4 py-2">{{order.생산요청.생산계획.successrate}}</td>
-                    </tr>
-
-                </tbody>
-            </table>
-            {%if workboolean%}
-
-
-            <div class="w-full flex justify-center"><i class="fas fa-caret-down text-3xl"></i> </div>
-            {%if order.생산요청.생산계획.작성자 == user%}
-            {%if orderfinalboolean%}
-            {%else%}
-            <div class="flex justify-end">
-                <div class="flex flex-row">
-
-                    <div class=" w-full">
-                        <a href="{%url "producemanages:workorderupdate" order.생산요청.생산계획.작업지시서.pk %}">
-                            <div class="btn-link w-32 bg-blue-800 ml-5 hover:font-bold">
-                                작업지시서수정 </div>
-                        </a>
-                    </div>
-                    <div class="">
-                        <a href="{%url "producemanages:workorderdeleteensure" order.생산요청.생산계획.작업지시서.pk %}">
-                            <div class="btn-link w-32 bg-red-800 ml-5 hover:font-bold">
-                                작업지시서삭제 </div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            {%endif%}
-            {%endif%}
-            <table class="table-fixed font-light text-xs w-full -mt-6">
-                <thead>
-                    <tr>
-                        <th class="border bg-gray-200 px-4 py-2 w-24">작업지시코드</th>
-                        <th class="border bg-gray-200 px-4 py-2 w-24">수량</th>
-                        <th class="border bg-gray-200 px-4 py-2 w-24">특이사항</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="border px-4 py-2  ">
-                            {{order.생산요청.생산계획.작업지시서.작업지시코드}}</a></td>.
-                        <td class="border px-4 py-2">{{order.생산요청.생산계획.작업지시서.수량}}</td>
-                        <td class="border px-4 py-2">
-                            {%if order.생산요청.생산계획.작업지시서.특이사항 is None%}{%else%}{{order.생산요청.생산계획.작업지시서.특이사항}}{%endif%}
-                        </td>
-
-                    </tr>
-
-                </tbody>
-            </table>
-            {%endif%}
-            {%if workdoneboolean%}
-            <div class="flex justify-center flex-col">
-                <div class="w-full flex justify-center"><i class="fas fa-caret-down text-3xl"></i> </div>
-
-                {%if order.생산요청.생산계획.작업지시서.작업지시서등록.생산담당자 == user%}
-                {%if orderfinalboolean%}
-                {%else%}
-                <div class="flex justify-end w-full">
-
-                    <div class="">
-                        <a href="{%url "producemanages:workupdate" order.생산요청.생산계획.작업지시서.작업지시서등록.pk %}">
-                            <div class="btn-link w-32 bg-blue-800 ml-5 hover:font-bold">
-                                공정진행수정 </div>
-                        </a>
-                    </div>
-                    <div class="">
-                        <a href="{%url "producemanages:workdeleteensure" order.pk %}">
-                            <div class="btn-link w-32 bg-red-800 ml-5 hover:font-bold">
-                                공정진행삭제 </div>
-                        </a>
-                    </div>
-                </div>
-                {%endif%}
-                {%endif%}
-            </div>
-            <table class="table-fixed font-light text-xs w-full">
-                <thead>
-                    <tr>
-                        <th class="border bg-gray-200 px-4 py-2 w-24">공정진행</th>
-                        <th class="border bg-gray-200 px-4 py-2 w-24">생산일시</th>
-                        <th class="border bg-gray-200 px-4 py-2 w-24">생산수량</th>
-                        <th class="border bg-gray-200 px-4 py-2 w-24">특이사항</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <th class="border bg-gray-200 px-4 py-2 w-24">{{order.단품모델.모델명}}</th>
-                        <td class="border px-4 py-2  ">
-                            {%if order.생산요청.생산계획.작업지시서.작업지시서등록.생산일시 is None%}
-                            {%else%}
-                            {{order.생산요청.생산계획.작업지시서.작업지시서등록.생산일시.year}}-{{order.생산요청.생산계획.작업지시서.작업지시서등록.생산일시.month}}-{{order.생산요청.생산계획.작업지시서.작업지시서등록.생산일시.day}}{%endif%}
-                        </td>
-                        <td class="border px-4 py-2">{{order.생산요청.생산계획.작업지시서.작업지시서등록.생산수량}}</td>
-                        <td class="border px-4 py-2">
-                            {%if order.생산요청.생산계획.작업지시서.작업지시서등록.특이사항 is None%}{%else%}{{order.생산요청.생산계획.작업지시서.작업지시서등록.특이사항}}{%endif%}
-                        </td>
-
-                    </tr>
-
-                </tbody>
-            </table>
-            {%endif%}
-            {%if orderfinalboolean%}
-            <div class="w-full flex justify-center"><i class="fas fa-caret-down text-3xl"></i> </div>
-            {%if order.생산요청.생산계획.작업지시서.작업지시서등록.생산담당자 == user%}
-            {%if final%}
-            {%else%}
-            <div class="flex justify-between">
-                <div class="px-2">
-                    <i class="fas fa-angle-down mr-1"></i><span
-                        class="font-medium  text-gray-700   text-sm hover:font-bold">최종검사의뢰</span>
-                </div>
-                <div class="flex flex-row">
-                    <div class="">
-                        <a href="{%url "producemanages:orderfinaldelete" order.pk %}">
-                            <div class="btn-link w-32 bg-red-800 ml-5 hover:font-bold">
-                                최종검사의뢰철회 </div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            {%endif%}
-            {%endif%}
-            <table class="table-fixed font-light text-xs w-full">
-                <thead>
-                    <tr>
-                        <th class="border bg-gray-200 px-4 py-2 w-24">최종검사의뢰완료</th>
-                    </tr>
-                </thead>
-            </table>
-            {%endif%}
-        </div>
-        {%endif%}
-        {%if final%}
-        <div class="flex flex-col w-full  mt-5">
-
-            <div class="flex flex-col  w-full ">
-                <div class=" border-b w-64 mb-3 font-semibold border-gray-600 pb-2">최종검사결과</div>
-            </div>
-            <table class="table-fixed font-light text-xs w-full">
-                <thead>
-                    <tr>
-                        <th class="border bg-gray-200 px-4 py-2 w-24">최종검사코드</th>
-                        <th class="border bg-gray-200 px-4 py-2 w-24">검시자</th>
-                        <th class="border bg-gray-200 px-4 py-2 w-24">검시일</th>
-                        <th class="border bg-gray-200 px-4 py-2 w-24">적합수량</th>
-                        <th class="border bg-gray-200 px-4 py-2 w-24">부적합수량</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="border px-4 py-2 hover:font-bold">
-                            <a
-                                href="{%url "qualitycontrols:finalcheckdetail" order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.pk %}">
-
-                                {{order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.최종검사코드}}</a></td>
-
-                        <td class="border px-4 py-2">
-                            {{order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.검시자}}</td>
-                        <td class="border px-4 py-2">{{order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.검시일}}</td>
-                        <td class="border px-4 py-2">{{order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.적합수량}}</td>
-                        <td class="border px-4 py-2">{{order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.부적합수량}}</td>
-                    </tr>
-
-                </tbody>
-            </table>
-            {%if repairboolean %}
-            <div class="w-full flex justify-center"><i class="fas fa-caret-down text-3xl"></i> </div>
-            <div class="flex justify-between">
-                <a href="#">
-                    <div class="px-2">
-                        <i class="fas fa-angle-down mr-1"></i><span
-                            class="font-medium  text-gray-700   text-sm hover:font-bold">수리내역서</span>
-                    </div>
-                </a>
-                {%if order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.수리내역서.작성자 ==  user%}
-                {%if order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.수리내역서.finalcheckboolean == "수리완료"%}
-                <div class="flex flex-row">
-
-                    <div class=" w-full">
-                        <a
-                            href="{%url "producemanages:repairupdate" order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.수리내역서.pk %}">
-                            <div class="btn-link w-32 bg-blue-800 ml-5 hover:font-bold">
-                                수리내역서수정 </div>
-                        </a>
-                    </div>
-                </div>
-                {%endif%}
-                {%endif%}
-            </div>
-            <table class="table-fixed font-light text-xs w-full -mt-6">
-                <thead>
-                    <tr>
-                        <th class="border bg-gray-200 px-4 py-2 w-24">작성자</th>
-                        <th class="border bg-gray-200 px-4 py-2 w-24">수리내용</th>
-                        <th class="border bg-gray-200 px-4 py-2 w-24">실수리수량</th>
-                        <th class="border bg-gray-200 px-4 py-2 w-24">폐기수량</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="border px-4 py-2 hover:font-bold">
-                            <a
-                                href="{%url "qualitycontrols:repairdetail" order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.수리내역서.pk %}">{{order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.수리내역서.작성자}}</a>
-                        </td>.
-                        <td class="border px-4 py-2 hover:font-bold">
-                            {{order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.수리내역서.수리내용}}</td>
-                        <td class="border px-4 py-2">
-                            {{order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.수리내역서.실수리수량}}
-                        </td>
-                        <td class="border px-4 py-2">{{order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.수리내역서.폐기수량}}</td>
-                    </tr>
-
-                </tbody>
-            </table>
-
-
-            {%endif%}
-
-
-        </div>
-        {%endif%}
-        {%if order.leftsingle != no %}
-        <div class="flex flex-col w-full  my-12">
-
-            <div class="flex flex-col  w-full border-black border-dashed pt-8   border-t">
-                <div class=" border-b w-64 mb-3 font-semibold border-gray-600 pb-2 mt-6">출하 요청 내역</div>
-
-
-
-            </div>
-            <table class="table-fixed font-light text-xs w-full">
-                <thead>
-                    <tr>
-                        <th class="border bg-gray-200 px-4 py-2 w-24">요청일</th>
-                        <th class="border bg-gray-200 px-4 py-2 w-24">요청수량</th>
-                        <th class="border bg-gray-200 px-4 py-2 w-24">제품명</th>
-                        <th class="border bg-gray-200 px-4 py-2 w-24"></th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    {%for asregister in ordersingle%}
-                    <tr>
-                        <td class="border px-4 py-2">{%if asregister.출하요청일 is None%}
-                            {%else%}
-                            {{asregister.출하요청일.year}}-{{asregister.출하요청일.month}}-{{asregister.출하요청일.day}}{%endif%}</td>
-                        <td class="border px-4 py-2">{{asregister.출하요청수량}}</td>
-                        {%if order.제품구분 == "단품"%}
-                        <td class="border px-4 py-2">{{asregister.단품}}</td>
-                        {%else%}
-                        <td class="border px-4 py-2">{{asregister.랙}}</td>
-                        {%endif%}
-                        <td class="border px-4 py-2">
-                            {%if obj_user == user%}
-                            {%if asregister.unexport%}
-                            <div class="flex justify-center flex-col items-center">
-                                <a href="{%url "stocksingle:orderstocksingleedit" asregister.pk %} ">
-                                    <div class="btn-link bg-teal-800 hover:font-bold mt-1 mb-0 ml-3 w-40">
-                                        출하요청수정
-                                    </div>
-                                </a>
-                                <a href="{%url "stocksingle:orderstocksingledelete" asregister.pk %}">
-                                    <div class="btn-link bg-red-800 hover:font-bold mt-1 mb-0 ml-3 w-40">
-                                        출하요청철회
-                                    </div>
-                            </div>
-                            {%else%}
-                            <span class="text-red-700">이미 출하완료되었습니다.</span>
-                            {%endif%}
-                            </a>{%endif%}
-                        </td>
-                    </tr>
-                    {%endfor%}
-
-                </tbody>
-            </table>
-
-
-
-        </div>
-        {%endif%}
-
-
-
-        {%if order.leftrack != no %}
-        <div class="flex flex-col w-full  my-12">
-
-            <div class="flex flex-col  w-full border-black border-dashed pt-8   border-t">
-                <div class=" border-b w-64 mb-3 font-semibold border-gray-600 pb-2 mt-6">출하 요청 내역</div><span
-                    class="text-red-700 text-xs -mt-2 mb-1">*출하요청철회시 바로 철회됩니다.</span>
-            </div>
-
-            <table class="table-fixed font-light text-xs w-full">
-                <thead>
-                    <tr>
-                        <th class="border bg-gray-200 px-4 py-2 w-24">요청일</th>
-                        <th class="border bg-gray-200 px-4 py-2 w-24">요청수량</th>
-                        <th class="border bg-gray-200 px-4 py-2 w-24">제품명</th>
-                        <th class="border bg-gray-200 px-4 py-2 w-24"></th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    {%for asregister in orderrack%}
-                    <tr>
-                        <td class="border px-4 py-2">{%if asregister.출하요청일 is None%}
-                            {%else%}
-                            {{asregister.출하요청일.year}}-{{asregister.출하요청일.month}}-{{asregister.출하요청일.day}}{%endif%}</td>
-                        <td class="border px-4 py-2">{{asregister.출하요청수량}}</td>
-                        {%if order.제품구분 == "단품"%}
-                        <td class="border px-4 py-2">{{asregister.단품}}</td>
-                        {%else%}
-                        <td class="border px-4 py-2">{{asregister.랙}}</td>
-                        {%endif%}
-                        <td class="border px-4 py-2">
-                            {%if obj_user == user%}
-                            {%if asregister.unexport%}
-                            <div class="flex justify-center flex-col items-center">
-                                <a href="{%url "stockrack:orderstockrackedit" asregister.pk %} ">
-                                    <div class="btn-link bg-teal-800 hover:font-bold mt-1 mb-0 ml-3 w-40">
-                                        출하요청수정
-                                    </div>
-                                </a>
-                                <a href="{%url "stockrack:orderstockrackdelete" asregister.pk %}">
-                                    <div class="btn-link bg-red-800 hover:font-bold mt-1 mb-0 ml-3 w-40">
-                                        출하요청철회
-                                    </div>
-                            </div>
-                            {%else%}
-                            <span class="text-red-700">이미 출하완료되었습니다.</span>
-                            {%endif%}
+                {%if asregister.AS현장방문요청.AS현장방문.수리기사 == user%}
+                <div class="flex justify-end ">
+                    <div class="flex flex-row">
+                        <div class="">
+                            <a href="{%url "producemanages:produceplanupdate" asregister.AS현장방문요청.AS현장방문.pk%}">
+                                <div class="btn-link bg-teal-800 hover:font-bold">
+                                    수정 </div>
                             </a>
-                            {%endif%}
-                        </td>
+                        </div>
+                        {%if asregister.process == "현장방문완료"%}
+                        <div class="">
+                            <a href="{%url "producemanages:produceplandeleteensure" asregister.AS현장방문요청.AS현장방문.pk %}">
+                                <div class="btn-link  bg-red-800 ml-5 hover:font-bold">
+                                    생산계획삭제 </div>
+                            </a>
+                        </div>
+                        {%endif%}
+                    </div>
+                </div>
+            </div>
+
+            {%endif%}
+            <table class="table-fixed font-light text-xs w-full -mt-6">
+                <thead>
+                    <tr>
+                        <th class="border bg-gray-200 px-4 py-2 w-24">AS방법</th>
+                        <th class="border bg-gray-200 px-4 py-2 w-24">AS처리내역</th>
+                        <th class="border bg-gray-200 px-4 py-2 w-24">재방문여부</th>
+                        <th class="border bg-gray-200 px-4 py-2 w-24">모델코드</th>
+                        <th class="border bg-gray-200 px-4 py-2 w-24">모델명</th>
+                        <th class="border bg-gray-200 px-4 py-2 w-24">특이사항</th>
+                        <th class="border bg-gray-200 px-4 py-2 w-24">고객이름</th>
+                        <th class="border bg-gray-200 px-4 py-2 w-24">수리기사</th>
+                        <th class="border bg-gray-200 px-4 py-2 w-24">AS날짜</th>
                     </tr>
-                    {%endfor%}
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="border px-4 py-2">{{asregister.AS현장방문요청.AS현장방문.AS방법}}</td>
+                        <td class="border px-4 py-2">{{asregister.AS현장방문요청.AS현장방문.AS처리내역}}</td>
+                        <td class="border px-4 py-2">{{asregister.AS현장방문요청.AS현장방문.재방문여부}}</td>
+                        {%if asregister.AS현장방문요청.AS현장방문.접수제품분류 == "단품"%}
+                        <td class="border px-4 py-2">{{asregister.AS현장방문요청.AS현장방문.단품.모델코드}}</td>
+                        <td class="border px-4 py-2">{{asregister.AS현장방문요청.AS현장방문.단품.모델명}}</td>
+                        {%else%}
+                        <td class="border px-4 py-2">{{asregister.AS현장방문요청.AS현장방문.랙.랙시리얼코드}}</td>
+                        <td class="border px-4 py-2">{{asregister.AS현장방문요청.AS현장방문.랙.랙모델명}}</td>
+                        {%endif%}
+                        <td class="border px-4 py-2">{{asregister.AS현장방문요청.AS현장방문.특이사항}}</td>
+                        <td class="border px-4 py-2">{{asregister.AS현장방문요청.AS현장방문.고객이름}}</td>
+                        <td class="border px-4 py-2">{{asregister.AS현장방문요청.AS현장방문.수리기사}}</td>
+                        <td class="border px-4 py-2">
+                            {{asregister.AS현장방문요청.AS현장방문.AS날짜.year}}-{{asregister.AS현장방문요청.AS현장방문.AS날짜.month}}-{{asregister.AS현장방문요청.AS현장방문.AS날짜.day}}
+                        </td>
+
+                    </tr>
 
                 </tbody>
             </table>
-
-
         </div>
-
         {%endif%}
+        {%if asregister.AS현장방문요청.AS현장방문.AS재방문%}
+        <div class="flex flex-col w-full  mt-5">
+            <div class="flex flex-row justify-between w-full ">
+                <div class=" border-b w-64 mb-10 font-semibold border-gray-600 pb-2">
+                    {%if asregister.process != "재방문완료"%}<i class="fas fa-angle-double-down text-lg"></i>
+                    {%endif%}재방문 정보
+                </div>
 
+                {%if asregister.AS현장방문요청.AS현장방문.AS재방문.수리기사 == user%}
+                <div class="flex justify-end ">
+                    <div class="flex flex-row">
+                        <div class="">
+                            <a href="{%url "producemanages:produceplanupdate" asregister.AS현장방문요청.AS현장방문.pk%}">
+                                <div class="btn-link bg-teal-800 hover:font-bold">
+                                    수정 </div>
+                            </a>
+                        </div>
+                        {%if asregister.process == "재방문완료"%}
+                        <div class="">
+                            <a href="{%url "producemanages:produceplandeleteensure" asregister.AS현장방문요청.AS현장방문.pk %}">
+                                <div class="btn-link  bg-red-800 ml-5 hover:font-bold">
+                                    생산계획삭제 </div>
+                            </a>
+                        </div>
+                        {%endif%}
+                    </div>
+                </div>
+            </div>
 
+            {%endif%}
+            <table class="table-fixed font-light text-xs w-full -mt-6">
+                <thead>
+                    <tr>
+                        <th class="border bg-gray-200 px-4 py-2 w-24">AS방법</th>
+                        <th class="border bg-gray-200 px-4 py-2 w-24">AS처리내역</th>
+                        <th class="border bg-gray-200 px-4 py-2 w-24">모델코드</th>
+                        <th class="border bg-gray-200 px-4 py-2 w-24">모델명</th>
+                        <th class="border bg-gray-200 px-4 py-2 w-24">특이사항</th>
+                        <th class="border bg-gray-200 px-4 py-2 w-24">고객이름</th>
+                        <th class="border bg-gray-200 px-4 py-2 w-24">수리기사</th>
+                        <th class="border bg-gray-200 px-4 py-2 w-24">AS날짜</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="border px-4 py-2">{{asregister.AS현장방문요청.AS현장방문.AS재방문.AS방법}}</td>
+                        <td class="border px-4 py-2">{{asregister.AS현장방문요청.AS현장방문.AS재방문.AS처리내역}}</td>
+                        {%if asregister.AS현장방문요청.AS현장방문.AS재방문.접수제품분류 == "단품"%}
+                        <td class="border px-4 py-2">{{asregister.AS현장방문요청.AS현장방문.AS재방문.단품.모델코드}}</td>
+                        <td class="border px-4 py-2">{{asregister.AS현장방문요청.AS현장방문.AS재방문.단품.모델명}}</td>
+                        {%else%}
+                        <td class="border px-4 py-2">{{asregister.AS현장방문요청.AS현장방문.AS재방문.랙.랙시리얼코드}}</td>
+                        <td class="border px-4 py-2">{{asregister.AS현장방문요청.AS현장방문.AS재방문.랙.랙모델명}}</td>
+                        {%endif%}
+                        <td class="border px-4 py-2">{{asregister.AS현장방문요청.AS현장방문.AS재방문.특이사항}}</td>
+                        <td class="border px-4 py-2">{{asregister.AS현장방문요청.AS현장방문.AS재방문.고객이름}}</td>
+                        <td class="border px-4 py-2">{{asregister.AS현장방문요청.AS현장방문.AS재방문.수리기사}}</td>
+                        <td class="border px-4 py-2">
+                            {{asregister.AS현장방문요청.AS현장방문.AS재방문.AS날짜.year}}-{{asregister.AS현장방문요청.AS현장방문.AS재방문.AS날짜.month}}-{{asregister.AS현장방문요청.AS현장방문.AS재방문.AS날짜.day}}
+                        </td>
 
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+        {%endif%}
+        {%if asregister.process == "AS완료"%}
+        <div class="flex flex-col w-full  mt-5 border-t border-dashed pt-4 border-gray-600">
+            {%if asregister.AS완료%}
+            <div class="flex flex-row justify-between w-full ">
+                <div class=" border-b w-64 mb-10 font-semibold border-gray-600 pb-2">
+                    AS완료 - 내부처리
+                </div>
+                {%if asregister.AS완료.완료확인자 == user%}
+                <div class="flex justify-end ">
+                    <div class="flex flex-row">
+                        <div class="">
+                            <a href="{%url "afterservices:ASsuccessdeleteensure" asregister.AS완료.pk %}">
+                                <div class="btn-link  bg-red-800 ml-5 hover:font-bold">
+                                    AS완료 철회 </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {%endif%}
+            </div>
+            <table class="table-fixed font-light text-xs w-full -mt-6">
+                <thead>
+                    <tr>
+                        <th class="border bg-gray-200 px-4 py-2 w-24">완료확인자</th>
+                        <th class="border bg-gray-200 px-4 py-2 w-24">완료날짜</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="border px-4 py-2 text-center">{{asregister.AS완료.완료확인자}}</td>
+                        <td class="border px-4 py-2 text-center">
+                            {{asregister.AS완료.완료날짜.year}}-{{asregister.AS완료.완료날짜.month}}-{{asregister.AS완료.완료날짜.day}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            {%endif%}
+            {%if asregister.AS현장방문요청.AS현장방문.AS완료%}
+            <div class="flex flex-row justify-between w-full ">
+                <div class=" border-b w-64 mb-10 font-semibold border-gray-600 pb-2">
+                    AS완료 - 방문
+                </div>
+                {%if asregister.AS현장방문요청.AS현장방문.AS완료.완료확인자 == user%}
+                <div class="flex justify-end ">
+                    <div class="flex flex-row">
+                        <div class="">
+                            <a
+                                href="{%url "producemanages:produceplandeleteensure" asregister.AS현장방문요청.AS현장방문.AS완료.pk %}">
+                                <div class="btn-link  bg-red-800 ml-5 hover:font-bold">
+                                    AS완료 철회 </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {%endif%}
+            </div>
+            <table class="table-fixed font-light text-xs w-full -mt-6">
+                <thead>
+                    <tr>
+                        <th class="border bg-gray-200 px-4 py-2 w-24">완료확인자</th>
+                        <th class="border bg-gray-200 px-4 py-2 w-24">완료날짜</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="border px-4 py-2 text-center">{{asregister.AS현장방문요청.AS현장방문.AS완료.완료확인자}}</td>
+                        <td class="border px-4 py-2 text-center">
+                            {{asregister.AS현장방문요청.AS현장방문.AS완료.완료날짜.year}}-{{asregister.AS현장방문요청.AS현장방문.AS완료.완료날짜.month}}-{{asregister.AS현장방문요청.AS현장방문.AS완료.완료날짜.day}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            {%endif%}
+            {%if asregister.AS현장방문요청.AS현장방문.AS재방문.AS완료%}
+            <div class="flex flex-row justify-between w-full ">
+                <div class=" border-b w-64 mb-10 font-semibold border-gray-600 pb-2">
+                    AS완료 - 재방문
+                </div>
+                {%if asregister.AS현장방문요청.AS현장방문.AS재방문.AS완료.완료확인자 == user%}
+                <div class="flex justify-end ">
+                    <div class="flex flex-row">
+                        <div class="">
+                            <a
+                                href="{%url "producemanages:produceplandeleteensure" asregister.AS현장방문요청.AS현장방문.AS재방문.AS완료.pk %}">
+                                <div class="btn-link  bg-red-800 ml-5 hover:font-bold">
+                                    AS완료 철회 </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {%endif%}
+            </div>
+            <table class="table-fixed font-light text-xs w-full -mt-6">
+                <thead>
+                    <tr>
+                        <th class="border bg-gray-200 px-4 py-2 w-24">완료확인자</th>
+                        <th class="border bg-gray-200 px-4 py-2 w-24">완료날짜</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="border px-4 py-2 text-center">{{asregister.AS현장방문요청.AS현장방문.AS재방문.AS완료.완료확인자}}</td>
+                        <td class="border px-4 py-2 text-center">
+                            {{asregister.AS현장방문요청.AS현장방문.AS재방문.AS완료.완료날짜.year}}-{{asregister.AS현장방문요청.AS현장방문.AS재방문.AS완료.완료날짜.month}}-{{asregister.AS현장방문요청.AS현장방문.AS재방문.AS완료.완료날짜.day}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            {%endif%}
+        </div>
+        {%endif%}
 
 
 
     </div>
-    {%endblock main_contens %}
+
+
+</div>
+{%endblock main_contens %}

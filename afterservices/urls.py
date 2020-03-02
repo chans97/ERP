@@ -32,5 +32,16 @@ urlpatterns = [
         views.ASrequestdetail,
         name="ASrequestdetail",
     ),
+    path("ASRegistersedit/<int:pk>/", views.ASRegistersedit.as_view(), name="ASRegistersedit",),
+    path("ASRegisterdeleteensure/<int:pk>/", views.ASRegisterdeleteensure, name="ASRegisterdeleteensure",),
+    path("ASRegisterdelete/<int:pk>/", views.ASRegisterdelete, name="ASRegisterdelete",),
+    path("ASregisterdoneinsidelist/", views.ASregisterdoneinsidelist.as_view(), name="ASregisterdoneinsidelist",),
+    path("ASdoneinside/<int:pk>/", views.ASdoneinside, name="ASdoneinside",),
+    path("ASsuccessdeleteensure/<int:pk>/", views.ASsuccessdeleteensure, name="ASsuccessdeleteensure",),
+    path("ASsuccessdelete/<int:pk>/", views.ASsuccessdelete, name="ASsuccessdelete",),
+    
+    
+    
+    
     
 ]

@@ -24,6 +24,7 @@ class ASRegisterForm(forms.ModelForm):
         help_texts = {
             "접수번호": "*최종검사코드 앞에 AR을 붙여주시길 바랍니다.(한 번 설정하면, 바꿀 수 없습니다.)",
             "접수일": "*형식 : yyyy-mm-dd(기본값은 오늘입니다.)",
+            "방문요청일": "*형식 : yyyy-mm-dd",
         }
         widgets = {
             "불량분류": forms.RadioSelect(),
@@ -104,3 +105,28 @@ class ASRackForm(forms.Form):
         order = super().save(commit=False)
         return order
 
+
+class ASRegisterEditForm(forms.ModelForm):
+    class Meta:
+        model = models.ASRegisters
+        fields = (
+            "접수일",
+            "현상",
+            "불량분류코드",
+            "불량분류",
+            "대응유형",
+            "의뢰자전화번호",
+            "방문요청일",
+        )
+        help_texts = {
+            "접수일": "*형식 : yyyy-mm-dd(기본값은 오늘입니다.)",
+            "방문요청일": "*형식 : yyyy-mm-dd",
+        }
+        widgets = {
+            "불량분류": forms.RadioSelect(),
+            "대응유형": forms.RadioSelect(),
+        }
+
+    def save(self, *arg, **kwargs):
+        order = super().save(commit=False)
+        return order

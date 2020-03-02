@@ -26,6 +26,10 @@ AS관리
                         <span class=" font-light text-xs text-orange-100 hover:font-bold">
                             <i class="fas fa-angle-right mr-1"></i>AS방문요청</span></a></div>
                 <div>
+                    <a href="{% url "afterservices:ASregisterdoneinsidelist"%}">
+                        <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                            <i class="fas fa-angle-right mr-1"></i>AS완료등록</span></a></div>
+                <div>
                     <a href="{% url "afterservices:ASregisterall"%}">
                         <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
                             <i class="fas fa-angle-right mr-1"></i>AS접수확인</span></a></div>
@@ -55,7 +59,7 @@ AS관리
                 <div>
                     <a href="{% url "qualitycontrols:materialcheckalllist"%}">
                         <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
-                            <i class="fas fa-angle-right mr-1"></i>AS결과등록</span></a></div>
+                            <i class="fas fa-angle-right mr-1"></i>AS완료등록</span></a></div>
 
             </div>
         </div>
@@ -101,7 +105,9 @@ AS관리
                                     {%for list in queryset%}
                                     <tr>
                                         <td class="border px-4 py-2 hover:text-blue-700 hover:font-bold">
-                                            {{list.AS접수.접수번호}}</td>
+                                            <a
+                                                href="{%url "afterservices:ASrequestdetail" list.AS접수.pk%}">{{list.AS접수.접수번호}}</a>
+                                        </td>
                                         <td class="border px-4 py-2">{{list.AS접수.현상}}</td>
                                         <td class="border px-4 py-2">{{list.AS접수.불량분류코드}}</td>
                                         <td class="border px-4 py-2">{{list.AS접수.불량분류}}</td>

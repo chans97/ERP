@@ -72,7 +72,7 @@ class ASRegisters(TimeStampedModel):
         verbose_name_plural = "AS접수"
 
     def __str__(self):
-        return f"AS접수 -'{self.의뢰처}'"
+        return f"{self.접수번호} : AS접수 -'{self.의뢰처}'"
 
     def process(self):
         try:
@@ -90,7 +90,7 @@ class ASRegisters(TimeStampedModel):
 
                 except:
                     try:
-                        self.AS현장방문요청.AS현장방문AS완료
+                        self.AS현장방문요청.AS현장방문.AS완료
                         return "AS완료"
                     except:
                         return "현장방문완료"
@@ -110,7 +110,7 @@ class ASVisitRequests(TimeStampedModel):
     AS접수 = models.OneToOneField(
         ASRegisters,
         related_name="AS현장방문요청",
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         null=True,
         blank=True,
     )
@@ -124,7 +124,7 @@ class ASVisitRequests(TimeStampedModel):
         verbose_name_plural = "AS현장방문요청"
 
     def __str__(self):
-        return f"AS현장방문요청 -'{self.AS접수.의뢰처}'"
+        return f"{self.AS접수.접수번호} : AS현장방문요청 -'{self.AS접수.의뢰처}'"
 
 
 class ASVisitContents(TimeStampedModel):
@@ -196,7 +196,7 @@ class ASVisitContents(TimeStampedModel):
         verbose_name_plural = "AS현장방문"
 
     def __str__(self):
-        return f"AS현장방문 -'{self.AS현장방문요청.AS접수.의뢰처}'"
+        return f"{self.AS현장방문요청.AS접수.접수번호} : AS현장방문 -'{self.AS현장방문요청.AS접수.의뢰처}'"
 
 
 class ASRepairRequest(TimeStampedModel):
@@ -222,7 +222,7 @@ class ASRepairRequest(TimeStampedModel):
         verbose_name_plural = "AS수리요청"
 
     def __str__(self):
-        return f"AS수리요청 -'{self.AS현장방문.AS현장방문요청.AS접수.의뢰처}' : {self.신청품목}({self.신청수량}) "
+        return f"{self.AS현장방문.AS현장방문요청.AS접수.접수번호} : AS수리요청 -'{self.AS현장방문.AS현장방문요청.AS접수.의뢰처}' : {self.신청품목}({self.신청수량}) "
 
 
 class ASReVisitContents(TimeStampedModel):
@@ -281,17 +281,17 @@ class ASReVisitContents(TimeStampedModel):
         verbose_name_plural = "AS재현장방문"
 
     def __str__(self):
-        return f"AS재방문 -'{self.전AS현장방문.AS현장방문요청.AS접수.의뢰처}'"
+        return f"{self.전AS현장방문.AS현장방문요청.AS접수.접수번호} : AS재방문 -'{self.전AS현장방문.AS현장방문요청.AS접수.의뢰처}'"
 
 
 class ASResults(TimeStampedModel):
     내부처리 = "내부처리"
-    제품취소 = "제품취소"
+    방문 = "방문"
     재방문 = "재방문"
 
     완료유형_CHOICES = (
         (내부처리, "내부처리"),
-        (제품취소, "제품취소"),
+        (방문, "방문"),
         (재방문, "재방문"),
     )
 
@@ -302,7 +302,7 @@ class ASResults(TimeStampedModel):
         null=True,
         blank=True,
     )
-    제품취소 = models.OneToOneField(
+    방문 = models.OneToOneField(
         "ASVisitContents",
         related_name="AS완료",
         on_delete=models.SET_NULL,
@@ -329,8 +329,8 @@ class ASResults(TimeStampedModel):
 
     def __str__(self):
         if self.완료유형 == "재방문":
-            return f"AS완료(방문) -'{self.재방문.전AS현장방문.AS현장방문요청.AS접수.의뢰처}'"
-        elif self.완료유형 == "제품취소":
-            return f"AS완료(제품취소) -'{self.제품취소.AS현장방문요청.AS접수.의뢰처}'"
+            return f"{self.재방문.전AS현장방문.AS현장방문요청.AS접수.접수번호} : AS완료(재방문) -'{self.재방문.전AS현장방문.AS현장방문요청.AS접수.의뢰처}'"
+        elif self.완료유형 == "방문":
+            return f"{self.방문.AS현장방문요청.AS접수.접수번호} : AS완료(방문) -'{self.방문.AS현장방문요청.AS접수.의뢰처}'"
         else:
-            return f"AS완료(내부처리) - '{self.내부처리.의뢰처}'"
+            return f"{self.내부처리.접수번호} : AS완료(내부처리) - '{self.내부처리.의뢰처}'"

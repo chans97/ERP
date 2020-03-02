@@ -130,3 +130,49 @@ class ASRegisterEditForm(forms.ModelForm):
     def save(self, *arg, **kwargs):
         order = super().save(commit=False)
         return order
+
+
+class ASvisitRegisterForm(forms.ModelForm):
+    class Meta:
+        model = models.ASVisitContents
+        fields = (
+            "AS날짜",
+            "AS방법",
+            "고객이름",
+            "AS처리내역",
+            "특이사항",
+            "재방문여부",
+        )
+        help_texts = {
+            "AS날짜": "*형식 : yyyy-mm-dd(기본값은 오늘입니다.)",
+        }
+        widgets = {
+            "AS방법": forms.RadioSelect(),
+            "재방문여부": forms.RadioSelect(),
+        }
+
+    def save(self, *arg, **kwargs):
+        order = super().save(commit=False)
+        return order
+
+
+class ASrevisitRegisterForm(forms.ModelForm):
+    class Meta:
+        model = models.ASReVisitContents
+        fields = (
+            "AS날짜",
+            "AS방법",
+            "고객이름",
+            "AS처리내역",
+            "특이사항",
+        )
+        help_texts = {
+            "AS날짜": "*형식 : yyyy-mm-dd(기본값은 오늘입니다.)",
+        }
+        widgets = {
+            "AS방법": forms.RadioSelect(),
+        }
+
+    def save(self, *arg, **kwargs):
+        order = super().save(commit=False)
+        return order

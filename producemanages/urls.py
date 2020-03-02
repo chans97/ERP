@@ -102,4 +102,9 @@ urlpatterns = [
         views.repairupdateindetailAS.as_view(),
         name="repairupdateindetailAS",
     ),
+    path(
+        "repairrequestdetail/<int:pk>/",
+        views.repairrequestdetail,
+        name="repairrequestdetail",
+    ),
 ]

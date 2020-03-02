@@ -1961,3 +1961,13 @@ def finalcheckrequestdelete(request, pk):
     messages.success(request, "최종검사 의뢰가 철회되었습니다.")
     return redirect(reverse("producemanages:repairdetail", kwargs={"pk": pk}))
 
+
+def repairrequestdetail(request, pk):
+    user = request.user
+    repair = AS_models.ASRepairRequest.objects.get_or_none(pk=pk)
+    return render(
+        request,
+        "producemanages/repairrequestdetail.html",
+        {"repair": repair, "user": user,},
+    )
+

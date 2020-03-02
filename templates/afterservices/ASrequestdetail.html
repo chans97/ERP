@@ -112,24 +112,24 @@ AS접수 상세보기
                 <div class="flex justify-end ">
                     <div class="flex flex-row">
                         <div class="">
-                            <a href="{%url "producemanages:produceplanupdate" asregister.AS현장방문요청.AS현장방문.pk%}">
+                            <a href="{%url "afterservices:ASvisitedit" asregister.AS현장방문요청.AS현장방문.pk%}">
                                 <div class="btn-link bg-teal-800 hover:font-bold">
-                                    수정 </div>
+                                    현장방문수정 </div>
                             </a>
                         </div>
                         {%if asregister.process == "현장방문완료"%}
                         <div class="">
-                            <a href="{%url "producemanages:produceplandeleteensure" asregister.AS현장방문요청.AS현장방문.pk %}">
+                            <a href="{%url "afterservices:ASvisitdeleteensure" asregister.AS현장방문요청.AS현장방문.pk %}">
                                 <div class="btn-link  bg-red-800 ml-5 hover:font-bold">
-                                    생산계획삭제 </div>
+                                    현장방문삭제 </div>
                             </a>
                         </div>
                         {%endif%}
                     </div>
                 </div>
+                {%endif%}
             </div>
 
-            {%endif%}
             <table class="table-fixed font-light text-xs w-full -mt-6">
                 <thead>
                     <tr>
@@ -181,24 +181,25 @@ AS접수 상세보기
                 <div class="flex justify-end ">
                     <div class="flex flex-row">
                         <div class="">
-                            <a href="{%url "producemanages:produceplanupdate" asregister.AS현장방문요청.AS현장방문.pk%}">
+                            <a href="{%url "afterservices:ASrevisitedit" asregister.AS현장방문요청.AS현장방문.AS재방문.pk%}">
                                 <div class="btn-link bg-teal-800 hover:font-bold">
-                                    수정 </div>
+                                    재방문수정 </div>
                             </a>
                         </div>
                         {%if asregister.process == "재방문완료"%}
                         <div class="">
-                            <a href="{%url "producemanages:produceplandeleteensure" asregister.AS현장방문요청.AS현장방문.pk %}">
+                            <a
+                                href="{%url "afterservices:ASrevisitdeleteensure" asregister.AS현장방문요청.AS현장방문.AS재방문.pk %}">
                                 <div class="btn-link  bg-red-800 ml-5 hover:font-bold">
-                                    생산계획삭제 </div>
+                                    재방문삭제 </div>
                             </a>
                         </div>
                         {%endif%}
                     </div>
                 </div>
+                {%endif%}
             </div>
 
-            {%endif%}
             <table class="table-fixed font-light text-xs w-full -mt-6">
                 <thead>
                     <tr>
@@ -282,8 +283,7 @@ AS접수 상세보기
                 <div class="flex justify-end ">
                     <div class="flex flex-row">
                         <div class="">
-                            <a
-                                href="{%url "producemanages:produceplandeleteensure" asregister.AS현장방문요청.AS현장방문.AS완료.pk %}">
+                            <a href="{%url "afterservices:ASsuccessdeleteensure" asregister.AS현장방문요청.AS현장방문.AS완료.pk %}">
                                 <div class="btn-link  bg-red-800 ml-5 hover:font-bold">
                                     AS완료 철회 </div>
                             </a>
@@ -319,7 +319,7 @@ AS접수 상세보기
                     <div class="flex flex-row">
                         <div class="">
                             <a
-                                href="{%url "producemanages:produceplandeleteensure" asregister.AS현장방문요청.AS현장방문.AS재방문.AS완료.pk %}">
+                                href="{%url "afterservices:ASsuccessdeleteensure" asregister.AS현장방문요청.AS현장방문.AS재방문.AS완료.pk %}">
                                 <div class="btn-link  bg-red-800 ml-5 hover:font-bold">
                                     AS완료 철회 </div>
                             </a>
@@ -351,6 +351,7 @@ AS접수 상세보기
 
 
     </div>
+
 
 
 </div>

@@ -33,10 +33,17 @@ AS완료 철회
                 <div class="text-sm text-red-600 font-extrabold">*이와 관련된 자료에 오류가 발생할 수도 있습니다.</div>
                 <div class="flex flex-row mt-5">
                     <div class="mt-2">
+                        {%if assuccess.완료유형 == "내부처리"%}
                         <a href="{%url "afterservices:ASrequestdetail" assuccess.내부처리.pk%}">
-                            <div class="btn-link bg-teal-800">
-                                돌아가기 </div>
-                        </a>
+                            {%elif assuccess.완료유형 == "방문"%}
+                            <a href="{%url "afterservices:ASrequestdetail" assuccess.방문.AS현장방문요청.AS접수.pk%}">
+                                {%else%}
+                                <a
+                                    href="{%url "afterservices:ASrequestdetail" assuccess.재방문.전AS현장방문.AS현장방문요청.AS접수.pk%}">
+                                    {%endif%}
+                                    <div class="btn-link bg-teal-800">
+                                        돌아가기 </div>
+                                </a>
                     </div>
                     <div class="mt-2">
                         <a href="{%url "afterservices:ASsuccessdelete" assuccess.pk %}">

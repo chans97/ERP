@@ -772,3 +772,4 @@ def materialcheckdelete(request, pk):
     materialcheck.delete()
     messages.success(request, "수입검사결과 삭제가 완료되었습니다.")
     return redirect(reverse("qualitycontrols:qualitycontrolshome"))
+

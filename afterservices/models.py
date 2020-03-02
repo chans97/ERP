@@ -160,15 +160,11 @@ class ASVisitContents(TimeStampedModel):
         "ASVisitRequests", related_name="AS현장방문", on_delete=models.SET_NULL, null=True
     )
     AS날짜 = models.DateField(auto_now=False, auto_now_add=False, blank=True, null=True)
-    AS방법 = models.CharField(
-        choices=AS방법_CHOICES, max_length=10, blank=True, default=제품수리
-    )
+    AS방법 = models.CharField(choices=AS방법_CHOICES, max_length=10, default=제품수리)
     고객이름 = models.CharField(max_length=50, null=True)
     AS처리내역 = models.TextField(null=True)
     특이사항 = models.TextField(null=True, blank=True)
-    재방문여부 = models.CharField(
-        choices=재방문여부_CHOICES, max_length=10, blank=True, default=완료
-    )
+    재방문여부 = models.CharField(choices=재방문여부_CHOICES, max_length=10, default=완료)
     수리기사 = models.ForeignKey(
         users_models.User, related_name="AS현장방문", on_delete=models.SET_NULL, null=True
     )
@@ -199,6 +195,8 @@ class ASVisitContents(TimeStampedModel):
         return f"{self.AS현장방문요청.AS접수.접수번호} : AS현장방문 -'{self.AS현장방문요청.AS접수.의뢰처}'"
 
 
+
+
 class ASRepairRequest(TimeStampedModel):
     수리요청코드 = models.CharField(max_length=50, null=True, blank=True,)
 
@@ -223,7 +221,12 @@ class ASRepairRequest(TimeStampedModel):
 
     def __str__(self):
         return f"{self.AS현장방문.AS현장방문요청.AS접수.접수번호} : AS수리요청 -'{self.AS현장방문.AS현장방문요청.AS접수.의뢰처}' : {self.신청품목}({self.신청수량}) "
-
+    def process(self):
+        try:
+            self.수리내역서
+            return "수리완료"
+        except:
+            return "수리요청완료"
 
 class ASReVisitContents(TimeStampedModel):
     단품 = "단품"
@@ -248,9 +251,7 @@ class ASReVisitContents(TimeStampedModel):
         "ASVisitContents", related_name="AS재방문", on_delete=models.SET_NULL, null=True
     )
     AS날짜 = models.DateField(auto_now=False, auto_now_add=False, blank=True, null=True)
-    AS방법 = models.CharField(
-        choices=AS방법_CHOICES, max_length=10, blank=True, default=제품수리
-    )
+    AS방법 = models.CharField(choices=AS방법_CHOICES, max_length=10, default=제품수리)
     고객이름 = models.CharField(max_length=50, null=True)
     AS처리내역 = models.TextField(null=True)
     특이사항 = models.TextField(null=True, blank=True)
@@ -334,3 +335,4 @@ class ASResults(TimeStampedModel):
             return f"{self.방문.AS현장방문요청.AS접수.접수번호} : AS완료(방문) -'{self.방문.AS현장방문요청.AS접수.의뢰처}'"
         else:
             return f"{self.내부처리.접수번호} : AS완료(내부처리) - '{self.내부처리.의뢰처}'"
+

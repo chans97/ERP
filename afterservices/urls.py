@@ -94,4 +94,64 @@ urlpatterns = [
         views.repairrequestdetail,
         name="repairrequestdetail",
     ),
+    path("ASexrepairlist/", views.ASexrepairlist.as_view(), name="ASexrepairlist",),
+    path(
+        "ASrepairrequestregister/<int:pk>/",
+        views.ASrepairrequestregister,
+        name="ASrepairrequestregister",
+    ),
+    path("rackdetail/<int:pk>/", views.RackDetialView.as_view(), name="rackdetail",),
+    path(
+        "singledetail/<int:pk>/", views.SingleDetialView.as_view(), name="singledetail",
+    ),
+    path(
+        "ASrepairrequestregistersingle/<int:pk>/",
+        views.ASrepairrequestregistersingle,
+        name="ASrepairrequestregistersingle",
+    ),
+    path(
+        "ASrepairrequestregisterrack/<int:pk>/",
+        views.ASrepairrequestregisterrack,
+        name="ASrepairrequestregisterrack",
+    ),
+    path(
+        "repairrequestdeleteensure/<int:pk>/",
+        views.repairrequestdeleteensure,
+        name="repairrequestdeleteensure",
+    ),
+    path(
+        "repairrequestdelete/<int:pk>/",
+        views.repairrequestdelete,
+        name="repairrequestdelete",
+    ),
+    path(
+        "ASsingleoutalllist/",
+        views.ASsingleoutalllist.as_view(),
+        name="ASsingleoutalllist",
+    ),
+    path(
+        "ASexsingleoutlist/",
+        views.ASexsingleoutlist.as_view(),
+        name="ASexsingleoutlist",
+    ),
+    path(
+        "orderstocksingledelete/<int:pk>/",
+        views.orderstocksingledelete,
+        name="orderstocksingledelete",
+    ),
+    path(
+        "ASsingleoutrequestregister/<int:pk>/",
+        views.ASsingleoutrequestregister,
+        name="ASsingleoutrequestregister",
+    ),
+    path(
+        "ASsingleoutrequestregistersingle/<int:pk>/",
+        views.ASsingleoutrequestregistersingle,
+        name="ASsingleoutrequestregistersingle",
+    ),
+    path(
+        "ASsingleoutrequestregisterrack/<int:pk>/",
+        views.ASsingleoutrequestregisterrack,
+        name="ASsingleoutrequestregisterrack",
+    ),
 ]

@@ -51,9 +51,9 @@ def orderrackout(request):
             .filter(출하구분="출하미완료")
             .filter(
                 Q(수주코드__contains=search)
-                | Q(영업구분=search)
-                | Q(제품구분=search)
-                | Q(사업장구분=search)
+                | Q(영업구분__contains=search)
+                | Q(제품구분__contains=search)
+                | Q(사업장구분__contains=search)
                 | Q(고객사명__거래처명__contains=search)
                 | Q(단품모델__모델명__contains=search)
                 | Q(단품모델__모델코드__contains=search)
@@ -217,19 +217,14 @@ def orderstockrackedit(request, pk):
                 num = com.수량
                 material = com.랙구성자재
                 realnum = (출하요청수량 - 출하요청수량f) * num
-                print(material.자재재고.출고요청제외수량)
                 material.자재재고.출고요청제외수량 += realnum
                 material.자재재고.save()
-                print(material.자재재고.출고요청제외수량)
             else:
                 num = com.수량
                 single = com.랙구성단품
-                print(single)
                 realnum = (출하요청수량 - 출하요청수량f) * num
-                print(single.단품재고.출하요청제외수량)
                 single.단품재고.출하요청제외수량 += realnum
                 single.단품재고.save()
-                print(single.단품재고.출하요청제외수량)
 
         orderstockrack.출하희망일 = 출하희망일f
         orderstockrack.출하요청수량 = 출하요청수량f

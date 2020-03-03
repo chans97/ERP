@@ -106,6 +106,10 @@ AS접수 상세보기
                 <div class=" border-b w-64 mb-10 font-semibold border-gray-600 pb-2">
                     {%if asregister.process != "현장방문완료"%}<i class="fas fa-angle-double-down text-lg"></i>
                     {%endif%}현장방문 정보
+                    <div class="text-xs font-semibold text-gray-700">
+                        {%if asregister.AS현장방문요청.AS현장방문.repair_count != 0 %}
+                        "현재 {{asregister.AS현장방문요청.AS현장방문.repair_count}}건의 수리의뢰가 있습니다."
+                        {%endif%}</div>
                 </div>
 
                 {%if asregister.AS현장방문요청.AS현장방문.수리기사 == user%}

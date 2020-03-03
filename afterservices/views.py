@@ -362,7 +362,7 @@ class ASRegistersedit(user_mixins.LoggedInOnlyView, UpdateView):
             template=self.get_template_names(),
             context=context,
             using=self.template_engine,
-            **response_kwargs
+            **response_kwargs,
         )
 
     def get_success_url(self):
@@ -595,7 +595,7 @@ class ASvisitedit(UpdateView):
             template=self.get_template_names(),
             context=context,
             using=self.template_engine,
-            **response_kwargs
+            **response_kwargs,
         )
 
     def get_success_url(self):
@@ -747,7 +747,7 @@ class ASrevisitedit(UpdateView):
             template=self.get_template_names(),
             context=context,
             using=self.template_engine,
-            **response_kwargs
+            **response_kwargs,
         )
 
     def get_success_url(self):
@@ -930,9 +930,11 @@ class ASrepairorderalllist(core_views.onelist):
                     | Q(신청자__first_name__contains=self.search)
                     | Q(신청품목__모델코드__contains=self.search)
                     | Q(신청품목__모델명__contains=self.search)
+                    | Q(AS현장방문__AS현장방문요청__AS접수__접수번호__contains=self.search)
                 )
                 .order_by("-created")
             )
+
         return queryset
 
 
@@ -943,4 +945,373 @@ def repairrequestdetail(request, pk):
         request,
         "afterservices/repairrequestdetail.html",
         {"repair": repair, "user": user,},
+    )
+
+
+class ASexrepairlist(core_views.onelist):
+    templatename = "afterservices/ASexrepairlist.html"
+
+    def get_first_queryset(self, request):
+        self.search = request.GET.get("search")
+        if self.search is None:
+            order = (
+                AS_models.ASVisitContents.objects.filter(수리기사=self.request.user)
+                .filter(AS방법="제품수리")
+                .filter(재방문여부="재방문")
+                .order_by("-created")
+            )
+            queryset = []
+            for s in order:
+                try:
+                    s.AS재방문
+                except:
+                    try:
+                        s.AS완료
+                    except:
+                        queryset.append(s)
+
+            self.s_bool = False
+        else:
+            self.s_bool = True
+            order = (
+                AS_models.ASVisitContents.objects.filter(수리기사=self.request.user)
+                .filter(AS방법="제품수리")
+                .filter(재방문여부="재방문")
+                .filter(
+                    Q(AS방법__contains=self.search)
+                    | Q(고객이름__contains=self.search)
+                    | Q(AS처리내역__contains=self.search)
+                    | Q(특이사항__contains=self.search)
+                    | Q(AS현장방문요청__AS접수__접수번호__contains=self.search)
+                    | Q(AS현장방문요청__AS접수__의뢰처__거래처명__contains=self.search)
+                    | Q(단품__모델명__contains=self.search)
+                    | Q(단품__모델코드__contains=self.search)
+                    | Q(랙__랙모델명__contains=self.search)
+                    | Q(랙__랙시리얼코드__contains=self.search)
+                )
+                .order_by("-created")
+            )
+            queryset = []
+            for s in order:
+                try:
+                    s.AS재방문
+                except:
+                    try:
+                        s.AS완료
+                    except:
+                        queryset.append(s)
+
+        return queryset
+
+
+def ASrepairrequestregister(request, pk):
+    ASvisit = AS_models.ASVisitContents.objects.get_or_none(pk=pk)
+    if ASvisit.접수제품분류 == "단품":
+        return redirect(
+            reverse("afterservices:ASrepairrequestregistersingle", kwargs={"pk": pk,})
+        )
+    else:
+        return redirect(
+            reverse("afterservices:ASrepairrequestregisterrack", kwargs={"pk": pk,})
+        )
+
+
+def ASrepairrequestregistersingle(request, pk):
+    ASvisit = AS_models.ASVisitContents.objects.get_or_none(pk=pk)
+    form = forms.ASrepairrequestregisterForm(request.POST)
+    single = ASvisit.단품
+    form.initial = {"신청품목": single.모델코드}
+    for field in form:
+        if field.name == "신청품목":
+            field.help_text_add = f"*기본값은 <{single.모델명}>의 모델코드입니다."
+
+    if form.is_valid():
+        신청품목 = form.cleaned_data.get("신청품목")
+        수리요청코드 = form.cleaned_data.get("수리요청코드")
+        신청수량 = form.cleaned_data.get("신청수량")
+        SM = AS_models.ASRepairRequest.objects.create(
+            신청품목=신청품목, 수리요청코드=수리요청코드, 신청수량=신청수량, AS현장방문=ASvisit, 신청자=request.user,
+        )
+        messages.success(request, "AS수리의뢰가 등록되었습니다.")
+        return redirect(reverse("afterservices:ASrepairorderalllist"))
+
+    seletelist = [
+        "AS방법",
+    ]
+    return render(
+        request,
+        "afterservices/ASrepairrequestregistersingle.html",
+        {"ASvisit": ASvisit, "form": form, "seletelist": seletelist,},
+    )
+
+
+def ASrepairrequestregisterrack(request, pk):
+    ASvisit = AS_models.ASVisitContents.objects.get_or_none(pk=pk)
+    rack = ASvisit.랙
+    singlelist = []
+    for single in rack.랙구성단품.all():
+        if single.랙구성 == "단품":
+            sipk = single.랙구성단품_id
+            sin = SI_models.SingleProduct.objects.get(pk=sipk)
+            singlelist.append(sin)
+    form = forms.ASrepairrequestregisterRackForm(request.POST)
+    for field in form:
+        if field.name == "신청품목":
+            field.help_text_add = f"*기본값은 <{singlelist}>의 모델코드입니다."
+
+    if form.is_valid():
+        신청품목 = form.cleaned_data.get("신청품목")
+        수리요청코드 = form.cleaned_data.get("수리요청코드")
+        신청수량 = form.cleaned_data.get("신청수량")
+        spk = int(신청품목)
+        신청품목 = SI_models.SingleProduct.objects.get(pk=spk)
+        SM = AS_models.ASRepairRequest.objects.create(
+            신청품목=신청품목, 수리요청코드=수리요청코드, 신청수량=신청수량, AS현장방문=ASvisit, 신청자=request.user,
+        )
+        messages.success(request, "AS수리의뢰가 등록되었습니다.")
+        return redirect(reverse("afterservices:ASrepairorderalllist"))
+    seletelist = [
+        "AS방법",
+    ]
+    return render(
+        request,
+        "afterservices/ASrepairrequestregisterrack.html",
+        {
+            "ASvisit": ASvisit,
+            "form": form,
+            "seletelist": seletelist,
+            "singlelist": singlelist,
+        },
+    )
+
+
+class RackDetialView(user_mixins.LoggedInOnlyView, DetailView):
+    model = SI_models.RackProduct
+
+    def get(self, request, *args, **kwargs):
+        pk = kwargs["pk"]
+        rack = SI_models.RackProduct.objects.get(pk=pk)
+
+        single = rack.랙구성단품.filter(랙구성="단품")
+        material = rack.랙구성단품.filter(랙구성="자재")
+        user = request.user
+        return render(
+            request,
+            "afterservices/rackdetail.html",
+            {"rack": rack, "user": user, "material": material, "single": single},
+        )
+
+
+class SingleDetialView(user_mixins.LoggedInOnlyView, DetailView):
+    model = SI_models.SingleProduct
+
+    def get(self, request, *args, **kwargs):
+        pk = kwargs["pk"]
+        single = SI_models.SingleProduct.objects.get(pk=pk)
+
+        material = single.단품구성자재.all()
+        user = request.user
+        return render(
+            request,
+            "afterservices/singledetail.html",
+            {"single": single, "user": user, "material": material},
+        )
+
+
+def repairrequestdeleteensure(request, pk):
+    repairrequest = AS_models.ASRepairRequest.objects.get_or_none(pk=pk)
+    return render(
+        request,
+        "afterservices/repairrequestdeleteensure.html",
+        {"repairrequest": repairrequest},
+    )
+
+
+def repairrequestdelete(request, pk):
+    repairrequest = AS_models.ASRepairRequest.objects.get_or_none(pk=pk)
+    repairrequest.delete()
+    messages.success(request, "AS수리요청이 삭제되었습니다.")
+    return redirect(reverse("afterservices:ASrepairorderalllist"))
+
+
+class ASsingleoutalllist(core_views.onelist):
+    templatename = "afterservices/ASsingleoutalllist.html"
+
+    def get_first_queryset(self, request):
+        self.search = request.GET.get("search")
+        if self.search is None:
+            queryset = (
+                SS_models.StockOfSingleProductOutRequest.objects.filter(수주AS="AS")
+                .filter(출하요청자=self.request.user)
+                .order_by("-created")
+            )
+            self.s_bool = False
+        else:
+            self.s_bool = True
+            queryset = (
+                SS_models.StockOfSingleProductOutRequest.objects.filter(수주AS="AS")
+                .filter(출하요청자=self.request.user)
+                .filter(
+                    Q(AS__AS현장방문요청__AS접수__접수번호__contains=self.search)
+                    | Q(출하요청자__first_name__contains=self.search)
+                    | Q(단품__모델코드__contains=self.search)
+                    | Q(단품__모델명__contains=self.search)
+                    | Q(고객사__거래처명__contains=self.search)
+                )
+                .order_by("-created")
+            )
+        return queryset
+
+
+class ASexsingleoutlist(core_views.onelist):
+    templatename = "afterservices/ASexsingleoutlist.html"
+
+    def get_first_queryset(self, request):
+        self.search = request.GET.get("search")
+        if self.search is None:
+            order = (
+                AS_models.ASVisitContents.objects.filter(수리기사=self.request.user)
+                .filter(AS방법="제품교체")
+                .filter(재방문여부="재방문")
+                .order_by("-created")
+            )
+            queryset = []
+            for s in order:
+                try:
+                    s.AS재방문
+                except:
+                    try:
+                        s.AS완료
+                    except:
+                        queryset.append(s)
+
+            self.s_bool = False
+        else:
+            self.s_bool = True
+            order = (
+                AS_models.ASVisitContents.objects.filter(수리기사=self.request.user)
+                .filter(AS방법="제품교체")
+                .filter(재방문여부="재방문")
+                .filter(
+                    Q(AS방법__contains=self.search)
+                    | Q(고객이름__contains=self.search)
+                    | Q(AS처리내역__contains=self.search)
+                    | Q(특이사항__contains=self.search)
+                    | Q(AS현장방문요청__AS접수__접수번호__contains=self.search)
+                    | Q(AS현장방문요청__AS접수__의뢰처__거래처명__contains=self.search)
+                    | Q(단품__모델명__contains=self.search)
+                    | Q(단품__모델코드__contains=self.search)
+                    | Q(랙__랙모델명__contains=self.search)
+                    | Q(랙__랙시리얼코드__contains=self.search)
+                )
+                .order_by("-created")
+            )
+            queryset = []
+            for s in order:
+                try:
+                    s.AS재방문
+                except:
+                    try:
+                        s.AS완료
+                    except:
+                        queryset.append(s)
+
+        return queryset
+
+
+def orderstocksingledelete(request, pk):
+    orderstocksingle = SS_models.StockOfSingleProductOutRequest.objects.get(pk=pk)
+    출하요청수량 = orderstocksingle.출하요청수량
+    단품 = orderstocksingle.단품
+    재고 = 단품.단품재고
+    재고.출하요청제외수량 += 출하요청수량
+    재고.save()
+
+    messages.success(request, "출하요청이 철회되었습니다.")
+    orderstocksingle.delete()
+    return redirect(reverse("afterservices:ASsingleoutalllist"))
+
+
+def ASsingleoutrequestregister(request, pk):
+    ASvisit = AS_models.ASVisitContents.objects.get_or_none(pk=pk)
+    if ASvisit.접수제품분류 == "단품":
+        return redirect(
+            reverse(
+                "afterservices:ASsingleoutrequestregistersingle", kwargs={"pk": pk,}
+            )
+        )
+    else:
+        return redirect(
+            reverse("afterservices:ASsingleoutrequestregisterrack", kwargs={"pk": pk,})
+        )
+
+
+def ASsingleoutrequestregistersingle(request, pk):
+    ASvisit = AS_models.ASVisitContents.objects.get_or_none(pk=pk)
+    form = forms.ASsingleoutrequestregistersingleForm(request.POST)
+    if form.is_valid():
+        출하희망일 = form.cleaned_data.get("출하희망일")
+        출하요청수량 = form.cleaned_data.get("출하요청수량")
+        if ASvisit.단품.단품재고.출하요청제외수량 < 출하요청수량:
+            messages.error(request, "출하요청수량이 출하요청제외수량보다 더 많습니다.")
+            return render(
+                request,
+                "afterservices/ASsingleoutrequestregistersingle.html",
+                {"ASvisit": ASvisit, "form": form,},
+            )
+        SM = SS_models.StockOfSingleProductOutRequest.objects.create(
+            수주AS="AS",
+            단품=ASvisit.단품,
+            AS=ASvisit,
+            고객사=ASvisit.AS현장방문요청.AS접수.의뢰처,
+            출하요청수량=출하요청수량,
+            출하요청자=request.user,
+            출하희망일=출하희망일,
+        )
+        return redirect(reverse("afterservices:ASsingleoutalllist"))
+
+    return render(
+        request,
+        "afterservices/ASsingleoutrequestregistersingle.html",
+        {"ASvisit": ASvisit, "form": form,},
+    )
+
+
+def ASsingleoutrequestregisterrack(request, pk):
+    ASvisit = AS_models.ASVisitContents.objects.get_or_none(pk=pk)
+    rack = ASvisit.랙
+    singlelist = []
+    for single in rack.랙구성단품.all():
+        if single.랙구성 == "단품":
+            sipk = single.랙구성단품_id
+            sin = SI_models.SingleProduct.objects.get(pk=sipk)
+            singlelist.append(sin)
+    form = forms.ASrepairrequestregisterRackForm(request.POST)
+    for field in form:
+        if field.name == "신청품목":
+            field.help_text_add = f"*기본값은 <{singlelist}>의 모델코드입니다."
+
+    if form.is_valid():
+        신청품목 = form.cleaned_data.get("신청품목")
+        수리요청코드 = form.cleaned_data.get("수리요청코드")
+        신청수량 = form.cleaned_data.get("신청수량")
+        spk = int(신청품목)
+        신청품목 = SI_models.SingleProduct.objects.get(pk=spk)
+        SM = AS_models.ASRepairRequest.objects.create(
+            신청품목=신청품목, 수리요청코드=수리요청코드, 신청수량=신청수량, AS현장방문=ASvisit, 신청자=request.user,
+        )
+        messages.success(request, "AS수리의뢰가 등록되었습니다.")
+        return redirect(reverse("afterservices:ASrepairorderalllist"))
+    seletelist = [
+        "AS방법",
+    ]
+    return render(
+        request,
+        "afterservices/ASrepairrequestregisterrack.html",
+        {
+            "ASvisit": ASvisit,
+            "form": form,
+            "seletelist": seletelist,
+            "singlelist": singlelist,
+        },
     )

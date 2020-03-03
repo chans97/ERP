@@ -1,12 +1,12 @@
 {%extends "afterservices/afterserviceshome.html"%}
 {% load static%}
 {% block page_title%}
-AS수리의뢰 목록
+AS단품출하요청 목록
 {%endblock%}
 
 
 {%block head_title%}
-</a><i class="fas fa-angle-right mx-1 text-base"></i> AS수리의뢰 목록
+</a><i class="fas fa-angle-right mx-1 text-base"></i> AS단품출하요청 목록
 {%endblock head_title %}
 
 
@@ -16,12 +16,12 @@ AS수리의뢰 목록
         <div class="flex flex-col">
             <div class="flex flex-col p-6 w-full ">
                 <div class="flex justify-between">
-                    <span class="border-b w-1/3 mb-3 border-gray-600 pb-2 font-semibold text-base">나의 AS수리의뢰 목록
+                    <span class="border-b w-1/3 mb-3 border-gray-600 pb-2 font-semibold text-base">나의 AS단품출하요청 목록
                     </span>
                     <div class="mr-5">
-                        <a href="{%url "afterservices:ASexrepairlist"%}">
+                        <a href="{%url "afterservices:ASexsingleoutlist"%}">
                             <div class="btn-link bg-teal-800 hover:font-bold">
-                                수리의뢰추가 </div>
+                                단품출하요청 </div>
                         </a>
                     </div>
                 </div>
@@ -43,10 +43,10 @@ AS수리의뢰 목록
                             <thead>
                                 <tr>
                                     <th class="border bg-gray-200 px-4 py-2 w-24">진행상태</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">수리요청코드</th>
                                     <th class="border bg-gray-200 px-4 py-2 w-24">접수번호</th>
                                     <th class="border bg-gray-200 px-4 py-2 w-24">신청자</th>
-                                    <th class="border bg-gray-200 px-2 py-2 w-24">신청수량</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">고객사</th>
+                                    <th class="border bg-gray-200 px-2 py-2 w-24">출하요청수량</th>
                                     <th class="border bg-gray-200 px-4 py-2 w-24">제품코드</th>
                                     <th class="border bg-gray-200 px-4 py-2 w-24">제품명</th>
                                     <th class="border bg-gray-200 px-4 py-2 w-24">신청일</th>
@@ -56,20 +56,27 @@ AS수리의뢰 목록
                                 {%for list in queryset%}
                                 <tr>
                                     <td
-                                        class="border px-4 py-2 font-bold {%if list.process == "수리완료"%} text-green-600{%endif%}">
-                                        {{list.process}}</td>
-                                    <td class="border px-4 py-2 hover:text-blue-700 hover:font-bold">
-                                        <a href="{%url "afterservices:repairrequestdetail" list.pk%}">
-                                            {{list.수리요청코드}}</a></td>
+                                        class="border px-4 py-2 font-bold {%if list.process == "출하완료"%} text-green-600{%endif%} text-center">
+                                        {{list.process}}
+                                        {%if list.process != "출하완료"%}
+                                        <a href="{%url "afterservices:orderstocksingledelete" list.pk%}">
+                                            <div
+                                                class="btn-link hover:bg-blue-800 bg-teal-700 hover:font-bold mt-1 mb-0  w-full">
+                                                출하요청철회
+                                            </div>
+                                        </a>
+                                        {%endif%}
+                                    </td>
                                     <td class="border px-4 py-2 hover:text-blue-700 hover:font-bold">
                                         <a
-                                            href="{%url "afterservices:ASrequestdetail" list.AS현장방문.AS현장방문요청.AS접수.pk%}">{{list.AS현장방문.AS현장방문요청.AS접수.접수번호}}</a>
+                                            href="{%url "afterservices:ASrequestdetail" list.AS.AS현장방문요청.AS접수.pk%}">{{list.AS.AS현장방문요청.AS접수.접수번호}}</a>
                                     </td>
 
-                                    <td class="border px-4 py-2">{{list.신청자}}</td>
-                                    <td class="border px-4 py-2">{{list.신청수량}}</td>
-                                    <td class="border px-4 py-2">{{list.신청품목.모델코드}}</td>
-                                    <td class="border px-4 py-2">{{list.신청품목.모델명}}</td>
+                                    <td class="border px-4 py-2">{{list.출하요청자.first_name}}</td>
+                                    <td class="border px-4 py-2">{{list.고객사.거래처명}}</td>
+                                    <td class="border px-4 py-2">{{list.출하요청수량}}</td>
+                                    <td class="border px-4 py-2">{{list.단품.모델코드}}</td>
+                                    <td class="border px-4 py-2">{{list.단품.모델명}}</td>
                                     <td class="border px-4 py-2">
                                         {{list.created.year}}-{{list.created.month}}-{{list.created.day}}</td>
                                 </tr>

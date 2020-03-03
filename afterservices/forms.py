@@ -1,6 +1,7 @@
 from django import forms
 from . import models
 from StandardInformation import models as SI_models
+from stocksingle import models as SS_models
 
 
 class ASRegisterForm(forms.ModelForm):
@@ -171,6 +172,106 @@ class ASrevisitRegisterForm(forms.ModelForm):
         }
         widgets = {
             "AS방법": forms.RadioSelect(),
+        }
+
+    def save(self, *arg, **kwargs):
+        order = super().save(commit=False)
+        return order
+
+
+class ASrepairrequestregisterForm(forms.ModelForm):
+    신청품목 = forms.CharField(
+        max_length=20,
+        required=True,
+        help_text="*모델코드로 입력해주시길 바랍니다.",
+        widget=forms.TextInput(attrs={"size": "12"}),
+    )
+
+    class Meta:
+        model = models.ASRepairRequest
+        fields = (
+            "수리요청코드",
+            "신청수량",
+        )
+        help_texts = {
+            "수리요청코드": "*수리요청코드 앞에 RR을 붙여주시길 바랍니다.(한 번 설정하면, 바꿀 수 없습니다.)",
+        }
+
+    def save(self, *arg, **kwargs):
+        order = super().save(commit=False)
+        return order
+
+    def clean(self):
+        self.is_bound = False
+        cleaned_data = super().clean()
+        code = self.cleaned_data.get("수리요청코드")
+        codep = self.cleaned_data.get("신청품목")
+        partner = models.ASRepairRequest.objects.filter(수리요청코드=code)
+        partner = list(partner)
+        single = SI_models.SingleProduct.objects.get_or_none(모델코드=codep)
+        if code:
+            code = code[0:2]
+            if partner:
+                self.is_bound = True
+                self.add_error("수리요청코드", forms.ValidationError("*해당 수리요청코드는 이미 존재합니다."))
+            elif code != "RR":
+                self.is_bound = True
+                self.add_error("수리요청코드", forms.ValidationError("*수리요청코드 RR로 시작해야 합니다."))
+            elif single is None:
+                self.is_bound = True
+                self.add_error("신청품목", forms.ValidationError("*해당 단품을 찾을 수 없습니다."))
+            else:
+                self.cleaned_data["신청품목"] = single
+                return self.cleaned_data
+
+
+class ASrepairrequestregisterRackForm(forms.Form):
+
+    접수제품분류_CHOICES = (
+        ("단품", "단품"),
+        ("랙", "랙"),
+    )
+
+    수리요청코드 = forms.CharField(
+        max_length=20,
+        required=True,
+        help_text=f"*수리요청코드 앞에 RR을 붙여주시길 바랍니다.(한 번 설정하면, 바꿀 수 없습니다.)",
+        widget=forms.TextInput(attrs={"size": "12"}),
+    )
+    신청수량 = forms.IntegerField()
+    신청품목 = forms.CharField()
+
+    def clean(self):
+        self.is_bound = False
+        cleaned_data = super().clean()
+        code = self.cleaned_data.get("수리요청코드")
+        partner = models.ASRepairRequest.objects.filter(수리요청코드=code)
+        partner = list(partner)
+        if code:
+            code = code[0:2]
+            if partner:
+                self.is_bound = True
+                self.add_error("수리요청코드", forms.ValidationError("*해당 수리요청코드는 이미 존재합니다."))
+            elif code != "RR":
+                self.is_bound = True
+                self.add_error("수리요청코드", forms.ValidationError("*수리요청코드 RR로 시작해야 합니다."))
+            else:
+                return self.cleaned_data
+
+    def save(self, *arg, **kwargs):
+        order = super().save(commit=False)
+        return order
+
+
+class ASsingleoutrequestregistersingleForm(forms.ModelForm):
+    class Meta:
+        model = SS_models.StockOfSingleProductOutRequest
+        fields = (
+            "출하요청수량",
+            "출하희망일",
+        )
+        help_texts = {
+            "출하희망일": "*형식 : yyyy-mm-dd(필수가 아닙니다.)",
         }
 
     def save(self, *arg, **kwargs):

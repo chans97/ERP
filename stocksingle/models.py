@@ -135,6 +135,11 @@ class StockOfSingleProductIn(TimeStampedModel):
 
 
 class StockOfSingleProductOutRequest(TimeStampedModel):
+    수주AS_CHOICES = (("수주", "수주"), ("AS", "AS"))
+    수주AS = models.CharField(
+        choices=수주AS_CHOICES, max_length=10, default="수주", null=True, blank=True,
+    )
+
     단품 = models.ForeignKey(
         SI_models.SingleProduct,
         related_name="단품출하요청",
@@ -204,6 +209,13 @@ class StockOfSingleProductOutRequest(TimeStampedModel):
             return False
         except:
             return True
+
+    def process(self):
+        try:
+            self.단품출하등록
+            return "출하완료"
+        except:
+            return "출하요청완료"
 
 
 class StockOfSingleProductOut(TimeStampedModel):

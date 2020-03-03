@@ -194,7 +194,10 @@ class ASVisitContents(TimeStampedModel):
     def __str__(self):
         return f"{self.AS현장방문요청.AS접수.접수번호} : AS현장방문 -'{self.AS현장방문요청.AS접수.의뢰처}'"
 
-
+    def repair_count(self):
+        return len(self.AS수리요청.all())
+    def singleout_count(self):
+        return len(self.단품출하요청.all())
 
 
 class ASRepairRequest(TimeStampedModel):
@@ -221,12 +224,14 @@ class ASRepairRequest(TimeStampedModel):
 
     def __str__(self):
         return f"{self.AS현장방문.AS현장방문요청.AS접수.접수번호} : AS수리요청 -'{self.AS현장방문.AS현장방문요청.AS접수.의뢰처}' : {self.신청품목}({self.신청수량}) "
+
     def process(self):
         try:
             self.수리내역서
             return "수리완료"
         except:
             return "수리요청완료"
+
 
 class ASReVisitContents(TimeStampedModel):
     단품 = "단품"

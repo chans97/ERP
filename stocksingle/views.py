@@ -51,8 +51,8 @@ def ordersingleout(request):
             .filter(출하구분="출하미완료")
             .filter(
                 Q(수주코드__contains=search)
-                | Q(영업구분=search)
-                | Q(제품구분=search)
+                | Q(영업구분__contains=search)
+                | Q(제품구분__contains=search)
                 | Q(사업장구분=search)
                 | Q(고객사명__거래처명__contains=search)
                 | Q(단품모델__모델명__contains=search)
@@ -152,7 +152,6 @@ def orderstocksingledelete(request, pk):
     재고.save()
 
     messages.success(request, "출하요청이 철회되었습니다.")
-
     orderstocksingle.delete()
     return redirect(reverse("orders:orderdetail", kwargs={"pk": pk}))
 

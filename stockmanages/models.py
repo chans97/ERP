@@ -54,6 +54,14 @@ class StockOfMaterialHistory(TimeStampedModel):
 
 
 class StockOfMaterialInRequest(TimeStampedModel):
+    일반 = "일반"
+    반납 = "반납"
+
+    입고유형_CHOICES = (
+        (일반, "일반"),
+        (반납, "반납"),
+    )
+
     자재 = models.ForeignKey(
         SI_models.Material, related_name="자재입고요청", on_delete=models.CASCADE, null=True
     )
@@ -62,6 +70,7 @@ class StockOfMaterialInRequest(TimeStampedModel):
         users_models.User, related_name="자재입고요청", on_delete=models.SET_NULL, null=True,
     )
     입고요청일 = models.DateField(auto_now=False, auto_now_add=False)
+    입고유형 = models.CharField(choices=입고유형_CHOICES, max_length=10, null=True, default=일반)
 
     class Meta:
         verbose_name = "자재입고요청"
@@ -104,7 +113,7 @@ class StockOfMaterialIn(TimeStampedModel):
     입고자 = models.ForeignKey(
         users_models.User, related_name="자재입고등록", on_delete=models.SET_NULL, null=True,
     )
-    입고일 = models.DateField(auto_now=False, auto_now_add=False, null=True)
+    입고일 = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True)
     입고수량 = models.IntegerField(null=True)
     입고유형 = models.CharField(choices=입고유형_CHOICES, max_length=10, null=True, default=일반)
 
@@ -135,6 +144,13 @@ class StockOfMaterialIn(TimeStampedModel):
 
 
 class StockOfMaterialOutRequest(TimeStampedModel):
+    생산 = "생산"
+    AS = "AS"
+
+    출고유형_CHOICES = (
+        (생산, "생산"),
+        (AS, "AS"),
+    )
     자재 = models.ForeignKey(
         SI_models.Material, related_name="자재출고요청", on_delete=models.CASCADE, null=True
     )
@@ -142,7 +158,8 @@ class StockOfMaterialOutRequest(TimeStampedModel):
     출고요청자 = models.ForeignKey(
         users_models.User, related_name="자재출고요청", on_delete=models.SET_NULL, null=True,
     )
-    출고요청일 = models.DateField(auto_now=False, auto_now_add=False)
+    출고요청일 = models.DateField(auto_now=False, auto_now_add=False,)
+    출고유형 = models.CharField(choices=출고유형_CHOICES, max_length=10, null=True, default=생산)
 
     class Meta:
         verbose_name = "자재출고요청"
@@ -191,7 +208,7 @@ class StockOfMaterialOut(TimeStampedModel):
     출고자 = models.ForeignKey(
         users_models.User, related_name="자재출고등록", on_delete=models.SET_NULL, null=True,
     )
-    출고일 = models.DateField(auto_now=False, auto_now_add=False, null=True)
+    출고일 = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True)
     출고수량 = models.IntegerField(null=True)
     출고유형 = models.CharField(choices=출고유형_CHOICES, max_length=10, null=True, default=생산)
 

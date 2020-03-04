@@ -48,7 +48,8 @@ def firstindecide(request):
             return redirect(reverse("qualitycontrols:qualitycontrolshome"))
         elif (user.부서.부서명 == "AS담당부") or (user.부서.부서명 == "총무부"):
             return redirect(reverse("afterservices:afterserviceshome"))
-
+        elif user.부서.부서명 == "자재부":
+            return redirect(reverse("stockmanages:stockmanageshome"))
         else:
             return render(request, "base.html")
 

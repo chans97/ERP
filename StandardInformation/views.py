@@ -341,7 +341,7 @@ def singlematerial(request, pk):
             단품모델=single, 단품구성자재=단품구성자재, 수량=수량
         )
 
-    pagediv = 10
+    pagediv = 7
     totalpage = int(math.ceil(len(material) / pagediv))
     paginator = Paginator(material, pagediv, orphans=0)
     page = request.GET.get("page", "1")

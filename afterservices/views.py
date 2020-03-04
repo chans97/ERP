@@ -1055,9 +1055,6 @@ def ASrepairrequestregisterrack(request, pk):
             sin = SI_models.SingleProduct.objects.get(pk=sipk)
             singlelist.append(sin)
     form = forms.ASrepairrequestregisterRackForm(request.POST)
-    for field in form:
-        if field.name == "신청품목":
-            field.help_text_add = f"*기본값은 <{singlelist}>의 모델코드입니다."
 
     if form.is_valid():
         신청품목 = form.cleaned_data.get("신청품목")
@@ -1073,14 +1070,15 @@ def ASrepairrequestregisterrack(request, pk):
     seletelist = [
         "AS방법",
     ]
+
     return render(
         request,
         "afterservices/ASrepairrequestregisterrack.html",
         {
             "ASvisit": ASvisit,
             "form": form,
-            "seletelist": seletelist,
             "singlelist": singlelist,
+            "seletelist": seletelist,
         },
     )
 
@@ -1268,6 +1266,7 @@ def ASsingleoutrequestregistersingle(request, pk):
             출하요청자=request.user,
             출하희망일=출하희망일,
         )
+        messages.success(request, "단품출하요청이 등록되었습니다.")
         return redirect(reverse("afterservices:ASsingleoutalllist"))
 
     return render(
@@ -1286,32 +1285,50 @@ def ASsingleoutrequestregisterrack(request, pk):
             sipk = single.랙구성단품_id
             sin = SI_models.SingleProduct.objects.get(pk=sipk)
             singlelist.append(sin)
-    form = forms.ASrepairrequestregisterRackForm(request.POST)
-    for field in form:
-        if field.name == "신청품목":
-            field.help_text_add = f"*기본값은 <{singlelist}>의 모델코드입니다."
-
+    form = forms.ASsingleoutrequestregisterrackForm(request.POST)
+    seletelist = [
+        "불량분류",
+    ]
     if form.is_valid():
+        출하희망일 = form.cleaned_data.get("출하희망일")
+        출하요청수량 = form.cleaned_data.get("출하요청수량")
         신청품목 = form.cleaned_data.get("신청품목")
-        수리요청코드 = form.cleaned_data.get("수리요청코드")
-        신청수량 = form.cleaned_data.get("신청수량")
         spk = int(신청품목)
         신청품목 = SI_models.SingleProduct.objects.get(pk=spk)
-        SM = AS_models.ASRepairRequest.objects.create(
-            신청품목=신청품목, 수리요청코드=수리요청코드, 신청수량=신청수량, AS현장방문=ASvisit, 신청자=request.user,
+
+        if 신청품목.단품재고.출하요청제외수량 < 출하요청수량:
+            messages.error(request, "출하요청수량이 출하요청제외수량보다 더 많습니다.")
+            return render(
+                request,
+                "afterservices/ASsingleoutrequestregisterrack.html",
+                {
+                    "ASvisit": ASvisit,
+                    "form": form,
+                    "singlelist": singlelist,
+                    "seletelist": seletelist,
+                },
+            )
+
+        SM = SS_models.StockOfSingleProductOutRequest.objects.create(
+            수주AS="AS",
+            단품=신청품목,
+            AS=ASvisit,
+            고객사=ASvisit.AS현장방문요청.AS접수.의뢰처,
+            출하요청수량=출하요청수량,
+            출하요청자=request.user,
+            출하희망일=출하희망일,
         )
-        messages.success(request, "AS수리의뢰가 등록되었습니다.")
-        return redirect(reverse("afterservices:ASrepairorderalllist"))
-    seletelist = [
-        "AS방법",
-    ]
+        messages.success(request, "단품출하요청이 등록되었습니다.")
+        return redirect(reverse("afterservices:ASsingleoutalllist"))
+
     return render(
         request,
-        "afterservices/ASrepairrequestregisterrack.html",
+        "afterservices/ASsingleoutrequestregisterrack.html",
         {
             "ASvisit": ASvisit,
             "form": form,
-            "seletelist": seletelist,
             "singlelist": singlelist,
+            "seletelist": seletelist,
         },
     )
+

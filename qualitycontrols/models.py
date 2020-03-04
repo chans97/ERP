@@ -180,6 +180,13 @@ class MaterialCheckRegister(TimeStampedModel):
     def __str__(self):
         return f"수입검사의뢰 -'{self.자재}'"
 
+    def process(self):
+        try:
+            self.수입검사
+            return "수입검사완료"
+        except:
+            return "수입검사요청완료"
+
 
 class MaterialCheck(TimeStampedModel):
     수입검사코드 = models.CharField(max_length=20)

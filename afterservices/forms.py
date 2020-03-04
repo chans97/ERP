@@ -227,11 +227,6 @@ class ASrepairrequestregisterForm(forms.ModelForm):
 
 class ASrepairrequestregisterRackForm(forms.Form):
 
-    접수제품분류_CHOICES = (
-        ("단품", "단품"),
-        ("랙", "랙"),
-    )
-
     수리요청코드 = forms.CharField(
         max_length=20,
         required=True,
@@ -273,6 +268,17 @@ class ASsingleoutrequestregistersingleForm(forms.ModelForm):
         help_texts = {
             "출하희망일": "*형식 : yyyy-mm-dd(필수가 아닙니다.)",
         }
+
+    def save(self, *arg, **kwargs):
+        order = super().save(commit=False)
+        return order
+
+
+class ASsingleoutrequestregisterrackForm(forms.Form):
+
+    출하희망일 = forms.DateField(required=False, help_text="*형식 : yyyy-mm-dd(필수가 아닙니다.)")
+    출하요청수량 = forms.IntegerField(widget=forms.NumberInput(attrs={"min": "0"}))
+    신청품목 = forms.CharField()
 
     def save(self, *arg, **kwargs):
         order = super().save(commit=False)

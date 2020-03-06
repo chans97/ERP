@@ -5,7 +5,7 @@ app_name = "StandardInformation"
 
 urlpatterns = [
     path("partner/", views.PartnerView.as_view(), name="partner"),
-    path("partnerregister/", views.UploadPartnerView.as_view(), name="partnerregister"),
+    path("partnerregister/", views.UploadPartnerView, name="partnerregister"),
     path(
         "partnerdetail/<int:pk>/",
         views.PartnerDetialView.as_view(),
@@ -20,7 +20,7 @@ urlpatterns = [
     path("partnerdelete/<int:pk>/", views.partnerdelete, name="partnerdelete",),
     path("partneredit/<int:pk>/", views.EditPartnerView.as_view(), name="partneredit",),
     path("single/", views.SingleView.as_view(), name="single"),
-    path("singleregister/", views.UploadSingleView.as_view(), name="singleregister"),
+    path("singleregister/", views.UploadSingleView, name="singleregister"),
     path(
         "singledetail/<int:pk>/", views.SingleDetialView.as_view(), name="singledetail",
     ),
@@ -39,7 +39,7 @@ urlpatterns = [
     path("singleedit/<int:pk>/", views.EditSingleView.as_view(), name="singleedit",),
     path("rack/", views.RackView.as_view(), name="rack"),
     path("rackdetail/<int:pk>/", views.RackDetialView.as_view(), name="rackdetail",),
-    path("rackregister/", views.UploadRackView.as_view(), name="rackregister"),
+    path("rackregister/", views.UploadRackView, name="rackregister"),
     path("racksingle/<int:pk>/", views.racksingle, name="racksingle",),
     path("rackmaterial/<int:pk>/", views.rackmaterial, name="rackmaterial",),
     path(
@@ -57,4 +57,6 @@ urlpatterns = [
         "rackdeleteensure/<int:pk>/", views.rackdeleteensure, name="rackdeleteensure",
     ),
     path("rackdelete/<int:pk>/", views.rackdelete, name="rackdelete",),
+    path("donesingleregister/", views.donesingleregister, name="donesingleregister"),
+    path("donerackregister/", views.donerackregister, name="donerackregister"),
 ]

@@ -14,7 +14,7 @@
 <div class="flex">
     <div class="w-32 mx-auto h-10/12 fixed items-center font-semibold justify-center pt-5 bg-gray-700 mt-6">
         <div class="font-base text-sm text-left text-orange-100 py-px">
-            <i class="fas fa-bars mr-2 ml-3"></i><a href="{%url "orders:ordershome"%}">수주등록</a>
+            <i class="fas fa-bars mr-2 ml-3"></i>수주관리
             <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
             <div class="text-left ml-4 mb-4">
                 <div>
@@ -24,7 +24,7 @@
                 <div>
                     <a href="{%url "orders:orderproduce"%}">
                         <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
-                            <i class="fas fa-angle-right mr-1"></i></i>생산의뢰등록</span></a></div>
+                            <i class="fas fa-angle-right mr-1"></i></i>생산의뢰</span></a></div>
                 <div>
                     <a href="{%url "orders:endorder"%}">
                         <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
@@ -33,7 +33,7 @@
             </div>
         </div>
         <div class="font-base text-sm text-left text-orange-100 py-px">
-            <i class="fas fa-bars mr-2 ml-3"></i>재고출하
+            <i class="fas fa-bars mr-2 ml-3"></i>출하관리
             <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
             <div class="text-left ml-4 mb-4">
                 <div>
@@ -69,11 +69,11 @@
     </div>
     {%block main_contens%}
 
-    <div class="flex flex-col">
-        <div class="w-11/12 h-full ml-32 -mt-6 font-semibold pt-12 flex flex-col">
-            <div class="flex flex-col">
+    <div class="flex flex-col w-full">
+        <div class="w-full pl-32 -mt-6 font-semibold pt-12 flex flex-col">
+            <div class="flex flex-col w-full">
                 <div class="p-6">
-                    <div class="border-b w-64 mb-3 border-gray-600 pb-2">내 수주 현황 </div>
+                    <div class="border-b w-64 mb-3 border-gray-600 pb-2">내 수주 현황 ({{my_order_count}})</div>
                     <div class="flew flex-col">
                         <div class="w-64 border h-6 mb-2">
 
@@ -172,11 +172,11 @@
 
             </div>
         </div>
-        <div class="w-11/12 h-full mt-5 ml-32 font-semibold flex flex-col">
-            <div class="flex flex-col">
-                <div class="p-6">
-                    <div class="border-b w-64 mb-3 border-gray-600 pb-2">전체 수주 현황 </div>
-                    <div class="flew flex-col">
+        <div class="w-full h-full mt-5 pl-32 font-semibold flex flex-col">
+            <div class="flex flex-col w-full">
+                <div class="p-6 w-full">
+                    <div class="border-b w-64 mb-3 border-gray-600 pb-2">전체 수주 현황 ({{order_count}}) </div>
+                    <div class="flew flex-col w-full">
                         <div class="w-64 border h-6 mb-2">
 
                             <form method="get" action="" class="w-full flex ">
@@ -191,13 +191,13 @@
                         <table class="table-fixed font-light text-xs w-full">
                             <thead>
                                 <tr>
-                                    <th class="border bg-gray-200 px-2 py-2 w-32">진행과정</th>
+                                    <th class="border bg-gray-200 px-2 py-2 w-24">진행과정</th>
                                     <th class="border bg-gray-200 px-4 py-2 w-24">수주코드</th>
                                     <th class="border bg-gray-200 px-4 py-2 w-24">사업장구분</th>
                                     <th class="border bg-gray-200 px-4 py-2 w-24">작성자</th>
                                     <th class="border bg-gray-200 px-4 py-2 w-24">영업구분</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-40">고객사명</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-48">제품코드</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">고객사명</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">제품코드</th>
                                     <th class="border bg-gray-200 px-4 py-2 w-24">제품명</th>
                                     <th class="border bg-gray-200 px-4 py-2 w-24">납품수량</th>
                                     <th class="border bg-gray-200 px-4 py-2 w-24">수주일자</th>

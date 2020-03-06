@@ -29,10 +29,27 @@ import math
 from StandardInformation import models as SI_models
 from stocksingle import models as SS_models
 from stockrack import models as SM_models
+from random import randint
+from django.utils import timezone
 
 
 def orderregister(request):
+    def give_number():
+        while True:
+            n = randint(1, 999999)
+            num = str(n).zfill(6)
+            code = "OR" + num
+            obj = models.OrderRegister.objects.get_or_none(수주코드=code)
+            if obj:
+                pass
+            else:
+                return code
+
     form = forms.UploadOrderForm(request.POST)
+    code = give_number()
+    now = timezone.now().date()
+    form.initial = {"수주코드": code, "수주일자": now}
+
     search = request.GET.get("search")
     if search is None:
         customer = SI_models.CustomerPartner.objects.all().order_by("-created")
@@ -235,13 +252,14 @@ def ordershome(request):
     search_m = request.GET.get("search_m")
     search = request.GET.get("search")
 
+    order_m = (
+        models.OrderRegister.objects.filter(작성자=user)
+        .filter(출하구분="출하미완료")
+        .order_by("-created")
+    )
     if search_m is None:
-        order_m = (
-            models.OrderRegister.objects.filter(작성자=user)
-            .filter(출하구분="출하미완료")
-            .order_by("-created")
-        )
         s_bool_m = False
+        my_order_count = order_m.count()
     else:
         s_bool_m = True
         qs_m = models.OrderRegister.objects.filter(작성자=user).filter(출하구분="출하미완료")
@@ -254,10 +272,12 @@ def ordershome(request):
             | Q(단품모델__모델명=search_m)
             | Q(랙모델__랙모델명=search_m)
         ).order_by("-created")
+        my_order_count = order_m.count()
         order_m = qs
 
+    order = models.OrderRegister.objects.all().order_by("-created")
     if search is None:
-        order = models.OrderRegister.objects.all().order_by("-created")
+        order_count = order.count()
         s_bool = False
     else:
         s_bool = True
@@ -271,6 +291,7 @@ def ordershome(request):
             | Q(단품모델__모델명=search)
             | Q(랙모델__랙모델명=search)
         ).order_by("-created")
+        order_count = order.count()
         order = qs
 
     pagediv = 7
@@ -302,6 +323,8 @@ def ordershome(request):
         request,
         "orders/ordershome.html",
         {
+            "order_count": order_count,
+            "my_order_count": my_order_count,
             "order_m": order_m,
             "search_m": search_m,
             "page_m": page_m,
@@ -618,7 +641,7 @@ def orderrackedit(request, pk):
         SM.납품수량 = 납품수량
         SM.save()
 
-        messages.success(request, "랙수주가 등록되었습니다.")
+        messages.success(request, "랙수주가 수정되었습니다.")
 
         return redirect(reverse("orders:ordershome"))
 
@@ -750,7 +773,21 @@ def orderproduce(request):
 def orderproduceregister(request, pk):
     order = models.OrderRegister.objects.get_or_none(pk=pk)
 
+    def give_number():
+        while True:
+            n = randint(1, 999999)
+            num = str(n).zfill(6)
+            code = "OP" + num
+            obj = models.OrderProduce.objects.get_or_none(생산의뢰코드=code)
+            if obj:
+                pass
+            else:
+                return code
+
     form = forms.UploadOrderProduceForm(request.POST)
+    code = give_number()
+    now = timezone.now().date()
+    form.initial = {"생산의뢰코드": code, "생산목표수량": order.납품수량}
 
     if form.is_valid():
         생산의뢰코드 = form.cleaned_data.get("생산의뢰코드")

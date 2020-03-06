@@ -1,6 +1,9 @@
 from django import forms
 from . import models
 from StandardInformation import models as SI_models
+from django.contrib.admin.widgets import AdminDateWidget
+from django.forms.fields import DateField
+from .widgets import DatePickerWidget, CounterTextInput
 
 
 class UploadOrderForm(forms.Form):
@@ -27,25 +30,31 @@ class UploadOrderForm(forms.Form):
         (엠에스텔레콤, "엠에스텔레콤"),
     )
 
-    수주코드 = forms.CharField(help_text="*수주코드 앞에 OR을 붙여주시길 바랍니다.")
+    수주코드 = forms.CharField(help_text="*수주코드 앞에 OR을 붙여주시길 바랍니다.",)
     영업구분 = forms.ChoiceField(choices=영업구분_CHOICES, widget=forms.RadioSelect())
     제품구분 = forms.ChoiceField(choices=제품구분_CHOICES, widget=forms.RadioSelect())
     사업장구분 = forms.ChoiceField(choices=사업장구분_CHOICES, widget=forms.RadioSelect())
-    수주일자 = forms.DateField(required=True, help_text="*형식 : (yyyy-mm-dd) ",)
+    수주일자 = DateField(
+        required=True, help_text="*형식 : (yyyy-mm-dd) ", widget=forms.SelectDateWidget
+    )
     거래처코드 = forms.CharField(
         max_length=20, required=True, help_text="*거래처 코드로 입력해주시길 바랍니다."
     )
     현장명 = forms.CharField()
-    납품요청일 = forms.DateField(required=False, help_text="*형식 : (yyyy-mm-dd) ")
-    특이사항 = forms.CharField(required=False, widget=forms.TextInput(attrs={"size": "24"}))
+    납품요청일 = forms.DateField(
+        required=False, help_text="*형식 : (yyyy-mm-dd) ", widget=forms.SelectDateWidget
+    )
+    특이사항 = forms.CharField(required=False,)
 
     def clean(self):
+        self.is_bound = False
         cleaned_data = super().clean()
         code = self.cleaned_data.get("수주코드")
         order = models.OrderRegister.objects.get_or_none(수주코드=code)
         거래처코드 = self.cleaned_data.get("거래처코드")
         customer = SI_models.CustomerPartner.objects.get_or_none(거래처코드=거래처코드)
         if code:
+            self.is_bound = True
             code = code[0:2]
 
             if order:
@@ -96,7 +105,7 @@ class EditOrderForm(forms.Form):
     )
     현장명 = forms.CharField()
     납품요청일 = forms.DateField(required=False, help_text="*형식 : (yyyy-mm-dd) ")
-    특이사항 = forms.CharField(required=False, widget=forms.TextInput(attrs={"size": "24"}))
+    특이사항 = forms.CharField(required=False,)
 
     def clean(self):
         cleaned_data = super().clean()
@@ -197,10 +206,12 @@ class UploadOrderProduceForm(forms.ModelForm):
         widgets = {}
 
     def clean(self):
+        self.is_bound = False
         code = self.cleaned_data.get("생산의뢰코드")
         partner = models.OrderProduce.objects.filter(생산의뢰코드=code)
         partner = list(partner)
         if code:
+            self.is_bound = True
             code = code[0:2]
             if partner:
                 self.add_error("생산의뢰코드", forms.ValidationError("*해당 생산의뢰코드는 이미 존재합니다."))

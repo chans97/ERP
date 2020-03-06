@@ -26,6 +26,7 @@ from users import mixins as user_mixins
 from users import models as user_models
 from django.http import HttpResponse
 import math
+from random import randint
 
 
 class PartnerView(user_mixins.LoggedInOnlyView, ListView):
@@ -86,43 +87,35 @@ class PartnerView(user_mixins.LoggedInOnlyView, ListView):
         return self.render_to_response(context)
 
 
-class UploadPartnerView(user_mixins.LoggedInOnlyView, FormView):
-    model = models.Partner
-    fields = (
-        "거래처구분",
-        "거래처코드",
-        "거래처명",
-        "사업자등록번호",
-        "담당자",
-        "연락처",
-        "이메일",
-        "사업장주소",
-        "사업자등록증첨부",
-        "특이사항",
-        "사용여부",
-    )
-    template_name = "Standardinformation/partnerregister.html"
-    form_class = forms.UploadPartnerForm
+def UploadPartnerView(request):
+    def give_number():
+        while True:
+            start_code = "PN"
+            n = randint(1, 999999)
+            num = str(n).zfill(6)
+            code = start_code + num
+            obj = models.Partner.objects.get_or_none(거래처코드=code)
+            if obj:
+                pass
+            else:
+                return code
 
-    def form_valid(self, form):
-        partner = form.save()
-        user = self.request.user
-        request = self.request
+    form = forms.UploadPartnerForm(request.POST)
+    code = give_number()
+    form.initial = {
+        "거래처코드": code,
+    }
 
-        partner.작성자 = user
-        partner.save()
+    if form.is_valid():
+        single = form.save()
+        single.작성자 = request.user
+        single.save()
         form.save_m2m()
+        pk = single.pk
 
         messages.success(request, "거래처가 등록되었습니다.")
         return redirect(reverse("StandardInformation:partner"))
-
-    def get(self, request, *args, **kwargs):
-        user = self.request.user
-        form = forms.UploadPartnerForm
-
-        return render(
-            request, "Standardinformation/partnerregister.html", {"form": form},
-        )
+    return render(request, "Standardinformation/partnerregister.html", {"form": form,},)
 
 
 class PartnerDetialView(user_mixins.LoggedInOnlyView, DetailView):
@@ -264,24 +257,28 @@ class SingleView(ListView):
         return self.render_to_response(context)
 
 
-class UploadSingleView(user_mixins.LoggedInOnlyView, FormView):
-    model = models.SingleProduct
-    fields = (
-        "모델코드",
-        "모델명",
-        "규격",
-        "단위",
-        "단가",
-    )
-    template_name = "Standardinformation/singleregister.html"
-    form_class = forms.UploadSingleForm
+def UploadSingleView(request):
+    def give_number():
+        while True:
+            start_code = "SP"
+            n = randint(1, 999999)
+            num = str(n).zfill(6)
+            code = start_code + num
+            obj = models.SingleProduct.objects.get_or_none(모델코드=code)
+            if obj:
+                pass
+            else:
+                return code
 
-    def form_valid(self, form):
+    form = forms.UploadSingleForm(request.POST)
+    code = give_number()
+    form.initial = {
+        "모델코드": code,
+    }
+
+    if form.is_valid():
         single = form.save()
-        user = self.request.user
-        request = self.request
-
-        single.작성자 = user
+        single.작성자 = request.user
         single.save()
         form.save_m2m()
         pk = single.pk
@@ -290,14 +287,7 @@ class UploadSingleView(user_mixins.LoggedInOnlyView, FormView):
         return redirect(
             reverse("StandardInformation:singlematerial", kwargs={"pk": pk})
         )
-
-    def get(self, request, *args, **kwargs):
-        user = self.request.user
-        form = forms.UploadSingleForm
-
-        return render(
-            request, "Standardinformation/singleregister.html", {"form": form},
-        )
+    return render(request, "Standardinformation/singleregister.html", {"form": form,},)
 
 
 class SingleDetialView(user_mixins.LoggedInOnlyView, DetailView):
@@ -486,36 +476,35 @@ class RackDetialView(user_mixins.LoggedInOnlyView, DetailView):
         )
 
 
-class UploadRackView(user_mixins.LoggedInOnlyView, FormView):
-    model = models.RackProduct
-    fields = (
-        "랙시리얼코드",
-        "랙모델명",
-        "규격",
-        "단위",
-        "단가",
-    )
-    template_name = "Standardinformation/rackregister.html"
-    form_class = forms.UploadRackForm
+def UploadRackView(request):
+    def give_number():
+        while True:
+            start_code = "RP"
+            n = randint(1, 999999)
+            num = str(n).zfill(6)
+            code = start_code + num
+            obj = models.RackProduct.objects.get_or_none(랙시리얼코드=code)
+            if obj:
+                pass
+            else:
+                return code
 
-    def form_valid(self, form):
-        rack = form.save()
-        user = self.request.user
-        request = self.request
+    form = forms.UploadRackForm(request.POST)
+    code = give_number()
+    form.initial = {
+        "랙시리얼코드": code,
+    }
 
-        rack.작성자 = user
-        rack.save()
+    if form.is_valid():
+        single = form.save()
+        single.작성자 = request.user
+        single.save()
         form.save_m2m()
-        pk = rack.pk
+        pk = single.pk
 
         messages.success(request, "해당 랙에 포함되는 단품을 추가해주세요.")
         return redirect(reverse("StandardInformation:racksingle", kwargs={"pk": pk}))
-
-    def get(self, request, *args, **kwargs):
-        user = self.request.user
-        form = forms.UploadRackForm
-
-        return render(request, "Standardinformation/rackregister.html", {"form": form},)
+    return render(request, "Standardinformation/rackregister.html", {"form": form,},)
 
 
 def racksingle(request, pk):
@@ -674,5 +663,17 @@ def rackdelete(request, pk):
     rack.delete()
 
     messages.success(request, "해당 랙이 삭제되었습니다.")
+
+    return redirect(reverse("StandardInformation:rack"))
+
+
+def donesingleregister(request):
+    messages.success(request, "단품이 기준정보에 등록되었습니다.")
+
+    return redirect(reverse("StandardInformation:single"))
+
+
+def donerackregister(request):
+    messages.success(request, "랙이 기준정보에 등록되었습니다.")
 
     return redirect(reverse("StandardInformation:rack"))

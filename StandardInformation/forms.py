@@ -25,16 +25,17 @@ class UploadPartnerForm(forms.ModelForm):
         }
 
     def clean(self):
-        code = self.cleaned_data.get("거래처코드")
+        code = self.cleaned_data.get("거래처코드", "123")
         partner = models.Partner.objects.filter(거래처코드=code)
         partner = list(partner)
+        if code == "123":
+            self.is_bound = False
+
         code = code[0:2]
         if partner:
             self.add_error("거래처코드", forms.ValidationError("*해당 거래처코드는 이미 존재합니다."))
         elif code != "PN":
             self.add_error("거래처코드", forms.ValidationError("*거래처 코드는 PN으로 시작해야 합니다."))
-
-            return self.cleaned_data
 
     def save(self, *arg, **kwargs):
         partner = super().save(commit=False)
@@ -57,9 +58,12 @@ class UploadSingleForm(forms.ModelForm):
         }
 
     def clean(self):
-        code = self.cleaned_data.get("모델코드")
+        code = self.cleaned_data.get("모델코드", "123")
         single = models.SingleProduct.objects.filter(모델코드=code)
         single = list(single)
+        if (code == "") or (code == "123"):
+            self.is_bound = False
+
         code = code[0:2]
         if single:
             self.add_error("모델코드", forms.ValidationError("*해당 모델코드는 이미 존재합니다."))
@@ -82,6 +86,7 @@ class UploadSingleMaterialForm(forms.Form):
         material = models.Material.objects.get_or_none(자재코드=singlematerial)
 
         if material is None:
+
             self.add_error("단품구성자재", forms.ValidationError("*해당 자재코드는 없는 자재코드입니다."))
         else:
             self.cleaned_data["단품구성자재"] = material
@@ -104,11 +109,14 @@ class UploadRackForm(forms.ModelForm):
         }
 
     def clean(self):
-        code = self.cleaned_data.get("랙시리얼코드")
+        code = self.cleaned_data.get("랙시리얼코드", "123")
         rack = models.RackProduct.objects.filter(랙시리얼코드=code)
         rack = list(rack)
+        if (code == "") or (code == "123"):
+            self.is_bound = False
         code = code[0:2]
         if rack:
+
             self.add_error("랙시리얼코드", forms.ValidationError("*해당 모델코드는 이미 존재합니다."))
         elif code != "RP":
             self.add_error("랙시리얼코드", forms.ValidationError("*랙시리얼코드는 RP로 시작해야 합니다."))

@@ -6,7 +6,7 @@
 
 
 {%block head_title%}
-</a><i class="fas fa-angle-right mx-1 text-base"></i>수주등록<i class="fas fa-angle-right text-base mx-1"></i>
+</a><i class="fas fa-angle-right mx-1 text-base"></i>수주관리<i class="fas fa-angle-right text-base mx-1"></i>
 수주등록<i class="fas fa-angle-right text-base mx-1"></i>단품등록
 {%endblock head_title %}
 
@@ -28,109 +28,121 @@
             </form>
         </div>
         <div class="flex ">
-            <div class="flew flex-col">
-                <table class="table-fixed font-light text-xs w-full">
-                    <thead>
-                        <tr>
-                            <th class="border bg-gray-200 px-4 py-2 w-32">모델코드</th>
-                            <th class="border bg-gray-200 px-4 py-2 w-32">모델명</th>
-                            <th class="border bg-gray-200 px-4 py-2 w-32">규격</th>
-                            <th class="border bg-gray-200 px-4 py-2 w-40">단가</th>
-                            <th class="border bg-gray-200 px-4 py-2 w-24">단위</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {%for list in customer%}
-                        <tr>
-                            <td class="border px-4 py-2 hover:text-blue-700">
-                                {{list.모델코드}}</td>
-                            <td class="border px-4 py-2 font-medium hover:text-blue-700 hover:font-bold"><a
-                                    href="{%url "StandardInformation:singledetail" list.pk %}">{{list.모델명}}</a></td>
-                            <td class="border px-4 py-2">{{list.규격}}</td>
-                            <td class="border px-4 py-2">{{list.단가}}</td>
-                            <td class="border px-4 py-2">{{list.단위}}</td>
-                        </tr>
-                        {%endfor%}
-
-                    </tbody>
-                </table>
-                <div class="flex ml-2">
-                    {% if page != '1' %}
-                    {%if s_bool%}
-                    <a href="?search={{search}}&page={{previouspage}}" class="text-teal-700"><i
-                            class="fas fa-arrow-left fa-lg mt-2"></i></a>
-                    {%else%}
-                    <a href="?page={{previouspage}}" class="text-teal-700"><i
-                            class="fas fa-arrow-left fa-lg mt-2"></i></a>
-                    {% endif %}{% endif %}
-                    <span class="mx-3 font-medium  text-base">{{page}} of
-                        {{totalpage}}</span>
-
-                    {% if notsamebool %}
-                    {%if s_bool%}
-                    <a href="?search={{search}}&page={{nextpage}}" class="text-teal-700"><i
-                            class="fas fa-arrow-right fa-lg mt-2"></i></a>
-                    {%else%}
-                    <a href="?page={{nextpage}}" class="text-teal-700"><i class="fas fa-arrow-right fa-lg mt-2"></i></a>
-                    {% endif %}{% endif %}
-                </div>
-            </div>
-            <div class=" flex px-12 justify-center items-start ">
-
-                <form method="POST" class="w-full flex flex-col  justify-center" enctype="multipart/form-data">
+            <form method="POST" class="w-full flex justify-start items-start" enctype="multipart/form-data">
+                <div class="flew flex-col ">
                     {% csrf_token %}
-
-
-                    <div class="w-full justify-center flex flex-col">
-
-
-                        <table class="table-fixed text-sm w-full">
-                            <thead>
+                    <table class="table-fixed font-light text-xs w-full">
+                        <thead>
+                            <tr>
+                                <th class="border bg-gray-200 px-1 py-2 w-12">선택</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-32">모델코드</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-32">모델명</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-32">규격</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-40">단가</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-24">단위</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ul id="id_단품모델코드">
+                                {%for list in customer%}
                                 <tr>
-                                    <th class="border border-r-0 bg-gray-200 px-4 py-2 w-40"></th>
-                                    <th class="border border-l-0 bg-gray-200 px-4 py-2 w-56 text-left">수주등록</th>
+                                    <td class="border px-4 py-2 text-center">
+                                        <label for="id_단품모델코드_0"><input type="radio" name="단품모델코드" value={{list.모델코드}}
+                                                required="" id="id_단품모델코드_0">
+                                        </label>
+
+                                    </td>
+                                    <td class="border px-4 py-2 hover:text-blue-700">
+                                        {{list.모델코드}}</td>
+                                    <td class="border px-4 py-2 font-medium hover:text-blue-700 hover:font-bold"><a
+                                            href="{%url "StandardInformation:singledetail" list.pk %}">{{list.모델명}}</a>
+                                    </td>
+                                    <td class="border px-4 py-2">{{list.규격}}</td>
+                                    <td class="border px-4 py-2">{{list.단가}}</td>
+                                    <td class="border px-4 py-2">{{list.단위}}</td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    {% for field in form %}
+                                {%endfor%}
+                            </ul>
 
-                                    <td class="border border-gray-400 px-4 py-2">
-                                        {{field.name}}
-                                    </td>
+                        </tbody>
+                    </table>
+                    <div class="flex ml-2">
+                        {% if page != '1' %}
+                        {%if s_bool%}
+                        <a href="?search={{search}}&page={{previouspage}}" class="text-teal-700"><i
+                                class="fas fa-arrow-left fa-lg mt-2"></i></a>
+                        {%else%}
+                        <a href="?page={{previouspage}}" class="text-teal-700"><i
+                                class="fas fa-arrow-left fa-lg mt-2"></i></a>
+                        {% endif %}{% endif %}
+                        <span class="mx-3 font-medium  text-base">{{page}} of
+                            {{totalpage}}</span>
 
-                                    {%endfor%}</tr>
-                                <tr>
-                                    {% for field in form %}
-
-
-                                    <td class="border border-gray-400 px-4 py-2">
-
-                                        <div class="  border hover:border-gray-500 w-full ">
-                                            {{field}}</div>
-                                        <div class="text-xs text-green-700 ">
-
-                                            {{field.help_text}}
-                                        </div>
-                                        {% if field.errors %}
-                                        {% for error in field.errors %}
-                                        <div class="text-red-700 font-light text-xs">*{{error}}</div>
-                                        {% endfor %}
-                                        {% endif %}
-
-                                    </td>
-                                    {%endfor%}</tr>
-
-                            </tbody>
-                        </table>
+                        {% if notsamebool %}
+                        {%if s_bool%}
+                        <a href="?search={{search}}&page={{nextpage}}" class="text-teal-700"><i
+                                class="fas fa-arrow-right fa-lg mt-2"></i></a>
+                        {%else%}
+                        <a href="?page={{nextpage}}" class="text-teal-700"><i
+                                class="fas fa-arrow-right fa-lg mt-2"></i></a>
+                        {% endif %}{% endif %}
                     </div>
+
+                </div>
+
+
+                <div class="w-full justify-center flex flex-col ml-12">
+
+
+                    <table class="table-fixed text-sm w-full">
+                        <thead>
+                            <tr>
+                                <th class="border border-r-0 bg-gray-200 px-1 py-2 w-40 text-right">수주</th>
+                                <th class="border border-l-0 bg-gray-200 px-0 py-2 w-40 text-left">등록</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for field in form %}
+                            {%if field.name != "단품모델코드"%}
+                            <tr>
+
+                                <td class="border border-gray-400 px-4 py-2">
+                                    {{field.name}}
+                                </td>
+
+
+
+
+
+                                <td class="border border-gray-400 px-4 py-2">
+
+                                    <div class="  border hover:border-gray-500 w-full ">
+                                        {{field}}</div>
+                                    <div class="text-xs text-green-700 ">
+
+                                        {{field.help_text}}
+                                    </div>
+                                    {% if field.errors %}
+                                    {% for error in field.errors %}
+                                    <div class="text-red-700 font-light text-xs">*{{error}}</div>
+                                    {% endfor %}
+                                    {% endif %}
+
+                                </td>
+                                {%endif%}
+                                {%endfor%}
+                            </tr>
+
+                        </tbody>
+                    </table>
                     <div class=" flex flex-row justify-around -mx-12">
                         <button class="btn-link bg-blue-800 text-white w-9/12 h-12 self-center my-3 pt-0 pb-1">
                             <div class="text-base font-medium">입력완료</div>
-                        </button </div>
-                </form>
-            </div>
+                        </button>
+                    </div>
+                </div>
         </div>
+        </form>
     </div>
 </div>
 </div>

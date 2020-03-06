@@ -3,7 +3,7 @@
 .search-box{
     transition: box-shadow 0.2s linear;
 }
-.nav_link {
+.nav_link { 
     @apply ml-8 border-b-2 border-transparent h-full flex items-center;
     &:hover{
         @apply border-gray-600;
@@ -17,7 +17,7 @@
 }
 
 .btn-link{
-    @apply mb-3 text-center py-px rounded-lg w-24 font-light text-sm text-white bg-blue-800;
+    @apply text-center rounded-lg w-24 font-light text-white bg-blue-800 text-sm;
 
 
 }
@@ -27,10 +27,18 @@ textarea{
     width: 150px;
 
 }
+
+input[type]:not([type=radio]){
+    @apply w-full;
+    &:focus{
+        @apply outline-none border-red-800
+    }
+}
+
 .input{
     @apply rounded-sm py-2 w-full text-left border border-gray-600 px-4;
     &:focus{
-        @apply outline-none border-red-800
+        @apply outline-none border-yellow-800
     }
 }
 form {
@@ -54,11 +62,11 @@ form {
     }
     15%{
         opacity: 1;
-        transform: translateY(0px);
+        transform: translateY(15px);
     }
     85%{
         opacity: 1;
-        transform: translateY(0px);
+        transform: translateY(15px);
     }
     100%{
         opacity: 0;
@@ -66,7 +74,7 @@ form {
     }
     }
     .border_section{
-        @apply flex w-full border-b border-gray-400 pb-8 mt-8;
+        @apply flex border-b border-gray-400 pb-8 mt-8;
     }
     .cal-grid{
         display: grid;

@@ -29,50 +29,61 @@
         </div>
         <div class="flex ">
             <div class="flew flex-col">
-                <table class="table-fixed font-light text-xs">
-                    <thead>
-                        <tr>
-                            <th class="border bg-gray-200 px-4 py-2 w-32">자재코드</th>
-                            <th class="border bg-gray-200 px-4 py-2 w-40">자재명</th>
-                            <th class="border bg-gray-200 px-4 py-2 w-40">자재분류</th>
-                            <th class="border bg-gray-200 px-4 py-2 w-48">공급처</th>
-                            <th class="border bg-gray-200 px-4 py-2 w-24">단위</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {%for list in material%}
-                        <tr>
-                            <td class="border px-4 py-2 hover:text-blue-700">
-                                {{list.자재코드}}</td>
-                            <td class="border px-4 py-2">{{list.자재품명}}</td>
-                            <td class="border px-4 py-2">{{list.품목}}</td>
-                            <td class="border px-4 py-2">{{list.자재공급업체}}</td>
-                            <td class="border px-4 py-2">{{list.단위}}</td>
-                        </tr>
-                        {%endfor%}
+                <form method="POST" class="w-full flex flex-col justify-center" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <table class="table-fixed font-light text-xs">
+                        <thead>
+                            <tr>
+                                <th class="border bg-gray-200 px-1 py-2 w-12">선택</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-32">자재코드</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-40">자재명</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-40">자재분류</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-48">공급처</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-24">단위</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ul id="id_랙구성자재">
+                                {%for list in material%}
+                                <tr>
+                                    <td class="border px-4 py-2 text-center">
+                                        <label for="id_랙구성자재_0"><input type="radio" name="랙구성자재" value={{list.자재코드}}
+                                                required="" id="id_랙구성자재_0">
+                                        </label>
 
-                    </tbody>
-                </table>
-                <div class="flex ml-2">
-                    {% if page != '1' %}
-                    {%if s_bool%}
-                    <a href="?search={{search}}&page={{previouspage}}" class="text-teal-700"><i
-                            class="fas fa-arrow-left fa-lg mt-2"></i></a>
-                    {%else%}
-                    <a href="?page={{previouspage}}" class="text-teal-700"><i
-                            class="fas fa-arrow-left fa-lg mt-2"></i></a>
-                    {% endif %}{% endif %}
-                    <span class="mx-3 font-medium  text-base">{{page}} of
-                        {{totalpage}}</span>
+                                    </td>
+                                    <td class="border px-4 py-2 hover:text-blue-700">
+                                        {{list.자재코드}}</td>
+                                    <td class="border px-4 py-2">{{list.자재품명}}</td>
+                                    <td class="border px-4 py-2">{{list.품목}}</td>
+                                    <td class="border px-4 py-2">{{list.자재공급업체}}</td>
+                                    <td class="border px-4 py-2">{{list.단위}}</td>
+                                </tr>
+                                {%endfor%}
+                            </ul>
+                        </tbody>
+                    </table>
+                    <div class="flex ml-2">
+                        {% if page != '1' %}
+                        {%if s_bool%}
+                        <a href="?search={{search}}&page={{previouspage}}" class="text-teal-700"><i
+                                class="fas fa-arrow-left fa-lg mt-2"></i></a>
+                        {%else%}
+                        <a href="?page={{previouspage}}" class="text-teal-700"><i
+                                class="fas fa-arrow-left fa-lg mt-2"></i></a>
+                        {% endif %}{% endif %}
+                        <span class="mx-3 font-medium  text-base">{{page}} of
+                            {{totalpage}}</span>
 
-                    {% if notsamebool %}
-                    {%if s_bool%}
-                    <a href="?search={{search}}&page={{nextpage}}" class="text-teal-700"><i
-                            class="fas fa-arrow-right fa-lg mt-2"></i></a>
-                    {%else%}
-                    <a href="?page={{nextpage}}" class="text-teal-700"><i class="fas fa-arrow-right fa-lg mt-2"></i></a>
-                    {% endif %}{% endif %}
-                </div>
+                        {% if notsamebool %}
+                        {%if s_bool%}
+                        <a href="?search={{search}}&page={{nextpage}}" class="text-teal-700"><i
+                                class="fas fa-arrow-right fa-lg mt-2"></i></a>
+                        {%else%}
+                        <a href="?page={{nextpage}}" class="text-teal-700"><i
+                                class="fas fa-arrow-right fa-lg mt-2"></i></a>
+                        {% endif %}{% endif %}
+                    </div>
             </div>
             <div class=" flex flex-col px-12 justify-center items-center">
                 <table class="table-fixed text-sm">
@@ -111,48 +122,53 @@
 
 
 
-                <form method="POST" class="w-full flex flex-col justify-center" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <button class="btn bg-blue-600 text-white w-7/12 self-center my-3 pt-0 pb-1">
-                        <i class="fas fa-angle-double-up"></i>
-                        <div class="text-sm forn-bold">자재추가</div>
-                    </button>
+
+                <button class="btn bg-blue-600 text-white w-7/12 self-center my-3 pt-0 pb-1">
+                    <i class="fas fa-angle-double-up"></i>
+                    <div class="text-sm forn-bold">자재추가</div>
+                </button>
 
 
-                    <div class="w-full justify-center flex flex-col">
+                <div class="w-full justify-center flex flex-col">
 
 
-                        <table class="table-fixed text-sm">
+                    <table class="table-fixed text-sm">
+                        <tbody>
+                            <tr>
 
-                            <tbody>
-                                <tr>
-                                    <td class="border px-4 py-2 bg-gray-200">자재코드</td>
-                                    <td class="border px-4 py-2 bg-gray-200">자재수량</td>
-                                </tr>
-
-                                <tr>{% for field in form %}
-
-                                    <td class="border px-4 py-2">
-                                        <div class="border hover:border-gray-500 w-full">{{field}}</div>
-                                        {% if field.errors %}
-                                        {% for error in field.errors %}
-                                        <div class="text-red-700 font-light text-xs">*{{error}}</div>
-                                        {% endfor %}
-                                        {% endif %}
-
-                                        {%endfor%}
-                                    </td>
-
-                            </tbody>
-                        </table>
+                                <td class="border px-4 py-2 bg-gray-200">자재수량</td>
 
 
 
-                    </div>
+                                {% for field in form %}
+
+                                {% if field.name != "랙구성자재" %}
+
+
+
+                                <td class="border px-4 py-2">
+                                    <div class="border hover:border-gray-500 w-full">{{field}}</div>
+                                    {% if field.errors %}
+                                    {% for error in field.errors %}
+                                    <div class="text-red-700 font-light text-xs">*{{error}}</div>
+                                    {% endfor %}
+                                    {% endif %}
+
+                                </td>
+                                {% endif %}
+                                {%endfor%}
+
+                        </tbody>
+                    </table>
+
+
+
+
+                </div>
 
                 </form>
                 <div class="w-full flex justify-center">
-                    <a href={%url "StandardInformation:rack" %}>
+                    <a href={%url "StandardInformation:donerackregister" %}>
                         <button class="btn bg-blue-800 text-white font-bold w-64 mt-3">
                             <div>최종등록완료</div>
                         </button></a></div>

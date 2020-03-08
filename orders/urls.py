@@ -46,4 +46,17 @@ urlpatterns = [
     ),
     path("endorderlist/", views.endorderlist, name="endorderlist"),
     path("endorderforin/<int:pk>/", views.endorderforin, name="endorderforin",),
+    path(
+        "orderproduceforrack/", views.orderproduceforrack, name="orderproduceforrack",
+    ),
+    path(
+        "informationforrackproduce/<int:pk>/",
+        views.informationforrackproduce,
+        name="informationforrackproduce",
+    ),
+    path(
+        "producesingleforrack/<int:pk>/<int:spk>/",
+        views.producesingleforrack,
+        name="producesingleforrack",
+    ),
 ]

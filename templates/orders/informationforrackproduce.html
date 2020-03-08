@@ -1,0 +1,124 @@
+{%extends "orders/ordershome.html"%}
+{% load static%}
+{% block page_title%}
+랙상세
+{%endblock%}
+
+
+{%block head_title%}
+<i class="fas fa-angle-right mx-1 text-base"></i>수주관리<i class="fas fa-angle-right text-base mx-1"></i>
+<a href="{%url "orders:orderproduceforrack"%}" class="hover:font-bold">
+    랙생산의뢰
+</a><i class="fas fa-angle-right text-base mx-1"></i> {{order}}의 랙 생산의뢰 정보
+{%endblock head_title %}
+
+
+{%block main_contens%}
+
+<div class="w-11/12 h-full ml-32 -mt-6 pt-12 flex flex-row">
+
+    <div class="p-6 flex flex-col w-full">
+        <div class="flex flex-col w-full">
+            <div class="flex flex-row justify-between w-full ">
+                <div class=" border-b w-7/12 mb-3 font-semibold border-gray-600 pb-2">{{order}}
+                    <div>
+
+                        -{{rack}}({{rack.랙시리얼코드}}) </div>
+                </div>
+
+
+
+            </div>
+            <div class="flex">
+                <table class="table-fixed text-sm w-full">
+                    <thead>
+                        <tr>
+                            <th class="border border-r-0 bg-gray-400  py-2 w-24 text-left"></th>
+                            <th class="border border-r-0 border-l-0 bg-gray-400  py-2 w-24 text-right"> {{rack}}</th>
+                            <th class="border border-l-0 border-r-0 bg-gray-400  py-2 w-24 text-left">의 구성단품</th>
+                            <th class="border border-l-0 border-r-0 bg-gray-400  py-2 w-24 text-left"></th>
+
+                            <th class="border border-l-0 border-r-0 bg-gray-400  py-2 w-24 text-left"></th>
+                            <th class="border border-l-0 border-r-0 bg-gray-400  py-2 w-24 text-left"></th>
+                            <th class="border border-l-0 bg-gray-400  py-2 w-24 text-right">납품수량 :
+                                {{order.납품수량}}{{rack.단위}} </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="border px-4 py-2 bg-gray-200">모델코드</td>
+                            <td class="border px-4 py-2 bg-gray-200">모델명</td>
+                            <td class="border px-4 py-2 bg-gray-200">랙구성단품수량</td>
+                            <td class="border px-4 py-2 bg-gray-200">추정납품수량</td>
+                            <td class="border px-4 py-2 bg-gray-200">현재출하가능수량</td>
+                            <td class="border px-4 py-2 bg-gray-200">생산의뢰추천수량</td>
+                            <td class="border px-4 py-2 bg-gray-200">생산의뢰</td>
+
+                        </tr>{%for mate in single%}
+                        <tr>
+                            <td class="border px-4 py-2">{{mate.랙구성단품.모델코드}}</td>
+                            <td class="border px-4 py-2">{{mate.랙구성단품}}</td>
+                            <td class="border px-4 py-2">{{mate.수량}}</td>
+                            <td class="border px-4 py-2">{{order.납품수량}} x {{mate.수량}} =
+                                <script>
+                                    var result = {{ order.납품수량 }} * {{ mate.수량 }};
+                                    document.write(result);
+
+                                </script>
+                            </td>
+                            <td class="border px-4 py-2">{{mate.랙구성단품.단품재고.출하요청제외수량}}</td>
+                            <td class="border px-4 py-2">
+                                <script>
+                                    var result = {{ order.납품수량 }} * {{ mate.수량 }};
+                                    var recommend = result - {{ mate.랙구성단품.단품재고.출하요청제외수량 }}
+                                    if (recommend > 0) {
+                                        document.write(recommend);
+                                    } else {
+                                        document.write("추가생산 필요 X".fontcolor("red"));
+                                    }
+                                </script>
+                            </td>
+                            <td class="border px-2 py-2 font-bold 
+                            text-blue-800 justify-center">
+
+                                {% if mate.랙구성단품 in boollist  %}
+                                생산의뢰완료
+                                {%else%}
+
+
+
+
+
+                                <a href="javascript:void(0);"
+                                    onclick="window.open('{%url "orders:producesingleforrack" order.pk mate.랙구성단품.pk %}', 'pop01'
+                                , 'top=50, left=50, width=900, height=400, status=no, menubar=no, toolbar=no, resizable=no' );">
+                                    <script>
+                                        var childWindow = window.open(..);
+                                        $('#overlay').click(function () {
+                                            childWindow.focus();
+                                        });
+                                    </script>
+                                    <div class="btn-link hover:bg-teal-800 hover:font-bold mt-1 mb-0 ml-3">생산의뢰
+                                    </div>
+                                </a>
+                                {% endif %}
+                            </td>
+                        </tr>{%endfor%}
+
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+</div>
+{%endblock main_contens %}

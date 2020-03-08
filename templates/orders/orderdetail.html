@@ -77,11 +77,23 @@
                             {%if order.납품요청일 is None%}
                             {%else%}
                             {{order.납품요청일.year}}-{{order.납품요청일.month}}-{{order.납품요청일.day}}{%endif%}</td>
+
                     </tr>
 
                 </tbody>
+
             </table>
 
+            {% if order.특이사항 %}
+
+
+            <span class="ml-3 text-xs text-red-600">
+                <i class="fas fa-exclamation-triangle"></i>
+
+
+                특이사항 : {{order.특이사항}}
+            </span>
+            {% endif %}
 
         </div>
 

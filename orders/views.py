@@ -707,7 +707,6 @@ def orderproduce(request):
             if s.process() == "수주등록완료":
                 s_order.append(s)
             else:
-                print("didnt")
                 pass
 
         s_bool = False
@@ -1023,3 +1022,184 @@ def endorderforin(request, pk):
     order.save()
     messages.success(request, "해당 수주의 출하완료가 철회되었습니다.")
     return redirect(reverse("orders:endorderlist"))
+
+
+def orderproduceforrack(request):
+    user = request.user
+    search = request.GET.get("search")
+
+    if search is None:
+        s_order = []
+        order = (
+            models.OrderRegister.objects.filter(작성자=user)
+            .filter(출하구분="출하미완료")
+            .filter(제품구분="랙")
+            .order_by("-created")
+        )
+        for s in order:
+            if s.process() == "수주등록완료":
+                s_order.append(s)
+            else:
+                pass
+
+        s_bool = False
+    else:
+        s_bool = True
+        order = (
+            models.OrderRegister.objects.filter(작성자=user)
+            .filter(출하구분="출하미완료")
+            .filter(제품구분="랙")
+            .filter(
+                Q(수주코드__contains=search)
+                | Q(영업구분=search)
+                | Q(제품구분=search)
+                | Q(사업장구분=search)
+                | Q(고객사명__거래처명__contains=search)
+                | Q(단품모델__모델명__contains=search)
+                | Q(단품모델__모델코드__contains=search)
+                | Q(랙모델__랙모델명__contains=search)
+                | Q(랙모델__랙시리얼코드__contains=search)
+            )
+            .order_by("-created")
+        )
+        s_order = []
+        for s in order:
+            if s.process() == "수주등록완료":
+                s_order.append(s)
+            else:
+                pass
+
+    pagediv = 7
+
+    totalpage = int(math.ceil(len(s_order) / pagediv))
+    paginator = Paginator(s_order, pagediv, orphans=0)
+    page = request.GET.get("page", "1")
+    s_order = paginator.get_page(page)
+    nextpage = int(page) + 1
+    previouspage = int(page) - 1
+    notsamebool = True
+    nonpage = False
+    if totalpage == 0:
+        nonpage = True
+    if int(page) == totalpage:
+        notsamebool = False
+    if (search is None) or (search == ""):
+        search = "search"
+    return render(
+        request,
+        "orders/orderproduceforrack.html",
+        {
+            "s_order": s_order,
+            "search": search,
+            "page": page,
+            "totalpage": totalpage,
+            "notsamebool": notsamebool,
+            "nextpage": nextpage,
+            "previouspage": previouspage,
+            "s_bool": s_bool,
+            "nonpage": nonpage,
+        },
+    )
+
+
+def informationforrackproduce(request, pk):
+    order = models.OrderRegister.objects.get_or_none(pk=pk)
+    rack = order.랙모델
+    single = rack.랙구성단품.filter(랙구성="단품")
+    ordersinglelist = order.단품생산의뢰.all()
+    boollist = []
+    for os in ordersinglelist:
+        for ss in single:
+            if os.단품모델 == ss.랙구성단품:
+                boollist.append(ss.랙구성단품)
+
+    user = request.user
+    return render(
+        request,
+        "orders/informationforrackproduce.html",
+        {
+            "order": order,
+            "rack": rack,
+            "user": user,
+            "single": single,
+            "boollist": boollist,
+        },
+    )
+
+
+def producesingleforrack(request, pk, spk):
+    form = forms.UploadOrderProduceForm(request.POST)
+    order = models.OrderRegister.objects.get_or_none(pk=pk)
+    rack = order.랙모델
+    racksingle = rack.랙구성단품.filter(랙구성="단품")
+    single = SI_models.SingleProduct.objects.get_or_none(pk=spk)
+    user = request.user
+
+    def give_number():
+        while True:
+            n = randint(1, 999999)
+            num = str(n).zfill(6)
+            code = "OP" + num
+            obj = models.OrderProduce.objects.get_or_none(생산의뢰코드=code)
+            if obj:
+                pass
+            else:
+                return code
+
+    code = give_number()
+    for singletest in racksingle:
+        if singletest.랙구성단품 == single:
+            matenum = singletest.수량
+    result = order.납품수량 * matenum
+    recommend = result - single.단품재고.출하요청제외수량
+    if recommend < 0:
+        recommend = 0
+
+    form.initial = {"생산의뢰코드": code, "생산목표수량": recommend}
+
+    if form.is_valid():
+
+        def give_new_number():
+            while True:
+                n = randint(1, 99)
+                num = str(n).zfill(2)
+                code = order.수주코드 + "-" + num
+                obj = models.OrderRegister.objects.get_or_none(수주코드=code)
+                if obj:
+                    pass
+                else:
+                    return code
+
+        single_order = models.OrderRegister.objects.create(
+            랙생산의뢰=order,
+            작성자=request.user,
+            수주코드=give_new_number(),
+            영업구분="내부계획",
+            사업장구분=order.사업장구분,
+            수주일자=order.수주일자,
+            고객사명=order.고객사명,
+            현장명=order.현장명,
+            납품요청일=order.납품요청일,
+            특이사항=f"수주코드({order.수주코드})의 생산의뢰로 인한 내부계획생산",
+            제품구분="단품",
+            단품모델=single,
+            납품수량=0,
+        )
+        생산의뢰코드 = form.cleaned_data.get("생산의뢰코드")
+        긴급도 = form.cleaned_data.get("긴급도")
+        생산목표수량 = form.cleaned_data.get("생산목표수량")
+        SM = models.OrderProduce.objects.create(
+            생산의뢰수주=single_order, 생산의뢰코드=생산의뢰코드, 긴급도=긴급도, 생산목표수량=생산목표수량,
+        )
+        single_order.납품수량 = 생산목표수량
+        single_order.save()
+
+        return HttpResponse(
+            '<script type="text/javascript">opener.location.reload(); window.close()</script>'
+        )
+    return render(
+        request,
+        "orders/producesingleforrack.html",
+        {"order": order, "user": user, "single": single, "form": form,},
+    )
+

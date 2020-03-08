@@ -36,6 +36,9 @@ class OrderRegister(TimeStampedModel):
         (단품, "단품"),
         (랙, "랙"),
     )
+    랙생산의뢰 = models.ForeignKey(
+        "self", related_name="단품생산의뢰", on_delete=models.SET_NULL, null=True, blank=True
+    )
     작성자 = models.ForeignKey(
         users_models.User,
         related_name="수주등록",

@@ -203,7 +203,9 @@ class UploadOrderProduceForm(forms.ModelForm):
         help_texts = {
             "생산의뢰코드": "*생산의뢰코드 앞에 OP을 붙여주시길 바랍니다.(한 번 설정하면, 바꿀 수 없습니다.)",
         }
-        widgets = {}
+        widgets = {
+            "생산목표수량": forms.NumberInput(attrs={"min": "0"}),
+        }
 
     def clean(self):
         self.is_bound = False

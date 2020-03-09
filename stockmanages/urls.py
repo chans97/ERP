@@ -67,4 +67,14 @@ urlpatterns = [
         views.updatestockofmaterial,
         name="updatestockofmaterial",
     ),
+    path("singleinlist/", views.singleinlist.as_view(), name="singleinlist",),
+    path("singleindelete/<int:pk>/", views.singleindelete, name="singleindelete",),
+    path(
+        "singleinrequestlist/",
+        views.singleinrequestlist.as_view(),
+        name="singleinrequestlist",
+    ),
+    path(
+        "singleinregister/<int:pk>/", views.singleinregister, name="singleinregister",
+    ),
 ]

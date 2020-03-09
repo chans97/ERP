@@ -58,19 +58,19 @@ form {
     @keyframes messageFadein{
     0%{
         opacity: 0;
-        transform: translateY(-40px);
+        transform: translateY(-30px);
     }
     15%{
         opacity: 1;
-        transform: translateY(15px);
+        transform: translateY(0px);
     }
     85%{
         opacity: 1;
-        transform: translateY(15px);
+        transform: translateY(0px);
     }
     100%{
         opacity: 0;
-        transform: translateY(-40px);
+        transform: translateY(-30px);
     }
     }
     .border_section{

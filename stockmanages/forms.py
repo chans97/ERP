@@ -93,3 +93,23 @@ class updatestockofmaterial(forms.Form):
     def save(self, *arg, **kwargs):
         order = super().save(commit=False)
         return order
+
+
+class singleinregisterForm(forms.ModelForm):
+    class Meta:
+        model = SS_models.StockOfSingleProductIn
+        fields = (
+            "입고일",
+            "입고수량",
+        )
+        help_texts = {
+            "입고일": "형식 : yyyy-mm-dd (기본값은 오늘입니다.)",
+        }
+
+    def clean(self):
+        self.is_bound = False
+        cleaned_data = super().clean()
+
+    def save(self, *arg, **kwargs):
+        order = super().save(commit=False)
+        return order

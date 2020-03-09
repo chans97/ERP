@@ -119,8 +119,17 @@
 
 
                                     <div
-                                        class="  {%if field.name not in seletelist %} border hover:border-gray-500 {%endif%} w-auto  ">
-                                        {{field}}</div>
+                                        class="  {%if field.name not in seletelist %} border hover:border-gray-500 w-full {%endif%} flex">
+                                        {% if field.name == "수주일자" %}
+                                        <input type="text" name="수주일자" id="date2" size="10" />
+                                        {%elif field.name == "납품요청일"%}
+                                        <input type="text" name="납품요청일" id="date3" size="10" />
+                                        {% else %}
+                                        {{field}}
+                                        {% endif %}
+
+
+                                    </div>
                                     <div class="text-xs text-green-700 ">
 
                                         {{field.help_text}}

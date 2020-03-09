@@ -1,12 +1,12 @@
 {%extends "stockmanages/stockmanageshome.html"%}
 {% load static%}
 {% block page_title%}
-자재출고목록
+단품입고목록
 {%endblock%}
 
 
 {%block head_title%}
-</a><i class="fas fa-angle-right mx-1 text-base"></i>자재재고확인{%endblock%}
+</a><i class="fas fa-angle-right mx-1 text-base"></i> 단품입고목록{%endblock%}
 
 
 {%block main_contens%}
@@ -15,18 +15,15 @@
         <div class="flex flex-col">
             <div class="flex flex-col p-6 w-full ">
                 <div class="flex justify-between">
-                    <span class="border-b w-1/3 mb-3 border-gray-600 pb-2 font-semibold text-base">자재 재고확인
+                    <span class="border-b w-1/3 mb-3 border-gray-600 pb-2 font-semibold text-base">나의 단품입고 목록
                     </span>
-                    <div class="flex justify-between">
-                        <div class="mr-5">
-                            <a href="{%url "stockmanages:updatestockofmaterial"%}">
-                                <div class="btn-link bg-teal-800 hover:font-bold">
-                                    재고최신화 </div>
-                            </a>
-                        </div>
+                    <div class="mr-5">
+                        <a href="{%url "stockmanages:singleinrequestlist"%}">
+                            <div class="btn-link bg-teal-800 hover:font-bold">
+                                단품입고 </div>
+                        </a>
                     </div>
                 </div>
-
                 <div class="w-64 border h-6 mb-2">
 
                     <form method="get" action="" class="w-full flex ">
@@ -41,38 +38,46 @@
                 </div>
                 <div class="flex ">
                     <div class="flew flex-col">
-                        <table class="table-fixed font-light text-xs">
+                        <table class="table-fixed font-light text-xs w-full">
                             <thead>
                                 <tr>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">실수량</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">출고요청 <div>제외수량</div>
-                                    </th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">입고요청<div>포함수량</div>
-                                    </th>
-                                    <th class="border bg-gray-200 px-3 py-2 w-40">자재코드</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-40">자재명</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-40">분류</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-40">공급처</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">단위</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">단품코드</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">단품품명</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">입고수량</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">입고요청수량</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">입고자</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">입고일</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">입고요청자</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">입고요청일</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">입고철회</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {%for list in queryset%}
                                 <tr>
+                                    <td class="border px-4 py-2 ">
+                                        {{list.단품입고요청.단품.모델코드}}</td>
+                                    <td class="border px-4 py-2">{{list.단품입고요청.단품.모델명}}</td>
+                                    <td class="border px-4 py-2">{{list.입고수량}}</td>
+                                    <td class="border px-4 py-2 ">
+                                        {{list.단품입고요청.입고요청수량}}</td>
+                                    <td class="border px-4 py-2">{{list.입고자}}</td>
                                     <td class="border px-4 py-2">
-                                        {{list.자재재고.실수량}}</td>
+                                        {{list.입고일.year}}-{{list.입고일.month}}-{{list.입고일.day}}</td>
+                                    <td class="border px-4 py-2 ">
+                                        {{list.단품입고요청.입고요청자}}</td>
                                     <td class="border px-4 py-2">
-                                        {{list.자재재고.출고요청제외수량}}</td>
+                                        {{list.단품입고요청.입고요청일.year}}-{{list.단품입고요청.입고요청일.month}}-{{list.단품입고요청.입고요청일.day}}
+                                    </td>
                                     <td class="border px-4 py-2">
-                                        {{list.자재재고.입고요청포함수량}}</td>
-                                    <td class="border px-4 py-2">
-                                        {{list.자재코드}}</td>
-                                    <td class="border px-4 py-2">{{list.자재품명}}</td>
-                                    <td class="border px-4 py-2">{{list.품목}}</td>
-                                    <td class="border px-4 py-2">{{list.자재공급업체}}</td>
-                                    <td class="border px-4 py-2">{{list.단위}}</td>
+                                        <a href="{%url "stockmanages:singleindelete" list.pk%}">
+                                            <div class="btn-link self-center -mb-1 bg-red-700 hover:font-bold w-full">
+                                                입고철회</div>
+                                        </a>
+                                    </td>
                                 </tr>
                                 {%endfor%}
+
                             </tbody>
                         </table>
 
@@ -81,14 +86,9 @@
                         <div class="flex ml-2">
                             {% if page != '1' %}
                             {%if s_bool%}
-                            {%if search == "search"%}
-                            <a href="?search=&page={{previouspage}}" class="text-teal-700"><i
-                                    class="fas fa-arrow-left fa-lg mt-2"></i></a>
-                            {%else%}
-
                             <a href="?search={{search}}&page={{previouspage}}" class="text-teal-700"><i
                                     class="fas fa-arrow-left fa-lg mt-2"></i></a>
-                            {%endif%}{%else%}
+                            {%else%}
                             <a href="?page={{previouspage}}" class="text-teal-700"><i
                                     class="fas fa-arrow-left fa-lg mt-2"></i></a>
                             {% endif %}{% endif %}
@@ -97,14 +97,9 @@
 
                             {% if notsamebool %}
                             {%if s_bool%}
-                            {%if search == "search"%}
-                            <a href="?search=&page={{nextpage}}" class="text-teal-700"><i
-                                    class="fas fa-arrow-right fa-lg mt-2"></i></a>
-                            {%else%}
-
                             <a href="?search={{search}}&page={{nextpage}}" class="text-teal-700"><i
                                     class="fas fa-arrow-right fa-lg mt-2"></i></a>
-                            {%endif%}{%else%}
+                            {%else%}
                             <a href="?page={{nextpage}}" class="text-teal-700"><i
                                     class="fas fa-arrow-right fa-lg mt-2"></i></a>
                             {% endif %}{% endif %}

@@ -510,3 +510,114 @@ def updatestockofmaterial(request):
             "seletelist": ["1",],
         },
     )
+
+
+class singleinlist(core_views.onelist):
+    templatename = "stockmanages/singleinlist.html"
+
+    def get_first_queryset(self, request):
+        user = self.request.user
+        self.search = request.GET.get("search")
+        if self.search is None:
+            queryset = SS_models.StockOfSingleProductIn.objects.filter(
+                입고자=user
+            ).order_by("-created")
+
+            self.s_bool = False
+        else:
+            self.s_bool = True
+            queryset = (
+                SS_models.StockOfSingleProductIn.objects.filter(입고자=user)
+                .filter(
+                    Q(단품입고요청__단품__모델명__contains=self.search)
+                    | Q(입고자__first_name__contains=self.search)
+                    | Q(단품입고요청__단품__모델코드__contains=self.search)
+                    | Q(단품입고요청__입고요청자__first_name__contains=self.search)
+                )
+                .order_by("-created")
+            )
+        return queryset
+
+
+def singleindelete(request, pk):
+    singlein = SS_models.StockOfSingleProductIn.objects.get_or_none(pk=pk)
+    singlein.단품입고요청.단품.단품재고.실수량 -= singlein.입고수량
+    차이 = singlein.단품입고요청.입고요청수량 - singlein.입고수량
+    singlein.단품입고요청.단품.단품재고.입고요청포함수량 += 차이
+    singlein.단품입고요청.단품.단품재고.출하요청제외수량 -= singlein.입고수량
+    singlein.단품입고요청.단품.단품재고.save()
+    singlein.delete()
+    messages.success(request, "단품입고가 철회되었습니다.")
+    return redirect(reverse("stockmanages:singleinlist"))
+
+
+class singleinrequestlist(core_views.onelist):
+    templatename = "stockmanages/singleinrequestlist.html"
+
+    def get_first_queryset(self, request):
+        user = self.request.user
+        self.search = request.GET.get("search")
+        if self.search is None:
+            order = SS_models.StockOfSingleProductInRequest.objects.all().order_by(
+                "-created"
+            )
+            queryset = []
+            for s in order:
+                try:
+                    s.단품입고등록
+                except:
+                    queryset.append(s)
+
+            self.s_bool = False
+        else:
+            self.s_bool = True
+            order = (
+                SS_models.StockOfSingleProductInRequest.objects.all()
+                .filter(
+                    Q(단품__모델명__contains=self.search)
+                    | Q(단품__모델코드__contains=self.search)
+                    | Q(입고요청자__first_name__contains=self.search)
+                )
+                .order_by("-created")
+            )
+            queryset = []
+            for s in order:
+                try:
+                    s.단품입고등록
+                except:
+                    queryset.append(s)
+
+        return queryset
+
+
+def singleinregister(request, pk):
+    singleinrequest = SS_models.StockOfSingleProductInRequest.objects.get_or_none(pk=pk)
+
+    form = forms.singleinregisterForm(request.POST)
+    now = timezone.now().date()
+    form.initial = {"입고일": now}
+
+    if form.is_valid():
+        입고일 = form.cleaned_data.get("입고일")
+        입고수량 = form.cleaned_data.get("입고수량")
+        if 입고일 is None:
+            입고일 = timezone.now().date()
+        SM = SS_models.StockOfSingleProductIn.objects.create(
+            단품입고요청=singleinrequest, 입고자=request.user, 입고일=입고일, 입고수량=입고수량,
+        )
+        messages.success(request, "단품입고가 완료되었습니다.")
+        return redirect(reverse("stockmanages:singleinlist"))
+
+    seletelist = [
+        "입고유형",
+    ]
+    return render(
+        request,
+        "stockmanages/singleinregister.html",
+        {
+            "singleinrequest": singleinrequest,
+            "form": form,
+            "seletelist": seletelist,
+            "now": now,
+        },
+    )

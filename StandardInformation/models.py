@@ -26,6 +26,7 @@ class Partner(TimeStampedModel):
     담당자 = models.ForeignKey(
         "users.User", related_name="거래처담당자", on_delete=models.SET_NULL, null=True
     )
+    거래처담당자 = models.CharField(max_length=50, null=True)
     연락처 = models.CharField(max_length=50, blank=True)
     이메일 = models.EmailField(max_length=254)
     사업장주소 = models.CharField(max_length=90, blank=True, null=True)

@@ -34,16 +34,12 @@ class UploadOrderForm(forms.Form):
     영업구분 = forms.ChoiceField(choices=영업구분_CHOICES, widget=forms.RadioSelect())
     제품구분 = forms.ChoiceField(choices=제품구분_CHOICES, widget=forms.RadioSelect())
     사업장구분 = forms.ChoiceField(choices=사업장구분_CHOICES, widget=forms.RadioSelect())
-    수주일자 = DateField(
-        required=True, help_text="*형식 : (yyyy-mm-dd) ", widget=forms.SelectDateWidget
-    )
+    수주일자 = DateField(required=True, help_text="*형식 : (yyyy-mm-dd) ",)
     거래처코드 = forms.CharField(
         max_length=20, required=True, help_text="*거래처 코드로 입력해주시길 바랍니다."
     )
     현장명 = forms.CharField()
-    납품요청일 = forms.DateField(
-        required=False, help_text="*형식 : (yyyy-mm-dd) ", widget=forms.SelectDateWidget
-    )
+    납품요청일 = DateField(required=False, help_text="*형식 : (yyyy-mm-dd) ",)
     특이사항 = forms.CharField(required=False,)
 
     def clean(self):

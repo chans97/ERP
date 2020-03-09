@@ -186,19 +186,60 @@ def partnerdelete(request, pk):
 
 class EditPartnerView(user_mixins.LoggedInOnlyView, UpdateView):
     model = models.Partner
-    fields = (
-        "거래처구분",
-        "거래처명",
-        "사업자등록번호",
-        "담당자",
-        "연락처",
-        "이메일",
-        "사업장주소",
-        "사업자등록증첨부",
-        "특이사항",
-        "사용여부",
-    )
+    form_class = forms.EditPartnerForm
     template_name = "Standardinformation/partneredit.html"
+
+    def form_valid(self, form):
+        self.object = form.save()
+        거래처명 = form.cleaned_data.get("거래처명")
+        사업자등록번호 = form.cleaned_data.get("사업자등록번호")
+        담당자 = form.cleaned_data.get("담당자")
+        연락처 = form.cleaned_data.get("연락처")
+        이메일 = form.cleaned_data.get("이메일")
+        사업장주소 = form.cleaned_data.get("사업장주소")
+        사업자등록증첨부 = form.cleaned_data.get("사업자등록증첨부")
+        사용여부 = form.cleaned_data.get("사용여부")
+        특이사항 = form.cleaned_data.get("특이사항")
+
+        pk = self.kwargs.get("pk")
+        partner = models.Partner.objects.get_or_none(pk=pk)
+        code = partner.거래처코드
+        partner.거래처명 = 거래처명
+        partner.사업자등록번호 = 사업자등록번호
+        partner.담당자 = 담당자
+        partner.연락처 = 연락처
+        partner.이메일 = 이메일
+        partner.사업장주소 = 사업장주소
+        partner.사업자등록증첨부 = 사업자등록증첨부
+        partner.사용여부 = 사용여부
+        partner.특이사항 = 특이사항
+        partner.save()
+        if partner.거래처구분 == "공급처":
+            supply = models.SupplyPartner.objects.get(거래처코드=code)
+            supply.거래처명 = 거래처명
+            supply.사업자등록번호 = 사업자등록번호
+            supply.담당자 = 담당자
+            supply.연락처 = 연락처
+            supply.이메일 = 이메일
+            supply.사업장주소 = 사업장주소
+            supply.사업자등록증첨부 = 사업자등록증첨부
+            supply.사용여부 = 사용여부
+            supply.특이사항 = 특이사항
+            supply.save()
+        elif partner.거래처구분 == "고객":
+            customer = models.CustomerPartner.objects.get(거래처코드=code)
+            customer.거래처명 = 거래처명
+            customer.사업자등록번호 = 사업자등록번호
+            customer.담당자 = 담당자
+            customer.연락처 = 연락처
+            customer.이메일 = 이메일
+            customer.사업장주소 = 사업장주소
+            customer.사업자등록증첨부 = 사업자등록증첨부
+            customer.사용여부 = 사용여부
+            customer.특이사항 = 특이사항
+            customer.save()
+        messages.success(self.request, "수정이 완료되었습니다.")
+        return redirect(reverse("StandardInformation:partner"))
 
 
 class SingleView(ListView):

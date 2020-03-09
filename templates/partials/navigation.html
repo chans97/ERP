@@ -1,10 +1,14 @@
 {% load static%}
-
 <ul class="flex items-center text-sm font-medium h-full">
         {% if user.is_authenticated %}
 
 
-        <li class="nav_link"><a href="{%url "users:logout"%}">로그아웃</a></li>
+
+        <div class="text-right -mr-8 text-xs h-5">안녕하세요. {{user}}님</div>
+
+
+        <li class="nav_link font-semibold"><a href="{%url "users:logout"%}">로그아웃</a></li>
+
 
 
         {% else %}

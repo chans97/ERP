@@ -212,9 +212,10 @@
                                     </td>
                                     <td class="border border-gray-400 px-4 py-2">
 
-                                        <div class="   border hover:border-gray-500 w-full  ">
-                                            <input type="text" name="수주일자" required=""
-                                                value={{i수주일자.year}}-{{i수주일자.month}}-{{i수주일자.day}} id="id_수주일자">
+                                        <div class="   border hover:border-gray-500 w-full flex ">
+                                            <input type="text" name="수주일자" id="date2"
+                                                value={{i수주일자.year}}-{{i수주일자.month}}-{{i수주일자.day}} size="10" />
+
                                         </div>
                                         <div class="text-xs text-green-700 ">
 
@@ -279,9 +280,10 @@
                                     </td>
                                     <td class="border border-gray-400 px-4 py-2">
 
-                                        <div class="   border hover:border-gray-500 w-full  ">
-                                            <input type="text" name="납품요청일" id="id_납품요청일"
-                                                value={%if i납품요청일.year is not None %}{{i납품요청일.year}}-{{i납품요청일.month}}-{{i납품요청일.day}}{%endif%}>
+                                        <div class="   border hover:border-gray-500 w-full flex">
+                                            <input type="text" name="납품요청일" id="date3" size="10"
+                                                value={%if i납품요청일.year is not None %}{{i납품요청일.year}}-{{i납품요청일.month}}-{{i납품요청일.day}}{%else%}""{%endif%} />
+
                                         </div>
                                         <div class="text-xs text-green-700 ">
 

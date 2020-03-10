@@ -25,6 +25,7 @@ from django.db.models import Q
 from users import mixins as user_mixins
 from users import models as user_models
 from django.http import HttpResponse
+from django.http import FileResponse
 import math
 from random import randint
 
@@ -105,10 +106,17 @@ def UploadPartnerView(request):
     form.initial = {
         "거래처코드": code,
     }
-
     if form.is_valid():
+
         single = form.save()
         single.작성자 = request.user
+        try:
+            사업자등록증첨부 = request.FILES["사업자등록증첨부"]
+
+        except Exception:
+            사업자등록증첨부 = None
+
+        single.사업자등록증첨부 = 사업자등록증첨부
         single.save()
         form.save_m2m()
         pk = single.pk
@@ -146,15 +154,19 @@ def scripts_download(request, pk):
 
 
 def file_download(request, pk):
-    """모든파일다운로드"""
-
+    """파일 다운로드 유니코드화 패치"""
     partner = models.Partner.objects.get_or_none(pk=pk)
-    file = partner.사업자등록증첨부.path
+    filepath = partner.사업자등록증첨부.path
     title = partner.사업자등록증첨부.__str__()
+    title = urllib.parse.quote(title.encode("utf-8"))
+    print(title)
+    title = title.replace("partnerregister/", "")
 
-    response = HttpResponse(open(file, "rb"), content_type="file")
-    response["Content-Disposition"] = "attachment; filename=" + title
-    return response
+    with open(filepath, "rb") as f:
+        response = HttpResponse(f, content_type="application/force-download")
+        titling = 'attachment; filename="{}"'.format(title)
+        response["Content-Disposition"] = titling
+        return response
 
 
 def partnerdeleteensure(request, pk):

@@ -1,0 +1,25 @@
+C:\virtualenvs\benedict\Scripts\activate.bat
+git add .
+git commit -m "2020_03_09_2"
+git push origin master
+
+121.190.161.105:8081 4
+
+django-admin startapp -
+
+
+git add .
+git commit -m "2020_02_17_2"
+git push origin master
+
+
+field HTML에서 사용하기 
+https://docs.djangoproject.com/en/3.0/topics/forms/
+
+orders@ngmail.com - 영업부
+produces@gmail.com -생산관리부
+produce@gmail.com -공정관리부
+qualities@gmail.com - 품질
+AS@gmail.com- AS담당부
+money@gmail.com - 총무부
+stocks@gmail.com - 자재부

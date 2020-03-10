@@ -21,6 +21,10 @@
             <div class="flex flex-row justify-between w-full ">
                 <div class=" border-b w-64 mb-3 font-semibold border-gray-600 pb-2">거래처 - {{partner}} </div>
 
+
+                {% if partner.작성자 == request.user %}
+
+
                 <div class="flex flex-row">
                     <div class="mt-2">
                         <a href="{%url "StandardInformation:partneredit" partner.pk%}">
@@ -36,6 +40,7 @@
                     </div>
 
                 </div>
+                {% endif %}
 
             </div>
             <div class="item-center">
@@ -91,7 +96,12 @@
                             <td class="border px-4 py-2">사업자등록증첨부</td>
                             <td class="border px-4 py-2 hover:text-blue-700">
                                 <a href="{%url "StandardInformation:partnerdownload" partner.pk%}">
-                                    {{partner.사업자등록증첨부}}</a>
+                                    <script>
+                                        var test = "{{partner.사업자등록증첨부}}";
+                                        var result = test.replace('partnerregister/', '');
+                                        document.write(result);
+                                    </script>
+                                </a>
                             </td>
                         </tr>
                         <tr>

@@ -1,0 +1,107 @@
+{%extends "stockmanages/stockmanageshome.html"%}
+{% load static%}
+{% block page_title%}
+랙출하목록
+{%endblock%}
+
+
+{%block head_title%}
+</a><i class="fas fa-angle-right mx-1 text-base"></i>
+<a href="{%url "stockmanages:rackoutlist"%}">
+    랙출하목록
+</a>
+</a><i class="fas fa-angle-right mx-1 text-base"></i> 랙출하요청목록{%endblock%}
+
+
+{%block main_contens%}
+<div class="flex flex-col">
+    <div class="w-full h-full pl-32 -mt-6 font-semibold pt-12 flex flex-col">
+        <div class="flex flex-col">
+            <div class="flex flex-col p-6 w-full ">
+                <div class="flex justify-between">
+                    <span class="border-b w-1/3 mb-3 border-gray-600 pb-2 font-semibold text-base">랙출하 요청 목록
+                    </span>
+                </div>
+                <div class="w-64 border h-6 mb-2">
+
+                    <form method="get" action="" class="w-full flex ">
+                        <button class="w-4 h-4 mt-1 ml-1  rounded-xl bg-cover bg-center"
+                            style="background-image:url({% static 'img/search.png' %});"></button>
+
+                        <input name="search"
+                            class="ml-1 w-full border-none search-box text-xs font-medium placeholder-red-400 focus: outline-none"
+                            placeholder={{search}} />
+
+                    </form>
+                </div>
+                <div class="flex ">
+                    <div class="flew flex-col">
+                        <table class="table-fixed font-light text-xs w-full">
+                            <thead>
+                                <tr>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">랙출하</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">랙시리얼코드</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">랙모델명</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">출하요청수량</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">출하요청자</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">출하요청일</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {%for list in queryset%}
+                                <tr>
+                                    <td class="border px-4 py-2 justify-center">
+                                        <a href="{%url "stockmanages:rackoutregister" list.pk%}" class="">
+                                            <div class=" btn-link -mb-1 hover:font-bold w-full">
+                                                랙출하
+                                            </div>
+                                        </a>
+                                    </td>
+                                    <td class="border px-4 py-2 ">
+                                        {{list.랙.랙시리얼코드}}</td>
+                                    <td class="border px-4 py-2">{{list.랙.랙모델명}}</td>
+                                    <td class="border px-4 py-2 ">{{list.출하요청수량}}</td>
+                                    <td class="border px-4 py-2 ">
+                                        {{list.출하요청자}}</td>
+                                    <td class="border px-4 py-2">
+                                        {{list.출하요청일.year}}-{{list.출하요청일.month}}-{{list.출하요청일.day}}
+                                    </td>
+                                </tr>
+                                {%endfor%}
+
+                            </tbody>
+                        </table>
+
+                        {%if nonpage%}
+                        {%else%}
+                        <div class="flex ml-2">
+                            {% if page != '1' %}
+                            {%if s_bool%}
+                            <a href="?search={{search}}&page={{previouspage}}" class="text-teal-700"><i
+                                    class="fas fa-arrow-left fa-lg mt-2"></i></a>
+                            {%else%}
+                            <a href="?page={{previouspage}}" class="text-teal-700"><i
+                                    class="fas fa-arrow-left fa-lg mt-2"></i></a>
+                            {% endif %}{% endif %}
+                            <span class="mx-3 font-medium  text-base">{{page}} of
+                                {{totalpage}}</span>
+
+                            {% if notsamebool %}
+                            {%if s_bool%}
+                            <a href="?search={{search}}&page={{nextpage}}" class="text-teal-700"><i
+                                    class="fas fa-arrow-right fa-lg mt-2"></i></a>
+                            {%else%}
+                            <a href="?page={{nextpage}}" class="text-teal-700"><i
+                                    class="fas fa-arrow-right fa-lg mt-2"></i></a>
+                            {% endif %}{% endif %}
+                        </div>
+                        {%endif%}
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{%endblock main_contens %}

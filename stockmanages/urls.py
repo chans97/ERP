@@ -77,4 +77,44 @@ urlpatterns = [
     path(
         "singleinregister/<int:pk>/", views.singleinregister, name="singleinregister",
     ),
+    path("singleoutlist/", views.singleoutlist.as_view(), name="singleoutlist",),
+    path("dealdownload/<int:pk>/", views.dealdownload, name="dealdownload",),
+    path("singleoutdelete/<int:pk>/", views.singleoutdelete, name="singleoutdelete",),
+    path(
+        "singleoutrequestlist/",
+        views.singleoutrequestlist.as_view(),
+        name="singleoutrequestlist",
+    ),
+    path(
+        "singleoutregister/<int:pk>/",
+        views.singleoutregister,
+        name="singleoutregister",
+    ),
+    path(
+        "stockofsinglelist/",
+        views.stockofsinglelist.as_view(),
+        name="stockofsinglelist",
+    ),
+    path(
+        "updatestockofsingle/", views.updatestockofsingle, name="updatestockofsingle",
+    ),
+    path("rackoutlist/", views.rackoutlist.as_view(), name="rackoutlist",),
+    path(
+        "dealdownloadforrack/<int:pk>/",
+        views.dealdownloadforrack,
+        name="dealdownloadforrack",
+    ),
+    path("rackoutdelete/<int:pk>/", views.rackoutdelete, name="rackoutdelete",),
+    path(
+        "rackoutrequestlist/",
+        views.rackoutrequestlist.as_view(),
+        name="rackoutrequestlist",
+    ),
+    path("rackoutregister/<int:pk>/", views.rackoutregister, name="rackoutregister",),
+    path("stockofracklist/", views.stockofracklist.as_view(), name="stockofracklist",),
+    path(
+        "informationforrack/<int:pk>/",
+        views.informationforrack,
+        name="informationforrack",
+    ),
 ]

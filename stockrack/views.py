@@ -182,7 +182,6 @@ def orderstockrackedit(request, pk):
 
         출하희망일f = form.cleaned_data.get("출하희망일")
         출하요청수량f = form.cleaned_data.get("출하요청수량")
-        print()
         if (order.rackstockincludeexception() + 출하요청수량) < 출하요청수량f:
             messages.error(request, "출하요청수량이 출하예정제외랙추정수량보다 더 많습니다.")
             return render(

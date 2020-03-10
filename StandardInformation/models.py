@@ -307,6 +307,60 @@ class RackProduct(TimeStampedModel):
     def __str__(self):
         return self.랙모델명
 
+    def rackstock(self):
+        rackstock = [100000000000]
+        for com in self.랙구성단품.all():
+            if com.랙구성 == "자재":
+                num = com.수량
+                single = com.랙구성자재
+                number = int(single.자재재고.실수량 / num)
+                rackstock.append(number)
+            else:
+                num = com.수량
+                single = com.랙구성단품
+                number = int(single.단품재고.실수량 / num)
+                rackstock.append(number)
+        stock = min(rackstock)
+        if stock < 0:
+            stock = 0
+        return stock
+
+    def rackstockincludeexception(self):
+        rackstock = [100000000000]
+        for com in self.랙구성단품.all():
+            if com.랙구성 == "자재":
+                num = com.수량
+                single = com.랙구성자재
+                number = int(single.자재재고.출고요청제외수량 / num)
+                rackstock.append(number)
+            else:
+                num = com.수량
+                single = com.랙구성단품
+                number = int(single.단품재고.출하요청제외수량 / num)
+                rackstock.append(number)
+        stock = min(rackstock)
+        if stock < 0:
+            stock = 0
+        return stock
+
+    def rackstockexcludeexception(self):
+        rackstock = [100000000000]
+        for com in self.랙구성단품.all():
+            if com.랙구성 == "자재":
+                num = com.수량
+                single = com.랙구성자재
+                number = int(single.자재재고.입고요청포함수량 / num)
+                rackstock.append(number)
+            else:
+                num = com.수량
+                single = com.랙구성단품
+                number = int(single.단품재고.입고요청포함수량 / num)
+                rackstock.append(number)
+        stock = min(rackstock)
+        if stock < 0:
+            stock = 0
+        return stock
+
 
 class RackProductMaterial(TimeStampedModel):
     단품 = "단품"

@@ -22,6 +22,7 @@ from django.db.models import Q
 from users import mixins as user_mixins
 from users import models as user_models
 from django.http import HttpResponse
+from django.http import FileResponse
 import math
 from StandardInformation import models as SI_models
 from stocksingle import models as SS_models
@@ -32,6 +33,7 @@ from qualitycontrols import models as QC_models
 from afterservices import models as AS_models
 from core import views as core_views
 from . import models
+import urllib
 
 
 class stockmanageshome(core_views.twolist):
@@ -380,6 +382,9 @@ def materialoutregister(request, pk):
     materialoutrequest = models.StockOfMaterialOutRequest.objects.get_or_none(pk=pk)
 
     form = forms.materialoutregisterForm(request.POST)
+    seletelist = [
+        "출고유형",
+    ]
 
     if form.is_valid():
         출고일 = form.cleaned_data.get("출고일")
@@ -387,15 +392,23 @@ def materialoutregister(request, pk):
         출고유형 = form.cleaned_data.get("출고유형")
         if 출고일 is None:
             출고일 = timezone.now().date()
+        if 출고수량 > materialoutrequest.자재.자재재고.실수량:
+            messages.error(request, "출고수량이 실수량보다 더 많습니다.")
+            return render(
+                request,
+                "stockmanages/materialoutregister.html",
+                {
+                    "materialoutrequest": materialoutrequest,
+                    "form": form,
+                    "seletelist": seletelist,
+                },
+            )
         SM = models.StockOfMaterialOut.objects.create(
             자재출고요청=materialoutrequest, 출고자=request.user, 출고일=출고일, 출고수량=출고수량, 출고유형=출고유형,
         )
         messages.success(request, "자재출고가 완료되었습니다.")
         return redirect(reverse("stockmanages:materialoutlist"))
 
-    seletelist = [
-        "출고유형",
-    ]
     return render(
         request,
         "stockmanages/materialoutregister.html",
@@ -620,4 +633,418 @@ def singleinregister(request, pk):
             "seletelist": seletelist,
             "now": now,
         },
+    )
+
+
+class singleoutlist(core_views.onelist):
+    templatename = "stockmanages/singleoutlist.html"
+
+    def get_first_queryset(self, request):
+        user = self.request.user
+        self.search = request.GET.get("search")
+        if self.search is None:
+            queryset = SS_models.StockOfSingleProductOut.objects.filter(
+                출하자=user
+            ).order_by("-created")
+            self.s_bool = False
+        else:
+            self.s_bool = True
+            queryset = (
+                SS_models.StockOfSingleProductOut.objects.filter(출하자=user)
+                .filter(
+                    Q(단품출하요청__단품__모델명__contains=self.search)
+                    | Q(출하자__first_name__contains=self.search)
+                    | Q(단품출하요청__단품__모델코드__contains=self.search)
+                    | Q(단품출하요청__출하요청자__first_name__contains=self.search)
+                )
+                .order_by("-created")
+            )
+        return queryset
+
+
+def dealdownload(request, pk):
+    """파일 다운로드 유니코드화 패치"""
+    partner = SS_models.StockOfSingleProductOut.objects.get_or_none(pk=pk)
+    filepath = partner.거래명세서첨부.path
+    title = partner.거래명세서첨부.path.__str__()
+    title = urllib.parse.quote(title.encode("utf-8"))
+    title = title.replace("C%3A%5Capps%5Cmysite%5Cuploads%5Cdeal%5C", "")
+
+    with open(filepath, "rb") as f:
+        response = HttpResponse(f, content_type="application/force-download")
+        titling = 'attachment; filename="{}"'.format(title)
+        response["Content-Disposition"] = titling
+        return response
+
+
+def singleoutdelete(request, pk):
+    singleout = SS_models.StockOfSingleProductOut.objects.get_or_none(pk=pk)
+
+    singleout.단품출하요청.단품.단품재고.실수량 += singleout.출하수량
+    차이 = singleout.단품출하요청.출하요청수량 - singleout.출하수량
+    singleout.단품출하요청.단품.단품재고.출하요청제외수량 -= 차이
+    singleout.단품출하요청.단품.단품재고.입고요청포함수량 += singleout.출하수량
+    singleout.단품출하요청.단품.단품재고.save()
+
+    singleout.delete()
+    messages.success(request, "단품출하가 철회되었습니다.")
+    return redirect(reverse("stockmanages:singleoutlist"))
+
+
+class singleoutrequestlist(core_views.onelist):
+    templatename = "stockmanages/singleoutrequestlist.html"
+
+    def get_first_queryset(self, request):
+        user = self.request.user
+        self.search = request.GET.get("search")
+        if self.search is None:
+            order = SS_models.StockOfSingleProductOutRequest.objects.all().order_by(
+                "-created"
+            )
+            queryset = []
+            for s in order:
+                try:
+                    s.단품출하등록
+                except:
+                    queryset.append(s)
+
+            self.s_bool = False
+        else:
+            self.s_bool = True
+            order = SS_models.StockOfSingleProductOutRequest.objects.filter(
+                Q(단품__모델명__contains=self.search)
+                | Q(단품__모델코드__contains=self.search)
+                | Q(출하요청자__first_name__contains=self.search)
+            ).order_by("-created")
+            queryset = []
+            for s in order:
+                try:
+                    s.단품출하등록
+                except:
+                    queryset.append(s)
+
+        return queryset
+
+
+def singleoutregister(request, pk):
+    singleoutrequest = SS_models.StockOfSingleProductOutRequest.objects.get_or_none(
+        pk=pk
+    )
+
+    form = forms.singleoutregisterForm(request.POST)
+    seletelist = [
+        "출고유형",
+    ]
+    if form.is_valid():
+        출하일 = form.cleaned_data.get("출하일")
+        출하수량 = form.cleaned_data.get("출하수량")
+        try:
+            거래명세서첨부 = request.FILES["거래명세서첨부"]
+
+        except Exception:
+            거래명세서첨부 = None
+
+        if 출하일 is None:
+            출하일 = timezone.now().date()
+        if 출하수량 > singleoutrequest.단품.단품재고.실수량:
+            messages.error(request, "출하수량이 실수량보다 더 많습니다.")
+            return render(
+                request,
+                "stockmanages/singleoutregister.html",
+                {
+                    "singleoutrequest": singleoutrequest,
+                    "form": form,
+                    "seletelist": seletelist,
+                },
+            )
+        SM = SS_models.StockOfSingleProductOut.objects.create(
+            단품출하요청=singleoutrequest,
+            출하자=request.user,
+            출하일=출하일,
+            출하수량=출하수량,
+            거래명세서첨부=거래명세서첨부,
+        )
+        messages.success(request, "단품출하가 완료되었습니다.")
+        return redirect(reverse("stockmanages:singleoutlist"))
+
+    return render(
+        request,
+        "stockmanages/singleoutregister.html",
+        {"singleoutrequest": singleoutrequest, "form": form, "seletelist": seletelist,},
+    )
+
+
+class stockofsinglelist(core_views.onelist):
+    templatename = "stockmanages/stockofsinglelist.html"
+
+    def get_first_queryset(self, request):
+        user = self.request.user
+        self.search = request.GET.get("search")
+        if self.search is None:
+            queryset = SI_models.SingleProduct.objects.all().order_by("-created")
+            self.s_bool = False
+        else:
+            self.s_bool = True
+            queryset = SI_models.SingleProduct.objects.filter(
+                Q(모델코드__contains=self.search)
+                | Q(모델명__contains=self.search)
+                | Q(규격__contains=self.search)
+                | Q(단위__contains=self.search)
+                | Q(단가__contains=self.search)
+            ).order_by("-created")
+        return queryset
+
+
+def updatestockofsingle(request):
+    search = request.GET.get("search")
+    if search is None:
+        single = SI_models.SingleProduct.objects.all().order_by("-created")
+        s_bool = False
+    else:
+        s_bool = True
+        qs = SI_models.SingleProduct.objects.filter(
+            Q(모델코드__contains=search)
+            | Q(모델명__contains=search)
+            | Q(규격__contains=search)
+            | Q(단위__contains=search)
+            | Q(단가__contains=search)
+        ).order_by("-created")
+        single = qs
+
+    form = forms.updatestockofsingle(request.POST)
+    seletelist = [
+        "불량분류",
+    ]
+    if form.is_valid():
+        실수량 = form.cleaned_data.get("실수량")
+        입고요청포함수량 = form.cleaned_data.get("입고요청포함수량")
+        출하요청제외수량 = form.cleaned_data.get("출하요청제외수량")
+        단품 = form.cleaned_data.get("단품")
+        mpk = int(단품)
+        단품 = SI_models.SingleProduct.objects.get(pk=mpk)
+        try:
+            stockofmatarial = 단품.단품재고
+            stockofmatarial.실수량 = 실수량
+            stockofmatarial.입고요청포함수량 = 입고요청포함수량
+            stockofmatarial.출하요청제외수량 = 출하요청제외수량
+            stockofmatarial.save()
+        except:
+            sm = SS_models.StockOfSingleProduct.objects.create(
+                단품=단품, 실수량=실수량, 입고요청포함수량=입고요청포함수량, 출하요청제외수량=출하요청제외수량,
+            )
+
+        messages.success(request, "단품재고가 최신화되었습니다.")
+        return redirect(reverse("stockmanages:stockofsinglelist"))
+
+    pagediv = 5
+    totalpage = int(math.ceil(len(single) / pagediv))
+    paginator = Paginator(single, pagediv, orphans=0)
+    page = request.GET.get("page", "1")
+    single = paginator.get_page(page)
+    nextpage = int(page) + 1
+    previouspage = int(page) - 1
+    notsamebool = True
+    if int(page) == totalpage:
+        notsamebool = False
+    if (search is None) or (search == ""):
+        search = "search"
+    return render(
+        request,
+        "stockmanages/updatestockofsingle.html",
+        {
+            "form": form,
+            "single": single,
+            "search": search,
+            "page": page,
+            "totalpage": totalpage,
+            "notsamebool": notsamebool,
+            "nextpage": nextpage,
+            "previouspage": previouspage,
+            "s_bool": s_bool,
+            "seletelist": ["1",],
+        },
+    )
+
+
+class rackoutlist(core_views.onelist):
+    templatename = "stockmanages/rackoutlist.html"
+
+    def get_first_queryset(self, request):
+        user = self.request.user
+        self.search = request.GET.get("search")
+        if self.search is None:
+            queryset = SR_models.StockOfRackProductOut.objects.filter(
+                출하자=user
+            ).order_by("-created")
+            self.s_bool = False
+        else:
+            self.s_bool = True
+            queryset = (
+                SR_models.StockOfRackProductOut.objects.filter(출하자=user)
+                .filter(
+                    Q(랙출하요청__랙__랙모델명__contains=self.search)
+                    | Q(출하자__first_name__contains=self.search)
+                    | Q(랙출하요청__랙__랙시리얼코드__contains=self.search)
+                    | Q(랙출하요청__출하요청자__first_name__contains=self.search)
+                )
+                .order_by("-created")
+            )
+        return queryset
+
+
+def dealdownloadforrack(request, pk):
+    """파일 다운로드 유니코드화 패치"""
+    partner = SR_models.StockOfRackProductOut.objects.get_or_none(pk=pk)
+    filepath = partner.거래명세서첨부.path
+    title = partner.거래명세서첨부.path.__str__()
+    title = urllib.parse.quote(title.encode("utf-8"))
+    title = title.replace("C%3A%5Capps%5Cmysite%5Cuploads%5Cdeal%5C", "")
+
+    with open(filepath, "rb") as f:
+        response = HttpResponse(f, content_type="application/force-download")
+        titling = 'attachment; filename="{}"'.format(title)
+        response["Content-Disposition"] = titling
+        return response
+
+
+def rackoutdelete(request, pk):
+    rackout = SR_models.StockOfRackProductOut.objects.get_or_none(pk=pk)
+    try:
+        for com in rackout.랙출하요청.랙.랙구성단품.all():
+            if com.랙구성 == "자재":
+                num = com.수량
+                single = com.랙구성자재
+                출하자재수량 = num * rackout.출하수량
+                출하요청자재수량 = num * rackout.랙출하요청.출하요청수량
+                single.자재재고.실수량 += 출하자재수량
+                차이 = 출하요청자재수량 - 출하자재수량
+                single.자재재고.출고요청제외수량 -= 차이
+                single.자재재고.입고요청포함수량 += 출하자재수량
+                single.자재재고.save()
+            else:
+                num = com.수량
+                single = com.랙구성단품
+                출하단품수량 = num * rackout.출하수량
+                출하요청단품수량 = num * rackout.랙출하요청.출하요청수량
+                single.단품재고.실수량 += 출하단품수량
+                차이 = 출하요청단품수량 - 출하단품수량
+                single.단품재고.출하요청제외수량 -= 차이
+                single.단품재고.입고요청포함수량 += 출하단품수량
+                single.단품재고.save()
+    except:
+        pass
+
+    rackout.delete()
+    messages.success(request, "랙출하가 철회되었습니다.")
+    return redirect(reverse("stockmanages:rackoutlist"))
+
+
+class rackoutrequestlist(core_views.onelist):
+    templatename = "stockmanages/rackoutrequestlist.html"
+
+    def get_first_queryset(self, request):
+        user = self.request.user
+        self.search = request.GET.get("search")
+        if self.search is None:
+            order = SR_models.StockOfRackProductOutRequest.objects.all().order_by(
+                "-created"
+            )
+            queryset = []
+            for s in order:
+                try:
+                    s.랙출하등록
+                except:
+                    queryset.append(s)
+
+            self.s_bool = False
+        else:
+            self.s_bool = True
+            order = SR_models.StockOfRackProductOutRequest.objects.filter(
+                Q(랙__랙모델명__contains=self.search)
+                | Q(랙__랙시리얼코드__contains=self.search)
+                | Q(출하요청자__first_name__contains=self.search)
+            ).order_by("-created")
+            queryset = []
+            for s in order:
+                try:
+                    s.단품출하등록
+                except:
+                    queryset.append(s)
+
+        return queryset
+
+
+def rackoutregister(request, pk):
+    rackoutrequest = SR_models.StockOfRackProductOutRequest.objects.get_or_none(pk=pk)
+
+    form = forms.rackoutregisterForm(request.POST)
+    seletelist = [
+        "출고유형",
+    ]
+    if form.is_valid():
+        출하일 = form.cleaned_data.get("출하일")
+        출하수량 = form.cleaned_data.get("출하수량")
+        try:
+            거래명세서첨부 = request.FILES["거래명세서첨부"]
+
+        except Exception:
+            거래명세서첨부 = None
+
+        if 출하일 is None:
+            출하일 = timezone.now().date()
+        if 출하수량 > rackoutrequest.rackstock():
+            messages.error(request, "출하수량이 실수량보다 더 많습니다.")
+            return render(
+                request,
+                "stockmanages/rackoutregister.html",
+                {
+                    "rackoutrequest": rackoutrequest,
+                    "form": form,
+                    "seletelist": seletelist,
+                },
+            )
+        SM = SR_models.StockOfRackProductOut.objects.create(
+            랙출하요청=rackoutrequest, 출하자=request.user, 출하일=출하일, 출하수량=출하수량, 거래명세서첨부=거래명세서첨부,
+        )
+        messages.success(request, "랙출하가 완료되었습니다.")
+        return redirect(reverse("stockmanages:rackoutlist"))
+
+    return render(
+        request,
+        "stockmanages/rackoutregister.html",
+        {"rackoutrequest": rackoutrequest, "form": form, "seletelist": seletelist,},
+    )
+
+
+class stockofracklist(core_views.onelist):
+    templatename = "stockmanages/stockofracklist.html"
+
+    def get_first_queryset(self, request):
+        user = self.request.user
+        self.search = request.GET.get("search")
+        if self.search is None:
+            queryset = SI_models.RackProduct.objects.all().order_by("-created")
+            self.s_bool = False
+        else:
+            self.s_bool = True
+            queryset = SI_models.RackProduct.objects.filter(
+                Q(랙시리얼코드__contains=self.search)
+                | Q(랙모델명__contains=self.search)
+                | Q(규격__contains=self.search)
+                | Q(단위__contains=self.search)
+                | Q(단가__contains=self.search)
+            ).order_by("-created")
+        return queryset
+
+
+def informationforrack(request, pk):
+    rack = SI_models.RackProduct.objects.get_or_none(pk=pk)
+    single = rack.랙구성단품.filter(랙구성="단품")
+    material = rack.랙구성단품.filter(랙구성="자재")
+
+    user = request.user
+    return render(
+        request,
+        "stockmanages/informationforrack.html",
+        {"material": material, "rack": rack, "user": user, "single": single,},
     )

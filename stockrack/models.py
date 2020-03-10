@@ -41,11 +41,7 @@ class StockOfRackProductOutRequest(TimeStampedModel):
         verbose_name_plural = "랙출하요청"
 
     def __str__(self):
-        return f"<랙출하요청>{self.랙} : {self.출하요청수량} {self.랙.단위}"
-
-    def delete(self, *args, **kwargs):
-        super().delete(*args, **kwargs)
-        print("it gogogoo")
+        return f"<랙출하요청>{self.랙} : {self.출하요청수량} {self.랙.단위} "
 
     def save(self, *args, **kwargs):
         if self.id:
@@ -86,6 +82,42 @@ class StockOfRackProductOutRequest(TimeStampedModel):
         except:
             return True
 
+    def rackstock(self):
+        rackstock = []
+        for com in self.랙.랙구성단품.all():
+            if com.랙구성 == "자재":
+                num = com.수량
+                single = com.랙구성자재
+                number = int(single.자재재고.실수량 / num)
+                rackstock.append(number)
+            else:
+                num = com.수량
+                single = com.랙구성단품
+                number = int(single.단품재고.실수량 / num)
+                rackstock.append(number)
+        stock = min(rackstock)
+        if stock < 0:
+            stock = 0
+        return stock
+
+    def rackstockincludeexception(self):
+        rackstock = []
+        for com in self.랙.랙구성단품.all():
+            if com.랙구성 == "자재":
+                num = com.수량
+                single = com.랙구성자재
+                number = int(single.자재재고.출고요청제외수량 / num)
+                rackstock.append(number)
+            else:
+                num = com.수량
+                single = com.랙구성단품
+                number = int(single.단품재고.출하요청제외수량 / num)
+                rackstock.append(number)
+        stock = min(rackstock)
+        if stock < 0:
+            stock = 0
+        return stock
+
 
 class StockOfRackProductOut(TimeStampedModel):
 
@@ -95,7 +127,6 @@ class StockOfRackProductOut(TimeStampedModel):
         on_delete=models.CASCADE,
         null=True,
     )
-    SI_models.CustomerPartner
     출하자 = models.ForeignKey(
         users_models.User, related_name="랙출하등록", on_delete=models.SET_NULL, null=True,
     )

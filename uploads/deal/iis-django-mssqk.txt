@@ -1,0 +1,52 @@
+iis - django 연결
+https://blog.naver.com/sbd38/221383869050
+static 파일 안먹을시 mysite.setting file 뒤에 추가 분 확인
+
+파일 옮기되 SECRET_KEY 건들지 말 것 manage.py건들지말것
+
+이미지필드흫 활성화시켜주기위해 설치할것
+node js, gulp 설치 
+npm init
+npm gulp gulp-postcss gulp-sass gulp-csso node-sass -D
+
+
+
+MSSQL 연결
+
+1. <카카오톡>링크확인
+=>oodb 만들고 dsn 으로 연결
+
+2. setting.py 에서 내용 변경
+web.config
+
+
+math 설정
+C++ 설정 (AZURE)
+
+MSSQL 연결 
+https://beomi.github.io/2018/02/02/Connect-django-to-MSSQL/
+
+ 
+linux
+https://docs.microsoft.com/ko-kr/windows/wsl/install-on-server
+
+1. linux - ubuntu(id =chans, pW =123)
+2. linux - brew 설치
+3. brew 문제시(gcc,pathelf 문제) https://blog.tagbangers.co.jp/ja/2019/07/13/linuxbrew
+3-1 brew install freetds --with-unixodbc => brew install freetds (이제 기본값) 
+3-2 brew install --no-sandbox msodbcsql =>
+3. MSSQL연결 시도
+
+불가 
+
+--대안책 sqlite 그대로 쓰기
+
+그러나 웹으로 전송시 readonly 문제 윈도우상에서는 해당 app 폴더와 db를 읽기전용을 해제해주면됨
+cmd 작업시 CWCRL? :G P??? 이런시긍로 풀어주면됨 (윈도우 권한변경 chmod)
+네트워크 공유 폴더 로도 설정해주기 
+엑세스 풀기
+
+
+
+장고 admin 을 활용하자.
+https://www.slideshare.net/bbayoung7849/djangoadminsitecustomexample

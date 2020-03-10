@@ -4,6 +4,7 @@ from StandardInformation import models as SI_models
 from stocksingle import models as SS_models
 from afterservices import models as AS_models
 from qualitycontrols import models as QC_models
+from stockrack import models as SR_models
 
 
 class materialcheckrequest(forms.Form):
@@ -109,6 +110,51 @@ class singleinregisterForm(forms.ModelForm):
     def clean(self):
         self.is_bound = False
         cleaned_data = super().clean()
+
+    def save(self, *arg, **kwargs):
+        order = super().save(commit=False)
+        return order
+
+
+class singleoutregisterForm(forms.ModelForm):
+    class Meta:
+        model = SS_models.StockOfSingleProductOut
+        fields = (
+            "출하일",
+            "출하수량",
+            "거래명세서첨부",
+        )
+        help_texts = {
+            "출하일": "형식 : yyyy-mm-dd (기본값은 오늘입니다.)",
+        }
+
+    def save(self, *arg, **kwargs):
+        order = super().save(commit=False)
+        return order
+
+
+class updatestockofsingle(forms.Form):
+
+    실수량 = forms.IntegerField()
+    입고요청포함수량 = forms.IntegerField()
+    출하요청제외수량 = forms.IntegerField()
+    단품 = forms.CharField()
+
+    def save(self, *arg, **kwargs):
+        order = super().save(commit=False)
+        return order
+
+class rackoutregisterForm(forms.ModelForm):
+    class Meta:
+        model = SR_models.StockOfRackProductOut
+        fields = (
+            "출하일",
+            "출하수량",
+            "거래명세서첨부",
+        )
+        help_texts = {
+            "출하일": "형식 : yyyy-mm-dd (기본값은 오늘입니다.)",
+        }
 
     def save(self, *arg, **kwargs):
         order = super().save(commit=False)

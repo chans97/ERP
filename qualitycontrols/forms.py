@@ -1,6 +1,7 @@
 from django import forms
 from . import models
 from StandardInformation import models as SI_models
+from measures import models as MS_models
 
 
 class FinalCheckRegisterForm(forms.ModelForm):
@@ -188,3 +189,140 @@ class MaterialCheckEditForm(MaterialCheckRegisterForm):
                 )
 
             return self.cleaned_data
+
+
+class measureeditForm(forms.ModelForm):
+    class Meta:
+        model = SI_models.Measure
+        fields = (
+            "계측기코드",
+            "계측기명",
+            "자산관리번호",
+            "계측기규격",
+            "설치년월일",
+            "사용공정명",
+            "설치장소",
+            "file",
+        )
+        help_texts = {
+            "계측기코드": "*계측기코드 앞에 MS을 붙여주시길 바랍니다.",
+            "설치년월일": "*형식 : yyyy-mm-dd(기본값은 오늘입니다.)",
+        }
+        labels = {"file": "계측기사진"}
+
+    def save(self, *arg, **kwargs):
+        partner = super().save(commit=False)
+        return partner
+
+
+"""    def clean(self):
+        code = self.cleaned_data.get("계측기코드")
+        partner = SI_models.Measure.objects.filter(계측기코드=code)
+        partner = list(partner)
+        if code:
+            code = code[0:2]
+            if partner:
+                self.add_error("계측기코드", forms.ValidationError("*해당 계측기코드는 이미 존재합니다."))
+            elif code != "MS":
+                self.add_error("계측기코드", forms.ValidationError("*계측기코드는 MS로 시작해야 합니다."))
+
+            return self.cleaned_data
+"""
+
+
+class measurecheckeditForm(forms.ModelForm):
+    class Meta:
+        model = MS_models.MeasureCheckRegister
+        fields = (
+            "점검일",
+            "점검내용",
+            "특이사항",
+        )
+        help_texts = {
+            "점검일": "*형식 : yyyy-mm-dd(기본값은 오늘입니다.)",
+        }
+
+    def save(self, *arg, **kwargs):
+        partner = super().save(commit=False)
+        return partner
+
+
+class measurecheckregisterForm(forms.ModelForm):
+    계측기 = forms.CharField(max_length=20, required=True)
+
+    class Meta:
+        model = MS_models.MeasureCheckRegister
+        fields = (
+            "점검일",
+            "점검내용",
+            "특이사항",
+        )
+        help_texts = {
+            "점검일": "*형식 : yyyy-mm-dd(기본값은 오늘입니다.)",
+        }
+
+    def clean(self):
+        code = self.cleaned_data.get("계측기")
+        partner = SI_models.Measure.objects.get_or_none(pk=code)
+        if code:
+            if partner:
+                self.cleaned_data["계측기"] = partner
+                return self.cleaned_data
+            else:
+                self.add_error("계측기", forms.ValidationError("*올바른 입력값이 아닙니다."))
+
+    def save(self, *arg, **kwargs):
+        partner = super().save(commit=False)
+        return partner
+
+
+class measurerepaireditForm(forms.ModelForm):
+    class Meta:
+        model = MS_models.MeasureRepairRegister
+        fields = (
+            "수리일",
+            "수리내용",
+            "특이사항",
+            "수리부문",
+            "file",
+        )
+        help_texts = {
+            "수리일": "*형식 : yyyy-mm-dd(기본값은 오늘입니다.)",
+        }
+        labels = {"수리현장사진": "계측기사진"}
+
+    def save(self, *arg, **kwargs):
+        partner = super().save(commit=False)
+        return partner
+
+
+class measurerepairregisterForm(forms.ModelForm):
+    계측기 = forms.CharField(max_length=20, required=True)
+
+    class Meta:
+        model = MS_models.MeasureRepairRegister
+        fields = (
+            "수리일",
+            "수리내용",
+            "특이사항",
+            "수리부문",
+            "file",
+        )
+        help_texts = {
+            "수리일": "*형식 : yyyy-mm-dd(기본값은 오늘입니다.)",
+        }
+        labels = {"file": "수리현장사진"}
+
+    def clean(self):
+        code = self.cleaned_data.get("계측기")
+        partner = SI_models.Measure.objects.get_or_none(pk=code)
+        if code:
+            if partner:
+                self.cleaned_data["계측기"] = partner
+                return self.cleaned_data
+            else:
+                self.add_error("계측기", forms.ValidationError("*올바른 입력값이 아닙니다."))
+
+    def save(self, *arg, **kwargs):
+        partner = super().save(commit=False)
+        return partner

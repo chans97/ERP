@@ -419,9 +419,12 @@ class RackProductMaterial(TimeStampedModel):
 
 
 class Measure(TimeStampedModel):
+    작성자 = models.ForeignKey(
+        "users.User", related_name="계측기작성자", on_delete=models.SET_NULL, null=True
+    )
     계측기코드 = models.CharField(max_length=40, blank=True)
     계측기명 = models.CharField(max_length=40, blank=True)
-    자산관리번호 = models.IntegerField()
+    자산관리번호 = models.CharField(max_length=40, null=True)
     계측기규격 = models.CharField(max_length=40, blank=True)
     설치년월일 = models.DateField(auto_now=False, auto_now_add=False)
     사용공정명 = models.CharField(max_length=40, blank=True)

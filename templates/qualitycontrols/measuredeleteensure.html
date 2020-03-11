@@ -1,0 +1,59 @@
+{%extends "qualitycontrols/qualitycontrolshome.html"%}
+{% load static%}
+{% block page_title%}
+계측기 삭제
+{%endblock%}
+
+
+{%block head_title%}
+<i class="fas fa-angle-right text-base mx-1"></i><span class="text-gray-700">{{measure.계측기코드}} 삭제확인</span>
+{%endblock head_title %}
+
+
+{%block main_contens%}
+
+<div class="w-11/12 h-full ml-32 -mt-6 pt-12 flex flex-row">
+
+    <div class="p-6 flex flex-col w-full">
+        <div class="flex flex-col w-full">
+            <div class="flex flex-row justify-between w-full ">
+                <div class=" border-b w-64 mb-3 font-semibold border-gray-600 pb-2">계측기 삭제확인 <div>-
+                        {{measure.계측기코드}}
+                    </div>
+                </div>
+
+                <div class="flex flex-row">
+
+
+                </div>
+
+            </div>
+            <div class="item-center">
+                <div>정말 계측기 <span class="font-semibold">"{{measure.계측기코드}}"</span>을(를) 삭제하시겠습니까?</div>
+                <div class="text-sm mt-5 text-red-600 font-extrabold">*이와 관련된 모든 자료가 사라질 수도 있습니다.</div>
+                <div class="text-sm text-red-600 font-extrabold">*이와 관련된 자료에 오류가 발생할 수도 있습니다.</div>
+                <div class="flex flex-row mt-5">
+                    <div class="mt-2">
+                        <a href="{%url "qualitycontrols:measuredetail" measure.pk%}">
+                            <div class="btn-link bg-teal-800">
+                                돌아가기 </div>
+                        </a>
+                    </div>
+                    <div class="mt-2">
+                        <a href="{%url "qualitycontrols:measuredelete" measure.pk %}">
+                            <div class="btn-link  bg-red-800 ml-12">
+                                삭제확인 </div>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+</div>
+{%endblock main_contens %}

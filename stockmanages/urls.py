@@ -117,4 +117,27 @@ urlpatterns = [
         views.informationforrack,
         name="informationforrack",
     ),
+    path(
+        "singleStandarInformation/",
+        views.singleStandarInformation.as_view(),
+        name="singleStandarInformation",
+    ),
+    path("singleregister/", views.singleregister, name="singleregister",),
+    path("singlematerial/<int:pk>/", views.singlematerial, name="singlematerial",),
+    path("donesingleregister/", views.donesingleregister, name="donesingleregister",),
+    path(
+        "singledetail/<int:pk>/", views.SingleDetialView.as_view(), name="singledetail",
+    ),
+    path("singleedit/<int:pk>/", views.singleedit.as_view(), name="singleedit",),
+    path(
+        "singledeleteensure/<int:pk>/",
+        views.singledeleteensure,
+        name="singledeleteensure",
+    ),
+    path("singledelete/<int:pk>/", views.singledelete, name="singledelete",),
+    path(
+        "deletematerialofsingle/<int:pk>/<int:m_pk>/",
+        views.deletematerialofsingle,
+        name="deletematerialofsingle",
+    ),
 ]

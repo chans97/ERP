@@ -94,4 +94,76 @@ urlpatterns = [
         views.materialcheckdelete,
         name="materialcheckdelete",
     ),
+    path(
+        "checkmeasurelist/", views.checkmeasurelist.as_view(), name="checkmeasurelist",
+    ),
+    path("measuredetail/<int:pk>/", views.measuredetail, name="measuredetail",),
+    path("file_download/<int:pk>/", views.file_download, name="file_download",),
+    path("measureedit/<int:pk>/", views.measureedit.as_view(), name="measureedit",),
+    path(
+        "measuredeleteensure/<int:pk>/",
+        views.measuredeleteensure,
+        name="measuredeleteensure",
+    ),
+    path("measuredelete/<int:pk>/", views.measuredelete, name="measuredelete",),
+    path(
+        "measurecheckdetail/<int:pk>/",
+        views.measurecheckdetail,
+        name="measurecheckdetail",
+    ),
+    path(
+        "measurecheckedit/<int:pk>/",
+        views.measurecheckedit.as_view(),
+        name="measurecheckedit",
+    ),
+    path(
+        "measurecheckdeleteensure/<int:pk>/",
+        views.measurecheckdeleteensure,
+        name="measurecheckdeleteensure",
+    ),
+    path(
+        "measurecheckdelete/<int:pk>/",
+        views.measurecheckdelete,
+        name="measurecheckdelete",
+    ),
+    path(
+        "measurecheckdetailregister/",
+        views.measurecheckdetailregister,
+        name="measurecheckdetailregister",
+    ),
+    path(
+        "repairmeasurelist/",
+        views.repairmeasurelist.as_view(),
+        name="repairmeasurelist",
+    ),
+    path(
+        "measurerepairdetail/<int:pk>/",
+        views.measurerepairdetail,
+        name="measurerepairdetail",
+    ),
+    path(
+        "measurerepairedit/<int:pk>/",
+        views.measurerepairedit.as_view(),
+        name="measurerepairedit",
+    ),
+    path(
+        "measurerepairdeleteensure/<int:pk>/",
+        views.measurerepairdeleteensure,
+        name="measurerepairdeleteensure",
+    ),
+    path(
+        "measurerepairdelete/<int:pk>/",
+        views.measurerepairdelete,
+        name="measurerepairdelete",
+    ),
+    path(
+        "file_downloadforrepair/<int:pk>/",
+        views.file_downloadforrepair,
+        name="file_downloadforrepair",
+    ),
+    path(
+        "measurerepairdetailregister/",
+        views.measurerepairdetailregister,
+        name="measurerepairdetailregister",
+    ),
 ]

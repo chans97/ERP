@@ -22,9 +22,8 @@
 
 }
 textarea{
-    resize: none;
+    @apply w-full;
     height: 100px;
-    width: 150px;
 
 }
 

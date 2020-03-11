@@ -57,8 +57,12 @@
                         <tr>
                             <td class="border px-4 py-2">{{mate.랙구성단품.모델코드}}</td>
                             <td class="border px-4 py-2">{{mate.랙구성단품.모델명}}</td>
-                            <td class="border px-4 py-2">{{mate.수량}}</td>
-                            <td class="border px-4 py-2">{{mate.랙구성단품.단품재고.실수량}}
+                            <td class="border px-4 py-2{%if mate.수량 >  mate.랙구성단품.단품재고.실수량%}
+                                text-red-700 font-semibold
+                                {%endif%}">{{mate.수량}}</td>
+                            <td class="border px-4 py-2 {%if mate.수량 >  mate.랙구성단품.단품재고.실수량%}
+                                text-red-700 font-semibold
+                                {%endif%}">{{mate.랙구성단품.단품재고.실수량}}
                             </td>
                             <td class="border px-4 py-2">{{mate.랙구성단품.단품재고.출하요청제외수량}}</td>
                             <td class="border px-4 py-2">{{mate.랙구성단품.단품재고.입고요청포함수량}}</td>
@@ -95,8 +99,15 @@
                         <tr>
                             <td class="border px-4 py-2">{{mate.랙구성자재.자재코드}}</td>
                             <td class="border px-4 py-2">{{mate.랙구성자재.자재품명}}</td>
-                            <td class="border px-4 py-2">{{mate.수량}}</td>
-                            <td class="border px-4 py-2">{{mate.랙구성자재.자재재고.실수량}}
+                            <td class="border px-4 py-2
+                            {%if mate.수량 >  mate.랙구성자재.자재재고.실수량%}
+                            text-red-700 font-semibold
+                            {%endif%}
+                            
+                            ">{{mate.수량}}</td>
+                            <td class="border px-4 py-2{%if mate.수량 >  mate.랙구성자재.자재재고.실수량%}
+                                text-red-700 font-semibold
+                                {%endif%}">{{mate.랙구성자재.자재재고.실수량}}
                             </td>
                             <td class="border px-4 py-2">{{mate.랙구성자재.자재재고.출고요청제외수량}}</td>
                             <td class="border px-4 py-2">{{mate.랙구성자재.자재재고.입고요청포함수량}}</td>

@@ -1,0 +1,112 @@
+{%extends "qualitycontrols/qualitycontrolshome.html"%}
+{% load static%}
+{% block page_title%}
+계측기상세
+{%endblock%}
+
+
+{%block head_title%}
+<i class="fas fa-angle-right text-base mx-1"></i>
+<span class="text-gray-700">
+    계측기({{measure.계측기코드}}) 상세보기
+    {%endblock head_title %}
+
+
+    {%block main_contens%}
+
+    <div class="w-11/12 h-full ml-32 -mt-6 pt-12 flex flex-row">
+
+        <div class="p-6 flex flex-col w-full">
+            <div class="flex flex-col w-full">
+                <div class="flex flex-row justify-between w-full ">
+                    <div class=" border-b w-64 mb-3 font-semibold border-gray-600 pb-2">
+                        계측기 : {{measure.계측기코드}} - 상세보기
+                    </div>
+                    {%if measure.작성자 == user%}
+
+                    <div class="flex">
+                        <div class=" w-full">
+                            <a href="#">
+                                <div class="btn-link w-40 bg-blue-800 ml-5 hover:font-bold">
+                                    <a href="{%url "qualitycontrols:measureedit" measure.pk %}">
+
+                                        계측기수정
+                                    </a>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="">
+                            <a href="{%url "qualitycontrols:measuredeleteensure" measure.pk %}">
+                                <div class="btn-link w-40 bg-red-800 ml-5 hover:font-bold">
+                                    계측기삭제 </div>
+                            </a>
+                        </div>
+                    </div>
+                    {%endif%}
+
+
+                </div>
+                <div class="flex ">
+                    <table class="table-fixed text-sm">
+                        <thead>
+                            <tr>
+                                <th class="border border-r-0 bg-gray-400  py-2 w-40 text-right">{{measure.계측기코드}}
+                                </th>
+                                <th class="border border-l-0 bg-gray-400  py-2 w-56 text-left">의 상세</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="border px-4 py-2 bg-gray-200">작성자</td>
+                                <td class="border px-4 py-2">{{measure.작성자}}</td>
+                            </tr>
+                            <tr>
+                                <td class="border px-4 py-2 bg-gray-200">계측기코드</td>
+                                <td class="border px-4 py-2">{{measure.계측기코드}}</td>
+                            </tr>
+                            <tr>
+                                <td class="border px-4 py-2 bg-gray-200">계측기명</td>
+                                <td class="border px-4 py-2">{{measure.계측기명}}</td>
+                            </tr>
+                            <tr>
+                                <td class="border px-4 py-2 bg-gray-200">자산관리번호</td>
+                                <td class="border px-4 py-2">{{measure.자산관리번호}}</td>
+                            </tr>
+                            <tr>
+                                <td class="border px-4 py-2 bg-gray-200">계측기규격</td>
+                                <td class="border px-4 py-2">{{measure.계측기규격}}</td>
+                            </tr>
+                            <tr>
+                                <td class="border px-4 py-2 bg-gray-200">설치장소</td>
+                                <td class="border px-4 py-2">{{measure.설치장소}}</td>
+                            </tr>
+                            <tr>
+                                <td class="border px-4 py-2 bg-gray-200">사용공정명</td>
+                                <td class="border px-4 py-2">{{measure.사용공정명}}</td>
+                            </tr>
+                            <tr>
+                                <td class="border px-4 py-2 bg-gray-200">설치년월일</td>
+                                <td class="border px-4 py-2">{%if measure.설치년월일 is None%}
+                                    {%else%}
+                                    {{measure.설치년월일.year}}-{{measure.설치년월일.month}}-{{measure.설치년월일.day}}{%endif%}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="border px-4 py-2 bg-gray-200">계측기사진</td>
+                                <td class="border px-4 py-2 hover:text-blue-700 hover:font-bold">
+                                    <a href="{%url "qualitycontrols:file_download" measure.pk%}">
+                                        {{measure.file}}
+                                    </a>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+
+                </div>
+            </div>
+
+
+        </div>
+        {%endblock main_contens %}

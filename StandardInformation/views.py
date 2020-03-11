@@ -159,7 +159,6 @@ def file_download(request, pk):
     filepath = partner.사업자등록증첨부.path
     title = partner.사업자등록증첨부.__str__()
     title = urllib.parse.quote(title.encode("utf-8"))
-    print(title)
     title = title.replace("partnerregister/", "")
 
     with open(filepath, "rb") as f:

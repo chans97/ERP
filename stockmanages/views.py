@@ -32,8 +32,10 @@ from django.utils import timezone
 from qualitycontrols import models as QC_models
 from afterservices import models as AS_models
 from core import views as core_views
+from StandardInformation import forms as SI_forms
 from . import models
 import urllib
+from random import randint
 
 
 class stockmanageshome(core_views.twolist):
@@ -1048,3 +1050,173 @@ def informationforrack(request, pk):
         "stockmanages/informationforrack.html",
         {"material": material, "rack": rack, "user": user, "single": single,},
     )
+
+
+class singleStandarInformation(core_views.onelist):
+    templatename = "stockmanages/singleStandarInformation.html"
+
+    def get_first_queryset(self, request):
+        user = self.request.user
+        self.search = request.GET.get("search")
+        if self.search is None:
+            queryset = SI_models.SingleProduct.objects.all().order_by("-created")
+
+            self.s_bool = False
+        else:
+            self.s_bool = True
+            queryset = SI_models.SingleProduct.objects.filter(
+                Q(모델코드=self.search)
+                | Q(모델명__contains=self.search)
+                | Q(규격=self.search)
+                | Q(단위=self.search)
+                | Q(작성자__first_name=self.search)
+            ).order_by("-created")
+        return queryset
+
+
+def singleregister(request):
+    def give_number():
+        while True:
+            start_code = "SP"
+            n = randint(1, 999999)
+            num = str(n).zfill(6)
+            code = start_code + num
+            obj = SI_models.SingleProduct.objects.get_or_none(모델코드=code)
+            if obj:
+                pass
+            else:
+                return code
+
+    form = SI_forms.UploadSingleForm(request.POST)
+    code = give_number()
+    form.initial = {
+        "모델코드": code,
+    }
+
+    if form.is_valid():
+        single = form.save()
+        single.작성자 = request.user
+        single.save()
+        form.save_m2m()
+        pk = single.pk
+
+        messages.success(request, "해당 단품에 포함되는 자재를 추가해주세요.")
+        return redirect(reverse("stockmanages:singlematerial", kwargs={"pk": pk}))
+    return render(request, "stockmanages/singleregister.html", {"form": form,},)
+
+
+def singlematerial(request, pk):
+    single = SI_models.SingleProduct.objects.get(pk=pk)
+    form = SI_forms.UploadSingleMaterialForm(request.POST)
+
+    search = request.GET.get("search")
+    if search is None:
+        material = SI_models.Material.objects.all().order_by("-created")
+        s_bool = False
+    else:
+        s_bool = True
+        qs = models.Material.objects.filter(
+            Q(자재코드=search)
+            | Q(자재품명__contains=search)
+            | Q(품목__contains=search)
+            | Q(자재공급업체__거래처명__contains=search)
+        ).order_by("-created")
+        material = qs
+
+    if form.is_valid():
+        단품구성자재 = form.cleaned_data.get("단품구성자재")
+        수량 = form.cleaned_data.get("수량")
+        SM = SI_models.SingleProductMaterial.objects.create(
+            단품모델=single, 단품구성자재=단품구성자재, 수량=수량
+        )
+
+    pagediv = 7
+    totalpage = int(math.ceil(len(material) / pagediv))
+    paginator = Paginator(material, pagediv, orphans=0)
+    page = request.GET.get("page", "1")
+    material = paginator.get_page(page)
+    nextpage = int(page) + 1
+    previouspage = int(page) - 1
+    notsamebool = True
+    materialofsingle = single.단품구성자재.all()
+    if int(page) == totalpage:
+        notsamebool = False
+    if (search is None) or (search == ""):
+        search = "search"
+    return render(
+        request,
+        "stockmanages/singlematerial.html",
+        {
+            "single": single,
+            "form": form,
+            "material": material,
+            "search": search,
+            "page": page,
+            "totalpage": totalpage,
+            "notsamebool": notsamebool,
+            "nextpage": nextpage,
+            "previouspage": previouspage,
+            "s_bool": s_bool,
+            "materialofsingle": materialofsingle,
+        },
+    )
+
+
+def donesingleregister(request):
+    messages.success(request, "단품이 기준정보에 등록되었습니다.")
+
+    return redirect(reverse("stockmanages:singleStandarInformation"))
+
+
+class SingleDetialView(user_mixins.LoggedInOnlyView, DetailView):
+    model = SI_models.SingleProduct
+
+    def get(self, request, *args, **kwargs):
+        pk = kwargs["pk"]
+        single = SI_models.SingleProduct.objects.get(pk=pk)
+
+        material = single.단품구성자재.all()
+        user = request.user
+        return render(
+            request,
+            "stockmanages/singledetail.html",
+            {"single": single, "user": user, "material": material},
+        )
+
+
+class singleedit(user_mixins.LoggedInOnlyView, UpdateView):
+    model = SI_models.SingleProduct
+    fields = (
+        "모델코드",
+        "모델명",
+        "규격",
+        "단위",
+        "단가",
+    )
+    template_name = "stockmanages/singleedit.html"
+
+    def get_success_url(self):
+        pk = self.kwargs.get(self.pk_url_kwarg)
+        return reverse("stockmanages:singlematerial", kwargs={"pk": pk})
+
+
+def singledeleteensure(request, pk):
+
+    single = SI_models.SingleProduct.objects.get_or_none(pk=pk)
+    return render(request, "stockmanages/singledeleteensure.html", {"single": single},)
+
+
+def singledelete(request, pk):
+    single = SI_models.SingleProduct.objects.get_or_none(pk=pk)
+    single.delete()
+
+    messages.success(request, "해당 단품이 삭제되었습니다.")
+
+    return redirect(reverse("stockmanages:singleStandarInformation"))
+
+
+def deletematerialofsingle(request, pk, m_pk):
+
+    materialofsingle = SI_models.SingleProductMaterial.objects.get(pk=m_pk)
+    materialofsingle.delete()
+    return redirect(reverse("stockmanages:singlematerial", kwargs={"pk": pk}))

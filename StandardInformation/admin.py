@@ -72,13 +72,7 @@ class Measure(admin.ModelAdmin):
         "계측기명",
         "설치년월일",
         "설치장소",
-        "get_thumbnail",
     )
-
-    def get_thumbnail(self, obj):
-        return mark_safe(f'<img width ="50px" src="{obj.file.url}" />')
-
-    get_thumbnail.short_description = "계측기사진"
 
 
 @admin.register(models.SupplyPartner)

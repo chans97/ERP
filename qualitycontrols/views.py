@@ -34,6 +34,7 @@ from django.utils import timezone
 from qualitycontrols import models as QC_models
 from afterservices import models as AS_models
 from core import views as core_views
+from measures import models as MS_models
 
 
 class qualitycontrolshome(core_views.threelist):
@@ -773,3 +774,420 @@ def materialcheckdelete(request, pk):
     messages.success(request, "수입검사결과 삭제가 완료되었습니다.")
     return redirect(reverse("qualitycontrols:qualitycontrolshome"))
 
+
+class checkmeasurelist(core_views.onelist):
+    templatename = "qualitycontrols/checkmeasurelist.html"
+
+    def get_first_queryset(self, request):
+        self.search = request.GET.get("search")
+        if self.search is None:
+            queryset = MS_models.MeasureCheckRegister.objects.all().order_by("-created")
+
+            self.s_bool = False
+        else:
+            self.s_bool = True
+            queryset = MS_models.MeasureCheckRegister.objects.filter(
+                Q(계측기__계측기코드__contains=self.search)
+                | Q(계측기__계측기명__contains=self.search)
+                | Q(계측기__자산관리번호__contains=self.search)
+                | Q(계측기__사용공정명__contains=self.search)
+                | Q(계측기__설치장소__contains=self.search)
+                | Q(점검내용__contains=self.search)
+                | Q(점검자__first_name__contains=self.search)
+            ).order_by("-created")
+        return queryset
+
+
+def measuredetail(request, pk):
+    measure = SI_models.Measure.objects.get_or_none(pk=pk)
+    user = request.user
+    return render(
+        request,
+        "qualitycontrols/measuredetail.html",
+        {"measure": measure, "user": user,},
+    )
+
+
+def file_download(request, pk):
+    """파일 다운로드 유니코드화 패치"""
+    measure = SI_models.Measure.objects.get_or_none(pk=pk)
+    filepath = measure.file.path
+    title = measure.file.__str__()
+    title = urllib.parse.quote(title.encode("utf-8"))
+    title = title.replace("images/", "")
+
+    with open(filepath, "rb") as f:
+        response = HttpResponse(f, content_type="application/force-download")
+        titling = 'attachment; filename="{}"'.format(title)
+        response["Content-Disposition"] = titling
+        return response
+
+
+class measureedit(user_mixins.LoggedInOnlyView, UpdateView):
+    model = SI_models.Measure
+    template_name = "qualitycontrols/measureedit.html"
+    form_class = forms.measureeditForm
+
+    def render_to_response(self, context, **response_kwargs):
+
+        response_kwargs.setdefault("content_type", self.content_type)
+        pk = self.kwargs.get("pk")
+        measure = SI_models.Measure.objects.get_or_none(pk=pk)
+        context["measure"] = measure
+        return self.response_class(
+            request=self.request,
+            template=self.get_template_names(),
+            context=context,
+            using=self.template_engine,
+            **response_kwargs
+        )
+
+    def get_success_url(self):
+        pk = self.kwargs.get(self.pk_url_kwarg)
+        return reverse("qualitycontrols:measuredetail", kwargs={"pk": pk})
+
+    def form_valid(self, form):
+        self.object = form.save()
+        file = form.cleaned_data.get("file")
+        pk = self.kwargs.get("pk")
+        measure = SI_models.Measure.objects.get_or_none(pk=pk)
+        measure.계측기코드 = form.cleaned_data.get("계측기코드")
+        measure.계측기명 = form.cleaned_data.get("계측기명")
+        measure.자산관리번호 = form.cleaned_data.get("자산관리번호")
+        measure.계측기규격 = form.cleaned_data.get("계측기규격")
+        measure.설치년월일 = form.cleaned_data.get("설치년월일")
+        measure.사용공정명 = form.cleaned_data.get("사용공정명")
+        measure.설치장소 = form.cleaned_data.get("설치장소")
+        measure.file = form.cleaned_data.get("file")
+        measure.save()
+        messages.success(self.request, "계측기 수정이 완료되었습니다.")
+        return super().form_valid(form)
+
+
+def measuredeleteensure(request, pk):
+    measure = SI_models.Measure.objects.get_or_none(pk=pk)
+    return render(
+        request, "qualitycontrols/measuredeleteensure.html", {"measure": measure},
+    )
+
+
+def measuredelete(request, pk):
+    measure = SI_models.Measure.objects.get_or_none(pk=pk)
+    measure.delete()
+    messages.success(request, "계측기 삭제가 완료되었습니다.")
+    return redirect(reverse("qualitycontrols:qualitycontrolshome"))
+
+
+def measurecheckdetail(request, pk):
+    measurecheck = MS_models.MeasureCheckRegister.objects.get_or_none(pk=pk)
+    user = request.user
+    return render(
+        request,
+        "qualitycontrols/measurecheckdetail.html",
+        {"measurecheck": measurecheck, "user": user,},
+    )
+
+
+class measurecheckedit(user_mixins.LoggedInOnlyView, UpdateView):
+    model = MS_models.MeasureCheckRegister
+    template_name = "qualitycontrols/measurecheckedit.html"
+    form_class = forms.measurecheckeditForm
+
+    def render_to_response(self, context, **response_kwargs):
+
+        response_kwargs.setdefault("content_type", self.content_type)
+        pk = self.kwargs.get("pk")
+        measurecheck = MS_models.MeasureCheckRegister.objects.get_or_none(pk=pk)
+        context["measurecheck"] = measurecheck
+        return self.response_class(
+            request=self.request,
+            template=self.get_template_names(),
+            context=context,
+            using=self.template_engine,
+            **response_kwargs
+        )
+
+    def get_success_url(self):
+        pk = self.kwargs.get(self.pk_url_kwarg)
+        return reverse("qualitycontrols:measurecheckdetail", kwargs={"pk": pk})
+
+    def form_valid(self, form):
+        self.object = form.save()
+
+        pk = self.kwargs.get("pk")
+        measurecheck = MS_models.MeasureCheckRegister.objects.get_or_none(pk=pk)
+        measurecheck.점검일 = form.cleaned_data.get("점검일")
+        measurecheck.점검내용 = form.cleaned_data.get("점검내용")
+        measurecheck.특이사항 = form.cleaned_data.get("특이사항")
+
+        measurecheck.save()
+        messages.success(self.request, "계측기점검 내용 수정이 완료되었습니다.")
+        return super().form_valid(form)
+
+
+def measurecheckdeleteensure(request, pk):
+    measurecheck = MS_models.MeasureCheckRegister.objects.get_or_none(pk=pk)
+    return render(
+        request,
+        "qualitycontrols/measurecheckdeleteensure.html",
+        {"measurecheck": measurecheck},
+    )
+
+
+def measurecheckdelete(request, pk):
+    measurecheck = MS_models.MeasureCheckRegister.objects.get_or_none(pk=pk)
+    measurecheck.delete()
+    messages.success(request, "계측기 삭제가 완료되었습니다.")
+    return redirect(reverse("qualitycontrols:qualitycontrolshome"))
+
+
+def measurecheckdetailregister(request):
+    form = forms.measurecheckregisterForm(request.POST)
+    search = request.GET.get("search")
+    if search is None:
+        customer = SI_models.Measure.objects.all().order_by("-created")
+        s_bool = False
+    else:
+        s_bool = True
+        qs = SI_models.Measure.objects.filter(
+            Q(계측기코드__contains=search)
+            | Q(계측기명__contains=search)
+            | Q(자산관리번호__contains=search)
+            | Q(계측기규격__contains=search)
+            | Q(사용공정명__contains=search)
+            | Q(설치장소__contains=search)
+        ).order_by("-created")
+        customer = qs
+
+    if form.is_valid():
+        계측기 = form.cleaned_data.get("계측기")
+        점검일 = form.cleaned_data.get("점검일")
+        점검내용 = form.cleaned_data.get("점검내용")
+        특이사항 = form.cleaned_data.get("특이사항")
+
+        SM = MS_models.MeasureCheckRegister.objects.create(
+            점검자=request.user, 계측기=계측기, 점검일=점검일, 점검내용=점검내용, 특이사항=특이사항,
+        )
+
+        return redirect(reverse("qualitycontrols:checkmeasurelist"))
+
+    pagediv = 10
+    totalpage = int(math.ceil(len(customer) / pagediv))
+    paginator = Paginator(customer, pagediv, orphans=0)
+    page = request.GET.get("page", "1")
+    customer = paginator.get_page(page)
+    nextpage = int(page) + 1
+    previouspage = int(page) - 1
+    notsamebool = True
+    seletelist = [
+        "제품구분",
+    ]
+    nonpage = False
+    if totalpage == 0:
+        nonpage = True
+    if int(page) == totalpage:
+        notsamebool = False
+    if (search is None) or (search == ""):
+        search = "search"
+    return render(
+        request,
+        "qualitycontrols/orderregister.html",
+        {
+            "customer": customer,
+            "form": form,
+            "search": search,
+            "page": page,
+            "totalpage": totalpage,
+            "notsamebool": notsamebool,
+            "nextpage": nextpage,
+            "previouspage": previouspage,
+            "s_bool": s_bool,
+            "seletelist": seletelist,
+            "nonpage": nonpage,
+        },
+    )
+
+
+class repairmeasurelist(core_views.onelist):
+    templatename = "qualitycontrols/repairmeasurelist.html"
+
+    def get_first_queryset(self, request):
+        self.search = request.GET.get("search")
+        if self.search is None:
+            queryset = MS_models.MeasureRepairRegister.objects.all().order_by(
+                "-created"
+            )
+
+            self.s_bool = False
+        else:
+            self.s_bool = True
+            queryset = MS_models.MeasureRepairRegister.objects.filter(
+                Q(계측기__계측기코드__contains=self.search)
+                | Q(계측기__계측기명__contains=self.search)
+                | Q(계측기__자산관리번호__contains=self.search)
+                | Q(계측기__사용공정명__contains=self.search)
+                | Q(계측기__설치장소__contains=self.search)
+                | Q(수리내용__contains=self.search)
+                | Q(수리부문__contains=self.search)
+                | Q(수리자__first_name__contains=self.search)
+            ).order_by("-created")
+        return queryset
+
+
+def measurerepairdetail(request, pk):
+    measurerepair = MS_models.MeasureRepairRegister.objects.get_or_none(pk=pk)
+    user = request.user
+    return render(
+        request,
+        "qualitycontrols/measurerepairdetail.html",
+        {"measurerepair": measurerepair, "user": user,},
+    )
+
+
+class measurerepairedit(user_mixins.LoggedInOnlyView, UpdateView):
+    model = MS_models.MeasureRepairRegister
+    template_name = "qualitycontrols/measurerepairedit.html"
+    form_class = forms.measurerepaireditForm
+
+    def render_to_response(self, context, **response_kwargs):
+
+        response_kwargs.setdefault("content_type", self.content_type)
+        pk = self.kwargs.get("pk")
+        measurerepair = MS_models.MeasureRepairRegister.objects.get_or_none(pk=pk)
+        context["measurerepair"] = measurerepair
+        return self.response_class(
+            request=self.request,
+            template=self.get_template_names(),
+            context=context,
+            using=self.template_engine,
+            **response_kwargs
+        )
+
+    def get_success_url(self):
+        pk = self.kwargs.get(self.pk_url_kwarg)
+        return reverse("qualitycontrols:measurerepairdetail", kwargs={"pk": pk})
+
+    def form_valid(self, form):
+        self.object = form.save()
+
+        pk = self.kwargs.get("pk")
+        measurerepair = MS_models.MeasureRepairRegister.objects.get_or_none(pk=pk)
+        measurerepair.수리일 = form.cleaned_data.get("수리일")
+        measurerepair.수리내용 = form.cleaned_data.get("수리내용")
+        measurerepair.특이사항 = form.cleaned_data.get("특이사항")
+        measurerepair.수리부문 = form.cleaned_data.get("수리부문")
+        measurerepair.file = form.cleaned_data.get("file")
+
+        measurerepair.save()
+        messages.success(self.request, "계측기점검 내용 수정이 완료되었습니다.")
+        return super().form_valid(form)
+
+
+def measurerepairdeleteensure(request, pk):
+    measurerepair = MS_models.MeasureRepairRegister.objects.get_or_none(pk=pk)
+    return render(
+        request,
+        "qualitycontrols/measurerepairdeleteensure.html",
+        {"measurerepair": measurerepair},
+    )
+
+
+def measurerepairdelete(request, pk):
+    measurerepair = MS_models.MeasureRepairRegister.objects.get_or_none(pk=pk)
+    measurerepair.delete()
+    messages.success(request, "계측기 삭제가 완료되었습니다.")
+    return redirect(reverse("qualitycontrols:qualitycontrolshome"))
+
+
+def file_downloadforrepair(request, pk):
+    """파일 다운로드 유니코드화 패치"""
+    measure = MS_models.MeasureRepairRegister.objects.get_or_none(pk=pk)
+    filepath = measure.file.path
+    title = measure.file.__str__()
+    title = urllib.parse.quote(title.encode("utf-8"))
+    title = title.replace("images/", "")
+
+    with open(filepath, "rb") as f:
+        response = HttpResponse(f, content_type="application/force-download")
+        titling = 'attachment; filename="{}"'.format(title)
+        response["Content-Disposition"] = titling
+        return response
+
+
+def measurerepairdetailregister(request):
+    form = forms.measurerepairregisterForm(request.POST)
+    search = request.GET.get("search")
+    if search is None:
+        customer = SI_models.Measure.objects.all().order_by("-created")
+        s_bool = False
+    else:
+        s_bool = True
+        qs = SI_models.Measure.objects.filter(
+            Q(계측기코드__contains=search)
+            | Q(계측기명__contains=search)
+            | Q(자산관리번호__contains=search)
+            | Q(계측기규격__contains=search)
+            | Q(사용공정명__contains=search)
+            | Q(설치장소__contains=search)
+        ).order_by("-created")
+        customer = qs
+
+    if form.is_valid():
+        계측기 = form.cleaned_data.get("계측기")
+        수리일 = form.cleaned_data.get("수리일")
+        수리내용 = form.cleaned_data.get("수리내용")
+        특이사항 = form.cleaned_data.get("특이사항")
+        수리부문 = form.cleaned_data.get("수리부문")
+        try:
+            file = request.FILES["file"]
+
+        except Exception:
+            file = None
+
+        SM = MS_models.MeasureRepairRegister.objects.create(
+            계측기=계측기,
+            수리자=request.user,
+            수리일=수리일,
+            수리부문=수리부문,
+            수리내용=수리내용,
+            file=file,
+            특이사항=특이사항,
+        )
+
+        return redirect(reverse("qualitycontrols:repairmeasurelist"))
+
+    pagediv = 10
+    totalpage = int(math.ceil(len(customer) / pagediv))
+    paginator = Paginator(customer, pagediv, orphans=0)
+    page = request.GET.get("page", "1")
+    customer = paginator.get_page(page)
+    nextpage = int(page) + 1
+    previouspage = int(page) - 1
+    notsamebool = True
+    seletelist = [
+        "제품구분",
+    ]
+    nonpage = False
+    if totalpage == 0:
+        nonpage = True
+    if int(page) == totalpage:
+        notsamebool = False
+    if (search is None) or (search == ""):
+        search = "search"
+    return render(
+        request,
+        "qualitycontrols/measurerepairdetailregister.html",
+        {
+            "customer": customer,
+            "form": form,
+            "search": search,
+            "page": page,
+            "totalpage": totalpage,
+            "notsamebool": notsamebool,
+            "nextpage": nextpage,
+            "previouspage": previouspage,
+            "s_bool": s_bool,
+            "seletelist": seletelist,
+            "nonpage": nonpage,
+        },
+    )

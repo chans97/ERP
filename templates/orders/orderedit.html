@@ -213,8 +213,8 @@
                                     <td class="border border-gray-400 px-4 py-2">
 
                                         <div class="   border hover:border-gray-500 w-full flex ">
-                                            <input type="text" name="수주일자" id="date2"
-                                                value={{i수주일자.year}}-{{i수주일자.month}}-{{i수주일자.day}} size="10" />
+                                            <input type="text" name="수주일자" id="date3" size="10"
+                                                value={%if i수주일자.year is not None %}{{i수주일자.year}}-{{i수주일자.month}}-{{i수주일자.day}}{%else%}""{%endif%} />
 
                                         </div>
                                         <div class="text-xs text-green-700 ">

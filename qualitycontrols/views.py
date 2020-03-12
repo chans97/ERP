@@ -35,6 +35,8 @@ from qualitycontrols import models as QC_models
 from afterservices import models as AS_models
 from core import views as core_views
 from measures import models as MS_models
+from random import randint
+from specials import models as S_models
 
 
 class qualitycontrolshome(core_views.threelist):
@@ -848,7 +850,6 @@ class measureedit(user_mixins.LoggedInOnlyView, UpdateView):
 
     def form_valid(self, form):
         self.object = form.save()
-        file = form.cleaned_data.get("file")
         pk = self.kwargs.get("pk")
         measure = SI_models.Measure.objects.get_or_none(pk=pk)
         measure.계측기코드 = form.cleaned_data.get("계측기코드")
@@ -1191,3 +1192,102 @@ def measurerepairdetailregister(request):
             "nonpage": nonpage,
         },
     )
+
+
+class measurelist(core_views.onelist):
+    templatename = "qualitycontrols/measurelist.html"
+
+    def get_first_queryset(self, request):
+        self.search = request.GET.get("search")
+        if self.search is None:
+            queryset = SI_models.Measure.objects.all().order_by("-created")
+
+            self.s_bool = False
+        else:
+            self.s_bool = True
+            queryset = SI_models.Measure.objects.filter(
+                Q(계측기코드__contains=self.search)
+                | Q(계측기명__contains=self.search)
+                | Q(자산관리번호__contains=self.search)
+                | Q(사용공정명__contains=self.search)
+                | Q(설치장소__contains=self.search)
+                | Q(작성자__contains=self.search)
+            ).order_by("-created")
+        return queryset
+
+
+def measuredetailregister(request):
+    def give_number():
+        while True:
+            n = randint(1, 999999)
+            num = str(n).zfill(6)
+            code = "MS" + num
+            obj = SI_models.Measure.objects.get_or_none(계측기코드=code)
+            if obj:
+                pass
+            else:
+                return code
+
+    form = forms.measureregisterForm(request.POST)
+    code = give_number()
+    form.initial = {
+        "계측기코드": code,
+    }
+
+    if form.is_valid():
+        계측기코드 = form.cleaned_data.get("계측기코드")
+        계측기명 = form.cleaned_data.get("계측기명")
+        자산관리번호 = form.cleaned_data.get("자산관리번호")
+        계측기규격 = form.cleaned_data.get("계측기규격")
+        설치년월일 = form.cleaned_data.get("설치년월일")
+        사용공정명 = form.cleaned_data.get("사용공정명")
+        설치장소 = form.cleaned_data.get("설치장소")
+        try:
+            file = request.FILES["file"]
+
+        except Exception:
+            file = None
+
+        SM = SI_models.Measure.objects.create(
+            계측기코드=계측기코드,
+            계측기명=계측기명,
+            자산관리번호=자산관리번호,
+            계측기규격=계측기규격,
+            설치년월일=설치년월일,
+            사용공정명=사용공정명,
+            설치장소=설치장소,
+            file=file,
+            작성자=request.user,
+        )
+
+        messages.success(request, "계측기 등록이 완료되었습니다.")
+
+        return redirect(reverse("qualitycontrols:measurelist"))
+    return render(request, "qualitycontrols/measureregister.html", {"form": form,},)
+
+
+class specialregisterlist(core_views.onelist):
+    templatename = "qualitycontrols/measurelist.html"
+
+    def get_first_queryset(self, request):
+        self.search = request.GET.get("search")
+        if self.search is None:
+            queryset = S_models.SpecialRegister.objects.filter(
+                특채등록자=request.user
+            ).order_by("-created")
+
+            self.s_bool = False
+        else:
+            self.s_bool = True
+            queryset = (
+                S_models.SpecialRegister.objects.filter(특채등록자=request.user)
+                .filter(
+                    Q(특채신청등록__제품__모델명__contains=self.search)
+                    | Q(특채신청등록__제품__모델코드__contains=self.search)
+                    | Q(특채신청등록__고객사__거래처명__contains=self.search)
+                    | Q(특채등록자__first_name__contains=self.search)
+                )
+                .order_by("-created")
+            )
+        return queryset
+

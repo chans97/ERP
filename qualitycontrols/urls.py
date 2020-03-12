@@ -166,4 +166,14 @@ urlpatterns = [
         views.measurerepairdetailregister,
         name="measurerepairdetailregister",
     ),
+    path("measurelist/", views.measurelist.as_view(), name="measurelist",),
+    path(
+        "measuredetailregister/",
+        views.measuredetailregister,
+        name="measuredetailregister",
+    ),
+    path("specialregisterlist/", views.specialregisterlist.as_view(), name="specialregisterlist",),
+    
+    
+
 ]

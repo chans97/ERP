@@ -24,6 +24,18 @@ class SpecialApplyRegister(TimeStampedModel):
     불량내용 = models.TextField()
     사용가능사유 = models.TextField()
     특채관련회의록첨부 = models.FileField(blank=True, null=True)
+    제품 = models.ForeignKey(
+        SI_models.SingleProduct,
+        related_name="특채신청등록",
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+    고객사 = models.ForeignKey(
+        SI_models.CustomerPartner,
+        related_name="특채신청등록",
+        on_delete=models.SET_NULL,
+        null=True,
+    )
 
     class Meta:
         verbose_name = "특채신청등록"
@@ -31,7 +43,7 @@ class SpecialApplyRegister(TimeStampedModel):
 
     def __str__(self):
 
-        return f"{self.수주.고객사명}의 특채신청 : {self.특채발행번호}"
+        return f"의 특채신청 : {self.특채발행번호}"
 
 
 class SpecialRegister(TimeStampedModel):
@@ -50,7 +62,7 @@ class SpecialRegister(TimeStampedModel):
 
     def __str__(self):
 
-        return f"{self.특채신청등록.수주.고객사명}의 특채 : {self.특채신청등록.특채발행번호}"
+        return f"의 특채 : {self.특채신청등록.특채발행번호}"
 
 
 class SpecialConductRegister(TimeStampedModel):
@@ -64,7 +76,7 @@ class SpecialConductRegister(TimeStampedModel):
         verbose_name_plural = "특채처리"
 
     def __str__(self):
-        return f"{self.특채.특채신청등록.수주.고객사명}의 특채처리 : {self.특채.특채신청등록.특채발행번호}"
+        return f"의 특채처리 : {self.특채.특채신청등록.특채발행번호}"
 
 
 class SpecialRejectRegister(TimeStampedModel):
@@ -78,4 +90,4 @@ class SpecialRejectRegister(TimeStampedModel):
         verbose_name_plural = "특채반품"
 
     def __str__(self):
-        return f"{self.특채처리.특채.특채신청등록.수주.고객사명}의 특채반품 : {self.특채처리.특채.특채신청등록.특채발행번호}"
+        return f"의 특채반품 : {self.특채처리.특채.특채신청등록.특채발행번호}"

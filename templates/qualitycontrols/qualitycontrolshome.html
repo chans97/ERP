@@ -60,9 +60,28 @@
                         <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
                             <i class="fas fa-angle-right mr-1"></i>계측기수리</span></a></div>
                 <div>
-                    <a href="{% url "qualitycontrols:materialcheckalllist"%}">
+                    <a href="{% url "qualitycontrols:measurelist"%}">
                         <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
                             <i class="fas fa-angle-right mr-1"></i>계측기정보</span></a></div>
+
+            </div>
+        </div>
+        <div class="font-base text-sm text-left text-orange-100 py-px">
+            <i class="fas fa-bars mr-2 ml-3"></i>특채관리
+            <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
+            <div class="text-left ml-4 mb-4">
+                <div>
+                    <a href="{% url "qualitycontrols:specialregisterlist"%}">
+                        <span class=" font-light text-xs text-orange-100 hover:font-bold">
+                            <i class="fas fa-angle-right mr-1"></i>특채등록</span></a></div>
+                <div>
+                    <a href="{% url "qualitycontrols:repairmeasurelist"%}">
+                        <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                            <i class="fas fa-angle-right mr-1"></i>특채처리등록</span></a></div>
+                <div>
+                    <a href="{% url "qualitycontrols:measurelist"%}">
+                        <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                            <i class="fas fa-angle-right mr-1"></i>특채반품등록</span></a></div>
 
             </div>
         </div>

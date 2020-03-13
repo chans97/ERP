@@ -45,6 +45,22 @@ class SpecialApplyRegister(TimeStampedModel):
 
         return f"의 특채신청 : {self.특채발행번호}"
 
+    def process(self):
+
+        try:
+            self.특채등록
+            try:
+                self.특채등록.특채처리
+                try:
+                    self.특채등록.특채처리.특채반품
+                    return "특채반품완료"
+                except:
+                    return "특채처리완료"
+            except:
+                return "특채등록완료"
+        except:
+            return "특채신청완료"
+
 
 class SpecialRegister(TimeStampedModel):
     특채신청등록 = models.OneToOneField(
@@ -81,9 +97,12 @@ class SpecialConductRegister(TimeStampedModel):
 
 class SpecialRejectRegister(TimeStampedModel):
     특채처리 = models.OneToOneField(
-        "SpecialConductRegister", related_name="특채처리", on_delete=models.CASCADE
+        "SpecialConductRegister", related_name="특채반품", on_delete=models.CASCADE
     )
     특채반품수량 = models.IntegerField()
+    작성자 = models.ForeignKey(
+        users_models.User, related_name="특채반품", on_delete=models.SET_NULL, null=True
+    )
 
     class Meta:
         verbose_name = "특채반품"

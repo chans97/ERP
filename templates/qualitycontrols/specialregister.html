@@ -1,12 +1,12 @@
 {%extends "qualitycontrols/qualitycontrolshome.html"%}
 {%load static%}
 {% block page_title%}
-계측기등록
+특채등록
 {%endblock%}
 
 
 {%block head_title%}
-<i class="fas fa-angle-right text-base mx-1"></i>계측기등록</div>
+<i class="fas fa-angle-right text-base mx-1"></i>특채등록</div>
 {%endblock head_title %}
 
 
@@ -14,8 +14,8 @@
 <div class="w-11/12 h-full ml-32 -mt-6 font-normal pt-12 flex flex-row">
 
     <div class="flex flex-col p-6 w-full ">
-        <span class="border-b w-1/3 mb-3 border-gray-600 pb-2 font-semibold text-base">
-            계측기 등록
+        <span class="border-b w-1/3 mb-3 border-gray-600 pb-2 font-semibold text-base">'{{special.특채발행번호}}'
+            -특채 등록
         </span>
 
         <div class="flex ">
@@ -32,26 +32,27 @@
                         <table class="table-fixed text-sm w-full">
                             <thead>
                                 <tr>
-                                    <th class="border border-r-0 bg-gray-400 py-2   w-16 text-right">계측</th>
-                                    <th class="border border-l-0 bg-gray-400  py-2 w-24 text-left">기등록</th>
+                                    <th class="border border-r-0 bg-gray-400 py-2   w-16 text-right">특채</th>
+                                    <th class="border border-l-0 bg-gray-400  py-2 w-24 text-left">등록</th>
                                 </tr>
                             </thead>
 
 
                             <tbody>{% for field in form %}
                                 <tr>
-                                    <td class="border px-4 py-2 bg-gray-200 w-40">{{field.label}}</td>
-                                    <td class="border px-4 py-2 w-48 ">
-                                        <div class="border  hover:border-gray-500 w-full flex ">
-
-                                            {% if field.name == "설치년월일" %}
-                                            <input type="text" name="설치년월일" id="date2" size="10" />
-                                            {%else%}
+                                    <td class="border px-4 py-2 bg-gray-200 w-40">{{field.name}}</td>
+                                    <td class="border px-4 py-2 w-48">
+                                        <div class="border hover:border-gray-500 w-full flex">
+                                            {% if field.name == "특채등록일" %}
+                                            <input type="text" name="특채등록일" id="date2" size="10" />
+                                            {% else %}
                                             {{field}}
                                             {% endif %}
 
+
                                         </div>
                                         <div class="text-xs text-teal-700">{{field.help_text}}
+                                            {{field.add_help_text}}
                                         </div>
                                         {% if field.errors %}
                                         {% for error in field.errors %}
@@ -67,7 +68,7 @@
                     </div>
 
                     <button class="btn-link felx mt-5 h-10 w-2/4   ml-20">
-                        <div class="text-sm forn-bold">계측기등록</div>
+                        <div class="text-sm forn-bold">특채등록</div>
                     </button>
                 </form>
             </div>

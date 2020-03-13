@@ -2,6 +2,7 @@ from django import forms
 from . import models
 from StandardInformation import models as SI_models
 from measures import models as MS_models
+from specials import models as S_models
 
 
 class FinalCheckRegisterForm(forms.ModelForm):
@@ -364,4 +365,46 @@ class measureregisterForm(forms.ModelForm):
             elif code != "MS":
                 self.add_error("계측기코드", forms.ValidationError("*계측기코드는 MS로 시작해야 합니다."))
 
+            return self.cleaned_data
+
+
+class SpecialRegisterForm(forms.ModelForm):
+    class Meta:
+        model = S_models.SpecialRegister
+        fields = (
+            "특채등록일",
+            "특채수량",
+        )
+        help_texts = {
+            "특채등록일": "*형식 : yyyy-mm-dd(기본값은 오늘입니다.)",
+        }
+
+    def save(self, *arg, **kwargs):
+        partner = super().save(commit=False)
+        return partner
+
+    def clean(self):
+        self.is_bound = False
+        code = self.cleaned_data.get("특채수량")
+        if code:
+            self.is_bound = True
+            return self.cleaned_data
+
+
+class specialconductregisterForm(forms.ModelForm):
+    class Meta:
+        model = S_models.SpecialConductRegister
+        fields = (
+            "특채수량중납품수량",
+        )
+
+    def save(self, *arg, **kwargs):
+        partner = super().save(commit=False)
+        return partner
+
+    def clean(self):
+        self.is_bound = False
+        code = self.cleaned_data.get("특채수량중납품수량")
+        if code:
+            self.is_bound = True
             return self.cleaned_data

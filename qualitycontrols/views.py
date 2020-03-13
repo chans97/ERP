@@ -398,7 +398,7 @@ class finalcheckedit(user_mixins.LoggedInOnlyView, UpdateView):
             template=self.get_template_names(),
             context=context,
             using=self.template_engine,
-            **response_kwargs
+            **response_kwargs,
         )
 
     def get_success_url(self):
@@ -657,7 +657,7 @@ class lowmetarialedit(user_mixins.LoggedInOnlyView, UpdateView):
             template=self.get_template_names(),
             context=context,
             using=self.template_engine,
-            **response_kwargs
+            **response_kwargs,
         )
 
     def get_success_url(self):
@@ -723,7 +723,7 @@ class materialcheckedit(user_mixins.LoggedInOnlyView, UpdateView):
             template=self.get_template_names(),
             context=context,
             using=self.template_engine,
-            **response_kwargs
+            **response_kwargs,
         )
 
     def get_success_url(self):
@@ -841,7 +841,7 @@ class measureedit(user_mixins.LoggedInOnlyView, UpdateView):
             template=self.get_template_names(),
             context=context,
             using=self.template_engine,
-            **response_kwargs
+            **response_kwargs,
         )
 
     def get_success_url(self):
@@ -905,7 +905,7 @@ class measurecheckedit(user_mixins.LoggedInOnlyView, UpdateView):
             template=self.get_template_names(),
             context=context,
             using=self.template_engine,
-            **response_kwargs
+            **response_kwargs,
         )
 
     def get_success_url(self):
@@ -1061,7 +1061,7 @@ class measurerepairedit(user_mixins.LoggedInOnlyView, UpdateView):
             template=self.get_template_names(),
             context=context,
             using=self.template_engine,
-            **response_kwargs
+            **response_kwargs,
         )
 
     def get_success_url(self):
@@ -1267,7 +1267,7 @@ def measuredetailregister(request):
 
 
 class specialregisterlist(core_views.onelist):
-    templatename = "qualitycontrols/measurelist.html"
+    templatename = "qualitycontrols/specialregisterlist.html"
 
     def get_first_queryset(self, request):
         self.search = request.GET.get("search")
@@ -1291,3 +1291,136 @@ class specialregisterlist(core_views.onelist):
             )
         return queryset
 
+
+class specialrequestlist(core_views.onelist):
+    templatename = "qualitycontrols/specialrequestlist.html"
+
+    def get_first_queryset(self, request):
+        self.search = request.GET.get("search")
+        if self.search is None:
+            materialchecklist = S_models.SpecialApplyRegister.objects.all().order_by(
+                "-created"
+            )
+            queryset = []
+            for s in materialchecklist:
+                try:
+                    s.특채등록
+                except:
+                    queryset.append(s)
+            self.s_bool = False
+        else:
+            self.s_bool = True
+            materialchecklist = S_models.SpecialApplyRegister.objects.filter(
+                Q(특채발행번호__contains=self.search)
+                | Q(제품__모델코드__contains=self.search)
+                | Q(제품__모델명__contains=self.search)
+                | Q(수주__수주코드__contains=self.search)
+                | Q(고객사__거래처명__contains=self.search)
+                | Q(작성자__first_name__contains=self.search)
+            ).order_by("-created")
+            queryset = []
+            for s in materialchecklist:
+                try:
+                    s.특채등록
+                except:
+                    queryset.append(s)
+        return queryset
+
+
+def specialregister(request, pk):
+    user = request.user
+    special = S_models.SpecialApplyRegister.objects.get_or_none(pk=pk)
+    num = special.특채신청수량
+    form = forms.SpecialRegisterForm(request.POST)
+    form.initial = {
+        "특채수량": num,
+    }
+    for field in form:
+        if field.name == "특채수량":
+            field.add_help_text = f"특채신청수량은 {num}입니다."
+
+    if form.is_valid():
+        특채등록일 = form.cleaned_data.get("특채등록일")
+        특채수량 = form.cleaned_data.get("특채수량")
+        if 특채등록일 is None:
+            특채등록일 = timezone.now().date()
+
+        SM = S_models.SpecialRegister.objects.create(
+            특채신청등록=special, 특채등록자=user, 특채등록일=특채등록일, 특채수량=특채수량,
+        )
+
+        messages.success(request, "특채등록이 완료되었습니다.")
+
+        return redirect(reverse("qualitycontrols:specialregisterlist"))
+    return render(
+        request,
+        "qualitycontrols/specialregister.html",
+        {"form": form, "special": special,},
+    )
+
+
+def specialdetail(request, pk):
+    specialdetail = S_models.SpecialApplyRegister.objects.get_or_none(pk=pk)
+    user = request.user
+
+    return render(
+        request,
+        "qualitycontrols/specialdetail.html",
+        {"specialdetail": specialdetail, "user": user,},
+    )
+
+
+def file_download_special(request, pk):
+    """파일 다운로드 유니코드화 패치"""
+    measure = S_models.SpecialApplyRegister.objects.get_or_none(pk=pk)
+    filepath = measure.특채관련회의록첨부.path
+    title = measure.특채관련회의록첨부.__str__()
+    title = urllib.parse.quote(title.encode("utf-8"))
+    title = title.replace("images/", "")
+
+    with open(filepath, "rb") as f:
+        response = HttpResponse(f, content_type="application/force-download")
+        titling = 'attachment; filename="{}"'.format(title)
+        response["Content-Disposition"] = titling
+        return response
+
+
+def specialconductdelete(request, pk):
+    conduct = S_models.SpecialConductRegister.objects.get_or_none(pk=pk)
+    special = conduct.특채.특채신청등록
+    pk = special.pk
+    conduct.delete()
+    messages.success(request, "특채처리가 삭제되었습니다.")
+    return redirect(reverse("qualitycontrols:specialdetail", kwargs={"pk": pk}))
+
+
+def specialconductregister(request, pk):
+    user = request.user
+    specialregister = S_models.SpecialRegister.objects.get_or_none(pk=pk)
+    pk = specialregister.특채신청등록.pk
+    num = specialregister.특채수량
+
+    form = forms.specialconductregisterForm(request.POST)
+    form.initial = {
+        "특채수량중납품수량": num,
+    }
+    for field in form:
+        if field.name == "특채수량중납품수량":
+            field.add_help_text = f"특채수량은 {num}입니다."
+
+    if form.is_valid():
+        특채수량중납품수량 = form.cleaned_data.get("특채수량중납품수량")
+
+        SM = S_models.SpecialConductRegister.objects.create(
+            특채수량중납품수량=특채수량중납품수량, 특채=specialregister,
+        )
+
+        messages.success(request, "특채처리 등록이 완료되었습니다.")
+
+
+        return redirect(reverse("qualitycontrols:specialdetail", kwargs={"pk": pk}))
+    return render(
+        request,
+        "qualitycontrols/specialconductregister.html",
+        {"form": form, "specialregister": specialregister,},
+    )

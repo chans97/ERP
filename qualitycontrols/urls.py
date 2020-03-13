@@ -172,8 +172,31 @@ urlpatterns = [
         views.measuredetailregister,
         name="measuredetailregister",
     ),
-    path("specialregisterlist/", views.specialregisterlist.as_view(), name="specialregisterlist",),
-    
-    
-
+    path(
+        "specialregisterlist/",
+        views.specialregisterlist.as_view(),
+        name="specialregisterlist",
+    ),
+    path(
+        "specialrequestlist/",
+        views.specialrequestlist.as_view(),
+        name="specialrequestlist",
+    ),
+    path("specialregister/<int:pk>/", views.specialregister, name="specialregister",),
+    path("specialdetail/<int:pk>/", views.specialdetail, name="specialdetail",),
+    path(
+        "file_download_special/<int:pk>/",
+        views.file_download_special,
+        name="file_download_special",
+    ),
+    path(
+        "specialconductdelete/<int:pk>/",
+        views.specialconductdelete,
+        name="specialconductdelete",
+    ),
+    path(
+        "specialconductregister/<int:pk>/",
+        views.specialconductregister,
+        name="specialconductregister",
+    ),
 ]

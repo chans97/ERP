@@ -1,0 +1,293 @@
+{%extends "qualitycontrols/qualitycontrolshome.html"%}
+{% load static%}
+{% block page_title%}
+특채등록상세
+{%endblock%}
+
+
+{%block head_title%}
+<i class="fas fa-angle-right text-base mx-1"></i>
+<span class="text-gray-700">
+    특채({{specialdetail.특채발행번호}}) 상세보기
+    {%endblock head_title %}
+
+
+    {%block main_contens%}
+
+    <div class="w-11/12 h-full ml-32 -mt-6 pt-12 flex flex-row">
+
+        <div class="p-6 flex flex-col w-full">
+            <div class="flex flex-col w-full">
+                <div class="flex flex-row justify-between w-full ">
+                    <div class=" border-b w-64 mb-3 font-semibold border-gray-600 pb-2">
+                        특채 : {{specialdetail.특채발행번호}} - 상세보기
+                        <div class="text-blue-700">
+                            {{specialdetail.process}}
+                        </div>
+                    </div>
+                </div>
+                <div class="flex {%if specialdetail.특채등록%} justify-around{%endif%}">
+                    <div>
+                        {%if specialdetail.작성자 == user%}
+                        {%if specialdetail.process == "특채신청완료"%}
+                        <div class="flex">
+                            <div class=" w-full">
+                                <a href="{%url "qualitycontrols:specialdetailedit" specialdetail.pk%}">
+                                    <div class="btn-link w-40 bg-blue-800 ml-5 hover:font-bold">
+                                        특채수정 </div>
+                                </a>
+                            </div>
+                            <div class="">
+                                <a href="{%url "qualitycontrols:specialdetaildeleteensure" specialdetail.pk%}">
+                                    <div class="btn-link w-40 bg-red-800 ml-5 hover:font-bold">
+                                        특채삭제 </div>
+                                </a>
+                            </div>
+                        </div>
+                        {%endif%}
+                        {%endif%}
+                        <table class="table-fixed text-sm">
+                            <thead>
+                                <tr>
+                                    <th class="border border-r-0 bg-gray-400  py-2 w-56 text-right">
+                                        {{specialdetail.특채발행번호}}-
+                                    </th>
+                                    <th class="border border-l-0 bg-gray-400  py-2 w-56 text-left">특채신청</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200">작성자</td>
+                                    <td class="border px-4 py-2">{{specialdetail.작성자}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200">작성일</td>
+                                    <td class="border px-4 py-2">{{specialdetail.작성일}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200">수주코드</td>
+                                    <td class="border px-4 py-2">{{specialdetail.수주.수주코드}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200">특채발행번호</td>
+                                    <td class="border px-4 py-2">{{specialdetail.특채발행번호}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200">특채발행일</td>
+                                    <td class="border px-4 py-2">{%if specialdetail.특채발행일 is None%}
+                                        {%else%}
+                                        {{specialdetail.특채발행일.year}}-{{specialdetail.특채발행일.month}}-{{specialdetail.특채발행일.day}}{%endif%}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200">폐기시손실액</td>
+                                    <td class="border px-4 py-2">{{specialdetail.폐기시손실액}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200">특채신청수량</td>
+                                    <td class="border px-4 py-2">{{specialdetail.특채신청수량}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200">불량내용</td>
+                                    <td class="border px-4 py-2">{{specialdetail.불량내용}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200">사용가능사유</td>
+                                    <td class="border px-4 py-2">{{specialdetail.사용가능사유}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200">특채관련회의록첨부</td>
+                                    <td class="border px-4 py-2 hover:text-blue-700 hover:font-bold">
+                                        <a href="{%url "qualitycontrols:file_download_special" specialdetail.pk%}">
+                                            {{specialdetail.특채관련회의록첨부}}
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200">제품</td>
+                                    <td class="border px-4 py-2">{{specialdetail.제품}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200">제품코드</td>
+                                    <td class="border px-4 py-2">{{specialdetail.제품.모델코드}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200">고객사</td>
+                                    <td class="border px-4 py-2">{{specialdetail.고객사}}</td>
+                                </tr>
+
+                        </table>
+                    </div>
+                    {%if specialdetail.특채등록 %}
+                    <div class="w-px border border-black"></div>
+                    <div class="flex flex-col items-center">
+
+                        <div>
+                            {%if specialdetail.process == "특채등록완료" %}
+                            {%if specialdetail.특채등록.특채등록자 == user%}
+
+                            <div class="flex my-2 justify-end">
+                                <a href="{%url "qualitycontrols:lowmetarialdeleteensure" specialdetail.특채등록.pk%}">
+                                    <div class="btn-link w-40 bg-red-800 ml-5 hover:font-bold">
+                                        특채등록삭제 </div>
+                                </a>
+                            </div>
+                            {%endif%}
+                            {%endif%}
+                            <table class="table-fixed text-sm">
+                                <thead>
+                                    <tr>
+                                        <th class="border border-r-0 bg-gray-400  py-2 w-56 text-right">
+                                            {{specialdetail.특채발행번호}}-
+                                        </th>
+                                        <th class="border border-l-0 bg-gray-400  py-2 w-56 text-left">특채등록</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="border px-4 py-2 bg-gray-200">특채수량</td>
+                                        <td class="border px-4 py-2">{{specialdetail.특채등록.특채수량}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border px-4 py-2 bg-gray-200">특채등록자</td>
+                                        <td class="border px-4 py-2">{{specialdetail.특채등록.특채등록자}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border px-4 py-2 bg-gray-200">특채등록일</td>
+                                        <td class="border px-4 py-2">{%if specialdetail.특채등록.특채등록일 is None%}
+                                            {%else%}
+                                            {{specialdetail.특채등록.특채등록일.year}}-{{specialdetail.특채등록.특채등록일.month}}-{{specialdetail.특채등록.특채등록일.day}}{%endif%}
+                                        </td>
+                                    </tr>
+
+
+
+                            </table>
+                        </div>
+                        {%if specialdetail.특채등록.특채처리 %}
+                        {%else%}
+
+                        <a href="{%url "qualitycontrols:specialconductregister" specialdetail.특채등록.pk%}">
+                            <div
+                                class="btn-link w-56 h-10 bg-blue-800 hover:font-bold my-2 flex items-center justify-center">
+                                특채처리등록
+                            </div>
+                        </a>
+                        {%endif%}
+                        {%if specialdetail.특채등록.특채처리 %}
+                        <i class="fas fa-angle-down text-3xl"></i>
+                        <div>
+                            {%if specialdetail.process == "특채처리완료" %}
+                            {%if specialdetail.특채등록.특채등록자 == user%}
+
+                            <div class="flex my-2 justify-end">
+                                <div class="">
+                                    <a href="{%url "qualitycontrols:specialconductdelete" specialdetail.특채등록.특채처리.pk%}">
+                                        <div class="btn-link w-40 bg-red-800 ml-5 hover:font-bold">
+                                            특채처리삭제 </div>
+                                    </a>
+                                </div>
+                            </div>
+                            {%endif%}
+                            {%endif%}
+                            <table class="table-fixed text-sm">
+                                <thead>
+                                    <tr>
+                                        <th class="border border-r-0 bg-gray-400  py-2 w-56 text-right">
+                                            {{specialdetail.특채발행번호}}-
+                                        </th>
+                                        <th class="border border-l-0 bg-gray-400  py-2 w-56 text-left">특채처리</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="border px-4 py-2 bg-gray-200">특채수량</td>
+                                        <td class="border px-4 py-2">{{specialdetail.특채등록.특채수량}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border px-4 py-2 bg-gray-200">특채수량중납품수량</td>
+                                        <td class="border px-4 py-2">{{specialdetail.특채등록.특채처리.특채수량중납품수량}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border px-4 py-2 bg-gray-200">특채수량중납품불가수량</td>
+                                        <td class="border px-4 py-2">
+                                            <script>
+                                                var result = {{ specialdetail.특채등록.특채수량 }} - {{ specialdetail.특채등록.특채처리.특채수량중납품수량 }};
+                                                document.write(result);
+                                            </script>
+                                        </td>
+                                    </tr>
+
+
+
+                            </table>
+                        </div>
+                        {%if specialdetail.특채등록.특채처리.특채반품%}
+                        <i class="fas fa-angle-down text-3xl"></i>
+                        <div>
+                            {%if specialdetail.process == "특채반품완료" %}
+                            {%if specialdetail.특채등록.특채처리.특채반품.작성자 == user%}
+
+                            <div class="flex my-2 justify-end">
+
+                                <div class="">
+                                    <a href="{%url "qualitycontrols:lowmetarialdeleteensure" specialdetail.특채등록.pk%}">
+                                        <div class="btn-link w-40 bg-red-800 ml-5 hover:font-bold">
+                                            특채반품삭제 </div>
+                                    </a>
+                                </div>
+                            </div>
+                            {%endif%}
+                            {%endif%}
+                            <table class="table-fixed text-sm">
+                                <thead>
+                                    <tr>
+                                        <th class="border border-r-0 bg-gray-400  py-2 w-56 text-right">
+                                            {{specialdetail.특채발행번호}}-
+                                        </th>
+                                        <th class="border border-l-0 bg-gray-400  py-2 w-56 text-left">특채처리</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="border px-4 py-2 bg-gray-200">특채수량</td>
+                                        <td class="border px-4 py-2">{{specialdetail.특채등록.특채수량}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border px-4 py-2 bg-gray-200">특채수량중납품수량</td>
+                                        <td class="border px-4 py-2">{{specialdetail.특채등록.특채처리.특채수량중납품수량}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border px-4 py-2 bg-gray-200">특채수량중납품불가수량</td>
+                                        <td class="border px-4 py-2">
+                                            <script>
+                                                var result = {{ specialdetail.특채등록.특채수량 }} - {{ specialdetail.특채등록.특채처리.특채수량중납품수량 }};
+                                                document.write(result);
+                                            </script>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border px-4 py-2 bg-gray-200">특채반품수량</td>
+                                        <td class="border px-4 py-2">
+                                            {{specialdetail.특채등록.특채처리.특채반품.특채반품수량}}
+                                        </td>
+                                    </tr>
+
+
+
+                            </table>
+                        </div>
+                        {%endif%}
+                        {%endif%}
+
+                    </div>
+
+                    {%endif%}
+
+
+                </div>
+            </div>
+
+
+        </div>
+        {%endblock main_contens %}

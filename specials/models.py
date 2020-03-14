@@ -86,6 +86,9 @@ class SpecialConductRegister(TimeStampedModel):
         "SpecialRegister", related_name="특채처리", on_delete=models.CASCADE
     )
     특채수량중납품수량 = models.IntegerField()
+    작성자 = models.ForeignKey(
+        users_models.User, related_name="특채처리", on_delete=models.SET_NULL, null=True
+    )
 
     class Meta:
         verbose_name = "특채처리"

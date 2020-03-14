@@ -199,4 +199,19 @@ urlpatterns = [
         views.specialconductregister,
         name="specialconductregister",
     ),
+    path(
+        "specialrejectdelete/<int:pk>/",
+        views.specialrejectdelete,
+        name="specialrejectdelete",
+    ),
+    path(
+        "specialrejectregister/<int:pk>/",
+        views.specialrejectregister,
+        name="specialrejectregister",
+    ),
+    path(
+        "specialconductlist/",
+        views.specialconductlist.as_view(),
+        name="specialconductlist",
+    ),
 ]

@@ -408,3 +408,21 @@ class specialconductregisterForm(forms.ModelForm):
         if code:
             self.is_bound = True
             return self.cleaned_data
+
+class specialrejectregisterForm(forms.ModelForm):
+    class Meta:
+        model = S_models.SpecialRejectRegister
+        fields = (
+            "특채반품수량",
+        )
+
+    def save(self, *arg, **kwargs):
+        partner = super().save(commit=False)
+        return partner
+
+    def clean(self):
+        self.is_bound = False
+        code = self.cleaned_data.get("특채반품수량")
+        if code:
+            self.is_bound = True
+            return self.cleaned_data

@@ -1417,10 +1417,84 @@ def specialconductregister(request, pk):
 
         messages.success(request, "특채처리 등록이 완료되었습니다.")
 
-
         return redirect(reverse("qualitycontrols:specialdetail", kwargs={"pk": pk}))
     return render(
         request,
         "qualitycontrols/specialconductregister.html",
         {"form": form, "specialregister": specialregister,},
     )
+
+
+def specialrejectdelete(request, pk):
+    conduct = S_models.SpecialRejectRegister.objects.get_or_none(pk=pk)
+    special = conduct.특채처리.특채.특채신청등록
+    pk = special.pk
+    conduct.delete()
+    messages.success(request, "특채반품이 삭제되었습니다.")
+    return redirect(reverse("qualitycontrols:specialdetail", kwargs={"pk": pk}))
+
+
+def specialrejectregister(request, pk):
+    user = request.user
+    specialconduct = S_models.SpecialConductRegister.objects.get_or_none(pk=pk)
+    pk = specialconduct.특채.특채신청등록.pk
+    specialregister = specialconduct.특채
+    num = specialregister.특채수량 - specialconduct.특채수량중납품수량
+
+    form = forms.specialrejectregisterForm(request.POST)
+    form.initial = {
+        "특채반품수량": num,
+    }
+    for field in form:
+        if field.name == "특채반품수량":
+            field.add_help_text = f"특채수량 중 납품불가수량은 {num}입니다."
+
+    if form.is_valid():
+        특채반품수량 = form.cleaned_data.get("특채반품수량")
+        SM = S_models.SpecialRejectRegister.objects.create(
+            특채반품수량=특채반품수량, 특채처리=specialconduct, 작성자=user,
+        )
+
+        messages.success(request, "특채반품 등록이 완료되었습니다.")
+
+        return redirect(reverse("qualitycontrols:specialdetail", kwargs={"pk": pk}))
+    return render(
+        request,
+        "qualitycontrols/specialrejectregister.html",
+        {"form": form, "specialconduct": specialconduct,},
+    )
+
+
+class specialconductlist(core_views.onelist):
+    templatename = "qualitycontrols/specialconductlist.html"
+
+    def get_first_queryset(self, request):
+        self.search = request.GET.get("search")
+        if self.search is None:
+            materialchecklist = S_models.SpecialConductRegister.objects.all().order_by(
+                "-created"
+            )
+            queryset = []
+            for s in materialchecklist:
+                try:
+                    s.특채반품
+                except:
+                    queryset.append(s)
+            self.s_bool = False
+        else:
+            self.s_bool = True
+            materialchecklist = S_models.SpecialConductRegister.objects.filter(
+                Q(특채__특채신청등록__특채발행번호__contains=self.search)
+                | Q(특채__특채신청등록__제품__모델코드__contains=self.search)
+                | Q(특채__특채신청등록__제품__모델명__contains=self.search)
+                | Q(특채__특채신청등록__수주__수주코드__contains=self.search)
+                | Q(특채__특채신청등록__고객사__거래처명__contains=self.search)
+                | Q(작성자__first_name__contains=self.search)
+            ).order_by("-created")
+            queryset = []
+            for s in materialchecklist:
+                try:
+                    s.특채반품
+                except:
+                    queryset.append(s)
+        return queryset

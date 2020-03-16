@@ -80,8 +80,12 @@
                                         </div>
                                         {%else%}
                                         <div
-                                            class=" {%if field.name not in seletelist %} border hover:border-gray-500 w-full {%endif%} ">
-                                            {{field}}</div>
+                                            class=" flex {%if field.name not in seletelist %} border hover:border-gray-500 w-full {%endif%} ">
+                                            {% if field.name == "출하희망일" %}
+                                            <input type="text" name="출하희망일" id="date3" size="10" />
+                                            {% else %}
+                                            {{field}}
+                                            {% endif %}</div>
 
 
 
@@ -108,7 +112,7 @@
                     </div>
                     <div class=" flex flex-row justify-around -mx-12">
                         <button class="btn-link bg-blue-800 text-white w-9/12 h-12 self-center my-3 pt-0 pb-1">
-                            <div class="text-base font-medium">AS수리의뢰 등록</div>
+                            <div class="text-base font-medium">단품출하요청</div>
                         </button> </div>
                 </form>
             </div>

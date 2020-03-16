@@ -150,7 +150,7 @@
             {%if orderfinalboolean%}
             {%else%}
             <div class="flex justify-end">
-                <div class="flex flex-row">
+                <div class="flex flex-row pb-2">
                     <div class="">
                         <a href="{%url "producemanages:produceplanupdate" order.생산요청.생산계획.pk%}">
                             <div class="btn-link bg-teal-800 hover:font-bold">
@@ -465,10 +465,13 @@
                                         출하요청철회
                                     </div>
                             </div>
+                            </a>
                             {%else%}
                             <span class="text-red-700">이미 출하완료되었습니다.</span>
                             {%endif%}
-                            </a>{%endif%}
+                            {%else%}
+                            <span class="text-red-700">본인 수주가 아닙니다.</span>
+                            {%endif%}
                         </td>
                     </tr>
                     {%endfor%}
@@ -530,7 +533,8 @@
                             {%else%}
                             <span class="text-red-700">이미 출하완료되었습니다.</span>
                             {%endif%}
-                            </a>
+                            {%else%}
+                            <span class="text-red-700">본인 수주가 아닙니다.</span>
                             {%endif%}
                         </td>
                     </tr>

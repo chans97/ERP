@@ -1,6 +1,7 @@
 from django import forms
 from . import models
 from users.models import User
+from StandardInformation import models as SI_models
 
 
 class UploadPartnerForm(forms.ModelForm):
@@ -181,3 +182,52 @@ class UploadRackMaterialForm(forms.Form):
         else:
             self.cleaned_data["랙구성자재"] = material
             return self.cleaned_data
+
+
+class UploadmaterialForm(forms.ModelForm):
+
+    자재공급업체 = forms.CharField(max_length=20)
+
+    class Meta:
+        model = models.Material
+        fields = (
+            "자재코드",
+            "품목",
+            "자재품명",
+            "규격",
+            "단위",
+            "단가",
+            "특이사항",
+        )
+        help_texts = {
+            "자재코드": "*자재코드 앞에 MT를 붙여주시길 바랍니다.(한 번 설정하면, 바꿀 수 없습니다.)",
+            "단가": "*단가는 '원'을 제외하고 숫자만 입력해주시길 바랍니다. ",
+        }
+        widgets = {
+            "단위": forms.RadioSelect(),
+            "품목": forms.RadioSelect(),
+        }
+
+    def clean(self):
+        자재공급업체 = self.cleaned_data.get("자재공급업체")
+        customer = SI_models.SupplyPartner.objects.get_or_none(거래처코드=자재공급업체)
+        code = self.cleaned_data.get("자재코드", "123")
+        single = models.Material.objects.filter(자재코드=code)
+        single = list(single)
+        if (code == "") or (code == "123"):
+            self.is_bound = False
+
+        code = code[0:2]
+        if single:
+            self.add_error("자재코드", forms.ValidationError("*해당 자재코드는 이미 존재합니다."))
+        elif code != "MT":
+            self.add_error("자재코드", forms.ValidationError("*단품 자재코드는 MT로 시작해야 합니다."))
+        elif customer is None:
+            self.add_error("자재공급업체", forms.ValidationError("*해당 공급사를 찾을 수 없습니다."))
+        else:
+            self.cleaned_data["자재공급업체"] = customer
+            return self.cleaned_data
+
+    def save(self, *arg, **kwargs):
+        single = super().save(commit=False)
+        return single

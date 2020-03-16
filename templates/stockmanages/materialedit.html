@@ -1,0 +1,84 @@
+{%extends "stockmanages/stockmanageshome.html"%}
+{% block page_title%}
+자재수정
+{%endblock%}
+
+
+{%block head_title%}
+</a><i class="fas fa-angle-right mx-1 text-base"></i>자재기준정보<i class="fas fa-angle-right text-base mx-1"></i>
+자재수정</div>
+{%endblock head_title %}
+
+
+{%block main_contens%}
+<div class="w-11/12 h-full ml-32 -mt-6 font-normal pt-12 flex flex-row">
+
+    <div class="flex flex-col p-6 w-full">
+        <span class="border-b w-1/3 mb-3 border-gray-600 pb-2 font-semibold text-base">자재 수정 </span>
+
+        <form method="POST" class="w-full" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class=" flex flex-col px-12">
+
+
+
+
+                <div class="w-1/2  flex flex-col">
+                    <table class="table-fixed text-sm w-full">
+                        <thead>
+                            <tr>
+                                <th class="border border-r-0 bg-gray-200 px-4 py-2 w-32"></th>
+                                <th class="border border-l-0 bg-gray-200 px-4 py-2 w-56 text-left">자재등록</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for field in form %}
+                            <tr>
+                                {%if field.name != "자재공급업체"%}
+                                <td class="border border-gray-400 px-4 py-2">
+                                    {{field.name}}
+                                </td>
+                                <td class="border border-gray-400 px-4 py-2">
+
+
+                                    <div class=" border hover:border-gray-500 w-full flex">
+                                        {% if field.name == "자재일자" %}
+                                        <input type="text" name="자재일자" id="date2" size="10" />
+                                        {%elif field.name == "납품요청일"%}
+                                        <input type="text" name="납품요청일" id="date3" size="10" />
+                                        {% else %}
+                                        {{field}}
+                                        {% endif %}
+
+
+                                    </div>
+                                    <div class="text-xs text-green-700 ">
+
+                                        {{field.help_text}}
+                                    </div>
+                                    {% if field.errors %}
+                                    {% for error in field.errors %}
+                                    <div class="text-red-700 font-light text-xs">*{{error}}</div>
+                                    {% endfor %}
+                                    {% endif %}
+
+                                </td>
+                                {%endif%}
+                            </tr>
+                            {%endfor%}
+                        </tbody>
+                    </table>
+
+                    <div class=" flex flex-row justify-around -mx-12">
+                        <button class="btn-link bg-blue-800 text-white w-64 h-12 self-center my-3 pt-0 pb-1">
+                            <div class="text-base font-medium">자재 수정</div>
+                        </button>
+        </form>
+    </div>
+</div>
+</div>
+</form>
+</div>
+
+</div>
+{%endblock main_contens %}

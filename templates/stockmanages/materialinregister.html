@@ -51,8 +51,13 @@
                                     <td class="border border-gray-400 px-4 py-2">
 
                                         <div
-                                            class="  {%if field.name not in seletelist %} border hover:border-gray-500 w-full {%endif%} ">
-                                            {{field}}</div>
+                                            class=" flex {%if field.name not in seletelist %} border hover:border-gray-500 w-full {%endif%} ">
+                                            {% if field.name == "입고일" %}
+
+                                            <input type="text" name="입고일" id="date2" size="10" />
+
+                                            {%else%}
+                                            {{field}}{% endif %}</div>
                                         <div class="text-xs text-green-700 ">
 
                                             {{field.help_text}}

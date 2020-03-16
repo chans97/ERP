@@ -21,6 +21,7 @@ class ASRegisterForm(forms.ModelForm):
             "대응유형",
             "의뢰자전화번호",
             "방문요청일",
+            "현장명",
         )
         help_texts = {
             "접수번호": "*최종검사코드 앞에 AR을 붙여주시길 바랍니다.(한 번 설정하면, 바꿀 수 없습니다.)",
@@ -34,6 +35,7 @@ class ASRegisterForm(forms.ModelForm):
         }
 
     def clean(self):
+        self.is_bound = False
         code = self.cleaned_data.get("접수번호")
         codep = self.cleaned_data.get("의뢰처")
         partner = models.ASRegisters.objects.filter(접수번호=code)
@@ -41,6 +43,7 @@ class ASRegisterForm(forms.ModelForm):
         의뢰처 = models.SI_models.CustomerPartner.objects.get_or_none(거래처코드=codep)
 
         if code:
+            self.is_bound = True
             code = code[0:2]
             if partner:
                 self.add_error("접수번호", forms.ValidationError("*해당 접수번호는 이미 존재합니다."))

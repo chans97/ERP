@@ -158,7 +158,23 @@ def materialcheckrequest(request):
         ).order_by("-created")
         material = qs
 
+    def give_number():
+        while True:
+            n = randint(1, 999999)
+            num = str(n).zfill(6)
+            code = "MC" + num
+            obj = QC_models.MaterialCheckRegister.objects.get_or_none(수입검사의뢰코드=code)
+            if obj:
+                pass
+            else:
+                return code
+
     form = forms.materialcheckrequest(request.POST)
+    code = give_number()
+    form.initial = {
+        "수입검사의뢰코드": code,
+    }
+
     seletelist = [
         "불량분류",
     ]
@@ -1065,11 +1081,11 @@ class singleStandarInformation(core_views.onelist):
         else:
             self.s_bool = True
             queryset = SI_models.SingleProduct.objects.filter(
-                Q(모델코드=self.search)
+                Q(모델코드__contains=self.search)
                 | Q(모델명__contains=self.search)
-                | Q(규격=self.search)
-                | Q(단위=self.search)
-                | Q(작성자__first_name=self.search)
+                | Q(규격__contains=self.search)
+                | Q(단위__contains=self.search)
+                | Q(작성자__first_name__contains=self.search)
             ).order_by("-created")
         return queryset
 
@@ -1220,3 +1236,150 @@ def deletematerialofsingle(request, pk, m_pk):
     materialofsingle = SI_models.SingleProductMaterial.objects.get(pk=m_pk)
     materialofsingle.delete()
     return redirect(reverse("stockmanages:singlematerial", kwargs={"pk": pk}))
+
+
+class materialStandarInformation(core_views.onelist):
+    templatename = "stockmanages/materialStandarInformation.html"
+
+    def get_first_queryset(self, request):
+        user = self.request.user
+        self.search = request.GET.get("search")
+        if self.search is None:
+            queryset = SI_models.Material.objects.all().order_by("-created")
+
+            self.s_bool = False
+        else:
+            self.s_bool = True
+            queryset = SI_models.Material.objects.filter(
+                Q(자재코드__contains=self.search)
+                | Q(품목__contains=self.search)
+                | Q(규격__contains=self.search)
+                | Q(단위__contains=self.search)
+                | Q(자재품명__contains=self.search)
+                | Q(자재공급업체__거래처명__contains=self.search)
+            ).order_by("-created")
+        return queryset
+
+
+def materialregister(request):
+    def give_number():
+        while True:
+            start_code = "MT"
+            n = randint(1, 999999)
+            num = str(n).zfill(6)
+            code = start_code + num
+            obj = SI_models.Material.objects.get_or_none(자재코드=code)
+            if obj:
+                pass
+            else:
+                return code
+
+    form = SI_forms.UploadmaterialForm(request.POST)
+    code = give_number()
+    form.initial = {
+        "자재코드": code,
+    }
+
+    search = request.GET.get("search")
+    if search is None:
+        customer = SI_models.SupplyPartner.objects.all().order_by("-created")
+        s_bool = False
+    else:
+        s_bool = True
+        qs = SI_models.SupplyPartner.objects.filter(
+            Q(공급처작성자__first_name=search)
+            | Q(거래처구분=search)
+            | Q(거래처코드=search)
+            | Q(거래처명__contains=search)
+            | Q(공급처담당자__first_name=search)
+            | Q(사업장주소__contains=search)
+        ).order_by("-created")
+        customer = qs
+
+    if form.is_valid():
+        material = form.save()
+        material.자재공급업체 = form.cleaned_data.get("자재공급업체")
+        material.작성자 = request.user
+        material.save()
+        form.save_m2m()
+
+        messages.success(request, "자재 기준정보가 등록되었습니다.")
+        return redirect(reverse("stockmanages:materialStandarInformation"))
+    pagediv = 10
+    totalpage = int(math.ceil(len(customer) / pagediv))
+    paginator = Paginator(customer, pagediv, orphans=0)
+    page = request.GET.get("page", "1")
+    customer = paginator.get_page(page)
+    nextpage = int(page) + 1
+    previouspage = int(page) - 1
+    notsamebool = True
+    seletelist = ["단위", "품목"]
+    if int(page) == totalpage:
+        notsamebool = False
+    if (search is None) or (search == ""):
+        search = "search"
+
+    return render(
+        request,
+        "stockmanages/materialregister.html",
+        {
+            "customer": customer,
+            "form": form,
+            "search": search,
+            "page": page,
+            "totalpage": totalpage,
+            "notsamebool": notsamebool,
+            "nextpage": nextpage,
+            "previouspage": previouspage,
+            "s_bool": s_bool,
+            "seletelist": seletelist,
+        },
+    )
+
+
+class MaterialDetialView(user_mixins.LoggedInOnlyView, DetailView):
+    model = SI_models.Material
+
+    def get(self, request, *args, **kwargs):
+        pk = kwargs["pk"]
+        material = SI_models.Material.objects.get_or_none(pk=pk)
+        user = request.user
+        return render(
+            request,
+            "stockmanages/materialdetail.html",
+            {"material": material, "user": user,},
+        )
+
+
+class materialedit(user_mixins.LoggedInOnlyView, UpdateView):
+    model = SI_models.Material
+    fields = (
+        "품목",
+        "자재품명",
+        "규격",
+        "단위",
+        "단가",
+        "특이사항",
+    )
+    template_name = "stockmanages/materialedit.html"
+
+    def get_success_url(self):
+        pk = self.kwargs.get(self.pk_url_kwarg)
+        return reverse("stockmanages:materialdetail", kwargs={"pk": pk})
+
+
+def materialdeleteensure(request, pk):
+
+    material = SI_models.Material.objects.get_or_none(pk=pk)
+    return render(
+        request, "stockmanages/materialdeleteensure.html", {"material": material},
+    )
+
+
+def materialdelete(request, pk):
+    material = SI_models.Material.objects.get_or_none(pk=pk)
+    material.delete()
+
+    messages.success(request, "해당 자재가 삭제되었습니다.")
+
+    return redirect(reverse("stockmanages:materialStandarInformation"))

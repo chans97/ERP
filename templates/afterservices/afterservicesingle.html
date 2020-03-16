@@ -32,6 +32,7 @@ AS접수<i class="fas fa-angle-right text-base mx-1"></i>단품등록
                 <table class="table-fixed font-light text-xs w-full">
                     <thead>
                         <tr>
+                            <th class="border bg-gray-200 px-1 py-2 w-12">선택</th>
                             <th class="border bg-gray-200 px-4 py-2 w-32">모델코드</th>
                             <th class="border bg-gray-200 px-4 py-2 w-32">모델명</th>
                             <th class="border bg-gray-200 px-4 py-2 w-32">규격</th>
@@ -42,6 +43,12 @@ AS접수<i class="fas fa-angle-right text-base mx-1"></i>단품등록
                     <tbody>
                         {%for list in customer%}
                         <tr>
+                            <td class="border px-4 py-2 text-center">
+                                <label for="id_의뢰처_0"><input type="radio" name="모델코드" value={{list.모델코드}} required=""
+                                        id="id_의뢰처_0" onclick="radio_chk();">
+                                </label>
+
+                            </td>
                             <td class="border px-4 py-2 hover:text-blue-700">
                                 {{list.모델코드}}</td>
                             <td class="border px-4 py-2 font-medium hover:text-blue-700 hover:font-bold"><a
@@ -102,7 +109,10 @@ AS접수<i class="fas fa-angle-right text-base mx-1"></i>단품등록
                                     <td class="border border-gray-400 px-4 py-2">
 
                                         <div class="  border hover:border-gray-500 w-full ">
-                                            {{field}}</div>
+
+                                            <input type="text" name="단품모델코드" size="12" maxlength="20" required=""
+                                                id="모델코드">
+                                        </div>
                                         <div class="text-xs text-green-700 ">
 
                                             {{field.help_text}}
@@ -123,11 +133,30 @@ AS접수<i class="fas fa-angle-right text-base mx-1"></i>단품등록
                     <div class=" flex flex-row justify-around -mx-12">
                         <button class="btn-link bg-blue-800 text-white w-9/12 h-12 self-center my-3 pt-0 pb-1">
                             <div class="text-base font-medium">입력완료</div>
-                        </button </div>
+                        </button>
                 </form>
+                <script>
+                    function radio_chk() {
+                        var radio_btn = document.getElementsByName("모델코드");
+                        var radio_btn_check = 0;
+                        for (var i = 0; i < radio_btn.length; i++) {
+                            if (radio_btn[i].checked == true) {
+                                radio_btn_check++;
+                                document.getElementById("모델코드").value = radio_btn[i].value;
+                            }
+                        }
+                        if (radio_btn_check == 0) {
+                            document.getElementById("모델코드").value = "선택해주세요.";
+                        }
+                    }
+                </script>
             </div>
+
         </div>
     </div>
 </div>
-</div>
+
+
+
+
 {%endblock main_contens %}

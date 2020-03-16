@@ -53,11 +53,37 @@
                                 {%for list in queryset%}
                                 <tr>
                                     <td class="border px-4 py-2">
-                                        {{list.rackstock}}</td>
+
+                                        {% if list.rackstock ==  100000000000 %}
+                                        <div class="text-red-700">
+                                            오류</div>
+                                        <div class="text-red-700"> (재고미입력)
+                                        </div>
+                                        {%else%}
+                                        {{list.rackstock}}
+                                        {% endif %}
+
+                                    </td>
                                     <td class="border px-4 py-2">
-                                        {{list.rackstockincludeexception}}</td>
+                                        {% if list.rackstockincludeexception ==  100000000000 %}
+                                        <div class="text-red-700">
+                                            오류</div>
+                                        <div class="text-red-700"> (재고미입력)
+                                        </div>
+                                        {%else%}
+                                        {{list.rackstockincludeexception}}
+                                        {% endif %}
+                                    </td>
                                     <td class="border px-4 py-2">
-                                        {{list.rackstockexcludeexception}}</td>
+                                        {% if list.rackstockexcludeexception ==  100000000000 %}
+                                        <div class="text-red-700">
+                                            오류</div>
+                                        <div class="text-red-700"> (재고미입력)
+                                        </div>
+                                        {%else%}
+                                        {{list.rackstockexcludeexception}}
+                                        {% endif %}
+                                    </td>
                                     <td class="border px-4 py-2 hover:font-bold hover:text-blue-700">
                                         <a href="{%url "stockmanages:informationforrack" list.pk %}">
 

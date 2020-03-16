@@ -30,57 +30,68 @@ AS접수
 
             </form>
         </div>
-        <div class="flex ">
-            <div class="flew flex-col">
-                <table class="table-fixed font-light text-xs w-full">
-                    <thead>
-                        <tr>
-                            <th class="border bg-gray-200 px-4 py-2 w-24">거래처코드</th>
-                            <th class="border bg-gray-200 px-4 py-2 w-40">거래처명</th>
-                            <th class="border bg-gray-200 px-4 py-2 w-48">사업장주소</th>
-                            <th class="border bg-gray-200 px-4 py-2 w-24">고객작성자</th>
-                            <th class="border bg-gray-200 px-4 py-2 w-24">고객담당자</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {%for list in customer%}
-                        <tr>
-                            <td class="border px-4 py-2 hover:text-blue-700">
-                                {{list.거래처코드}}</td>
-                            <td class="border px-4 py-2">{{list.거래처명}}</td>
-                            <td class="border px-4 py-2">{{list.사업장주소}}</td>
-                            <td class="border px-4 py-2">{{list.고객작성자}}</td>
-                            <td class="border px-4 py-2">{{list.고객담당자}}</td>
-                        </tr>
-                        {%endfor%}
+        <form method="POST" class="w-full flex flex-col justify-center" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="flex ">
+                <div class="flew flex-col">
+                    <table class="table-fixed font-light text-xs w-full">
+                        <thead>
+                            <tr>
+                                <th class="border bg-gray-200 px-1 py-2 w-12">선택</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-24">거래처코드</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-40">거래처명</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-48">사업장주소</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-24">고객작성자</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-24">고객담당자</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ul id="id_의뢰처">
+                                {%for list in customer%}
+                                <tr>
+                                    <td class="border px-4 py-2 text-center">
+                                        <label for="id_의뢰처_0"><input type="radio" name="의뢰처" value={{list.거래처코드}}
+                                                required="" id="id_의뢰처_0">
+                                        </label>
 
-                    </tbody>
-                </table>
-                <div class="flex ml-2">
-                    {% if page != '1' %}
-                    {%if s_bool%}
-                    <a href="?search={{search}}&page={{previouspage}}" class="text-teal-700"><i
-                            class="fas fa-arrow-left fa-lg mt-2"></i></a>
-                    {%else%}
-                    <a href="?page={{previouspage}}" class="text-teal-700"><i
-                            class="fas fa-arrow-left fa-lg mt-2"></i></a>
-                    {% endif %}{% endif %}
-                    <span class="mx-3 font-medium  text-base">{{page}} of
-                        {{totalpage}}</span>
+                                    </td>
+                                    <td class="border px-4 py-2 hover:text-blue-700">
+                                        {{list.거래처코드}}</td>
+                                    <td class="border px-4 py-2">{{list.거래처명}}</td>
+                                    <td class="border px-4 py-2">{{list.사업장주소}}</td>
+                                    <td class="border px-4 py-2">{{list.고객작성자}}</td>
+                                    <td class="border px-4 py-2">{{list.고객담당자}}</td>
+                                </tr>
+                                {%endfor%}
+                            </ul>
 
-                    {% if notsamebool %}
-                    {%if s_bool%}
-                    <a href="?search={{search}}&page={{nextpage}}" class="text-teal-700"><i
-                            class="fas fa-arrow-right fa-lg mt-2"></i></a>
-                    {%else%}
-                    <a href="?page={{nextpage}}" class="text-teal-700"><i class="fas fa-arrow-right fa-lg mt-2"></i></a>
-                    {% endif %}{% endif %}
+                        </tbody>
+                    </table>
+                    <div class="flex ml-2">
+                        {% if page != '1' %}
+                        {%if s_bool%}
+                        <a href="?search={{search}}&page={{previouspage}}" class="text-teal-700"><i
+                                class="fas fa-arrow-left fa-lg mt-2"></i></a>
+                        {%else%}
+                        <a href="?page={{previouspage}}" class="text-teal-700"><i
+                                class="fas fa-arrow-left fa-lg mt-2"></i></a>
+                        {% endif %}{% endif %}
+                        <span class="mx-3 font-medium  text-base">{{page}} of
+                            {{totalpage}}</span>
+
+                        {% if notsamebool %}
+                        {%if s_bool%}
+                        <a href="?search={{search}}&page={{nextpage}}" class="text-teal-700"><i
+                                class="fas fa-arrow-right fa-lg mt-2"></i></a>
+                        {%else%}
+                        <a href="?page={{nextpage}}" class="text-teal-700"><i
+                                class="fas fa-arrow-right fa-lg mt-2"></i></a>
+                        {% endif %}{% endif %}
+                    </div>
                 </div>
-            </div>
-            <div class=" flex flex-col px-12 justify-center items-center">
+                <div class=" flex flex-col px-12 justify-center items-center">
 
-                <form method="POST" class="w-full flex flex-col justify-center" enctype="multipart/form-data">
-                    {% csrf_token %}
+
 
 
                     <div class="w-full justify-center flex flex-col">
@@ -96,14 +107,26 @@ AS접수
                             <tbody>
                                 {% for field in form %}
                                 <tr>
+
+                                    {% if field.name == "의뢰처" %}
+                                    {%else%}
+
+
+
                                     <td class="border border-gray-400 px-4 py-2">
                                         {{field.name}}
                                     </td>
                                     <td class="border border-gray-400 px-4 py-2">
 
                                         <div
-                                            class="  {%if field.name not in seletelist %} border hover:border-gray-500 w-full {%endif%} ">
-                                            {{field}}</div>
+                                            class="flex  {%if field.name not in seletelist %} border hover:border-gray-500 w-full {%endif%} ">
+                                            {% if field.name == "접수일" %}
+                                            <input type="text" name="접수일" id="date2" size="10" />
+                                            {%elif field.name == "방문요청일"%}
+                                            <input type="text" name="방문요청일" id="date3" size="10" />
+                                            {% else %}
+                                            {{field}}
+                                            {% endif %}</div>
                                         <div class="text-xs text-green-700 ">
 
                                             {{field.help_text}}
@@ -115,20 +138,21 @@ AS접수
                                         {% endif %}
 
                                     </td>
+                                    {% endif %}
                                 </tr>
                                 {%endfor%}
                             </tbody>
                         </table>
                     </div>
                     <div class=" flex flex-row justify-around -mx-12">
-                        <button class="btn-link bg-blue-800 text-white w-9/12 h-12 self-center my-3 pt-0 pb-1">
+                        <button class="btn-link bg-blue-800 text-white w-full px-4 h-12 self-center my-3 pt-0 pb-1">
                             <div class="text-base font-medium">단품/랙 입력하기</div>
                         </button> </div>
-                </form>
-            </div>
-
-        </div>
+        </form>
     </div>
+
+</div>
+</div>
 </div>
 </div>
 {%endblock main_contens %}

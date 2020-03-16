@@ -74,8 +74,12 @@
 
                                     <td class="border px-4 py-2">
                                         <div
-                                            class="{%if field.name == 긴급도%}{%else%}border{%endif%} hover:border-gray-500 w-full">
-                                            {{field}}</div>
+                                            class="flex {%if field.name == 긴급도%}{%else%}border{%endif%} hover:border-gray-500 w-full">
+                                            {% if field.name == "출하희망일" %}
+                                            <input type="text" name="출하희망일" id="date3" size="10" />
+                                            {% else %}
+                                            {{field}}
+                                            {% endif %}</div>
                                         <div class="text-xs text-teal-700">{{field.help_text}}
 
                                         </div>
@@ -90,7 +94,7 @@
 
                             </tbody>
                         </table>
-                        <span class="text-sm text-red-700 ml-4">*출하요청수량은 출하요청제외수량보다 많을 수 없습니다.</span>
+                        <span class="text-sm text-red-700 ml-4">*출하요청수량은 출하예정제외수량보다 많을 수 없습니다.</span>
                     </div>
 
                     <button class="btn-link felx mt-5 h-10 w-2/4   ml-20">

@@ -28,7 +28,8 @@ from django.http import HttpResponse
 import math
 from StandardInformation import models as SI_models
 from stocksingle import models as SS_models
-from stockrack import models as SM_models
+from stockrack import models as SR_models
+from stockmanages import models as SM_models
 from orders import models as OR_models
 from django.utils import timezone
 from qualitycontrols import models as QC_models
@@ -83,7 +84,7 @@ class OrderDetail(user_mixins.LoggedInOnlyView, DetailView):
             rpk.append(orderr.pk)
         orderrack = []
         for pki in rpk:
-            SS = SM_models.StockOfRackProductOutRequest.objects.get_or_none(pk=pki)
+            SS = SR_models.StockOfRackProductOutRequest.objects.get_or_none(pk=pki)
             orderrack.append(SS)
         try:
             order.생산요청.생산계획.작업지시서
@@ -168,7 +169,117 @@ def finalcheckregister(request, pk):
     user = request.user
     finalcheck = QC_models.FinalCheck.objects.get_or_none(pk=pk)
 
+    def give_number():
+        while True:
+            n = randint(1, 999999)
+            num = str(n).zfill(6)
+            code = "FC" + num
+            obj = models.FinalCheckRegister.objects.get_or_none(최종검사코드=code)
+            if obj:
+                pass
+            else:
+                return code
+
     form = forms.FinalCheckRegisterForm(request.POST)
+    code = give_number()
+    form.initial = {
+        "최종검사코드": code,
+    }
+
+    if form.is_valid():
+        최종검사코드 = form.cleaned_data.get("최종검사코드")
+        검시일 = form.cleaned_data.get("검시일")
+        CR = form.cleaned_data.get("CR")
+        MA = form.cleaned_data.get("MA")
+        MI = form.cleaned_data.get("MI")
+        검사수준 = form.cleaned_data.get("검사수준")
+        Sample방식 = form.cleaned_data.get("Sample방식")
+        결점수 = form.cleaned_data.get("결점수")
+        전원전압 = form.cleaned_data.get("전원전압")
+        POWERTRANS = form.cleaned_data.get("POWERTRANS")
+        FUSE_전_ULUSA = form.cleaned_data.get("FUSE_전_ULUSA")
+        LABEL_인쇄물 = form.cleaned_data.get("LABEL_인쇄물")
+        기타출하위치 = form.cleaned_data.get("기타출하위치")
+        내용물 = form.cleaned_data.get("내용물")
+        포장검사 = form.cleaned_data.get("포장검사")
+        동작검사 = form.cleaned_data.get("동작검사")
+        내부검사 = form.cleaned_data.get("내부검사")
+        외관검사 = form.cleaned_data.get("외관검사")
+        내압검사 = form.cleaned_data.get("내압검사")
+        내용물확인 = form.cleaned_data.get("내용물확인")
+        가_감전압 = form.cleaned_data.get("가_감전압")
+        HI_POT_내부검사 = form.cleaned_data.get("HI_POT_내부검사")
+        REMARK = form.cleaned_data.get("REMARK")
+        부적합수량 = form.cleaned_data.get("부적합수량")
+        적합수량 = form.cleaned_data.get("적합수량")
+        if 검시일 is None:
+            검시일 = timezone.now().date()
+
+        SM = models.FinalCheckRegister.objects.create(
+            최종검사의뢰=finalcheck,
+            검시자=user,
+            제품=finalcheck.제품,
+            최종검사코드=최종검사코드,
+            검시일=검시일,
+            CR=CR,
+            MA=MA,
+            MI=MI,
+            검사수준=검사수준,
+            Sample방식=Sample방식,
+            결점수=결점수,
+            전원전압=전원전압,
+            POWERTRANS=POWERTRANS,
+            FUSE_전_ULUSA=FUSE_전_ULUSA,
+            LABEL_인쇄물=LABEL_인쇄물,
+            기타출하위치=기타출하위치,
+            내용물=내용물,
+            포장검사=포장검사,
+            동작검사=동작검사,
+            내부검사=내부검사,
+            외관검사=외관검사,
+            내압검사=내압검사,
+            내용물확인=내용물확인,
+            가_감전압=가_감전압,
+            HI_POT_내부검사=HI_POT_내부검사,
+            REMARK=REMARK,
+            부적합수량=부적합수량,
+            적합수량=적합수량,
+        )
+        SS_models.StockOfSingleProductInRequest.objects.create(
+            단품=finalcheck.제품, 입고요청수량=적합수량, 입고요청자=user, 입고요청일=timezone.now().date(),
+        )
+
+        messages.success(request, "최종검사 등록이 완료되었습니다.(단품입고요청 자동완료)")
+
+        return redirect(reverse("qualitycontrols:finalchecklist"))
+    return render(
+        request,
+        "qualitycontrols/finalcheckregister.html",
+        {"form": form, "finalcheck": finalcheck,},
+    )
+
+
+def finalcheckregisternotin(request, pk):
+
+    user = request.user
+    finalcheck = QC_models.FinalCheck.objects.get_or_none(pk=pk)
+
+    def give_number():
+        while True:
+            n = randint(1, 999999)
+            num = str(n).zfill(6)
+            code = "FC" + num
+            obj = models.FinalCheckRegister.objects.get_or_none(최종검사코드=code)
+            if obj:
+                pass
+            else:
+                return code
+
+    form = forms.FinalCheckRegisterForm(request.POST)
+    code = give_number()
+    form.initial = {
+        "최종검사코드": code,
+    }
 
     if form.is_valid():
         최종검사코드 = form.cleaned_data.get("최종검사코드")
@@ -492,7 +603,22 @@ def materialcheckregister(request, pk):
     user = request.user
     materialcheck = QC_models.MaterialCheckRegister.objects.get_or_none(pk=pk)
 
+    def give_number():
+        while True:
+            n = randint(1, 999999)
+            num = str(n).zfill(6)
+            code = "MR" + num
+            obj = models.MaterialCheck.objects.get_or_none(수입검사코드=code)
+            if obj:
+                pass
+            else:
+                return code
+
     form = forms.MaterialCheckRegisterForm(request.POST)
+    code = give_number()
+    form.initial = {
+        "수입검사코드": code,
+    }
 
     if form.is_valid():
         수입검사코드 = form.cleaned_data.get("수입검사코드")
@@ -522,7 +648,15 @@ def materialcheckregister(request, pk):
             불합격내용=불합격내용,
         )
 
-        messages.success(request, "수입검사 등록이 완료되었습니다.")
+        SM_models.StockOfMaterialInRequest.objects.create(
+            자재=materialcheck.자재,
+            입고요청수량=합격수량,
+            입고요청자=user,
+            입고요청일=timezone.now().date(),
+            입고유형="일반",
+        )
+
+        messages.success(request, "수입검사 등록이 완료되었습니다.(자재입고요청 완료)")
 
         return redirect(reverse("qualitycontrols:materialchecklist"))
     return render(
@@ -576,7 +710,23 @@ class lowmateriallist(core_views.onelist):
 def lowmaterialregister(request, pk):
     user = request.user
     materialcheck = QC_models.MaterialCheck.objects.get_or_none(pk=pk)
+
+    def give_number():
+        while True:
+            n = randint(1, 999999)
+            num = str(n).zfill(6)
+            code = "LR" + num
+            obj = models.LowMetarial.objects.get_or_none(자재부적합코드=code)
+            if obj:
+                pass
+            else:
+                return code
+
     form = forms.LowMetarialRegisterForm(request.POST)
+    code = give_number()
+    form.initial = {
+        "자재부적합코드": code,
+    }
 
     if form.is_valid():
         자재부적합코드 = form.cleaned_data.get("자재부적합코드")

@@ -214,4 +214,10 @@ urlpatterns = [
         views.specialconductlist.as_view(),
         name="specialconductlist",
     ),
+    path(
+        "finalcheckregisternotin/<int:pk>/",
+        views.finalcheckregisternotin,
+        name="finalcheckregisternotin",
+    ),
+    
 ]

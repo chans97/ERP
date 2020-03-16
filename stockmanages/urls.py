@@ -140,4 +140,20 @@ urlpatterns = [
         views.deletematerialofsingle,
         name="deletematerialofsingle",
     ),
+    path(
+        "materialStandarInformation/",
+        views.materialStandarInformation.as_view(),
+        name="materialStandarInformation",
+    ),
+    path("materialregister/", views.materialregister, name="materialregister",),
+    path(
+        "materialdetail/<int:pk>/", views.MaterialDetialView.as_view(), name="materialdetail",
+    ),
+    path("materialedit/<int:pk>/", views.materialedit.as_view(), name="materialedit",),
+    path(
+        "materialdeleteensure/<int:pk>/",
+        views.materialdeleteensure,
+        name="materialdeleteensure",
+    ),
+    path("materialdelete/<int:pk>/", views.materialdelete, name="materialdelete",),
 ]

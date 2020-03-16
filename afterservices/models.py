@@ -41,6 +41,7 @@ class ASRegisters(TimeStampedModel):
     불량분류코드 = models.CharField(max_length=20, null=True,)
     불량분류 = models.CharField(choices=불량분류_CHOICES, max_length=10, default=사용법미숙지)
     접수제품분류 = models.CharField(choices=접수제품분류_CHOICES, max_length=10, default=단품)
+    현장명 = models.CharField(max_length=50, null=True,)
 
     단품 = models.ForeignKey(
         SI_models.SingleProduct,
@@ -196,6 +197,7 @@ class ASVisitContents(TimeStampedModel):
 
     def repair_count(self):
         return len(self.AS수리요청.all())
+
     def singleout_count(self):
         return len(self.단품출하요청.all())
 

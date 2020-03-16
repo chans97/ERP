@@ -118,7 +118,6 @@ class Partner(TimeStampedModel):
                 S.사용여부 = self.사용여부
                 S.save()
                 super().save(*args, **kwargs)
-
         else:
             super().save(*args, **kwargs)
 
@@ -218,7 +217,9 @@ class Material(TimeStampedModel):
         (부분품, "부분품"),
         (상품, "상품"),
     )
-
+    작성자 = models.ForeignKey(
+        "users.User", related_name="자재제품작성자", on_delete=models.SET_NULL, null=True
+    )
     자재코드 = models.CharField(max_length=60, blank=True)
     품목 = models.CharField(
         choices=품목_CHOICES, max_length=4, null=True, blank=True, default=자재

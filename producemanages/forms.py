@@ -28,10 +28,12 @@ class UploadProducePlanForm(forms.ModelForm):
         }
 
     def clean(self):
+        self.is_bound = False
         code = self.cleaned_data.get("생산계획등록코드")
         partner = models.ProduceRegister.objects.filter(생산계획등록코드=code)
         partner = list(partner)
         if code:
+            self.is_bound = True
             code = code[0:2]
             if partner:
                 self.add_error(
@@ -108,10 +110,12 @@ class UploadWorkOrderForm(forms.ModelForm):
         }
 
     def clean(self):
+        self.is_bound = False
         code = self.cleaned_data.get("작업지시코드")
         partner = models.WorkOrder.objects.filter(작업지시코드=code)
         partner = list(partner)
         if code:
+            self.is_bound = True
             code = code[0:2]
             if partner:
                 self.add_error("작업지시코드", forms.ValidationError("*해당 작업지시코드는 이미 존재합니다."))

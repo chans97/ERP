@@ -150,7 +150,7 @@
             {%if orderfinalboolean%}
             {%else%}
             <div class="flex justify-end">
-                <div class="flex flex-row">
+                <div class="flex flex-row mb-2">
                     <div class="">
                         <a href="{%url "producemanages:produceplanupdate" order.생산요청.생산계획.pk%}">
                             <div class="btn-link bg-teal-800 hover:font-bold">
@@ -207,7 +207,7 @@
             {%if orderfinalboolean%}
             {%else%}
             <div class="flex justify-end">
-                <div class="flex flex-row">
+                <div class="flex flex-row mb-2">
 
                     <div class=" w-full">
                         <a href="{%url "producemanages:workorderupdate" order.생산요청.생산계획.작업지시서.pk %}">
@@ -252,7 +252,7 @@
             {%if orderfinalboolean%}
             {%else%}
             <div class="flex justify-end">
-                <div class="flex flex-row">
+                <div class="flex flex-row mb-2">
 
                     <div class=" w-full">
                         <a href="{%url "producemanages:workorderupdate" order.생산요청.생산계획.작업지시서.pk %}">
@@ -301,7 +301,7 @@
             <div class="w-full flex justify-center"><i class="fas fa-caret-down text-3xl"></i> </div>
             {%if order.생산요청.생산계획.작업지시서.작업지시서등록.생산담당자 == user%}
             <div class="flex justify-end">
-                <div class="flex flex-row">
+                <div class="flex flex-row mb-2">
                     <div class="">
                         <a href="{%url "producemanages:workorderdeleteensure" order.생산요청.생산계획.작업지시서.pk %}">
                             <div class="btn-link w-32 bg-red-800 ml-5 hover:font-bold">
@@ -403,11 +403,14 @@
                                     <div class="btn-link bg-red-800 hover:font-bold mt-1 mb-0 ml-3 w-40">
                                         출하요청철회
                                     </div>
+                                </a>
                             </div>
                             {%else%}
                             <span class="text-red-700">이미 출하완료되었습니다.</span>
                             {%endif%}
-                            </a>{%endif%}
+                            {%else%}
+                            <span class="text-red-700">본인 수주가 아닙니다.</span>
+                            {%endif%}
                         </td>
                     </tr>
                     {%endfor%}
@@ -465,13 +468,14 @@
                                     <div class="btn-link bg-red-800 hover:font-bold mt-1 mb-0 ml-3 w-40">
                                         출하요청철회
                                     </div>
+                                </a>
                             </div>
                             {%else%}
                             <span class="text-red-700">이미 출하완료되었습니다.</span>
                             {%endif%}
-                            </a>
+                            {%else%}
+                            <span class="text-red-700">본인 수주가 아닙니다.</span>
                             {%endif%}
-                        </td>
                     </tr>
                     {%endfor%}
 

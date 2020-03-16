@@ -262,11 +262,14 @@
                                     <div class="btn-link bg-red-800 hover:font-bold mt-1 mb-0 ml-3 w-40">
                                         출하요청철회
                                     </div>
+                                </a>
                             </div>
                             {%else%}
                             <span class="text-red-700">이미 출하완료되었습니다.</span>
                             {%endif%}
-                            </a>{%endif%}
+                            {%else%}
+                            <span class="text-red-700">본인 수주가 아닙니다.</span>
+                            {%endif%}
                         </td>
                     </tr>
                     {%endfor%}
@@ -326,8 +329,10 @@
                             </div>
                             {%else%}
                             <span class="text-red-700">이미 출하완료되었습니다.</span>
-                            {%endif%}{%endif%}
-                            </a>
+                            {%endif%}
+                            {%else%}
+                            <span class="text-red-700">본인 수주가 아닙니다.</span>
+                            {%endif%}
                         </td>
                     </tr>
                     {%endfor%}

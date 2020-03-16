@@ -42,12 +42,17 @@
                                 <tr>
                                     <td class="border px-4 py-2 bg-gray-200 w-40">{{field.name}}</td>
                                     <td class="border px-4 py-2 w-48">
-                                        <div class="
+                                        <div class="flex 
                                         border
                                          hover:border-gray-500  w-full
                                         
                                         ">
-                                            {{field}}</div>
+                                            {% if field.name == "검사일자" %}
+
+                                            <input type="text" name="검사일자" id="date2" size="10" />
+
+                                            {%else%}
+                                            {{field}}{% endif %}</div>
                                         <div class="text-xs text-teal-700">{{field.help_text}}
                                         </div>
                                         {% if field.errors %}

@@ -34,6 +34,7 @@ from django.utils import timezone
 from qualitycontrols import models as QC_models
 from afterservices import models as AS_models
 from core import views as core_views
+from random import randint
 
 
 class afterserviceshome(core_views.twolist):
@@ -41,7 +42,22 @@ class afterserviceshome(core_views.twolist):
 
 
 def ASregister(request):
+    def give_number():
+        while True:
+            n = randint(1, 999999)
+            num = str(n).zfill(6)
+            code = "AR" + num
+            obj = AS_models.ASRegisters.objects.get_or_none(접수번호=code)
+            if obj:
+                pass
+            else:
+                return code
+
     form = forms.ASRegisterForm(request.POST)
+    code = give_number()
+    form.initial = {
+        "접수번호": code,
+    }
     search = request.GET.get("search")
     if search is None:
         customer = SI_models.CustomerPartner.objects.all().order_by("-created")
@@ -69,6 +85,7 @@ def ASregister(request):
         의뢰처 = form.cleaned_data.get("의뢰처")
         의뢰자전화번호 = form.cleaned_data.get("의뢰자전화번호")
         방문요청일 = form.cleaned_data.get("방문요청일")
+        현장명 = form.cleaned_data.get("현장명")
         if 접수일 is None:
             접수일 = timezone.now().date()
         SM = AS_models.ASRegisters.objects.create(
@@ -83,6 +100,7 @@ def ASregister(request):
             의뢰처=의뢰처,
             의뢰자전화번호=의뢰자전화번호,
             방문요청일=방문요청일,
+            현장명=현장명,
         )
 
         pk = SM.pk
@@ -1018,9 +1036,22 @@ def ASrepairrequestregister(request, pk):
 
 def ASrepairrequestregistersingle(request, pk):
     ASvisit = AS_models.ASVisitContents.objects.get_or_none(pk=pk)
+
+    def give_number():
+        while True:
+            n = randint(1, 999999)
+            num = str(n).zfill(6)
+            code = "RR" + num
+            obj = AS_models.ASRepairRequest.objects.get_or_none(수리요청코드=code)
+            if obj:
+                pass
+            else:
+                return code
+
     form = forms.ASrepairrequestregisterForm(request.POST)
+    code = give_number()
     single = ASvisit.단품
-    form.initial = {"신청품목": single.모델코드}
+    form.initial = {"수리요청코드": code, "신청품목": single.모델코드}
     for field in form:
         if field.name == "신청품목":
             field.help_text_add = f"*기본값은 <{single.모델명}>의 모델코드입니다."
@@ -1054,7 +1085,23 @@ def ASrepairrequestregisterrack(request, pk):
             sipk = single.랙구성단품_id
             sin = SI_models.SingleProduct.objects.get(pk=sipk)
             singlelist.append(sin)
+
+    def give_number():
+        while True:
+            n = randint(1, 999999)
+            num = str(n).zfill(6)
+            code = "RR" + num
+            obj = AS_models.ASRepairRequest.objects.get_or_none(수리요청코드=code)
+            if obj:
+                pass
+            else:
+                return code
+
     form = forms.ASrepairrequestregisterRackForm(request.POST)
+    code = give_number()
+    form.initial = {
+        "수리요청코드": code,
+    }
 
     if form.is_valid():
         신청품목 = form.cleaned_data.get("신청품목")

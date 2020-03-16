@@ -33,6 +33,7 @@ from orders import models as OR_models
 from django.utils import timezone
 from qualitycontrols import models as QC_models
 from afterservices import models as AS_models
+from random import randint
 
 
 class OrderDetail(user_mixins.LoggedInOnlyView, DetailView):
@@ -403,7 +404,22 @@ def produceplanregister(request, pk):
     order = OR_models.OrderRegister.objects.get_or_none(pk=pk)
     orderproduce = order.생산요청
 
+    def give_number():
+        while True:
+            n = randint(1, 999999)
+            num = str(n).zfill(6)
+            code = "PP" + num
+            obj = models.ProduceRegister.objects.get_or_none(생산계획등록코드=code)
+            if obj:
+                pass
+            else:
+                return code
+
     form = forms.UploadProducePlanForm(request.POST)
+    code = give_number()
+    form.initial = {
+        "생산계획등록코드": code,
+    }
 
     if form.is_valid():
         생산계획등록코드 = form.cleaned_data.get("생산계획등록코드")
@@ -428,6 +444,7 @@ def produceplanregister(request, pk):
         messages.success(request, "생산계획 등록이 완료되었습니다.")
 
         return redirect(reverse("producemanages:producemanageshome"))
+    selectlist = ["현재공정", "현재공정달성율"]
     return render(
         request,
         "producemanages/produceplanregister.html",
@@ -438,6 +455,7 @@ def produceplanregister(request, pk):
             "긴급도": "긴급도",
             "생산목표수량": "생산목표수량",
             "단품": "단품",
+            "selectlist": selectlist,
         },
     )
 
@@ -446,6 +464,9 @@ class produceplanupdate(user_mixins.LoggedInOnlyView, UpdateView):
     model = models.ProduceRegister
     template_name = "producemanages/updateproduceplan.html"
     form_class = forms.UpdateProducePlanForm
+    initial = {
+        "일일생산량": 0,
+    }
 
     def render_to_response(self, context, **response_kwargs):
 
@@ -652,7 +673,22 @@ def workorder(request, pk):
     orderproduce = order.생산요청
     produceplan = orderproduce.생산계획
 
+    def give_number():
+        while True:
+            n = randint(1, 999999)
+            num = str(n).zfill(6)
+            code = "WO" + num
+            obj = models.WorkOrder.objects.get_or_none(작업지시코드=code)
+            if obj:
+                pass
+            else:
+                return code
+
     form = forms.UploadWorkOrderForm(request.POST)
+    code = give_number()
+    form.initial = {
+        "작업지시코드": code,
+    }
 
     if form.is_valid():
         작업지시코드 = form.cleaned_data.get("작업지시코드")

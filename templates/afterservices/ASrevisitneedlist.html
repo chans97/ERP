@@ -40,6 +40,8 @@ AS현장 재방문
                                     <th class="border bg-gray-200 px-4 py-2 w-24">제품코드</th>
                                     <th class="border bg-gray-200 px-4 py-2 w-24">제품명</th>
                                     <th class="border bg-gray-200 px-4 py-2 w-24">AS방법</th>
+
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">현장명</th>
                                     <th class="border bg-gray-200 px-4 py-2 w-24">고객이름</th>
                                     <th class="border bg-gray-200 px-4 py-2 w-24">AS처리내역</th>
                                     <th class="border bg-gray-200 px-4 py-2 w-24">수리기사</th>
@@ -70,6 +72,8 @@ AS현장 재방문
                                     <td class="border px-4 py-2">{{list.랙.랙모델명}}</td>
                                     {%endif%}
                                     <td class="border px-4 py-2">{{list.AS방법}}</td>
+                                    <td class="border px-4 py-2">{{list.AS현장방문요청.AS접수.현장명}}</td>
+
                                     <td class="border px-4 py-2">{{list.고객이름}}</td>
                                     <td class="border px-4 py-2">{{list.AS처리내역}}</td>
                                     <td class="border px-4 py-2">{{list.수리기사}}</td>

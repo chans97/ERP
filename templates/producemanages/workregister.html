@@ -46,8 +46,20 @@
                                     </td>{% for field in form %}
 
                                     <td class="border px-4 py-2">
-                                        <div class="border hover:border-gray-500 w-full">
-                                            {{field}}</div>
+
+
+
+
+
+
+
+                                        <div class="border hover:border-gray-500 w-full flex">
+                                            {% if field.name == "생산일시" %}
+
+                                            <input type="text" name="생산일시" id="date2" size="10" />
+
+                                            {%else%}
+                                            {{field}}{% endif %}</div>
                                         <div class="text-xs text-teal-700">{{field.help_text}}
                                             {%if field.name == "생산일시"%}
                                             <div class="text-xs text-teal-700">
@@ -69,7 +81,9 @@
                                         {% endfor %}
                                         {% endif %}
 
-                                        {%endfor%}
+
+                                        {% endfor %}
+
                                     </td>
 
                             </tbody>

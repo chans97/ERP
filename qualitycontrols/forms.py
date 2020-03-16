@@ -53,10 +53,12 @@ class FinalCheckRegisterForm(forms.ModelForm):
         }
 
     def clean(self):
+        self.is_bound = False
         code = self.cleaned_data.get("최종검사코드")
         partner = models.FinalCheckRegister.objects.filter(최종검사코드=code)
         partner = list(partner)
         if code:
+            self.is_bound = True
             code = code[0:2]
             if partner:
                 self.add_error("최종검사코드", forms.ValidationError("*해당 최종검사코드는 이미 존재합니다."))
@@ -108,10 +110,12 @@ class MaterialCheckRegisterForm(forms.ModelForm):
         }
 
     def clean(self):
+        self.is_bound = False
         code = self.cleaned_data.get("수입검사코드")
         partner = models.MaterialCheck.objects.filter(수입검사코드=code)
         partner = list(partner)
         if code:
+            self.is_bound = True
             code = code[0:2]
             if partner:
                 self.add_error("수입검사코드", forms.ValidationError("*해당 수입검사코드는 이미 존재합니다."))
@@ -145,10 +149,12 @@ class LowMetarialRegisterForm(forms.ModelForm):
         }
 
     def clean(self):
+        self.is_bound = False
         code = self.cleaned_data.get("자재부적합코드")
         partner = models.LowMetarial.objects.filter(자재부적합코드=code)
         partner = list(partner)
         if code:
+            self.is_bound = True
             code = code[0:2]
             if partner:
                 self.add_error(
@@ -394,9 +400,7 @@ class SpecialRegisterForm(forms.ModelForm):
 class specialconductregisterForm(forms.ModelForm):
     class Meta:
         model = S_models.SpecialConductRegister
-        fields = (
-            "특채수량중납품수량",
-        )
+        fields = ("특채수량중납품수량",)
 
     def save(self, *arg, **kwargs):
         partner = super().save(commit=False)
@@ -409,12 +413,11 @@ class specialconductregisterForm(forms.ModelForm):
             self.is_bound = True
             return self.cleaned_data
 
+
 class specialrejectregisterForm(forms.ModelForm):
     class Meta:
         model = S_models.SpecialRejectRegister
-        fields = (
-            "특채반품수량",
-        )
+        fields = ("특채반품수량",)
 
     def save(self, *arg, **kwargs):
         partner = super().save(commit=False)

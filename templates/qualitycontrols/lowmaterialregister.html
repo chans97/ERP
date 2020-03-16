@@ -46,10 +46,15 @@
                                         {%if field.name == "처리방안"%}{%else%}
                                         border
                                         {%endif%}
-                                         hover:border-gray-500  w-full
+                                         hover:border-gray-500  w-full flex
                                         
                                         ">
-                                            {{field}}</div>
+                                            {% if field.name == "검토일" %}
+
+                                            <input type="text" name="검토일" id="date2" size="10" />
+
+                                            {%else%}
+                                            {{field}}{% endif %}</div>
                                         <div class="text-xs text-teal-700">{{field.help_text}}
                                         </div>
                                         {% if field.errors %}

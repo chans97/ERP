@@ -19,7 +19,7 @@ from django.core.handlers.wsgi import WSGIHandler
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
 try:
-    application = WSGIHandler()
+    application = get_wsgi_application()
     print("WSGI without exception")
 except Exception:
     print("handling WSGI exception")

@@ -22,7 +22,6 @@ pipenv==2018.11.26
 post==2019.4.13
 public==2019.4.13
 PyMySQL==0.9.3
-pyodbc==4.0.28
 python-dateutil==2.8.0
 pytz==2019.3
 PyYAML==5.2
@@ -31,7 +30,6 @@ request==2019.4.13
 requests==2.20.1
 semantic-version==2.5.0
 six==1.11.0
-sql-server.pyodbc==1.0
 sqlparse==0.3.0
 termcolor==1.1.0
 text-unidecode==1.3

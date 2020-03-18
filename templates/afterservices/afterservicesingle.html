@@ -50,6 +50,7 @@ AS접수<i class="fas fa-angle-right text-base mx-1"></i>단품등록
 
                             </td>
                             <td class="border px-4 py-2 hover:text-blue-700">
+
                                 {{list.모델코드}}</td>
                             <td class="border px-4 py-2 font-medium hover:text-blue-700 hover:font-bold"><a
                                     href="{%url "afterservices:singledetail" list.pk %}">{{list.모델명}}</a></td>
@@ -132,31 +133,32 @@ AS접수<i class="fas fa-angle-right text-base mx-1"></i>단품등록
                     </div>
                     <div class=" flex flex-row justify-around -mx-12">
                         <button class="btn-link bg-blue-800 text-white w-9/12 h-12 self-center my-3 pt-0 pb-1">
-                            <div class="text-base font-medium">입력완료</div>
+                            <div class="text-base font-medium   ">입력완료</div>
                         </button>
                 </form>
-                <script>
-                    function radio_chk() {
-                        var radio_btn = document.getElementsByName("모델코드");
-                        var radio_btn_check = 0;
-                        for (var i = 0; i < radio_btn.length; i++) {
-                            if (radio_btn[i].checked == true) {
-                                radio_btn_check++;
-                                document.getElementById("모델코드").value = radio_btn[i].value;
-                            }
-                        }
-                        if (radio_btn_check == 0) {
-                            document.getElementById("모델코드").value = "선택해주세요.";
-                        }
-                    }
-                </script>
+
             </div>
 
         </div>
     </div>
 </div>
 
+<script>
+    function radio_chk() {
+        var radio_btn = document.getElementsByName("모델코드");
+        var radio_btn_check = 0;
+        for (var i = 0; i < radio_btn.length; i++) {
+            if (radio_btn[i].checked == true) {
+                radio_btn_check++;
+                document.getElementById("모델코드").value = radio_btn[i].value;
+            }
+        }
+        if (radio_btn_check == 0) {
+            document.getElementById("모델코드").value = "선택해주세요.";
+        }
+    }
 
+</script>
 
 
 {%endblock main_contens %}

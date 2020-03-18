@@ -48,8 +48,18 @@ AS수정
                                     <td class="border border-gray-400 px-4 py-2">
 
                                         <div
-                                            class="  {%if field.name not in seletelist %} border hover:border-gray-500 w-full {%endif%} ">
-                                            {{field}}</div>
+                                            class=" flex {%if field.name not in seletelist %} border hover:border-gray-500 w-full {%endif%} ">
+                                            {% if field.name == "접수일" %}
+
+                                            <input type="text" name="접수일" id="date3" size="10"
+                                                value={{field.value.year}}-{{field.value.month}}-{{field.value.day}} />
+                                            {%elif field.name == "방문요청일"%}
+                                            <input type="text" name="방문요청일" id="date4" size="10" {%if field.value %}
+                                                value={{field.value.year}}-{{field.value.month}}-{{field.value.day}}
+                                                {%endif%} />
+                                            {% else %}
+                                            {{field}}
+                                            {% endif %}</div>
                                         <div class="text-xs text-green-700 ">
 
                                             {{field.help_text}}

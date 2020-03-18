@@ -439,7 +439,10 @@ def produceplanregister(request, pk):
             누적생산량=0,
             특이사항=특이사항,
         )
-        SM.save()
+
+        WO = models.WorkOrder.objects.create(
+            생산계획=SM, 수리생산="생산계획", 작업지시코드=생산계획등록코드, 수량=계획생산량, 특이사항="f{생산계획등록코드}의 작업지시서",
+        )
 
         messages.success(request, "생산계획 등록이 완료되었습니다.")
 

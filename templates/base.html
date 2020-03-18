@@ -41,6 +41,14 @@
 
         {% include "partials/navigation.html"%}
     </header>
+
+
+
+    {% block content %}
+    {% endblock %}
+
+
+
     <script type="text/javascript">
         (function (factory) {
             if (typeof define === "function" && define.amd) {
@@ -93,16 +101,19 @@
             $('img.ui-datepicker-trigger').css({ 'margin-right': '5px', 'height': '18px' });  //아이콘(icon) 위치
             $('img.ui-datepicker-trigger').attr('align', 'absmiddle');
         });
+        $(function () {
+            $("#date4").datepicker({
+                showOn: "button",
+                buttonImage: "{% static 'img/btn_date.png'%}",
+                buttonImageOnly: true,
+            }); $.datepicker.setDefaults($.datepicker.regional['ko']);         //default셋팅
+            $("#txt_prodStart").datepicker();
+            $('img.ui-datepicker-trigger').css({ 'margin-right': '5px', 'height': '18px' });  //아이콘(icon) 위치
+            $('img.ui-datepicker-trigger').attr('align', 'absmiddle');
+        });
+
+
     </script>
-
-
-    {% block content %}
-    {% endblock %}
-
-
-
-
-
 </body>
 
 {% include "partials/footer.html"%}

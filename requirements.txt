@@ -23,12 +23,6 @@ Pillow==7.0.0
 pipenv==2018.11.26
 post==2019.4.13
 public==2019.4.13
-PyMySQL==0.9.3
-pyodbc==4.0.28
-python-dateutil==2.8.0
-pytz==2019.3
-PyYAML==5.2
-query-string==2019.4.13
 request==2019.4.13
 requests==2.20.1
 semantic-version==2.5.0

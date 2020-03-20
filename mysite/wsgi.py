@@ -26,3 +26,7 @@ except Exception:
         traceback.print_exc()
         os.kill(os.getpid(), signal.SIGINT)
         time.sleep(2.5)
+
+# 파이썬의 절대경로
+# sys.path.append("C:/Apache24/htdocs/<PROJECT-ROOT-DIRECTORY>")
+

@@ -20,9 +20,7 @@ from django.core.handlers.wsgi import WSGIHandler
 os.environ["DJANGO_SETTINGS_MODULE"] = "mysite.settings"
 try:
     application = get_wsgi_application()
-    print("WSGI without exception")
 except Exception:
-    print("handling WSGI exception")
     # Error loading applications
     if "mod_wsgi" in sys.modules:
         traceback.print_exc()

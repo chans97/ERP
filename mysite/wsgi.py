@@ -17,7 +17,7 @@ from django.core.wsgi import get_wsgi_application
 from django.core.handlers.wsgi import WSGIHandler
 
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
+os.environ["DJANGO_SETTINGS_MODULE"] = "mysite.settings"
 try:
     application = get_wsgi_application()
     print("WSGI without exception")

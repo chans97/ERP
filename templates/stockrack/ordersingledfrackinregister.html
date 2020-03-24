@@ -1,0 +1,143 @@
+{%extends "orders/ordershome.html"%}
+{%load static%}
+{% block page_title%}
+단품반품요청
+{%endblock%}
+
+
+{%block head_title%}<i class="fas fa-angle-right text-base mx-1"></i>단품반품요청</div>
+{%endblock head_title %}
+
+
+{%block main_contens%}
+<div class="w-11/12 h-full ml-32 -mt-6 font-normal pt-12 flex flex-row">
+
+    <div class="flex flex-col p-6 w-full ">
+        <span class="border-b w-1/3 mb-3 border-gray-600 pb-2 font-semibold text-base">'{{order}}'- 단품반품요청 </span>
+
+        <div class="flex ">
+
+            <div class=" flex flex-col px-12 justify-center">
+                <div class="flew flex-col">
+                    <table class="table-fixed font-light text-xs w-full">
+                        <thead>
+                            <tr>
+                                <th class="border bg-gray-200 px-1 py-2 w-12">선택</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-32">모델코드</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-32">모델명</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-32">규격</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-40">단가</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-24">단위</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {%for list in singleofrack%}
+                            <tr>
+                                <td class="border px-4 py-2 text-center">
+                                    <label for="id_의뢰처_0"><input type="radio" name="모델코드" value={{list.모델코드}}
+                                            required="" id="id_의뢰처_0" onclick="radio_chk();">
+                                    </label>
+
+                                </td>
+                                <td class="border px-4 py-2 hover:text-blue-700">
+
+                                    {{list.모델코드}}</td>
+                                <td class="border px-4 py-2 font-medium hover:text-blue-700 hover:font-bold"><a
+                                        href="{%url "afterservices:singledetail" list.pk %}">{{list.모델명}}</a></td>
+                                <td class="border px-4 py-2">{{list.규격}}</td>
+                                <td class="border px-4 py-2">{{list.단가}}</td>
+                                <td class="border px-4 py-2">{{list.단위}}</td>
+                            </tr>
+                            {%endfor%}
+
+                        </tbody>
+                    </table>
+
+                </div>
+
+
+
+                <form method="POST" class="flex flex-col justify-center " enctype="multipart/form-data">
+                    {% csrf_token %}
+
+
+                    <div class=" flex flex-col justify-center ">
+
+                        <table class="table-fixed text-sm mt-10">
+
+                            <tbody>
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200 w-48">단품반품품목</td>
+                                    <td class="border px-4 py-2 bg-gray-200 w-48">반품요청수량</td>
+
+                                    <td class="border px-4 py-2 bg-gray-200 w-48">반품요청일</td>
+                                </tr>
+
+                                <tr>
+                                    <td class="border px-4 py-2 ">
+                                        <input type="text" name="단품" size="12" maxlength="20" required="" class="border"
+                                            id="모델코드">
+                                        <div class="text-xs text-teal-700">*단품을 선택해주세요.</div>
+                                        <div class="text-xs text-teal-700">*단품코드로 입력해주세요.</div>
+                                        <div class="text-xs text-teal-700">{{field.help_text}}</div>
+
+                                    </td>
+                                    {% for field in form %}
+                                    {%if field.name != "단품" %}
+                                    <td class="border px-4 py-2">
+                                        <div
+                                            class="flex {%if field.name == 긴급도%}{%else%}border{%endif%} hover:border-gray-500 w-full">
+
+                                            {% if field.name == "입고요청일" %}
+                                            <input type="text" name="입고요청일" id="date2" size="10" />
+
+
+                                            {%else%}
+                                            {{field}}
+                                            {% endif %}
+
+
+                                        </div>
+                                        <div class="text-xs text-teal-700">
+                                            {{field.help_text}}
+
+                                        </div>
+                                        {% if field.errors %}
+                                        {% for error in field.errors %}
+                                        <div class="text-red-700 font-light text-xs">*{{error}}</div>
+                                        {% endfor %}
+                                        {% endif %}
+
+
+                                    </td>
+                                    {% endif %}{%endfor%}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <button class="btn-link felx mt-5 h-10 w-2/4   ml-20">
+                        <div class="text-sm forn-bold">단품반품요청</div>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script>
+    function radio_chk() {
+        var radio_btn = document.getElementsByName("모델코드");
+        var radio_btn_check = 0;
+        for (var i = 0; i < radio_btn.length; i++) {
+            if (radio_btn[i].checked == true) {
+                radio_btn_check++;
+                document.getElementById("모델코드").value = radio_btn[i].value;
+            }
+        }
+        if (radio_btn_check == 0) {
+            document.getElementById("모델코드").value = "선택해주세요.";
+        }
+    }
+
+</script>
+{%endblock main_contens %}

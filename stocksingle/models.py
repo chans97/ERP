@@ -5,6 +5,7 @@ from users import models as users_models
 from StandardInformation import models as SI_models
 from afterservices import models as AS_models
 from producemanages import models as proms_models
+from stockrack import models as SR_models
 
 
 class StockOfSingleProduct(TimeStampedModel):
@@ -59,6 +60,27 @@ class speexceptions(Exception):
 
 
 class StockOfSingleProductInRequest(TimeStampedModel):
+    수주 = models.ForeignKey(
+        orders_models.OrderRegister,
+        related_name="단품입고요청",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
+    출하요청 = models.ForeignKey(
+        "StockOfSingleProductOutRequest",
+        related_name="단품입고요청",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
+    랙출하요청 = models.ForeignKey(
+        SR_models.StockOfRackProductOutRequest,
+        related_name="단품입고요청",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
     단품 = models.ForeignKey(
         SI_models.SingleProduct,
         related_name="단품입고요청",
@@ -92,6 +114,20 @@ class StockOfSingleProductInRequest(TimeStampedModel):
             self.단품.단품재고.save()
         except:
             StockOfSingleProduct.objects.create(단품=self.단품, 입고요청포함수량=self.입고요청수량)
+
+    def unimport(self):
+        try:
+            self.단품입고등록
+            return False
+        except:
+            return True
+
+    def process(self):
+        try:
+            self.단품출하등록
+            return "입고완료"
+        except:
+            return "입고요청완료"
 
 
 class StockOfSingleProductIn(TimeStampedModel):

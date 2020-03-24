@@ -119,6 +119,37 @@ class StockOfRackProductOutRequest(TimeStampedModel):
         return stock
 
 
+class StockOfRackProductMaker(TimeStampedModel):
+    현재공정_CHOICES = (("배선중", "배선중"), ("소방대기완료", "소방대기완료"))
+    현재공정 = models.CharField(
+        choices=현재공정_CHOICES, max_length=10, default="배선중", null=True, blank=True,
+    )
+
+    랙 = models.ForeignKey(
+        SI_models.RackProduct, related_name="랙조립", on_delete=models.CASCADE, null=True,
+    )
+    랙출하요청 = models.OneToOneField(
+        "StockOfRackProductOutRequest",
+        related_name="랙조립",
+        on_delete=models.CASCADE,
+        null=True,
+    )
+    현재공정 = models.CharField(choices=현재공정_CHOICES, max_length=10, blank=True, null=True,)
+    제작수량 = models.IntegerField()
+    랙조립기사 = models.ForeignKey(
+        users_models.User, related_name="랙조립", on_delete=models.SET_NULL, null=True,
+    )
+    랙조립일자 = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True)
+    특이사항 = models.CharField(max_length=100, blank=True, null=True)
+
+    class Meta:
+        verbose_name = "랙조립"
+        verbose_name_plural = "랙조립"
+
+    def __str__(self):
+        return f"<랙조립>{self.랙} : {self.제작수량} {self.랙.단위} "
+
+
 class StockOfRackProductOut(TimeStampedModel):
 
     랙출하요청 = models.OneToOneField(

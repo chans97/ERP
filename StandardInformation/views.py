@@ -310,23 +310,7 @@ class SingleView(ListView):
 
 
 def UploadSingleView(request):
-    def give_number():
-        while True:
-            start_code = "SP"
-            n = randint(1, 999999)
-            num = str(n).zfill(6)
-            code = start_code + num
-            obj = models.SingleProduct.objects.get_or_none(모델코드=code)
-            if obj:
-                pass
-            else:
-                return code
-
     form = forms.UploadSingleForm(request.POST)
-    code = give_number()
-    form.initial = {
-        "모델코드": code,
-    }
 
     if form.is_valid():
         single = form.save()

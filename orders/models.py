@@ -129,6 +129,16 @@ class OrderRegister(TimeStampedModel):
 
         return left
 
+    def backsingle(self):
+        back = 0
+        try:
+            for q in self.단품입고요청.all():
+                back += q.입고요청수량
+        except:
+            pass
+
+        return back
+
     def needtoout(self):
         needtoout = self.납품수량 - self.leftsingle()
         return needtoout

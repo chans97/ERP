@@ -93,8 +93,6 @@ class UploadSingleForm(forms.ModelForm):
         code = code[0:2]
         if single:
             self.add_error("모델코드", forms.ValidationError("*해당 모델코드는 이미 존재합니다."))
-        elif code != "SP":
-            self.add_error("모델코드", forms.ValidationError("*단품 모델코드는 SP로 시작해야 합니다."))
         else:
             return self.cleaned_data
 

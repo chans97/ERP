@@ -383,6 +383,15 @@ class OrderDetail(user_mixins.LoggedInOnlyView, DetailView):
             SS = SS_models.StockOfSingleProductOutRequest.objects.get_or_none(pk=pki)
             ordersingle.append(SS)
 
+        ordersingleback = order.단품입고요청.all()
+        pkbacklist = []
+        for orderib in ordersingleback:
+            pkbacklist.append(orderib.pk)
+        ordersingleback = []
+        for pki in pkbacklist:
+            SSB = SS_models.StockOfSingleProductInRequest.objects.get_or_none(pk=pki)
+            ordersingleback.append(SSB)
+
         orderrack = order.랙출하요청.all()
         rpk = []
         for orderr in orderrack:
@@ -406,6 +415,7 @@ class OrderDetail(user_mixins.LoggedInOnlyView, DetailView):
                 "ordersingle": ordersingle,
                 "no": 0,
                 "orderrack": orderrack,
+                "ordersingleback": ordersingleback,
             },
         )
 
@@ -1202,4 +1212,3 @@ def producesingleforrack(request, pk, spk):
         "orders/producesingleforrack.html",
         {"order": order, "user": user, "single": single, "form": form,},
     )
-

@@ -224,3 +224,82 @@ def orderstocksingleedit(request, pk):
             "출하희망일": 출하희망일,
         },
     )
+
+
+def ordersingleinregister(request, pk):
+    form = forms.UploadSingleInForm(request.POST)
+    outrequest = models.StockOfSingleProductOutRequest.objects.get_or_none(pk=pk)
+    order = outrequest.수주
+    user = request.user
+    result = 0
+    for back in outrequest.단품입고요청.all():
+        result += back.입고요청수량
+
+    if form.is_valid():
+
+        입고요청수량 = form.cleaned_data.get("입고요청수량")
+        입고요청일 = form.cleaned_data.get("입고요청일")
+        if 입고요청수량 > outrequest.단품출하등록.출하수량:
+            messages.error(request, "반품요청수량이 출하수량보다 더 많습니다.")
+            return render(
+                request,
+                "stocksingle/ordersingleinregister.html",
+                {
+                    "form": form,
+                    "order": order,
+                    "list": order,
+                    "outrequest": outrequest,
+                    "result": result,
+                },
+            )
+        elif (outrequest.단품출하등록.출하수량 - result) < 입고요청수량:
+            messages.error(request, "반품요청수량이 반품가능수량보다 더 많습니다.")
+            return render(
+                request,
+                "stocksingle/ordersingleinregister.html",
+                {
+                    "form": form,
+                    "order": order,
+                    "list": order,
+                    "outrequest": outrequest,
+                    "result": result,
+                },
+            )
+
+        수주 = order
+        단품 = order.단품모델
+        고객사 = order.고객사명
+        출하요청자 = user
+        SM = models.StockOfSingleProductInRequest.objects.create(
+            수주=수주, 출하요청=outrequest, 단품=단품, 입고요청수량=입고요청수량, 입고요청자=user, 입고요청일=입고요청일
+        )
+        messages.success(request, "반품요청 등록이 완료되었습니다.")
+        pk = 수주.pk
+        return redirect(reverse("orders:orderdetail", kwargs={"pk": pk}))
+    return render(
+        request,
+        "stocksingle/ordersingleinregister.html",
+        {
+            "form": form,
+            "order": order,
+            "list": order,
+            "outrequest": outrequest,
+            "result": result,
+        },
+    )
+
+
+def orderstocksinglebackdelete(request, pk):
+
+    orderstocksingleback = models.StockOfSingleProductInRequest.objects.get(pk=pk)
+    order = orderstocksingleback.수주
+    pk = order.pk
+    입고요청수량 = orderstocksingleback.입고요청수량
+    단품 = orderstocksingleback.단품
+    재고 = 단품.단품재고
+    재고.입고요청포함수량 -= 입고요청수량
+    재고.save()
+
+    messages.success(request, "반품요청이 철회되었습니다.")
+    orderstocksingleback.delete()
+    return redirect(reverse("orders:orderdetail", kwargs={"pk": pk}))

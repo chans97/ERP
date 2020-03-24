@@ -37,8 +37,36 @@ from core import views as core_views
 from random import randint
 
 
-class afterserviceshome(core_views.twolist):
-    pass
+class afterserviceshome(core_views.onelist):
+    templatename = "afterservices/ASregisterall.html"
+    templatename = "afterservices/afterserviceshome.html"
+
+    def get_first_queryset(self, request):
+        self.search = request.GET.get("search")
+        if self.search is None:
+            queryset = AS_models.ASRegisters.objects.all().order_by("-created")
+
+            self.s_bool = False
+        else:
+            self.s_bool = True
+            queryset = (
+                AS_models.ASRegisters.objects.all()
+                .filter(
+                    Q(접수번호__contains=self.search)
+                    | Q(현상__contains=self.search)
+                    | Q(대응유형__contains=self.search)
+                    | Q(불량분류코드__contains=self.search)
+                    | Q(불량분류__contains=self.search)
+                    | Q(접수자__first_name__contains=self.search)
+                    | Q(단품__모델코드__contains=self.search)
+                    | Q(단품__모델명__contains=self.search)
+                    | Q(랙__랙시리얼코드__contains=self.search)
+                    | Q(랙__랙모델명__contains=self.search)
+                    | Q(의뢰처__거래처명__contains=self.search)
+                )
+                .order_by("-created")
+            )
+        return queryset
 
 
 def ASregister(request):
@@ -1378,4 +1406,3 @@ def ASsingleoutrequestregisterrack(request, pk):
             "seletelist": seletelist,
         },
     )
-

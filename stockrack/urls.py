@@ -20,5 +20,9 @@ urlpatterns = [
         views.orderstockrackedit,
         name="orderstockrackedit",
     ),
-   
+    path(
+        "ordersingledfrackinregister/<int:pk>/",
+        views.ordersingledfrackinregister,
+        name="ordersingledfrackinregister",
+    ),
 ]

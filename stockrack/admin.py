@@ -11,3 +11,8 @@ class StockOfRackProductOutRequest(admin.ModelAdmin):
 @admin.register(models.StockOfRackProductOut)
 class StockOfRackProductOut(admin.ModelAdmin):
     empty_value_display = "입력 값 없음"
+
+
+@admin.register(models.StockOfRackProductMaker)
+class StockOfRackProductMaker(admin.ModelAdmin):
+    empty_value_display = "입력 값 없음"

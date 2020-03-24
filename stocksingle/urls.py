@@ -20,5 +20,15 @@ urlpatterns = [
         views.orderstocksingleedit,
         name="orderstocksingleedit",
     ),
+    path(
+        "ordersingleinregister/<int:pk>/",
+        views.ordersingleinregister,
+        name="ordersingleinregister",
+    ),
+    path(
+        "orderstocksinglebackdelete/<int:pk>/",
+        views.orderstocksinglebackdelete,
+        name="orderstocksinglebackdelete",
+    ),
     
 ]

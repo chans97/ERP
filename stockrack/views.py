@@ -28,6 +28,7 @@ from django.http import HttpResponse
 import math
 from StandardInformation import models as SI_models
 from orders import models as OR_models
+from stocksingle import models as SS_models
 
 
 def orderrackout(request):
@@ -242,5 +243,49 @@ def orderstockrackedit(request, pk):
             "출하요청수량": 출하요청수량,
             "출하희망일": 출하희망일,
             "rack": orderstockrack.랙,
+        },
+    )
+
+
+def ordersingledfrackinregister(request, pk):
+    form = forms.UploadSingleInForm(request.POST)
+    outrequest = models.StockOfRackProductOutRequest.objects.get_or_none(pk=pk)
+    order = outrequest.수주
+    user = request.user
+    rack = order.랙모델
+
+    singleofrack = []
+    for com in rack.랙구성단품.all():
+        if com.랙구성 == "자재":
+            pass
+        else:
+            num = com.수량
+            single = com.랙구성단품
+            singleofrack.append(single)
+
+    if form.is_valid():
+
+        입고요청수량 = form.cleaned_data.get("입고요청수량")
+        입고요청일 = form.cleaned_data.get("입고요청일")
+        단품 = form.cleaned_data.get("단품")
+
+        수주 = order
+        고객사 = order.고객사명
+        출하요청자 = user
+        SM = SS_models.StockOfSingleProductInRequest.objects.create(
+            수주=수주, 랙출하요청=outrequest, 단품=단품, 입고요청수량=입고요청수량, 입고요청자=user, 입고요청일=입고요청일
+        )
+        messages.success(request, "반품요청 등록이 완료되었습니다.")
+        pk = 수주.pk
+        return redirect(reverse("orders:orderdetail", kwargs={"pk": pk}))
+    return render(
+        request,
+        "stockrack/ordersingledfrackinregister.html",
+        {
+            "form": form,
+            "order": order,
+            "list": order,
+            "outrequest": outrequest,
+            "singleofrack": singleofrack,
         },
     )

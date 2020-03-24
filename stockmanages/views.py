@@ -38,71 +38,57 @@ import urllib
 from random import randint
 
 
-class stockmanageshome(core_views.twolist):
+class stockmanageshome(core_views.threelist):
     templatename = "stockmanages/stockmanageshome.html"
 
     def get_first_queryset(self, request):
         user = self.request.user
         self.search = request.GET.get("search")
         if self.search is None:
-            order = SS_models.StockOfSingleProductOutRequest.objects.all().order_by(
-                "-created"
-            )
-            queryset = []
-            for s in order:
-                try:
-                    s.단품출하등록
-                except:
-                    queryset.append(s)
-
+            queryset = SI_models.SingleProduct.objects.all().order_by("-created")
             self.s_bool = False
         else:
             self.s_bool = True
-            order = SS_models.StockOfSingleProductOutRequest.objects.filter(
-                Q(출하요청자__first_name__contains=self.search)
-                | Q(수주__수주코드__contains=self.search)
-                | Q(수주AS__contains=self.search)
-                | Q(고객사__거래처명__contains=self.search)
-                | Q(단품__모델명__contains=self.search)
-                | Q(단품__모델코드__contains=self.search)
-                | Q(AS__AS현장방문요청__AS접수__접수번호__contains=self.search)
+            queryset = SI_models.SingleProduct.objects.filter(
+                Q(모델코드__contains=self.search)
+                | Q(모델명__contains=self.search)
+                | Q(규격__contains=self.search)
+                | Q(단위__contains=self.search)
+                | Q(단가__contains=self.search)
             ).order_by("-created")
-            queryset = []
-            for s in order:
-                try:
-                    s.단품출하등록
-                except:
-                    queryset.append(s)
         return queryset
 
     def get_second_queryset(self, request):
         self.search2 = request.GET.get("search2")
         if self.search2 is None:
-            order = SR_models.StockOfRackProductOutRequest.objects.all().order_by(
-                "-created"
-            )
-            queryset = []
-            for s in order:
-                try:
-                    s.랙출하등록
-                except:
-                    queryset.append(s)
+            queryset = SI_models.RackProduct.objects.all().order_by("-created")
             self.s_bool2 = False
         else:
             self.s_bool2 = True
-            order = SR_models.StockOfRackProductOutRequest.objects.filter(
-                Q(출하요청자__first_name__contains=self.search2)
-                | Q(고객사__거래처명__contains=self.search2)
-                | Q(수주__수주코드__contains=self.search2)
-                | Q(랙__랙모델명__contains=self.search2)
-                | Q(랙__랙시리얼코드__contains=self.search2)
+            queryset = SI_models.RackProduct.objects.filter(
+                Q(랙시리얼코드__contains=self.search2)
+                | Q(랙모델명__contains=self.search2)
+                | Q(규격__contains=self.search2)
+                | Q(단위__contains=self.search2)
+                | Q(단가__contains=self.search2)
             ).order_by("-created")
-            queryset = []
-            for s in order:
-                try:
-                    s.랙출하등록
-                except:
-                    queryset.append(s)
+        return queryset
+
+    def get_third_queryset(self, request):
+        user = self.request.user
+        self.search3 = request.GET.get("search")
+        if self.search3 is None:
+            queryset = SI_models.Material.objects.all().order_by("-created")
+            self.s_bool3 = False
+        else:
+            self.s_bool3 = True
+            queryset = SI_models.Material.objects.filter(
+                Q(자재품명__contains=self.search3)
+                | Q(자재코드__contains=self.search3)
+                | Q(단위__contains=self.search3)
+                | Q(규격__contains=self.search3)
+                | Q(자재공급업체__거래처명__contains=self.search3)
+            ).order_by("-created")
         return queryset
 
 

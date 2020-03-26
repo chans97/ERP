@@ -59,4 +59,10 @@ urlpatterns = [
         views.producesingleforrack,
         name="producesingleforrack",
     ),
+    path(
+        "blueprintdownload/<int:pk>/",
+        views.blueprintdownload,
+        name="blueprintdownload",
+    ),
+    
 ]

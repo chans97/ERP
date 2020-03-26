@@ -41,6 +41,7 @@ class UploadOrderForm(forms.Form):
     현장명 = forms.CharField()
     납품요청일 = DateField(required=False, help_text="*형식 : (yyyy-mm-dd) ",)
     특이사항 = forms.CharField(required=False,)
+    랙조립도면 = forms.FileField(required=False)
 
     def clean(self):
         self.is_bound = False

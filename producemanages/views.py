@@ -34,176 +34,18 @@ from django.utils import timezone
 from qualitycontrols import models as QC_models
 from afterservices import models as AS_models
 from random import randint
+from stockrack import models as SR_models
+from orders import views as OR_views
 
 
-class OrderDetail(user_mixins.LoggedInOnlyView, DetailView):
+class OrderDetail(OR_views.OrderDetail):
     model = OR_models.OrderRegister
-
-    def get(self, request, *args, **kwargs):
-        pk = kwargs["pk"]
-        order = OR_models.OrderRegister.objects.get(pk=pk)
-        user = request.user
-        final = False
-        inproduce = False
-        orderproduce = False
-        st = order.process()
-        obj_user = order.작성자
-
-        if st == "생산의뢰완료":
-            orderproduce = True
-        elif "생산중" in st or "최종검사의뢰완료" in st:
-            inproduce = True
-            orderproduce = True
-        elif st == "최종검사완료":
-            final = True
-            inproduce = True
-            orderproduce = True
-        else:
-            pass
-
-        ordersingle = order.단품출하요청.all()
-        pklist = []
-        for orderi in ordersingle:
-            pklist.append(orderi.pk)
-        ordersingle = []
-        for pki in pklist:
-            SS = SS_models.StockOfSingleProductOutRequest.objects.get_or_none(pk=pki)
-            ordersingle.append(SS)
-
-        orderrack = order.랙출하요청.all()
-        rpk = []
-        for orderr in orderrack:
-            rpk.append(orderr.pk)
-        orderrack = []
-        for pki in rpk:
-            SS = SM_models.StockOfRackProductOutRequest.objects.get_or_none(pk=pki)
-            orderrack.append(SS)
-        try:
-            order.생산요청.생산계획.작업지시서
-            workboolean = True
-        except:
-            workboolean = False
-        try:
-            order.생산요청.생산계획.작업지시서.작업지시서등록
-            workdoneboolean = True
-        except:
-            workdoneboolean = False
-        try:
-            order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사
-            orderfinalboolean = True
-        except:
-            orderfinalboolean = False
-        try:
-            order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.수리내역서
-            repairboolean = True
-        except:
-            repairboolean = False
-
-        return render(
-            request,
-            "producemanages/orderdetail.html",
-            {
-                "order": order,
-                "user": user,
-                "final": final,
-                "inproduce": inproduce,
-                "orderproduce": orderproduce,
-                "obj_user": obj_user,
-                "출하완료": "출하완료",
-                "ordersingle": ordersingle,
-                "no": 0,
-                "orderrack": orderrack,
-                "workboolean": workboolean,
-                "workdoneboolean": workdoneboolean,
-                "orderfinalboolean": orderfinalboolean,
-                "repairboolean": repairboolean,
-            },
-        )
+    templatename = "producemanages/orderdetail.html"
 
 
-class OrderDetailForWork(user_mixins.LoggedInOnlyView, DetailView):
+class OrderDetailForWork(OrderDetail):
     model = OR_models.OrderRegister
-
-    def get(self, request, *args, **kwargs):
-        pk = kwargs["pk"]
-        order = OR_models.OrderRegister.objects.get(pk=pk)
-        user = request.user
-        final = False
-        inproduce = False
-        orderproduce = False
-        st = order.process()
-        obj_user = order.작성자
-
-        if st == "생산의뢰완료":
-            orderproduce = True
-        elif "생산중" in st or "최종검사의뢰완료" in st:
-            inproduce = True
-            orderproduce = True
-        elif st == "최종검사완료":
-            final = True
-            inproduce = True
-            orderproduce = True
-        else:
-            pass
-
-        ordersingle = order.단품출하요청.all()
-        pklist = []
-        for orderi in ordersingle:
-            pklist.append(orderi.pk)
-        ordersingle = []
-        for pki in pklist:
-            SS = SS_models.StockOfSingleProductOutRequest.objects.get_or_none(pk=pki)
-            ordersingle.append(SS)
-
-        orderrack = order.랙출하요청.all()
-        rpk = []
-        for orderr in orderrack:
-            rpk.append(orderr.pk)
-        orderrack = []
-        for pki in rpk:
-            SS = SM_models.StockOfRackProductOutRequest.objects.get_or_none(pk=pki)
-            orderrack.append(SS)
-        try:
-            order.생산요청.생산계획.작업지시서
-            workboolean = True
-        except:
-            workboolean = False
-        try:
-            order.생산요청.생산계획.작업지시서.작업지시서등록
-            workdoneboolean = True
-        except:
-            workdoneboolean = False
-        try:
-            order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사
-            orderfinalboolean = True
-        except:
-            orderfinalboolean = False
-        try:
-            order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.수리내역서
-            repairboolean = True
-        except:
-            repairboolean = False
-
-        return render(
-            request,
-            "producemanages/orderdetailforwork.html",
-            {
-                "order": order,
-                "user": user,
-                "final": final,
-                "inproduce": inproduce,
-                "orderproduce": orderproduce,
-                "obj_user": obj_user,
-                "출하완료": "출하완료",
-                "ordersingle": ordersingle,
-                "no": 0,
-                "orderrack": orderrack,
-                "workboolean": workboolean,
-                "workdoneboolean": workdoneboolean,
-                "orderfinalboolean": orderfinalboolean,
-                "repairboolean": repairboolean,
-            },
-        )
+    templatename = "producemanages/orderdetailforwork.html"
 
 
 def producemanageshome(request):
@@ -441,7 +283,7 @@ def produceplanregister(request, pk):
         )
 
         WO = models.WorkOrder.objects.create(
-            생산계획=SM, 수리생산="생산계획", 작업지시코드=생산계획등록코드, 수량=계획생산량, 특이사항="f{생산계획등록코드}의 작업지시서",
+            생산계획=SM, 수리생산="생산계획", 작업지시코드=생산계획등록코드, 수량=계획생산량, 특이사항=f"{생산계획등록코드}의 작업지시서",
         )
 
         messages.success(request, "생산계획 등록이 완료되었습니다.")
@@ -483,7 +325,7 @@ class produceplanupdate(user_mixins.LoggedInOnlyView, UpdateView):
             template=self.get_template_names(),
             context=context,
             using=self.template_engine,
-            **response_kwargs
+            **response_kwargs,
         )
 
     def get_success_url(self):
@@ -527,7 +369,7 @@ class produceplantotalupdate(user_mixins.LoggedInOnlyView, UpdateView):
             template=self.get_template_names(),
             context=context,
             using=self.template_engine,
-            **response_kwargs
+            **response_kwargs,
         )
 
     def get_success_url(self):
@@ -550,7 +392,12 @@ class produceplantotalupdate(user_mixins.LoggedInOnlyView, UpdateView):
         plan.현재공정 = 현재공정
         plan.현재공정달성율 = 현재공정달성율
         plan.save()
-        messages.success(request, "생산계획 수정이 완료되었습니다.")
+        workorder = plan.작업지시서
+        workorder.수량 = 계획생산량
+        workorder.특이사항 = 특이사항
+        workorder.save()
+
+        messages.success(self.request, "생산계획 수정이 완료되었습니다.")
 
         return super().form_valid(form)
 
@@ -569,73 +416,37 @@ def produceplandelete(request, pk):
     plan = models.ProduceRegister.objects.get_or_none(pk=pk)
     order = plan.생산의뢰.생산의뢰수주
     pk = order.pk
+    workorder = plan.작업지시서
     plan.delete()
+    workorder.delete()
     messages.success(request, "생산계획이 삭제되었습니다.")
     return redirect(reverse("producemanages:orderdetail", kwargs={"pk": pk}))
 
 
-def workorderlist(request):
+def rackmakelist(request):
     user = request.user
     search = request.GET.get("search")
 
     if search is None:
-        l_order = []
-        order = (
-            OR_models.OrderRegister.objects.filter(출하구분="출하미완료")
-            .filter(제품구분="단품")
-            .order_by("-created")
+        s_order = SR_models.StockOfRackProductMaker.objects.filter(랙조립기사=user).order_by(
+            "-created"
         )
-
-        s_order = []
-        for s in order:
-            try:
-                s.생산요청.생산계획
-                try:
-                    s.생산요청.생산계획.작업지시서
-                except:
-                    l_order.append(s)
-
-            except:
-                pass
-        for s in l_order:
-            if s.생산요청.생산계획.작성자 == user:
-                s_order.append(s)
 
         s_bool = False
     else:
         s_bool = True
-        order = (
-            OR_models.OrderRegister.objects.filter(출하구분="출하미완료")
-            .filter(제품구분="단품")
+        s_order = (
+            SR_models.StockOfRackProductMaker.objects.filter(랙조립기사=user)
             .filter(
-                Q(수주코드__contains=search)
-                | Q(영업구분=search)
-                | Q(제품구분=search)
-                | Q(사업장구분=search)
-                | Q(고객사명__거래처명__contains=search)
-                | Q(단품모델__모델명__contains=search)
-                | Q(단품모델__모델코드__contains=search)
-                | Q(랙모델__랙모델명__contains=search)
-                | Q(랙모델__랙시리얼코드__contains=search)
+                Q(랙출하요청__수주__수주코드__contains=search)
+                | Q(현재공정__contains=search)
+                | Q(랙조립기사__first_name__contains=search)
+                | Q(특이사항__contains=search)
+                | Q(랙__랙모델명__contains=search)
+                | Q(랙__랙시리얼코드__contains=search)
             )
             .order_by("-created")
         )
-
-        l_order = []
-        s_order = []
-        for s in order:
-            try:
-                s.생산요청.생산계획
-                try:
-                    s.생산요청.생산계획.작업지시서
-                except:
-                    l_order.append(s)
-
-            except:
-                pass
-        for s in l_order:
-            if s.생산요청.생산계획.작성자 == user:
-                s_order.append(s)
 
     pagediv = 7
 
@@ -736,7 +547,7 @@ class workorderupdate(user_mixins.LoggedInOnlyView, UpdateView):
             template=self.get_template_names(),
             context=context,
             using=self.template_engine,
-            **response_kwargs
+            **response_kwargs,
         )
 
     def get_success_url(self):
@@ -1329,7 +1140,7 @@ class workupdate(user_mixins.LoggedInOnlyView, UpdateView):
             template=self.get_template_names(),
             context=context,
             using=self.template_engine,
-            **response_kwargs
+            **response_kwargs,
         )
 
     def get_success_url(self):
@@ -1476,7 +1287,7 @@ class repairupdate(user_mixins.LoggedInOnlyView, UpdateView):
             template=self.get_template_names(),
             context=context,
             using=self.template_engine,
-            **response_kwargs
+            **response_kwargs,
         )
 
     def get_success_url(self):
@@ -1654,7 +1465,7 @@ class repairupdateindetailAS(repairupdateindetail):
             template=self.get_template_names(),
             context=context,
             using=self.template_engine,
-            **response_kwargs
+            **response_kwargs,
         )
 
 
@@ -2009,4 +1820,3 @@ def repairrequestdetail(request, pk):
         "producemanages/repairrequestdetail.html",
         {"repair": repair, "user": user,},
     )
-

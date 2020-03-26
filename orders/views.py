@@ -76,6 +76,11 @@ def orderregister(request):
         납품요청일 = form.cleaned_data.get("납품요청일")
         특이사항 = form.cleaned_data.get("특이사항")
         제품구분 = form.cleaned_data.get("제품구분")
+        try:
+            랙조립도면 = request.FILES["랙조립도면"]
+
+        except Exception:
+            랙조립도면 = None
         SM = models.OrderRegister.objects.create(
             작성자=request.user,
             수주코드=수주코드,
@@ -88,6 +93,7 @@ def orderregister(request):
             특이사항=특이사항,
             제품구분=제품구분,
             납품수량=0,
+            랙조립도면=랙조립도면,
         )
 
         pk = SM.pk
@@ -350,6 +356,7 @@ def ordershome(request):
 
 
 class OrderDetail(user_mixins.LoggedInOnlyView, DetailView):
+    templatename = "orders/orderdetail.html"
     model = models.OrderRegister
 
     def get(self, request, *args, **kwargs):
@@ -403,7 +410,7 @@ class OrderDetail(user_mixins.LoggedInOnlyView, DetailView):
 
         return render(
             request,
-            "orders/orderdetail.html",
+            self.templatename,
             {
                 "order": order,
                 "user": user,
@@ -1212,3 +1219,18 @@ def producesingleforrack(request, pk, spk):
         "orders/producesingleforrack.html",
         {"order": order, "user": user, "single": single, "form": form,},
     )
+
+
+def blueprintdownload(request, pk):
+    """파일 다운로드 유니코드화 패치"""
+    order = models.OrderRegister.objects.get_or_none(pk=pk)
+    filepath = order.랙조립도면.path
+    title = order.랙조립도면.__str__()
+    title = urllib.parse.quote(title.encode("utf-8"))
+    title = title.replace("blueprint/", "")
+
+    with open(filepath, "rb") as f:
+        response = HttpResponse(f, content_type="application/force-download")
+        titling = 'attachment; filename="{}"'.format(title)
+        response["Content-Disposition"] = titling
+        return response

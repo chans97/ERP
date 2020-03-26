@@ -81,6 +81,9 @@ class OrderRegister(TimeStampedModel):
     출하구분 = models.CharField(
         choices=출하구분_CHOICES, max_length=10, blank=True, default=출하미완료
     )
+    랙조립도면 = models.FileField(
+        upload_to="blueprint", blank=True, null=True, help_text="랙 수주의 경우 조립도면을 첨부해주세요."
+    )
 
     class Meta:
         verbose_name = "수주등록"
@@ -222,4 +225,3 @@ class OrderProduce(TimeStampedModel):
 
     def __str__(self):
         return f" '{self.생산의뢰수주}' 의 생산의뢰 : {self.생산의뢰코드}"
-

@@ -1,18 +1,3 @@
-{%extends "producemanages/producehome.html"%}
-{% load static%}
-{% block page_title%}
-수주정보
-{%endblock%}
-
-
-{%block head_title%}
-</a><i class="fas fa-angle-right mx-1 text-base"></i>수주정보<i class="fas fa-angle-right text-base mx-1"></i>
-{{order.수주코드}}</span>
-{%endblock head_title %}
-
-
-{%block main_contens%}
-
 <div class="w-11/12 h-full ml-32 -mt-6 pt-12 flex flex-row">
 
     <div class="p-6 flex flex-col w-full">
@@ -97,6 +82,16 @@
 
             </table>
 
+            {% if order.특이사항 %}
+
+
+            <span class="ml-3 text-xs text-red-600">
+                <i class="fas fa-exclamation-triangle"></i>
+
+
+                특이사항 : {{order.특이사항}}
+            </span>
+            {% endif %}
 
         </div>
 
@@ -386,10 +381,11 @@
         </div>
         {%endif%}
         {%if order.leftsingle != no %}
-        <div class="flex flex-col w-full  my-12">
+        <div class="flex flex-col w-full  mt-12">
 
             <div class="flex flex-col  w-full border-black border-dashed pt-8   border-t">
-                <div class=" border-b w-64 mb-3 font-semibold border-gray-600 pb-2 mt-6">출하 요청 내역</div>
+                <div class=" border-b w-64 mb-3 font-semibold border-gray-600 pb-2 mt-6">출하 요청 내역</div><span
+                    class="text-red-700 text-xs -mt-2 mb-1">*출하요청철회시 바로 철회됩니다.</span>
 
 
 
@@ -399,6 +395,8 @@
                     <tr>
                         <th class="border bg-gray-200 px-4 py-2 w-24">요청일</th>
                         <th class="border bg-gray-200 px-4 py-2 w-24">요청수량</th>
+
+                        <th class="border bg-gray-200 px-4 py-2 w-24">출하수량</th>
                         <th class="border bg-gray-200 px-4 py-2 w-24">제품명</th>
                         <th class="border bg-gray-200 px-4 py-2 w-24"></th>
                     </tr>
@@ -411,6 +409,7 @@
                             {%else%}
                             {{list.출하요청일.year}}-{{list.출하요청일.month}}-{{list.출하요청일.day}}{%endif%}</td>
                         <td class="border px-4 py-2">{{list.출하요청수량}}</td>
+                        <td class="border px-4 py-2">{{list.단품출하등록.출하수량}}</td>
                         {%if order.제품구분 == "단품"%}
                         <td class="border px-4 py-2">{{list.단품}}</td>
                         {%else%}
@@ -429,10 +428,15 @@
                                     <div class="btn-link bg-red-800 hover:font-bold mt-1 mb-0 ml-3 w-40">
                                         출하요청철회
                                     </div>
+                                </a>
                             </div>
-                            </a>
                             {%else%}
                             <span class="text-red-700">이미 출하완료되었습니다.</span>
+                            <a href="{%url "stocksingle:ordersingleinregister" list.pk %}">
+                                <div class="btn-link bg-red-800 hover:font-bold mt-1 mb-0 mx-5  px-0 w-auto">
+                                    반품신청
+                                </div>
+                            </a>
                             {%endif%}
                             {%else%}
                             <span class="text-red-700">본인 수주가 아닙니다.</span>
@@ -451,19 +455,22 @@
 
 
 
+
         {%if order.leftrack != no %}
-        <div class="flex flex-col w-full  my-12">
+        <div class="flex flex-col w-full  mt-12">
 
             <div class="flex flex-col  w-full border-black border-dashed pt-8   border-t">
                 <div class=" border-b w-64 mb-3 font-semibold border-gray-600 pb-2 mt-6">출하 요청 내역</div><span
                     class="text-red-700 text-xs -mt-2 mb-1">*출하요청철회시 바로 철회됩니다.</span>
             </div>
-
             <table class="table-fixed font-light text-xs w-full">
                 <thead>
                     <tr>
+                        <th class="border bg-gray-200 px-4 py-2 w-24">진행상태</th>
                         <th class="border bg-gray-200 px-4 py-2 w-24">요청일</th>
                         <th class="border bg-gray-200 px-4 py-2 w-24">요청수량</th>
+
+                        <th class="border bg-gray-200 px-4 py-2 w-24">출하수량</th>
                         <th class="border bg-gray-200 px-4 py-2 w-24">제품명</th>
                         <th class="border bg-gray-200 px-4 py-2 w-24"></th>
                     </tr>
@@ -472,10 +479,23 @@
                 <tbody>
                     {%for list in orderrack%}
                     <tr>
+                        <td class="border px-4 py-2">
+                            {%if not list.unexport%}
+                            출하완료되었습니다.
+
+                            {%elif list.랙조립%}
+                            {{list.랙조립.현재공정}}
+
+                            {%else%}
+                            조립 시작 전입니다.
+                            {%endif%}
+                        </td>
                         <td class="border px-4 py-2">{%if list.출하요청일 is None%}
                             {%else%}
                             {{list.출하요청일.year}}-{{list.출하요청일.month}}-{{list.출하요청일.day}}{%endif%}</td>
                         <td class="border px-4 py-2">{{list.출하요청수량}}</td>
+
+                        <td class="border px-4 py-2">{{list.랙출하등록.출하수량}}</td>
                         {%if order.제품구분 == "단품"%}
                         <td class="border px-4 py-2">{{list.단품}}</td>
                         {%else%}
@@ -483,7 +503,18 @@
                         {%endif%}
                         <td class="border px-4 py-2">
                             {%if obj_user == user%}
-                            {%if list.unexport%}
+
+                            {%if list.랙출하등록%}
+                            <span class="text-red-700">이미 출하완료되었습니다.</span>
+                            <a href="{%url "stockrack:ordersingledfrackinregister" list.pk %}">
+                                <div class="btn-link bg-red-800 hover:font-bold mt-1 mb-0 mx-5  px-0 w-auto">
+                                    부품반품신청
+                                </div>
+                            </a>
+                            {%else%}
+                            {%if list.랙조립%}
+                            <span class="text-blue-700">조립중입니다.</span>
+                            {%else%}
                             <div class="flex justify-center flex-col items-center">
                                 <a href="{%url "stockrack:orderstockrackedit" list.pk %} ">
                                     <div class="btn-link bg-teal-800 hover:font-bold mt-1 mb-0 ml-3 w-40">
@@ -495,8 +526,10 @@
                                         출하요청철회
                                     </div>
                             </div>
-                            {%else%}
-                            <span class="text-red-700">이미 출하완료되었습니다.</span>
+                            {%endif%}
+
+
+
                             {%endif%}
                             {%else%}
                             <span class="text-red-700">본인 수주가 아닙니다.</span>
@@ -577,4 +610,3 @@
 
 
     </div>
-    {%endblock main_contens %}

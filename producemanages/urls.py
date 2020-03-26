@@ -32,7 +32,7 @@ urlpatterns = [
         views.produceplandelete,
         name="produceplandelete",
     ),
-    path("workorderlist/", views.workorderlist, name="workorderlist"),
+    path("rackmakelist/", views.rackmakelist, name="rackmakelist"),
     path("workorder/<int:pk>/", views.workorder, name="workorder",),
     path(
         "workorderupdate/<int:pk>/",

@@ -42,6 +42,7 @@
                             <thead>
                                 <tr>
                                     <th class="border bg-gray-200 px-4 py-2 w-24">랙시리얼코드</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">수주코드</th>
                                     <th class="border bg-gray-200 px-4 py-2 w-24">랙모델명</th>
                                     <th class="border bg-gray-200 px-4 py-2 w-24">출하수량</th>
                                     <th class="border bg-gray-200 px-4 py-2 w-24">출하요청수량</th>
@@ -58,6 +59,9 @@
                                 <tr>
                                     <td class="border px-4 py-2 ">
                                         {{list.랙출하요청.랙.랙시리얼코드}}</td>
+                                    <td class="border px-4 py-2  hover:text-blue-700 hover:font-bold "><a
+                                            href="{%url "stockmanages:orderdetail" list.랙출하요청.수주.pk %}">
+                                            {{list.랙출하요청.수주.수주코드}}</a></td>
                                     <td class="border px-4 py-2">{{list.랙출하요청.랙.랙모델명}}</td>
                                     <td class="border px-4 py-2">{{list.출하수량}}</td>
                                     <td class="border px-4 py-2 ">

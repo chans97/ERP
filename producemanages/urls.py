@@ -107,4 +107,29 @@ urlpatterns = [
         views.repairrequestdetail,
         name="repairrequestdetail",
     ),
+    path(
+        "requestrackmakelist/",
+        views.requestrackmakelist.as_view(),
+        name="requestrackmakelist",
+    ),
+    path(
+        "rackmakeregister/<int:pk>/", views.rackmakeregister, name="rackmakeregister",
+    ),
+    path(
+        "rackmakeedit/<int:pk>/",
+        views.rackmakeedit.as_view(),
+        name="rackmakeedit",
+    ),
+    path(
+        "rackmakedeleteensure/<int:pk>/",
+        views.rackmakedeleteensure,
+        name="rackmakedeleteensure",
+    ),
+    
+    path(
+        "rackmakedelete/<int:pk>/",
+        views.rackmakedelete,
+        name="rackmakedelete",
+    ),
+    
 ]

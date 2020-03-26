@@ -1,0 +1,15 @@
+{%extends "producemanages/producemanageshome.html"%}
+{%load static%}
+{% block page_title%}
+생산계획등록
+{%endblock%}
+
+
+{%block head_title%}
+<i class="fas fa-angle-right mx-1 text-base"></i>랙조립수정 <i class="fas fa-angle-right mx-1 text-base"></i> {{makerequest}}
+{%endblock head_title %}
+
+
+{%block main_contens%}
+{%include "partials/formastable.html" with maintitle=makerequest  tablename="랙조립수정" date="랙조립일자" cta="조립수정" selectlist="현재공정"%}
+{%endblock main_contens %}

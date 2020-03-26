@@ -1,16 +1,13 @@
-{%extends "stockmanages/stockmanageshome.html"%}
+{%extends "producemanages/producemanageshome.html"%}
 {% load static%}
 {% block page_title%}
-랙출하목록
+수입검사등록
 {%endblock%}
 
 
 {%block head_title%}
-</a><i class="fas fa-angle-right mx-1 text-base"></i>
-<a href="{%url "stockmanages:rackoutlist"%}">
-    랙출하목록
-</a>
-</a><i class="fas fa-angle-right mx-1 text-base"></i> 랙출하요청목록{%endblock%}
+<i class="fas fa-angle-right mx-1 text-base"></i>랙조립관리 <i class="fas fa-angle-right mx-1 text-base"></i> 랙조립등록
+{%endblock head_title %}
 
 
 {%block main_contens%}
@@ -18,10 +15,7 @@
     <div class="w-full h-full pl-32 -mt-6 font-semibold pt-12 flex flex-col">
         <div class="flex flex-col">
             <div class="flex flex-col p-6 w-full ">
-                <div class="flex justify-between">
-                    <span class="border-b w-1/3 mb-3 border-gray-600 pb-2 font-semibold text-base">랙 조립 완료 목록
-                    </span>
-                </div>
+                <span class="border-b w-1/3 mb-3 border-gray-600 pb-2 font-semibold text-base">랙 조립 의뢰 목록</span>
                 <div class="w-64 border h-6 mb-2">
 
                     <form method="get" action="" class="w-full flex ">
@@ -39,43 +33,49 @@
                         <table class="table-fixed font-light text-xs w-full">
                             <thead>
                                 <tr>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">랙출하</th>
+                                    <th class="border bg-gray-200 px-2 py-2 w-24">수입검사등록</th>
                                     <th class="border bg-gray-200 px-4 py-2 w-24">수주코드</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">출하요청자</th>
                                     <th class="border bg-gray-200 px-4 py-2 w-24">랙시리얼코드</th>
                                     <th class="border bg-gray-200 px-4 py-2 w-24">랙모델명</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">출하요청수량</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">출하요청자</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">출하요청일</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-32">출하요청수량</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">출하희망일</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {%for list in queryset%}
                                 <tr>
-                                    <td class="border px-4 py-2 justify-center">
-                                        <a href="{%url "stockmanages:rackoutregister" list.pk%}" class="">
-                                            <div class=" btn-link -mb-1 hover:font-bold w-full">
-                                                랙출하
+                                    <td class="border px-2 py-2 font-bold 
+                                    text-blue-800 justify-center">
+                                        <a href="{%url "producemanages:rackmakeregister" list.pk %}">
+                                            <div
+                                                class="btn-link hover:bg-blue-800 bg-teal-700 hover:font-bold mt-1 mb-0  w-full">
+                                                랙조립등록
                                             </div>
                                         </a>
                                     </td>
                                     <td class="border px-4 py-2  hover:text-blue-700 hover:font-bold "><a
-                                            href="{%url "stockmanages:orderdetail" list.수주.pk %}">
+                                            href="{%url "producemanages:orderdetail" list.수주.pk %}">
                                             {{list.수주.수주코드}}</a></td>
-                                    <td class="border px-4 py-2 ">
-                                        {{list.랙.랙시리얼코드}}</td>
+                                    <td class="border px-4 py-2">{{list.출하요청자}}</td>
+                                    <td class="border px-4 py-2">{{list.랙.랙시리얼코드}}</td>
                                     <td class="border px-4 py-2">{{list.랙.랙모델명}}</td>
-                                    <td class="border px-4 py-2 ">{{list.출하요청수량}}</td>
-                                    <td class="border px-4 py-2 ">
-                                        {{list.출하요청자}}</td>
+                                    <td class="border px-4 py-2">{{list.출하요청수량}}</td>
+
+
                                     <td class="border px-4 py-2">
-                                        {{list.출하요청일.year}}-{{list.출하요청일.month}}-{{list.출하요청일.day}}
+
+                                        {% if list.출하희망일 %}
+                                        {{list.출하희망일.year}}-{{list.출하희망일.month}}-{{list.출하희망일.day}}
+                                        {% endif %}
+
+                                    </td>
                                     </td>
                                 </tr>
                                 {%endfor%}
 
                             </tbody>
                         </table>
-
                         {%if nonpage%}
                         {%else%}
                         <div class="flex ml-2">
@@ -107,5 +107,4 @@
 
         </div>
     </div>
-</div>
-{%endblock main_contens %}
+    {%endblock main_contens %}

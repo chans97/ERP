@@ -9,7 +9,7 @@ urlpatterns = [
         "orderrackoutregister/<int:pk>/",
         views.orderrackoutregister,
         name="orderrackoutregister",
-    ),   
+    ),
     path(
         "orderstockrackdelete/<int:pk>/",
         views.orderstockrackdelete,

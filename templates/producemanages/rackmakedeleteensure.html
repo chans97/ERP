@@ -1,0 +1,37 @@
+{%extends "producemanages/producemanageshome.html"%}
+{% load static%}
+{% block page_title%}
+생산계획삭제
+{%endblock%}
+
+
+{%block head_title%}
+<i class="fas fa-angle-right text-base mx-1"></i>
+수주정보<i class="fas fa-angle-right mx-1 text-base"></i><span class="text-gray-700">{{makerequest}} 삭제확인</span>
+{%endblock head_title %}
+
+
+{%block main_contens%}
+{%include "partials/deleteensure.html" with maintitle=makerequest object="랙조립" object_name=makerequest %}
+<div class="flex flex-row mt-5">
+    <div class="mt-2 ">
+        <a href="{%url "producemanages:orderdetail" makerequest.랙출하요청.수주.pk %}">
+            <div class="btn-link bg-teal-800 hover:font-bold">
+                돌아가기 </div>
+        </a>
+    </div>
+    <div class="mt-2">
+        <a href="{%url "producemanages:rackmakedelete" makerequest.pk %}">
+            <div class="btn-link  bg-red-800 ml-12 hover:font-bold">
+                삭제확인 </div>
+        </a>
+    </div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+{%endblock main_contens %}

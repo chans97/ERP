@@ -15,10 +15,18 @@
 
 {%block main_contens%}
 <div class="flex flex-col">
-    <div class="w-11/12 h-full ml-32 -mt-6 font-semibold pt-12 flex flex-col">
+    <div class="w-full h-full pl-32 -mt-6 font-semibold pt-12 flex flex-col">
 
-        <div class="flex flex-col p-6 w-full ">
-            <span class="border-b w-1/3 mb-3 border-gray-600 pb-2 font-semibold text-base">내 랙 조립 목록 </span>
+        <div class="flex flex-col p-6 w-full">
+            <div class="flex justify-between">
+                <span class="border-b w-1/3 mb-3 border-gray-600 pb-2 font-semibold text-base">내 랙 조립 목록 </span>
+                <div class="">
+                    <a href="{%url "producemanages:requestrackmakelist"%}">
+                        <div class="btn-link bg-teal-800 hover:font-bold">
+                            랙 조립등록 </div>
+                    </a>
+                </div>
+            </div>
             <div class="w-64 border h-6 mb-2">
 
                 <form method="get" action="" class="w-full flex ">
@@ -35,32 +43,52 @@
                     <table class="table-fixed font-light text-xs w-full">
                         <thead>
                             <tr>
+                                <th class="border bg-gray-200 px-4 py-2 w-24">현재공정</th>
                                 <th class="border bg-gray-200 px-2 py-2 w-32">랙</th>
                                 <th class="border bg-gray-200 px-2 py-2 w-32">수주코드</th>
-                                <th class="border bg-gray-200 px-2 py-2 w-24">랙출하요청</th>
-                                <th class="border bg-gray-200 px-4 py-2 w-24">현재공정</th>
                                 <th class="border bg-gray-200 px-4 py-2 w-24">제작수량</th>
                                 <th class="border bg-gray-200 px-4 py-2 w-24">랙조립기사</th>
-                                <th class="border bg-gray-200 px-4 py-2 w-32">특이사항</th>
                                 <th class="border bg-gray-200 px-4 py-2 w-24">랙조립일자</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-32">특이사항</th>
                             </tr>
                         </thead>
                         <tbody>
                             {%for list in s_order%}
                             <tr>
+                                <td class="border px-4 py-2 font-bold">{%if not list.랙출하요청.unexport%}
+                                    <span class="text-green-700">
+
+                                        출하완료
+                                    </span>
+
+                                    {%elif list%}
+                                    <span class="text-red-600">
+
+                                        {{list.현재공정}}
+                                    </span>
+
+                                    {%else%}
+                                    조립 시작 전입니다.
+                                    {%endif%}</td>
                                 <td class="border px-4 py-2 font-bold 
                             text-blue-800 ">
                                     {{list.랙}}</td>
                                 <td class="border px-4 py-2  hover:text-blue-700 hover:font-bold "><a
                                         href="{%url "producemanages:orderdetail" list.랙출하요청.수주.pk %}">
                                         {{list.랙출하요청.수주.수주코드}}</a></td>
-                                <td class="border px-4 py-2">{{list.랙출하요청}}</td>
-                                <td class="border px-4 py-2">{{list.현재공정}}</td>
+
                                 <td class="border px-4 py-2">{{list.제작수량}}</td>
                                 <td class="border px-4 py-2">{{list.랙조립기사}}</td>
-                                <td class="border px-4 py-2">{{list.특이사항}}</td>
                                 <td class="border px-4 py-2">
                                     {{list.랙조립일자.year}}-{{list.랙조립일자.month}}-{{list.랙조립일자.day}}</td>
+
+                                <td class="border px-4 py-2">
+                                    <script>
+                                        var test = "{{list.특이사항}}";
+                                        var result = test.replace('None', '');
+                                        document.write(result);
+                                    </script>
+                                </td>
                             </tr>
                             {%endfor%}
 

@@ -147,7 +147,9 @@ urlpatterns = [
     ),
     path("materialregister/", views.materialregister, name="materialregister",),
     path(
-        "materialdetail/<int:pk>/", views.MaterialDetialView.as_view(), name="materialdetail",
+        "materialdetail/<int:pk>/",
+        views.MaterialDetialView.as_view(),
+        name="materialdetail",
     ),
     path("materialedit/<int:pk>/", views.materialedit.as_view(), name="materialedit",),
     path(
@@ -156,4 +158,5 @@ urlpatterns = [
         name="materialdeleteensure",
     ),
     path("materialdelete/<int:pk>/", views.materialdelete, name="materialdelete",),
+    path("orderdetail/<int:pk>/", views.OrderDetail.as_view(), name="orderdetail",),
 ]

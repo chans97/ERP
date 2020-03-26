@@ -144,6 +144,7 @@ class updatestockofsingle(forms.Form):
         order = super().save(commit=False)
         return order
 
+
 class rackoutregisterForm(forms.ModelForm):
     class Meta:
         model = SR_models.StockOfRackProductOut
@@ -159,3 +160,7 @@ class rackoutregisterForm(forms.ModelForm):
     def save(self, *arg, **kwargs):
         order = super().save(commit=False)
         return order
+
+    def clean(self):
+        self.is_bound = False
+        cleaned_data = super().clean()

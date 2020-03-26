@@ -147,9 +147,9 @@
         {%endif%}
         {%if inproduce%}
         <div class="flex flex-col w-full  mt-5">
-            <div class="flex flex-row justify-between w-full ">
-                <div class="flex flex-col  w-full ">
-                    <div class=" border-b w-64 mb-3 font-semibold border-gray-600 pb-2">{%if final%}<i
+            <div class="flex flex-row justify-between w-full">
+                <div class="flex flex-col  w-full">
+                    <div class=" border-b w-64 font-semibold border-gray-600">{%if final%}<i
                             class="fas fa-angle-double-down text-lg"></i> {%endif%}생산 중 - {{order.생산요청.생산계획.생산계획등록코드}}
                     </div>
                 </div>
@@ -160,22 +160,22 @@
             {%if orderfinalboolean%}
             {%else%}
             <div class="flex justify-end">
-                <div class="flex flex-row pb-2">
+                <div class="flex flex-row">
                     <div class="">
                         <a href="{%url "producemanages:produceplanupdate" order.생산요청.생산계획.pk%}">
-                            <div class="btn-link bg-teal-800 hover:font-bold">
+                            <div class="btn-link mb-0 bg-teal-800 hover:font-bold">
                                 업데이트 </div>
                         </a>
                     </div>
                     <div class="">
                         <a href="{%url "producemanages:produceplantotalupdate" order.생산요청.생산계획.pk %}">
-                            <div class="btn-link  bg-blue-800 ml-5 hover:font-bold">
+                            <div class="btn-link mb-0 bg-blue-800 ml-5 hover:font-bold">
                                 생산계획수정 </div>
                         </a>
                     </div>
                     <div class="">
                         <a href="{%url "producemanages:produceplandeleteensure" order.생산요청.생산계획.pk %}">
-                            <div class="btn-link  bg-red-800 ml-5 hover:font-bold">
+                            <div class="btn-link mb-0 bg-red-800 ml-5 hover:font-bold">
                                 생산계획삭제 </div>
                         </a>
                     </div>
@@ -183,7 +183,7 @@
             </div>
             {%endif%}
             {%endif%}
-            <table class="table-fixed font-light text-xs w-full">
+            <table class="table-fixed font-light text-xs w-full -mt-4">
                 <thead>
                     <tr>
                         <th class="border bg-gray-200 px-4 py-2 w-24">생산계획등록코드</th>
@@ -384,7 +384,7 @@
         <div class="flex flex-col w-full  mt-12">
 
             <div class="flex flex-col  w-full border-black border-dashed pt-8   border-t">
-                <div class=" border-b w-64 mb-3 font-semibold border-gray-600 pb-2 mt-6">출하 요청 내역</div><span
+                <div class=" border-b w-64 mb-3 font-semibold border-gray-600 pb-2">출하 요청 내역</div><span
                     class="text-red-700 text-xs -mt-2 mb-1">*출하요청철회시 바로 철회됩니다.</span>
 
 
@@ -460,7 +460,7 @@
         <div class="flex flex-col w-full  mt-12">
 
             <div class="flex flex-col  w-full border-black border-dashed pt-8   border-t">
-                <div class=" border-b w-64 mb-3 font-semibold border-gray-600 pb-2 mt-6">출하 요청 내역</div><span
+                <div class=" border-b w-64 mb-3 font-semibold border-gray-600 pb-2">출하 요청 내역</div><span
                     class="text-red-700 text-xs -mt-2 mb-1">*출하요청철회시 바로 철회됩니다.</span>
             </div>
             <table class="table-fixed font-light text-xs w-full">
@@ -473,18 +473,26 @@
                         <th class="border bg-gray-200 px-4 py-2 w-24">출하수량</th>
                         <th class="border bg-gray-200 px-4 py-2 w-24">제품명</th>
                         <th class="border bg-gray-200 px-4 py-2 w-24"></th>
+
+                        <th class="border bg-gray-200 px-4 py-2 w-24"></th>
                     </tr>
                 </thead>
 
                 <tbody>
                     {%for list in orderrack%}
                     <tr>
-                        <td class="border px-4 py-2">
+                        <td class="border px-4 py-2 font-bold">
                             {%if not list.unexport%}
-                            출하완료되었습니다.
+                            <span class="text-green-700">
+
+                                출하완료되었습니다.
+                            </span>
 
                             {%elif list.랙조립%}
-                            {{list.랙조립.현재공정}}
+                            <span class="text-red-600">
+
+                                {{list.랙조립.현재공정}}
+                            </span>
 
                             {%else%}
                             조립 시작 전입니다.
@@ -501,7 +509,7 @@
                         {%else%}
                         <td class="border px-4 py-2">{{list.랙}}</td>
                         {%endif%}
-                        <td class="border px-4 py-2">
+                        <td class="border px-4 py-2 font-semibold">
                             {%if obj_user == user%}
 
                             {%if list.랙출하등록%}
@@ -535,6 +543,43 @@
                             <span class="text-red-700">본인 수주가 아닙니다.</span>
                             {%endif%}
                         </td>
+                        <td class="border px-4 py-2 font-semibold">
+                            {%if list.랙조립%}
+                            {% if list.랙조립.랙조립기사 == user %}
+
+                            {%if list.랙출하등록%}
+                            <span class="text-green-700">출하완료</span>
+
+                            {%else%}
+                            {%if list.랙조립%}
+
+                            <div class="flex justify-center flex-col items-center w-full">
+                                <a href="{%url "producemanages:rackmakeedit" list.랙조립.pk %} ">
+                                    <div class="btn-link bg-teal-800 hover:font-bold  mt-1 mb-0 w-32">
+                                        업데이트
+                                    </div>
+                                </a>
+                                <a href="{%url "producemanages:rackmakedeleteensure" list.랙조립.pk %}">
+                                    <div class="btn-link bg-red-800 hover:font-bold  mt-1 mb-0  w-32">
+                                        랙조립취소
+                                    </div>
+                            </div>
+                            {%endif%}
+
+
+
+                            {%endif%}
+                            {%else%}
+                            <span class="text-red-700">조립기사만 확인가능</span>
+                            {%endif%}
+                            {%else%}
+                            <a href="{%url "producemanages:rackmakeregister" list.pk %}">
+                                <div class="btn-link hover:bg-blue-800 bg-teal-700 hover:font-bold mt-1 mb-0  w-full">
+                                    랙조립등록
+                                </div>
+                            </a>
+                            {%endif%}
+                        </td>
                     </tr>
                     {%endfor%}
 
@@ -546,9 +591,9 @@
 
         {%endif%}
         {%if order.backsingle != no %}
-        <div class="flex flex-col w-full  my-12">
+        <div class="flex flex-col w-full  my-5">
 
-            <div class="flex flex-col  w-full border-black border-dashed pt-8   border-t">
+            <div class="flex flex-col  w-full border-black border-dashed  border-t">
                 <div class=" border-b w-64 mb-3 font-semibold border-gray-600 pb-2 mt-6">반품 요청 내역</div>
 
 
@@ -610,3 +655,4 @@
 
 
     </div>
+</div>

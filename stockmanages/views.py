@@ -36,6 +36,13 @@ from StandardInformation import forms as SI_forms
 from . import models
 import urllib
 from random import randint
+from orders import views as OR_views
+from core import views as core_views
+
+
+class OrderDetail(OR_views.OrderDetail):
+    model = OR_models.OrderRegister
+    templatename = "stockmanages/orderdetail.html"
 
 
 class stockmanageshome(core_views.threelist):
@@ -958,7 +965,12 @@ class rackoutrequestlist(core_views.onelist):
                 try:
                     s.랙출하등록
                 except:
-                    queryset.append(s)
+                    try:
+                        s.랙조립
+                        if s.랙조립.현재공정 == "소방대기완료":
+                            queryset.append(s)
+                    except:
+                        pass
 
             self.s_bool = False
         else:
@@ -971,9 +983,14 @@ class rackoutrequestlist(core_views.onelist):
             queryset = []
             for s in order:
                 try:
-                    s.단품출하등록
+                    s.랙출하등록
                 except:
-                    queryset.append(s)
+                    try:
+                        s.랙조립
+                        if s.랙조립.현재공정 == "소방대기완료":
+                            queryset.append(s)
+                    except:
+                        pass
 
         return queryset
 
@@ -982,6 +999,9 @@ def rackoutregister(request, pk):
     rackoutrequest = SR_models.StockOfRackProductOutRequest.objects.get_or_none(pk=pk)
 
     form = forms.rackoutregisterForm(request.POST)
+    form.initial = {
+        "출하수량": rackoutrequest.출하요청수량,
+    }
     seletelist = [
         "출고유형",
     ]

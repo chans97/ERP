@@ -122,7 +122,7 @@ class StockOfRackProductOutRequest(TimeStampedModel):
 class StockOfRackProductMaker(TimeStampedModel):
     현재공정_CHOICES = (("배선중", "배선중"), ("소방대기완료", "소방대기완료"))
     현재공정 = models.CharField(
-        choices=현재공정_CHOICES, max_length=10, default="배선중", null=True, blank=True,
+        choices=현재공정_CHOICES, max_length=10, default="배선중", null=True,
     )
 
     랙 = models.ForeignKey(
@@ -134,7 +134,6 @@ class StockOfRackProductMaker(TimeStampedModel):
         on_delete=models.CASCADE,
         null=True,
     )
-    현재공정 = models.CharField(choices=현재공정_CHOICES, max_length=10, blank=True, null=True,)
     제작수량 = models.IntegerField()
     랙조립기사 = models.ForeignKey(
         users_models.User, related_name="랙조립", on_delete=models.SET_NULL, null=True,

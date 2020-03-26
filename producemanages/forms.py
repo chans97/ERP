@@ -2,6 +2,7 @@ from django import forms
 from . import models
 from StandardInformation import models as SI_models
 from qualitycontrols import models as QC_models
+from stockrack import models as SR_models
 
 
 class UploadProducePlanForm(forms.ModelForm):
@@ -179,3 +180,29 @@ class UploadRepairForm(forms.ModelForm):
     def save(self, *arg, **kwargs):
         partner = super().save(commit=False)
         return partner
+
+
+class rackmakeregister(forms.ModelForm):
+    class Meta:
+        model = SR_models.StockOfRackProductMaker
+        fields = (
+            "현재공정",
+            "제작수량",
+            "랙조립일자",
+            "특이사항",
+        )
+        widgets = {
+            "현재공정": forms.RadioSelect(),
+        }
+
+    def save(self, *arg, **kwargs):
+        partner = super().save(commit=False)
+        return partner
+
+    def clean(self):
+        self.is_bound = False
+        code = self.cleaned_data.get("현재공정")
+        if code:
+            self.is_bound = True
+            code = code[0:2]
+            return self.cleaned_data

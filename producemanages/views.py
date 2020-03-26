@@ -36,6 +36,7 @@ from afterservices import models as AS_models
 from random import randint
 from stockrack import models as SR_models
 from orders import views as OR_views
+from core import views as core_views
 
 
 class OrderDetail(OR_views.OrderDetail):
@@ -466,7 +467,7 @@ def rackmakelist(request):
         search = "search"
     return render(
         request,
-        "producemanages/workorderlist.html",
+        "producemanages/rackmakelist.html",
         {
             "s_order": s_order,
             "search": search,
@@ -571,7 +572,7 @@ class workorderupdate(user_mixins.LoggedInOnlyView, UpdateView):
         workorder.save()
         print(workorder.수량)
 
-        messages.success(self.request, "작업지시서 등록이 완료되었습니다.")
+        messages.success(self.request, "작업지시서 수정이 완료되었습니다.")
         return super().form_valid(form)
 
 
@@ -1820,3 +1821,140 @@ def repairrequestdetail(request, pk):
         "producemanages/repairrequestdetail.html",
         {"repair": repair, "user": user,},
     )
+
+
+class requestrackmakelist(core_views.onelist):
+    templatename = "producemanages/requestrackmakelist.html"
+
+    def get_first_queryset(self, request):
+        self.search = request.GET.get("search")
+        if self.search is None:
+            requestrackmakelist = SR_models.StockOfRackProductOutRequest.objects.all().order_by(
+                "-created"
+            )
+            queryset = []
+            for s in requestrackmakelist:
+                try:
+                    s.랙조립
+                except:
+                    queryset.append(s)
+            self.s_bool = False
+        else:
+            self.s_bool = True
+            requestrackmakelist = SR_models.StockOfRackProductOutRequest.objects.filter(
+                Q(수주__수주코드__contains=self.search)
+                | Q(출하요청자__first_name__contains=self.search)
+                | Q(랙__랙시리얼코드__contains=self.search)
+                | Q(랙__랙모델명__contains=self.search)
+                | Q(고객사__거래처명__contains=self.search)
+            ).order_by("-created")
+            queryset = []
+            for s in requestrackmakelist:
+                try:
+                    s.랙조립
+                except:
+                    queryset.append(s)
+        return queryset
+
+
+def rackmakeregister(request, pk):
+    user = request.user
+    makerequest = SR_models.StockOfRackProductOutRequest.objects.get_or_none(pk=pk)
+
+    form = forms.rackmakeregister(request.POST)
+    form.initial = {
+        "제작수량": makerequest.출하요청수량,
+    }
+
+    if form.is_valid():
+        현재공정 = form.cleaned_data.get("현재공정")
+        제작수량 = form.cleaned_data.get("제작수량")
+        랙조립일자 = form.cleaned_data.get("랙조립일자")
+        특이사항 = form.cleaned_data.get("특이사항")
+
+        SM = SR_models.StockOfRackProductMaker.objects.create(
+            현재공정=현재공정,
+            랙=makerequest.랙,
+            랙출하요청=makerequest,
+            제작수량=제작수량,
+            랙조립기사=user,
+            랙조립일자=랙조립일자,
+            특이사항=특이사항,
+        )
+
+        messages.success(request, "랙조립 등록이 완료되었습니다.")
+
+        return redirect(reverse("producemanages:requestrackmakelist"))
+    selectlist = [
+        "현재공정",
+    ]
+    return render(
+        request,
+        "producemanages/produceplanregister.html",
+        {"form": form, "makerequest": makerequest, "selectlist": selectlist,},
+    )
+
+
+class rackmakeedit(user_mixins.LoggedInOnlyView, UpdateView):
+    model = SR_models.StockOfRackProductMaker
+    template_name = "producemanages/rackmakeedit.html"
+    form_class = forms.rackmakeregister
+
+    def render_to_response(self, context, **response_kwargs):
+
+        response_kwargs.setdefault("content_type", self.content_type)
+        pk = self.kwargs.get("pk")
+        makerequest = SR_models.StockOfRackProductMaker.objects.get_or_none(pk=pk)
+        order = makerequest.랙출하요청.수주
+        context["makerequest"] = makerequest
+        return self.response_class(
+            request=self.request,
+            template=self.get_template_names(),
+            context=context,
+            using=self.template_engine,
+            **response_kwargs,
+        )
+
+    def get_success_url(self):
+        pk = self.kwargs.get(self.pk_url_kwarg)
+        makerequest = SR_models.StockOfRackProductMaker.objects.get_or_none(pk=pk)
+        order = makerequest.랙출하요청.수주
+        pk = order.pk
+        return reverse("producemanages:orderdetail", kwargs={"pk": pk})
+
+    def form_valid(self, form):
+        self.object = form.save()
+
+        현재공정 = form.cleaned_data.get("현재공정")
+        제작수량 = form.cleaned_data.get("제작수량")
+        랙조립일자 = form.cleaned_data.get("랙조립일자")
+        특이사항 = form.cleaned_data.get("특이사항")
+        pk = self.kwargs.get(self.pk_url_kwarg)
+        makerequest = SR_models.StockOfRackProductMaker.objects.get_or_none(pk=pk)
+        makerequest.현재공정 = 현재공정
+        makerequest.제작수량 = 제작수량
+        makerequest.랙조립일자 = 랙조립일자
+        makerequest.특이사항 = 특이사항
+        makerequest.save()
+
+        messages.success(self.request, "수정이 완료되었습니다.")
+        return super().form_valid(form)
+
+
+def rackmakedeleteensure(request, pk):
+    makerequest = SR_models.StockOfRackProductMaker.objects.get_or_none(pk=pk)
+
+    return render(
+        request,
+        "producemanages/rackmakedeleteensure.html",
+        {"makerequest": makerequest,},
+    )
+
+
+def rackmakedelete(request, pk):
+    makerequest = SR_models.StockOfRackProductMaker.objects.get_or_none(pk=pk)
+    order = makerequest.랙출하요청.수주
+    pk = order.pk
+    makerequest.delete()
+    messages.success(request, "랙조립이 삭제되었습니다.")
+    return redirect(reverse("producemanages:orderdetail", kwargs={"pk": pk}))

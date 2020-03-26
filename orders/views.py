@@ -407,6 +407,26 @@ class OrderDetail(user_mixins.LoggedInOnlyView, DetailView):
         for pki in rpk:
             SS = SM_models.StockOfRackProductOutRequest.objects.get_or_none(pk=pki)
             orderrack.append(SS)
+        try:
+            order.생산요청.생산계획.작업지시서
+            workboolean = True
+        except:
+            workboolean = False
+        try:
+            order.생산요청.생산계획.작업지시서.작업지시서등록
+            workdoneboolean = True
+        except:
+            workdoneboolean = False
+        try:
+            order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사
+            orderfinalboolean = True
+        except:
+            orderfinalboolean = False
+        try:
+            order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.수리내역서
+            repairboolean = True
+        except:
+            repairboolean = False
 
         return render(
             request,
@@ -423,6 +443,10 @@ class OrderDetail(user_mixins.LoggedInOnlyView, DetailView):
                 "no": 0,
                 "orderrack": orderrack,
                 "ordersingleback": ordersingleback,
+                "workboolean": workboolean,
+                "workdoneboolean": workdoneboolean,
+                "orderfinalboolean": orderfinalboolean,
+                "repairboolean": repairboolean,
             },
         )
 

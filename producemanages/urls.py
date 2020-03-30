@@ -115,21 +115,19 @@ urlpatterns = [
     path(
         "rackmakeregister/<int:pk>/", views.rackmakeregister, name="rackmakeregister",
     ),
-    path(
-        "rackmakeedit/<int:pk>/",
-        views.rackmakeedit.as_view(),
-        name="rackmakeedit",
-    ),
+    path("rackmakeedit/<int:pk>/", views.rackmakeedit.as_view(), name="rackmakeedit",),
     path(
         "rackmakedeleteensure/<int:pk>/",
         views.rackmakedeleteensure,
         name="rackmakedeleteensure",
     ),
-    
+    path("rackmakedelete/<int:pk>/", views.rackmakedelete, name="rackmakedelete",),
+    path("monthlyplanlist/", views.monthlyplanlist.as_view(), name="monthlyplanlist",),
     path(
-        "rackmakedelete/<int:pk>/",
-        views.rackmakedelete,
-        name="rackmakedelete",
+        "monthlyplandetail/<int:ypk>/<int:mpk>",
+        views.monthlyplandetail,
+        name="monthlyplandetail",
     ),
+    path("monthlyplannewlist/", views.monthlyplannewlist.as_view(), name="monthlyplannewlist",),
     
 ]

@@ -18,3 +18,14 @@ class WorkOrder(admin.ModelAdmin):
 class WorkOrderRegister(admin.ModelAdmin):
     empty_value_display = "입력 값 없음"
     list_display = ("__str__", "생산담당자")
+
+
+@admin.register(models.MonthlyProduceList)
+class MonthlyProduceList(admin.ModelAdmin):
+    empty_value_display = "입력 값 없음"
+    list_display = (
+        "__str__",
+        "단품모델",
+        "수량",
+        "작성자",
+    )

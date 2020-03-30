@@ -1958,3 +1958,102 @@ def rackmakedelete(request, pk):
     makerequest.delete()
     messages.success(request, "랙조립이 삭제되었습니다.")
     return redirect(reverse("producemanages:orderdetail", kwargs={"pk": pk}))
+
+
+class monthlyplanlist(core_views.onelist):
+    templatename = "producemanages/monthlyplanlist.html"
+
+    def get_first_queryset(self, request):
+        self.search = request.GET.get("search")
+        if self.search is None:
+            monthlyplan = OR_models.OrderRegister.objects.filter(
+                영업구분="월별생산계획"
+            ).order_by("-created")
+            monthlyplan = list(monthlyplan)
+            newest = monthlyplan[0]
+            oldest = monthlyplan[-1]
+            yeargap = newest.created.year - oldest.created.year
+            monthgap = newest.created.month - oldest.created.month
+            totalgap = yeargap * 12 + monthgap
+            totalgaprange = list(range(0, totalgap + 1))
+            totalgaprange.sort(reverse=True)
+            self.startyear = oldest.created.year
+            self.startmonth = oldest.created.month
+
+            queryset = totalgaprange
+
+            self.s_bool = False
+        else:
+            self.s_bool = True
+            monthlyplan = SR_models.StockOfRackProductOutRequest.objects.filter(
+                Q(수주__수주코드__contains=self.search)
+                | Q(출하요청자__first_name__contains=self.search)
+                | Q(랙__랙시리얼코드__contains=self.search)
+                | Q(랙__랙모델명__contains=self.search)
+                | Q(고객사__거래처명__contains=self.search)
+            ).order_by("-created")
+            queryset = []
+            for s in monthlyplan:
+                try:
+                    s.랙조립
+                except:
+                    queryset.append(s)
+        return queryset
+
+    def get(self, request):
+        self.get_page()
+        return render(
+            request,
+            self.templatename,
+            {
+                "queryset": self.queryset,
+                "page": self.page,
+                "totalpage": self.totalpage,
+                "notsamebool": self.notsamebool,
+                "nextpage": self.nextpage,
+                "previouspage": self.previouspage,
+                "nonpage": self.nonpage,
+                "search": self.search,
+                "s_bool": self.s_bool,
+                "startmonth": self.startmonth,
+                "startyear": self.startyear,
+            },
+        )
+
+
+def monthlyplandetail(request, ypk, mpk):
+    listformonth = OR_models.OrderRegister.objects.filter(영업구분="월별생산계획").order_by(
+        "-created"
+    )
+    queryset = []
+    for order in listformonth:
+        if (order.created.year == ypk) and (order.created.month == mpk):
+            queryset.append(order)
+
+    return render(
+        request,
+        "producemanages/monthlyplandetail.html",
+        {"queryset": queryset, "ypk": ypk, "mpk": mpk,},
+    )
+
+
+class monthlyplannewlist(core_views.onelist):
+    templatename = "producemanages/monthlyplannewlist.html"
+
+    def get_first_queryset(self, request):
+        self.search = request.GET.get("search")
+        if self.search is None:
+
+            monthlyplan = models.MonthlyProduceList.objects.all().order_by("created")
+            queryset = list(monthlyplan)
+
+            self.s_bool = False
+        else:
+            self.s_bool = True
+            monthlyplan = models.MonthlyProduceList.objects.filter(
+                Q(작성자__first_name__contains=self.search)
+                | Q(단품모델__모델코드__contains=self.search)
+                | Q(단품모델__모델명__contains=self.search)
+            ).order_by("created")
+            queryset = list(monthlyplan)
+        return queryset

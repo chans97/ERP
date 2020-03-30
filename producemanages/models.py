@@ -4,6 +4,7 @@ from core.models import TimeStampedModel
 from orders import models as orders_models
 from users import models as users_models
 from django.utils import timezone
+from StandardInformation import models as SI_models
 
 
 class ProduceRegister(TimeStampedModel):
@@ -133,3 +134,24 @@ class WorkOrderRegister(TimeStampedModel):
     def __str__(self):
         return f" '{self.작업지시서}' 의 작업지시서 등록"
 
+
+class MonthlyProduceList(TimeStampedModel):
+
+    단품모델 = models.ForeignKey(
+        SI_models.SingleProduct,
+        related_name="월별생산계획",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+    수량 = models.IntegerField(null=True)
+    작성자 = models.ForeignKey(
+        users_models.User, related_name="월별생산계획", on_delete=models.SET_NULL, null=True,
+    )
+
+    class Meta:
+        verbose_name = "월별생산계획"
+        verbose_name_plural = "월별생산계획"
+
+    def __str__(self):
+        return f" 월별생산계획 : {self.단품모델} {self.수량}{self.단품모델.단위}  <{self.작성자}>"

@@ -31,11 +31,13 @@
                             <thead>
                                 <tr>
                                     <th class="border bg-gray-200 px-4 py-2 w-24">진행상태</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">수주코드</th>
                                     <th class="border bg-gray-200 px-4 py-2 w-24">계획생산</th>
                                     <th class="border bg-gray-200 px-4 py-2 w-32">제품코드</th>
                                     <th class="border bg-gray-200 px-4 py-2 w-24">제품명</th>
                                     <th class="border bg-gray-200 px-4 py-2 w-24">생산목표수량</th>
                                     <th class="border bg-gray-200 px-4 py-2 w-24">생산계획일자</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">생산계획철회</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -46,6 +48,9 @@
 
                                 <tr>
                                     <td class="border px-4 py-2 font-bold">{{order.process}}</td>
+                                    <td class="border px-4 py-2  hover:text-blue-700 hover:font-bold "><a
+                                            href="{%url "producemanages:orderdetail" order.pk %}">
+                                            {{order.수주코드}}</a></td>
                                     <td class="border px-4 py-2">{{order.영업구분}}</td>
                                     <td class="border px-4 py-2">{{order.단품모델.모델코드}}</td>
                                     <td class="border px-4 py-2">{{order.단품모델.모델명}}</td>
@@ -53,6 +58,23 @@
                                     <td class="border px-4 py-2">{{order.납품수량}}</td>
                                     <td class="border px-4 py-2">
                                         {{order.created.year}}-{{order.created.month}}-{{order.created.day}}</td>
+                                    <td class="border px-4 py-2">
+
+                                        {% if order.생산요청.생산계획.작업지시서.작업지시서등록 %}
+                                        <span class="font-bold text-red-700">
+                                            {{order.process}}
+                                        </span>
+                                        {%else%}
+
+
+                                        <a href="{%url "producemanages:deleteallplan" order.pk ypk mpk%}">
+                                            <div
+                                                class="btn-link hover:bg-red-800  bg-red-700 hover:font-bold mt-1 mb-0 ml-1">
+                                                생산계획철회
+                                            </div>
+                                        </a>
+                                        {% endif %}
+                                    </td>
 
                                 </tr>
                                 {% endfor %}

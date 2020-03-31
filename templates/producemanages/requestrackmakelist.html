@@ -57,8 +57,11 @@
                                     <td class="border px-4 py-2  hover:text-blue-700 hover:font-bold "><a
                                             href="{%url "producemanages:orderdetail" list.수주.pk %}">
                                             {{list.수주.수주코드}}</a></td>
-                                    <td class="border px-4 py-2">{{list.출하요청자}}</td>
-                                    <td class="border px-4 py-2">{{list.랙.랙시리얼코드}}</td>
+                                    <td class="border px-4 py-2 ">{{list.출하요청자}}</td>
+
+                                    <td class="border px-4 py-2 hover:text-blue-700 hover:font-bold"><a
+                                            href="{%url "producemanages:rackdetail" list.랙.pk %}">{{list.랙.랙시리얼코드}}
+                                        </a></td>
                                     <td class="border px-4 py-2">{{list.랙.랙모델명}}</td>
                                     <td class="border px-4 py-2">{{list.출하요청수량}}</td>
 

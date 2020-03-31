@@ -128,6 +128,25 @@ urlpatterns = [
         views.monthlyplandetail,
         name="monthlyplandetail",
     ),
-    path("monthlyplannewlist/", views.monthlyplannewlist.as_view(), name="monthlyplannewlist",),
-    
+    path(
+        "monthlyplannewlist/",
+        views.monthlyplannewlist.as_view(),
+        name="monthlyplannewlist",
+    ),
+    path(
+        "monthlyplanregister/<int:pk>/",
+        views.monthlyplanregister,
+        name="monthlyplanregister",
+    ),
+    path(
+        "monthlyplanregisternew/",
+        views.monthlyplanregisternew,
+        name="monthlyplanregisternew",
+    ),
+    path(
+        "deleteallplan/<int:pk>/<int:ypk>/<int:mpk>/",
+        views.deleteallplan,
+        name="deleteallplan",
+    ),
+    path("rackdetail/<int:pk>/", views.RackDetialView.as_view(), name="rackdetail",),
 ]

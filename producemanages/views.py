@@ -2057,3 +2057,277 @@ class monthlyplannewlist(core_views.onelist):
             ).order_by("created")
             queryset = list(monthlyplan)
         return queryset
+
+
+def monthlyplanregister(request, pk):
+    form = forms.monthlyplanregister(request.POST)
+    monthlyplan = models.MonthlyProduceList.objects.get_or_none(pk=pk)
+    user = request.user
+    수량 = monthlyplan.수량
+
+    form.initial = {"수량": 수량}
+
+    if form.is_valid():
+        수량 = form.cleaned_data.get("수량")
+
+        def give_new_number():
+            while True:
+                n = randint(1, 999999)
+                num = str(n).zfill(6)
+                code = "OR" + num
+                obj = OR_models.OrderRegister.objects.get_or_none(수주코드=code)
+                if obj:
+                    pass
+                else:
+                    return code
+
+        def give_number():
+            while True:
+                n = randint(1, 999999)
+                num = str(n).zfill(6)
+                code = "OP" + num
+                obj = OR_models.OrderProduce.objects.get_or_none(생산의뢰코드=code)
+                if obj:
+                    pass
+                else:
+                    return code
+
+        single_order = OR_models.OrderRegister.objects.create(
+            작성자=user,
+            수주코드=give_new_number(),
+            영업구분="월별생산계획",
+            사업장구분="삼형전자",
+            수주일자=timezone.now().date(),
+            현장명="월별생산계획",
+            특이사항="월별생산계획",
+            제품구분="단품",
+            단품모델=monthlyplan.단품모델,
+            납품수량=수량,
+            출하구분="출하미완료",
+        )
+
+        SM = OR_models.OrderProduce.objects.create(
+            생산의뢰수주=single_order, 생산의뢰코드=give_number(), 긴급도="일반", 생산목표수량=수량,
+        )
+
+        def give_PP_number():
+            while True:
+                n = randint(1, 999999)
+                num = str(n).zfill(6)
+                code = "PP" + num
+                obj = models.ProduceRegister.objects.get_or_none(생산계획등록코드=code)
+                if obj:
+                    pass
+                else:
+                    return code
+
+        PP = models.ProduceRegister.objects.create(
+            작성자=user,
+            생산계획등록코드=give_PP_number(),
+            생산의뢰=SM,
+            현재공정="예비작업",
+            현재공정달성율="0%",
+            계획생산량=수량,
+            일일생산량=0,
+            누적생산량=0,
+            특이사항="월별생산계획",
+        )
+
+        WO = models.WorkOrder.objects.create(
+            생산계획=PP, 수리생산="생산계획", 작업지시코드=give_PP_number(), 수량=수량, 특이사항="월별생산계획의 작업지시서",
+        )
+        monthlyplan.수량 = 수량
+        monthlyplan.작성자 = user
+        monthlyplan.작성일 = timezone.now().date()
+        monthlyplan.save()
+
+        return HttpResponse(
+            '<script type="text/javascript">opener.location.reload(); window.close()</script>'
+        )
+    return render(
+        request,
+        "producemanages/monthlyplanregister.html",
+        {"monthlyplan": monthlyplan, "user": user, "form": form,},
+    )
+
+
+def monthlyplanregisternew(request):
+    search = request.GET.get("search")
+    if search is None:
+        customer = []
+        custo = SI_models.SingleProduct.objects.all().order_by("-created")
+        for c in custo:
+            try:
+                c.월별생산계획
+            except:
+                customer.append(c)
+        s_bool = False
+    else:
+        s_bool = True
+        custo = SI_models.SingleProduct.objects.filter(
+            Q(모델코드=search)
+            | Q(모델명__contains=search)
+            | Q(규격=search)
+            | Q(단위=search)
+            | Q(작성자__first_name=search)
+        ).order_by("-created")
+        customer = []
+        for c in custo:
+            try:
+                c.월별생산계획
+            except:
+                customer.append(c)
+
+    form = forms.monthlyplanregisternew(request.POST)
+    user = request.user
+
+    if form.is_valid():
+        단품모델 = form.cleaned_data.get("단품모델")
+        수량 = form.cleaned_data.get("수량")
+
+        def give_new_number():
+            while True:
+                n = randint(1, 999999)
+                num = str(n).zfill(6)
+                code = "OR" + num
+                obj = OR_models.OrderRegister.objects.get_or_none(수주코드=code)
+                if obj:
+                    pass
+                else:
+                    return code
+
+        def give_number():
+            while True:
+                n = randint(1, 999999)
+                num = str(n).zfill(6)
+                code = "OP" + num
+                obj = OR_models.OrderProduce.objects.get_or_none(생산의뢰코드=code)
+                if obj:
+                    pass
+                else:
+                    return code
+
+        single_order = OR_models.OrderRegister.objects.create(
+            작성자=user,
+            수주코드=give_new_number(),
+            영업구분="월별생산계획",
+            사업장구분="삼형전자",
+            수주일자=timezone.now().date(),
+            현장명="월별생산계획",
+            특이사항="월별생산계획",
+            제품구분="단품",
+            단품모델=단품모델,
+            납품수량=수량,
+            출하구분="출하미완료",
+        )
+
+        SM = OR_models.OrderProduce.objects.create(
+            생산의뢰수주=single_order, 생산의뢰코드=give_number(), 긴급도="일반", 생산목표수량=수량,
+        )
+
+        def give_PP_number():
+            while True:
+                n = randint(1, 999999)
+                num = str(n).zfill(6)
+                code = "PP" + num
+                obj = models.ProduceRegister.objects.get_or_none(생산계획등록코드=code)
+                if obj:
+                    pass
+                else:
+                    return code
+
+        PP = models.ProduceRegister.objects.create(
+            작성자=user,
+            생산계획등록코드=give_PP_number(),
+            생산의뢰=SM,
+            현재공정="예비작업",
+            현재공정달성율="0%",
+            계획생산량=수량,
+            일일생산량=0,
+            누적생산량=0,
+            특이사항="월별생산계획",
+        )
+
+        WO = models.WorkOrder.objects.create(
+            생산계획=PP, 수리생산="생산계획", 작업지시코드=give_PP_number(), 수량=수량, 특이사항="월별생산계획의 작업지시서",
+        )
+
+        MP = models.MonthlyProduceList.objects.create(
+            수량=수량, 단품모델=단품모델, 작성자=user, 작성일=timezone.now().date(),
+        )
+
+        return HttpResponse(
+            '<script type="text/javascript">opener.location.reload(); window.close()</script>'
+        )
+    pagediv = 6
+    totalpage = int(math.ceil(len(customer) / pagediv))
+    paginator = Paginator(customer, pagediv, orphans=0)
+    page = request.GET.get("page", "1")
+    customer = paginator.get_page(page)
+    nextpage = int(page) + 1
+    previouspage = int(page) - 1
+    notsamebool = True
+
+    if int(page) == totalpage:
+        notsamebool = False
+    if (search is None) or (search == ""):
+        search = "search"
+
+    return render(
+        request,
+        "producemanages/monthlyplanregisternew.html",
+        {
+            "user": user,
+            "form": form,
+            "customer": customer,
+            "search": search,
+            "page": page,
+            "totalpage": totalpage,
+            "notsamebool": notsamebool,
+            "nextpage": nextpage,
+            "previouspage": previouspage,
+            "s_bool": s_bool,
+        },
+    )
+
+
+def deleteallplan(request, pk, ypk, mpk):
+    order = OR_models.OrderRegister.objects.get_or_none(pk=pk)
+    try:
+        workorder = order.생산요청.생산계획.작업지시서
+        workorder.delete()
+    except:
+        pass
+    try:
+        produceplan = order.생산요청.생산계획
+        produceplan.delete()
+    except:
+        pass
+    try:
+        orderproduce = order.생산요청
+        orderproduce.delete()
+    except:
+        pass
+    order.delete()
+
+    messages.success(request, "생산계획이 철회되었습니다.")
+    return redirect(
+        reverse("producemanages:monthlyplandetail", kwargs={"ypk": ypk, "mpk": mpk})
+    )
+
+
+class RackDetialView(user_mixins.LoggedInOnlyView, DetailView):
+    model = SI_models.RackProduct
+
+    def get(self, request, *args, **kwargs):
+        pk = kwargs["pk"]
+        rack = SI_models.RackProduct.objects.get(pk=pk)
+
+        single = rack.랙구성단품.filter(랙구성="단품")
+        material = rack.랙구성단품.filter(랙구성="자재")
+        user = request.user
+        return render(
+            request,
+            "producemanages/rackdetail.html",
+            {"rack": rack, "user": user, "material": material, "single": single},
+        )

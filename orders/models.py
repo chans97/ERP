@@ -67,7 +67,7 @@ class OrderRegister(TimeStampedModel):
         null=True,
         blank=True,
     )
-    현장명 = models.CharField(max_length=50)
+    현장명 = models.CharField(max_length=50, null=True)
     납품요청일 = models.DateField(auto_now=False, auto_now_add=False, blank=True, null=True)
     납품수량 = models.IntegerField()
     특이사항 = models.TextField(blank=True)

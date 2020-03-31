@@ -67,14 +67,21 @@
 
                                     <td class="border px-4 py-2">{{order.수량}}</td>
                                     <td class="border px-4 py-2">
-                                        {{order.created.year}}-{{order.created.month}}-{{order.created.day}}</td>
+                                        {{order.작성일.year}}-{{order.작성일.month}}-{{order.작성일.day}}</td>
                                     <td class="border px-4 py-2">{{order.단품모델.단품재고.실수량}}</td>
                                     <td class="border px-4 py-2">{{order.단품모델.단품재고.출하요청제외수량}}</td>
                                     <td class="border px-2 py-2 font-bold 
                                     text-blue-800 justify-center">
-                                        <a href="{%url "producemanages:rackmakeregister" order.pk %}">
-                                            <div
-                                                class="btn-link hover:bg-blue-800 bg-teal-700 hover:font-bold mt-1 mb-0  w-full">
+                                        <a href="javascript:void(0);"
+                                            onclick="window.open('{%url "producemanages:monthlyplanregister" order.pk %}', 'pop01'
+                                , 'top=50, left=50, width=900, height=400, status=no, menubar=no, toolbar=no, resizable=no' );">
+                                            <script>
+                                                var childWindow = window.open(..);
+                                                $('#overlay').click(function () {
+                                                    childWindow.focus();
+                                                });
+                                            </script>
+                                            <div class="btn-link hover:bg-teal-800 hover:font-bold mt-1 mb-0 ml-3">
                                                 생산계획수립
                                             </div>
                                         </a>
@@ -87,10 +94,22 @@
                                     <td class="px-4 py-2"></td>
                                     <td class="px-4 py-2"></td>
                                     <td class="border px-4 py-2 flex justify-center">
-                                        <i class="fas fa-plus"></i>
+                                        <a href="javascript:void(0);"
+                                            onclick="window.open('{%url "producemanages:monthlyplanregisternew"%}', 'pop01'
+                                , 'top=50, left=50, width=1200, height=500, status=no, menubar=no, toolbar=no, resizable=no' );">
+                                            <script>
+                                                var childWindow = window.open(..);
+                                                $('#overlay').click(function () {
+                                                    childWindow.focus();
+                                                });
+                                            </script>
+                                            <i
+                                                class="fas fa-plus text-xl hover:shadow-inner hover:text-green-700 p-2"></i>
+                                        </a>
+
 
                                     </td>
-                                    <td class="px-4 py-2"></td>
+                                    <td class=" px-4 py-2"></td>
                                     <td class="px-4 py-2"></td>
                                     <td class="px-4 py-2"></td>
                                     <td class="px-4 py-2"></td>

@@ -1225,6 +1225,7 @@ def producesingleforrack(request, pk, spk):
             제품구분="단품",
             단품모델=single,
             납품수량=0,
+            출하구분="출하미완료",
         )
         생산의뢰코드 = form.cleaned_data.get("생산의뢰코드")
         긴급도 = form.cleaned_data.get("긴급도")

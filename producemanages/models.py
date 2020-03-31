@@ -137,10 +137,10 @@ class WorkOrderRegister(TimeStampedModel):
 
 class MonthlyProduceList(TimeStampedModel):
 
-    단품모델 = models.ForeignKey(
+    단품모델 = models.OneToOneField(
         SI_models.SingleProduct,
         related_name="월별생산계획",
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         null=True,
         blank=True,
     )
@@ -148,6 +148,7 @@ class MonthlyProduceList(TimeStampedModel):
     작성자 = models.ForeignKey(
         users_models.User, related_name="월별생산계획", on_delete=models.SET_NULL, null=True,
     )
+    작성일 = models.DateField(auto_now=False, auto_now_add=False, null=True)
 
     class Meta:
         verbose_name = "월별생산계획"

@@ -206,3 +206,42 @@ class rackmakeregister(forms.ModelForm):
             self.is_bound = True
             code = code[0:2]
             return self.cleaned_data
+
+
+class monthlyplanregister(forms.ModelForm):
+    class Meta:
+        model = models.MonthlyProduceList
+        fields = ("수량",)
+
+    def save(self, *arg, **kwargs):
+        partner = super().save(commit=False)
+        return partner
+
+    def clean(self):
+        self.is_bound = False
+        code = self.cleaned_data.get("수량")
+        if code:
+            self.is_bound = True
+            return self.cleaned_data
+
+
+class monthlyplanregisternew(forms.ModelForm):
+    단품모델 = forms.CharField(max_length=20)
+
+    class Meta:
+        model = models.MonthlyProduceList
+        fields = ("수량",)
+
+    def save(self, *arg, **kwargs):
+        partner = super().save(commit=False)
+        return partner
+
+    def clean(self):
+        self.is_bound = False
+        code = self.cleaned_data.get("수량")
+        모델코드 = self.cleaned_data.get("단품모델")
+        single = SI_models.SingleProduct.objects.get_or_none(모델코드=모델코드)
+        if code:
+            self.is_bound = True
+            self.cleaned_data["단품모델"] = single
+            return self.cleaned_data

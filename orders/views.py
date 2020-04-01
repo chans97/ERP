@@ -325,6 +325,7 @@ def ordershome(request):
         notsamebool = False
     if (search is None) or (search == ""):
         search = "search"
+    now = timezone.now().date()
     return render(
         request,
         "orders/ordershome.html",
@@ -347,6 +348,7 @@ def ordershome(request):
             "nextpage": nextpage,
             "previouspage": previouspage,
             "s_bool": s_bool,
+            "now": now,
             "최종검사완료": "최종검사완료",
             "최종검사의뢰완료": "최종검사의뢰완료",
             "수주등록완료": "수주등록완료",

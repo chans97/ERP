@@ -140,10 +140,17 @@
                                     <td class="border px-4 py-2">{{list.납품수량}}</td>
                                     <td class="border px-4 py-2">
                                         {{list.수주일자.year}}-{{list.수주일자.month}}-{{list.수주일자.day}}</td>
-                                    <td class="border px-4 py-2">
+                                    <td
+                                        class=" border px-4 py-2 {% if list.납품요청일 < now %}text-red-600 font-bold{% endif %}">
+
                                         {%if list.납품요청일 is None%}
                                         {%else%}
                                         {{list.납품요청일.year}}-{{list.납품요청일.month}}-{{list.납품요청일.day}}{%endif%}</td>
+                                    <td class="px-2 py-2">
+                                        {% if list.납품요청일 < now %}
+                                        <i class="fas fa-exclamation-circle  text-red-700 blink"></i>{% endif %}
+                                    </td>
+
                                 </tr>
                                 {%endfor%}
 
@@ -244,10 +251,18 @@
                                     <td class="border px-4 py-2">{{list.납품수량}}</td>
                                     <td class="border px-4 py-2">
                                         {{list.수주일자.year}}-{{list.수주일자.month}}-{{list.수주일자.day}}</td>
-                                    <td class="border px-4 py-2">
-                                        {%if list.납품요청일 is None%}
-                                        {%else%}
+                                    <td
+                                        class=" border px-4 py-2 {% if list.납품요청일 < now %}text-red-600 font-bold{% endif %}">
+
+                                        {%if list.납품요청일 is not None%}
                                         {{list.납품요청일.year}}-{{list.납품요청일.month}}-{{list.납품요청일.day}}{%endif%}</td>
+
+                                    <td class="px-2 py-2">
+                                        {% if list.납품요청일 < now %}
+                                        <i class="fas fa-exclamation-circle  text-red-700 blink"
+                                            id="hello"></i>{% endif %}
+                                    </td>
+
                                 </tr>
                                 {%endfor%}
 
@@ -281,6 +296,22 @@
             </div>
         </div>
     </div>
+    <script src="//code.jquery.com/jquery-latest.min.js"></script>
+    <script>
+        var element = $(".blink");
+        var shown = true;
+        setInterval(ttoogle, 1000);
+        function ttoogle() {
+            if (shown) {
+                element.hide(25);
+                shown = false;
+            } else {
+                element.show(25);
+                shown = true;
+            }
+        }
+    </script>
+
     {%endblock main_contens %}
 </div>
 </div>

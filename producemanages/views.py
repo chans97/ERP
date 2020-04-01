@@ -388,6 +388,7 @@ class produceplantotalupdate(user_mixins.LoggedInOnlyView, UpdateView):
         현재공정달성율 = form.cleaned_data.get("현재공정달성율")
         pk = self.kwargs.get("pk")
         plan = models.ProduceRegister.objects.get_or_none(pk=pk)
+
         plan.계획생산량 = 계획생산량
         plan.특이사항 = 특이사항
         plan.현재공정 = 현재공정

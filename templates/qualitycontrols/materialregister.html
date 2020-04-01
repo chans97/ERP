@@ -1,0 +1,158 @@
+{%extends "qualitycontrols/qualitycontrolshome.html"%}
+{%load static%}
+{% block page_title%}
+자재출고요청
+{%endblock%}
+
+
+{%block head_title%}
+<i class="fas fa-angle-right mx-1 text-base"></i>자재출고요청
+{%endblock head_title %}
+
+
+{%block main_contens%}
+<div class="w-11/12 h-full ml-32 -mt-6 font-normal pt-12 flex flex-row">
+
+    <div class="flex flex-col p-6 w-full ">
+        <span class="border-b w-1/3 mb-3 border-gray-600 pb-2 font-semibold text-base">자재출고요청 </span>
+        <div class="w-64 border h-6 mb-2">
+
+            <form method="get" action="" class="w-full flex ">
+                <button class="w-4 h-4 mt-1 ml-1  rounded-xl bg-cover bg-center"
+                    style="background-image:url({% static 'img/search.png' %});"></button>
+
+                <input name="search" placeholder={{search}}
+                    class="ml-1 w-full border-none search-box text-xs font-medium placeholder-red-400 focus: outline-none" />
+
+            </form>
+        </div>
+        <div class="flex ">
+
+            <div class="flew flex-col">
+
+
+                <form method="POST" class="w-full flex flex-col justify-center" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <table class="table-fixed font-light text-xs w-full">
+                        <thead>
+                            <tr>
+                                <th class="border bg-gray-200 px-1 py-2 w-12">선택</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-32">자재코드</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-32">자재명</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-32">자재분류</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-32">가용재고</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-32">단위</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ul id="id_자재">
+                                {%for list in customer%}
+                                <tr>
+                                    <td class="border px-4 py-2 text-center">
+                                        <label for="id_자재_0"><input type="radio" name="자재" value={{list.자재코드}}
+                                                required="" id="id_자재_0">
+                                        </label>
+
+                                    </td>
+                                    <td class="border px-4 py-2 hover:text-blue-700">
+                                        {{list.자재코드}}</td>
+                                    <td class="border px-4 py-2">{{list.자재품명}}</td>
+                                    <td class="border px-4 py-2">{{list.품목}}</td>
+                                    <td class="border px-4 py-2">{{list.자재재고.출고요청제외수량}}</td>
+                                    <td class="border px-4 py-2">{{list.단위}}</td>
+                                </tr>
+                                {%endfor%}
+                            </ul>
+                        </tbody>
+                    </table>
+                    <div class="flex ml-2">
+                        {% if page != '1' %}
+                        {%if s_bool%}
+                        <a href="?search={{search}}&page={{previouspage}}" class="text-teal-700"><i
+                                class="fas fa-arrow-left fa-lg mt-2"></i></a>
+                        {%else%}
+                        <a href="?page={{previouspage}}" class="text-teal-700"><i
+                                class="fas fa-arrow-left fa-lg mt-2"></i></a>
+                        {% endif %}{% endif %}
+                        <span class="mx-3 font-medium  text-base">{{page}} of
+                            {{totalpage}}</span>
+
+                        {% if notsamebool %}
+                        {%if s_bool%}
+                        <a href="?search={{search}}&page={{nextpage}}" class="text-teal-700"><i
+                                class="fas fa-arrow-right fa-lg mt-2"></i></a>
+                        {%else%}
+                        <a href="?page={{nextpage}}" class="text-teal-700"><i
+                                class="fas fa-arrow-right fa-lg mt-2"></i></a>
+                        {% endif %}{% endif %}
+                    </div>
+            </div>
+            <div class=" flex flex-col px-12 justify-center items-center">
+
+
+
+
+                <div class="w-full justify-center flex flex-col">
+
+
+                    <table class="table-fixed text-sm w-full">
+                        <thead>
+                            <tr>
+                                <th class="border border-r-0 bg-gray-200 px-4 py-2 w-32"></th>
+                                <th class="border border-l-0 bg-gray-200 px-4 py-2 w-56 text-left">자재등록</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for field in form %}
+                            <tr>
+                                {%if field.name != "자재"%}
+                                <td class="border border-gray-400 px-4 py-2">
+                                    {{field.name}}
+                                </td>
+                                <td class="border border-gray-400 px-4 py-2">
+
+
+                                    <div
+                                        class=" flex  {%if field.name not in seletelist %} border hover:border-gray-500 w-full {%endif%} flex">
+
+
+                                        {%if field.name == "출고요청일" %}
+                                        <input type="text" name="출고요청일" id="date2" size="10" />
+
+
+                                        {%else%}
+                                        {{field}}
+                                        {%endif%}
+
+
+                                    </div>
+                                    <div class="text-xs text-green-700 ">
+
+                                        {{field.help_text}}
+                                    </div>
+                                    {% if field.errors %}
+                                    {% for error in field.errors %}
+                                    <div class="text-red-700 font-light text-xs">*{{error}}</div>
+                                    {% endfor %}
+                                    {% endif %}
+
+                                </td>
+                                {%endif%}
+                            </tr>
+                            {%endfor%}
+                        </tbody>
+                    </table>
+                </div>
+                <div class=" flex flex-row justify-around -mx-12">
+                    <button class="btn-link bg-blue-800 text-white w-64 h-12 self-center my-3 pt-0 pb-1">
+                        <div class="text-base font-medium">자재 출고 요청</div>
+                    </button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{%endblock main_contens %}

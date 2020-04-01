@@ -185,7 +185,6 @@ class StockOfMaterialOutRequest(TimeStampedModel):
                 ST.출고요청제외수량 = self.출고요청수량
                 ST.save()
             except:
-
                 StockOfMaterial.objects.create(자재=self.자재, 출고요청제외수량=-self.출고요청수량)
 
 
@@ -237,4 +236,3 @@ class StockOfMaterialOut(TimeStampedModel):
             ST.실수량 -= self.출고수량
             ST.출고요청제외수량 = ST.실수량
             ST.save()
-

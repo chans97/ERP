@@ -3,6 +3,7 @@ from . import models
 from StandardInformation import models as SI_models
 from measures import models as MS_models
 from specials import models as S_models
+from stockmanages import models as SM_models
 
 
 class FinalCheckRegisterForm(forms.ModelForm):
@@ -429,3 +430,35 @@ class specialrejectregisterForm(forms.ModelForm):
         if code:
             self.is_bound = True
             return self.cleaned_data
+
+
+class materialoutrequest(forms.ModelForm):
+    자재 = forms.CharField(max_length=20)
+
+    class Meta:
+        model = SM_models.StockOfMaterialOutRequest
+        fields = (
+            "출고요청수량",
+            "출고요청일",
+            "출고유형",
+        )
+        widgets = {
+            "출고유형": forms.RadioSelect(),
+        }
+        help_texts = {
+            "출고요청일": "*형식 : yyyy-mm-dd(기본값은 오늘입니다.)",
+        }
+
+    def clean(self):
+        self.is_bound = False
+        code = self.cleaned_data.get("자재")
+        material = SI_models.Material.objects.get_or_none(자재코드=code)
+
+        if code:
+            self.is_bound = True
+            self.cleaned_data["자재"] = material
+            return self.cleaned_data
+
+    def save(self, *arg, **kwargs):
+        partner = super().save(commit=False)
+        return partner

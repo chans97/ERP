@@ -180,7 +180,7 @@ def finalcheckregister(request, pk):
             else:
                 return code
 
-    form = forms.FinalCheckRegisterForm(request.POST)
+    form = forms.FinalCheckRegisterForm(request.POST or None)
     code = give_number()
     form.initial = {
         "최종검사코드": code,
@@ -275,7 +275,7 @@ def finalcheckregisternotin(request, pk):
             else:
                 return code
 
-    form = forms.FinalCheckRegisterForm(request.POST)
+    form = forms.FinalCheckRegisterForm(request.POST or None)
     code = give_number()
     form.initial = {
         "최종검사코드": code,
@@ -614,7 +614,7 @@ def materialcheckregister(request, pk):
             else:
                 return code
 
-    form = forms.MaterialCheckRegisterForm(request.POST)
+    form = forms.MaterialCheckRegisterForm(request.POST or None)
     code = give_number()
     form.initial = {
         "수입검사코드": code,
@@ -722,7 +722,7 @@ def lowmaterialregister(request, pk):
             else:
                 return code
 
-    form = forms.LowMetarialRegisterForm(request.POST)
+    form = forms.LowMetarialRegisterForm(request.POST or None)
     code = give_number()
     form.initial = {
         "자재부적합코드": code,
@@ -1093,7 +1093,7 @@ def measurecheckdelete(request, pk):
 
 
 def measurecheckdetailregister(request):
-    form = forms.measurecheckregisterForm(request.POST)
+    form = forms.measurecheckregisterForm(request.POST or None)
     search = request.GET.get("search")
     if search is None:
         customer = SI_models.Measure.objects.all().order_by("-created")
@@ -1266,7 +1266,7 @@ def file_downloadforrepair(request, pk):
 
 
 def measurerepairdetailregister(request):
-    form = forms.measurerepairregisterForm(request.POST)
+    form = forms.measurerepairregisterForm(request.POST or None)
     search = request.GET.get("search")
     if search is None:
         customer = SI_models.Measure.objects.all().order_by("-created")
@@ -1378,7 +1378,7 @@ def measuredetailregister(request):
             else:
                 return code
 
-    form = forms.measureregisterForm(request.POST)
+    form = forms.measureregisterForm(request.POST or None)
     code = give_number()
     form.initial = {
         "계측기코드": code,
@@ -1481,7 +1481,7 @@ def specialregister(request, pk):
     user = request.user
     special = S_models.SpecialApplyRegister.objects.get_or_none(pk=pk)
     num = special.특채신청수량
-    form = forms.SpecialRegisterForm(request.POST)
+    form = forms.SpecialRegisterForm(request.POST or None)
     form.initial = {
         "특채수량": num,
     }
@@ -1550,7 +1550,7 @@ def specialconductregister(request, pk):
     pk = specialregister.특채신청등록.pk
     num = specialregister.특채수량
 
-    form = forms.specialconductregisterForm(request.POST)
+    form = forms.specialconductregisterForm(request.POST or None)
     form.initial = {
         "특채수량중납품수량": num,
     }
@@ -1591,7 +1591,7 @@ def specialrejectregister(request, pk):
     specialregister = specialconduct.특채
     num = specialregister.특채수량 - specialconduct.특채수량중납품수량
 
-    form = forms.specialrejectregisterForm(request.POST)
+    form = forms.specialrejectregisterForm(request.POST or None)
     form.initial = {
         "특채반품수량": num,
     }
@@ -1648,3 +1648,121 @@ class specialconductlist(core_views.onelist):
                 except:
                     queryset.append(s)
         return queryset
+
+
+def materialoutrequest(request):
+    form = forms.materialoutrequest(request.POST or None)
+
+    search = request.GET.get("search")
+    if search is None:
+        customer = SI_models.Material.objects.all().order_by("-created")
+        s_bool = False
+    else:
+        s_bool = True
+        qs = SI_models.Material.objects.filter(
+            Q(작성자__first_name__contains=search)
+            | Q(자재코드__contains=search)
+            | Q(품목__contains=search)
+            | Q(자재품명__contains=search)
+            | Q(규격__contains=search)
+            | Q(단위__contains=search)
+            | Q(자재공급업체__거래처명__contains=search)
+            | Q(특이사항__contains=search)
+        ).order_by("-created")
+        customer = qs
+
+    pagediv = 10
+    totalpage = int(math.ceil(len(customer) / pagediv))
+    paginator = Paginator(customer, pagediv, orphans=0)
+    page = request.GET.get("page", "1")
+    customer = paginator.get_page(page)
+    nextpage = int(page) + 1
+    previouspage = int(page) - 1
+    notsamebool = True
+    seletelist = ["출고유형"]
+    if int(page) == totalpage:
+        notsamebool = False
+    if (search is None) or (search == ""):
+        search = "search"
+
+    if form.is_valid():
+        자재 = form.cleaned_data.get("자재")
+        출고요청수량 = form.cleaned_data.get("출고요청수량")
+        if 자재.자재재고.출고요청제외수량 < 출고요청수량:
+            messages.error(request, "출고요청수량이 가용재고보다 더 많습니다.")
+            return render(
+                request,
+                "qualitycontrols/materialregister.html",
+                {
+                    "customer": customer,
+                    "form": form,
+                    "search": search,
+                    "page": page,
+                    "totalpage": totalpage,
+                    "notsamebool": notsamebool,
+                    "nextpage": nextpage,
+                    "previouspage": previouspage,
+                    "s_bool": s_bool,
+                    "seletelist": seletelist,
+                },
+            )
+        material = form.save()
+        material.자재 = 자재
+        material.출고요청자 = request.user
+        material.save()
+        form.save_m2m()
+
+        messages.success(request, "자재출고요청이 등록되었습니다.")
+        return redirect(reverse("qualitycontrols:managematerialoutrequest"))
+
+    return render(
+        request,
+        "qualitycontrols/materialregister.html",
+        {
+            "customer": customer,
+            "form": form,
+            "search": search,
+            "page": page,
+            "totalpage": totalpage,
+            "notsamebool": notsamebool,
+            "nextpage": nextpage,
+            "previouspage": previouspage,
+            "s_bool": s_bool,
+            "seletelist": seletelist,
+        },
+    )
+
+
+class managematerialoutrequest(core_views.onelist):
+    templatename = "qualitycontrols/managematerialoutrequest.html"
+
+    def get_first_queryset(self, request):
+        self.search = request.GET.get("search")
+        if self.search is None:
+            queryset = SM_models.StockOfMaterialOutRequest.objects.filter(
+                출고요청자=request.user
+            ).order_by("-created")
+            self.s_bool = False
+        else:
+            self.s_bool = True
+            queryset = (
+                SM_models.StockOfMaterialOutRequest.objects.filter(출고요청자=request.user)
+                .filter(
+                    Q(자재__자재품명__contains=self.search)
+                    | Q(자재__자재코드__contains=self.search)
+                    | Q(출고요청수량__contains=self.search)
+                    | Q(출고요청일__contains=self.search)
+                    | Q(출고유형__contains=self.search)
+                )
+                .order_by("-created")
+            )
+        return queryset
+
+
+def deletematerialoutrequest(request, pk):
+    materialoutrequest = SM_models.StockOfMaterialOutRequest.objects.get_or_none(pk=pk)
+    materialoutrequest.자재.자재재고.출고요청제외수량 += materialoutrequest.출고요청수량
+    materialoutrequest.자재.자재재고.save()
+    materialoutrequest.delete()
+    messages.success(request, "자재출고요청이 철회되었습니다.")
+    return redirect(reverse("qualitycontrols:managematerialoutrequest"))

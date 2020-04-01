@@ -219,5 +219,15 @@ urlpatterns = [
         views.finalcheckregisternotin,
         name="finalcheckregisternotin",
     ),
-    
+    path("materialoutrequest/", views.materialoutrequest, name="materialoutrequest",),
+    path(
+        "managematerialoutrequest/",
+        views.managematerialoutrequest.as_view(),
+        name="managematerialoutrequest",
+    ),
+    path(
+        "deletematerialoutrequest/<int:pk>/",
+        views.deletematerialoutrequest,
+        name="deletematerialoutrequest",
+    ),
 ]

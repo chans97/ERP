@@ -1,17 +1,28 @@
 {% load static%}
-<ul class="flex items-center text-sm font-medium h-full">
+<div class="flex items-center text-sm font-medium h-full w-full  flex-raw justify-end">
         {% if user.is_authenticated %}
 
 
+        <div class="text-right  text-xs h-5">안녕하세요. {{user}}님</div>
 
-        <div class="text-right -mr-8 text-xs h-5">안녕하세요. {{user}}님</div>
+        {% if user.lenofpart > 1 %}
 
 
-        <li class="nav_link font-semibold"><a href="{%url "users:logout"%}">로그아웃</a></li>
+
+        {% for part in user.부서.all %}
+        <div
+                class="ml-3 border-b-2 border-transparent h-full flex items-center hover:border-gray-600 font-semibold text-xs">
+                <a href="{%url "core:parthome" part.pk %}" class="py-10 px-2">
+
+                        {{part.부서명}}
+                </a></div>
+        {% endfor %}
+        {% endif %}
+        <div class="nav_link font-semibold ml-3"><a href="{%url "users:logout"%}">로그아웃</a></div>
 
 
 
         {% else %}
         <li class="nav_link"><a href="{%url "users:signup"%}">Sign Up</a></li>
         {% endif %}
-</ul>
+</div>

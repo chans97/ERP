@@ -52,6 +52,15 @@ class FinalCheckRegister(TimeStampedModel):
         (OK, "OK"),
         (NO, "NO"),
     )
+    있음 = "있음"
+    없음 = "없음"
+
+    있음없음_CHOICES = (
+        (있음, "있음"),
+        (없음, "없음"),
+    )
+
+    있음없음_CHOICES
     최종검사코드 = models.CharField(max_length=20, null=True, blank=True,)
     최종검사의뢰 = models.OneToOneField(
         "FinalCheck", related_name="최종검사등록", on_delete=models.SET_NULL, null=True,
@@ -60,18 +69,18 @@ class FinalCheckRegister(TimeStampedModel):
         users_models.User, related_name="최종검사등록", on_delete=models.SET_NULL, null=True,
     )
     검시일 = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True)
-    CR = models.CharField(max_length=20, null=True, blank=True,)
-    MA = models.CharField(max_length=20, null=True, blank=True,)
-    MI = models.CharField(max_length=20, null=True, blank=True,)
+    치명적불량 = models.CharField(max_length=20, null=True, blank=True,)
+    중불량 = models.CharField(max_length=20, null=True, blank=True,)
+    경불량 = models.CharField(max_length=20, null=True, blank=True,)
     검사수준 = models.CharField(max_length=40, null=True, blank=True,)
-    Sample방식 = models.CharField(max_length=20, null=True, blank=True,)
+    샘플링방식 = models.CharField(max_length=20, null=True, blank=True,)
     결점수 = models.CharField(max_length=20, null=True, blank=True,)
     전원전압 = models.CharField(max_length=20, null=True, blank=True,)
     POWERTRANS = models.CharField(max_length=20, null=True, blank=True,)
     FUSE_전_ULUSA = models.CharField(max_length=20, null=True, blank=True,)
     LABEL_인쇄물 = models.CharField(max_length=50, null=True, blank=True,)
     기타출하위치 = models.CharField(max_length=50, null=True, blank=True,)
-    내용물 = models.CharField(max_length=50, null=True, blank=True,)
+    내용물 = models.CharField(choices=있음없음_CHOICES, max_length=10, blank=True, default=있음)
     포장검사 = models.CharField(choices=OKNO_CHOICES, max_length=10, blank=True, default=OK)
     동작검사 = models.CharField(choices=OKNO_CHOICES, max_length=10, blank=True, default=OK)
     내부검사 = models.CharField(choices=OKNO_CHOICES, max_length=10, blank=True, default=OK)

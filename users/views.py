@@ -45,11 +45,35 @@ class SignUpView(FormView):
         form.save()
         email = form.cleaned_data.get("email")
         password = form.cleaned_data.get("password")
-        print(1, email, password)
         user = authenticate(self.request, username=email, password=password)
         if user is not None:
             login(self.request, user)
         return super().form_valid(form)
+
+
+def SignUpView(request):
+    form = forms.SignUpForm(request.POST or None)
+    for field in form:
+        if field.name == "부서":
+            for f in field:
+                result = dir(f)
+
+    if form.is_valid():
+
+        form.save()
+        form.save_m2m()
+        print(form.cleaned_data)
+        email = form.cleaned_data.get("email")
+        password = form.cleaned_data.get("password")
+        user = authenticate(request, username=email, password=password)
+        if user is not None:
+            login(request, user)
+            name = user.first_name
+
+            messages.success(request, f"가입되었습니다. 환영합니다. {name}님.")
+        return redirect(reverse("core:home"))
+
+    return render(request, "users/signup.html", {"form": form, "result": result,},)
 
 
 def log_out(request):

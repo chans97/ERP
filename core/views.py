@@ -38,23 +38,43 @@ from afterservices import models as AS_models
 def firstindecide(request):
     user = request.user
     if user.is_authenticated:
-        if user.부서.부서명 == "영업부":
+
+        if user.부서.all()[0].부서명 == "영업부":
             return redirect(reverse("orders:ordershome"))
-        elif user.부서.부서명 == "생산관리부":
+        elif user.부서.all()[0].부서명 == "생산관리부":
             return redirect(reverse("producemanages:producemanageshome"))
-        elif user.부서.부서명 == "공정관리부":
+        elif user.부서.all()[0].부서명 == "공정관리부":
             return redirect(reverse("producemanages:producehome"))
-        elif user.부서.부서명 == "품질부":
+        elif user.부서.all()[0].부서명 == "품질부":
             return redirect(reverse("qualitycontrols:qualitycontrolshome"))
-        elif (user.부서.부서명 == "AS담당부") or (user.부서.부서명 == "총무부"):
+        elif (user.부서.all()[0].부서명 == "AS담당부") or (user.부서.all()[0].부서명 == "총무부"):
             return redirect(reverse("afterservices:afterserviceshome"))
-        elif user.부서.부서명 == "자재부":
+        elif user.부서.all()[0].부서명 == "자재부":
             return redirect(reverse("stockmanages:stockmanageshome"))
         else:
             return render(request, "base.html")
 
     else:
         return redirect(reverse("users:login"))
+
+
+def parthome(request, pk):
+    part = user_models.Part.objects.get_or_none(pk=pk)
+    partname = part.부서명
+    if partname == "영업부":
+        return redirect(reverse("orders:ordershome"))
+    elif partname == "생산관리부":
+        return redirect(reverse("producemanages:producemanageshome"))
+    elif partname == "공정관리부":
+        return redirect(reverse("producemanages:producehome"))
+    elif partname == "품질부":
+        return redirect(reverse("qualitycontrols:qualitycontrolshome"))
+    elif (partname == "AS담당부") or (partname == "총무부"):
+        return redirect(reverse("afterservices:afterserviceshome"))
+    elif partname == "자재부":
+        return redirect(reverse("stockmanages:stockmanageshome"))
+    else:
+        return render(request, "base.html")
 
 
 class onelist(View, user_mixins.LoggedInOnlyView):

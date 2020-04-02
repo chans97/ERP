@@ -23,12 +23,14 @@ class LoginForm(forms.Form):
 
 
 class SignUpForm(forms.ModelForm):
+
     class Meta:
         model = models.User
         fields = ("first_name", "부서", "email")
         widgets = {
             "first_name": forms.TextInput(attrs={"placeholder": "이름"}),
             "email": forms.EmailInput(attrs={"placeholder": "Email"}),
+            "부서": forms.CheckboxSelectMultiple(),
         }
 
     password = forms.CharField(
@@ -37,6 +39,13 @@ class SignUpForm(forms.ModelForm):
     password1 = forms.CharField(
         widget=forms.PasswordInput(attrs={"placeholder": "Confirm Password"})
     )
+    field_order = [
+        "first_name",
+        "email",
+        "password",
+        "password1",
+        "부서",
+    ]
 
     def clean_email(self):
         email = self.cleaned_data["email"]

@@ -3,12 +3,10 @@ from django.contrib.auth.models import AbstractUser
 from core.models import TimeStampedModel
 
 
-class User(AbstractUser,TimeStampedModel):
+class User(AbstractUser, TimeStampedModel):
     """custom user """
 
-    부서 = models.ForeignKey(
-        "Part", related_name="user", on_delete=models.CASCADE, null=True
-    )
+    부서 = models.ManyToManyField("Part", related_name="user", null=True)
 
     class Meta:
         verbose_name = "사용자"
@@ -16,6 +14,9 @@ class User(AbstractUser,TimeStampedModel):
 
     def __str__(self):
         return self.first_name
+    def lenofpart(self):
+        num = self.부서.count()
+        return num
 
 
 class Company(TimeStampedModel):

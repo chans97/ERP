@@ -8,7 +8,6 @@ class CustomUserAdmin(admin.ModelAdmin):
     list_display = (
         "email",
         "first_name",
-        "부서",
         "is_active",
         # "username",
     )

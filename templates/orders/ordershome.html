@@ -141,13 +141,13 @@
                                     <td class="border px-4 py-2">
                                         {{list.수주일자.year}}-{{list.수주일자.month}}-{{list.수주일자.day}}</td>
                                     <td
-                                        class=" border px-4 py-2 {% if list.납품요청일 < now %}text-red-600 font-bold{% endif %}">
+                                        class=" border px-4 py-2 {% if list.납품요청일 <= now %}text-red-600 font-bold{% endif %}">
 
                                         {%if list.납품요청일 is None%}
                                         {%else%}
                                         {{list.납품요청일.year}}-{{list.납품요청일.month}}-{{list.납품요청일.day}}{%endif%}</td>
                                     <td class="px-2 py-2">
-                                        {% if list.납품요청일 < now %}
+                                        {% if list.납품요청일 <= now %}
                                         <i class="fas fa-exclamation-circle  text-red-700 blink"></i>{% endif %}
                                     </td>
 
@@ -252,13 +252,13 @@
                                     <td class="border px-4 py-2">
                                         {{list.수주일자.year}}-{{list.수주일자.month}}-{{list.수주일자.day}}</td>
                                     <td
-                                        class=" border px-4 py-2 {% if list.납품요청일 < now %}text-red-600 font-bold{% endif %}">
+                                        class=" border px-4 py-2 {% if list.납품요청일 <= now %}text-red-600 font-bold{% endif %}">
 
                                         {%if list.납품요청일 is not None%}
                                         {{list.납품요청일.year}}-{{list.납품요청일.month}}-{{list.납품요청일.day}}{%endif%}</td>
 
                                     <td class="px-2 py-2">
-                                        {% if list.납품요청일 < now %}
+                                        {% if list.납품요청일 <= now %}
                                         <i class="fas fa-exclamation-circle  text-red-700 blink"
                                             id="hello"></i>{% endif %}
                                     </td>

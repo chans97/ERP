@@ -15,6 +15,33 @@
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="./jquery-ui-1.12.1/datepicker-ko.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.0.min.js"></script>
+    <style>
+        #test1 {
+            background: lightcoral;
+            width: 300px;
+            height: 20px;
+            cursor: pointer
+        }
+
+        #test2 {
+            background: lightpink;
+            width: 300px;
+            height: 60px;
+            display: none;
+            cursor: pointer
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            $("#test1").mouseover(function () {
+                $("#test2").slideDown(500)
+            });
+            $("#test2").mouseleave(function () {
+                $("#test2").slideUp(1000)
+            });
+        });
+    </script>
 
 
 

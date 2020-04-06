@@ -14,7 +14,18 @@
                 class="ml-3 border-b-2 border-transparent h-full flex items-center hover:border-gray-600 font-semibold text-xs">
                 <a href="{%url "core:parthome" part.pk %}" class="py-10 px-2">
 
-                        {{part.부서명}}
+                        {% if part.부서명 == "자재부" %}
+                        재고관리
+                        {%else%}
+
+
+
+                        <script>
+                                var parta = "{{ part.부서명 }}";
+                                var result = parta.replace("부", '')
+                                document.write(result)
+                        </script>
+                        {% endif %}
                 </a></div>
         {% endfor %}
         {% endif %}

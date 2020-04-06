@@ -168,6 +168,20 @@ def finalcheckregister(request, pk):
 
     user = request.user
     finalcheck = QC_models.FinalCheck.objects.get_or_none(pk=pk)
+    selectlist = [
+        "포장검사",
+        "동작검사",
+        "내부검사",
+        "외관검사",
+        "내용물확인",
+        "전원전압",
+        "POWERTRANS",
+        "FUSE_전_ULUSA",
+        "LABEL_인쇄물",
+        "내용물",
+        "내압검사_DC",
+        "내압검사_AC",
+    ]
 
     def give_number():
         while True:
@@ -183,17 +197,24 @@ def finalcheckregister(request, pk):
     form = forms.FinalCheckRegisterForm(request.POST or None)
     code = give_number()
     form.initial = {
+        "치명적불량": 0,
+        "중불량": 0.4,
+        "경불량": 4.5,
+        "샘플링방식": "랜덤샘플링방식",
+        "검사수준": "보통검사",
         "최종검사코드": code,
+        "내압검사_DC": "NO",
+        "내압검사_AC": "OK",
     }
 
     if form.is_valid():
         최종검사코드 = form.cleaned_data.get("최종검사코드")
         검시일 = form.cleaned_data.get("검시일")
-        CR = form.cleaned_data.get("CR")
-        MA = form.cleaned_data.get("MA")
-        MI = form.cleaned_data.get("MI")
+        치명적불량 = form.cleaned_data.get("치명적불량")
+        중불량 = form.cleaned_data.get("중불량")
+        경불량 = form.cleaned_data.get("경불량")
         검사수준 = form.cleaned_data.get("검사수준")
-        Sample방식 = form.cleaned_data.get("Sample방식")
+        샘플링방식 = form.cleaned_data.get("샘플링방식")
         결점수 = form.cleaned_data.get("결점수")
         전원전압 = form.cleaned_data.get("전원전압")
         POWERTRANS = form.cleaned_data.get("POWERTRANS")
@@ -205,11 +226,12 @@ def finalcheckregister(request, pk):
         동작검사 = form.cleaned_data.get("동작검사")
         내부검사 = form.cleaned_data.get("내부검사")
         외관검사 = form.cleaned_data.get("외관검사")
-        내압검사 = form.cleaned_data.get("내압검사")
+        내압검사_DC = form.cleaned_data.get("내압검사_DC")
+        내압검사_AC = form.cleaned_data.get("내압검사_AC")
         내용물확인 = form.cleaned_data.get("내용물확인")
         가_감전압 = form.cleaned_data.get("가_감전압")
         HI_POT_내부검사 = form.cleaned_data.get("HI_POT_내부검사")
-        REMARK = form.cleaned_data.get("REMARK")
+        특이사항 = form.cleaned_data.get("특이사항")
         부적합수량 = form.cleaned_data.get("부적합수량")
         적합수량 = form.cleaned_data.get("적합수량")
         if 검시일 is None:
@@ -221,11 +243,11 @@ def finalcheckregister(request, pk):
             제품=finalcheck.제품,
             최종검사코드=최종검사코드,
             검시일=검시일,
-            CR=CR,
-            MA=MA,
-            MI=MI,
+            치명적불량=치명적불량,
+            중불량=중불량,
+            경불량=경불량,
             검사수준=검사수준,
-            Sample방식=Sample방식,
+            샘플링방식=샘플링방식,
             결점수=결점수,
             전원전압=전원전압,
             POWERTRANS=POWERTRANS,
@@ -237,11 +259,12 @@ def finalcheckregister(request, pk):
             동작검사=동작검사,
             내부검사=내부검사,
             외관검사=외관검사,
-            내압검사=내압검사,
+            내압검사_DC=내압검사_DC,
+            내압검사_AC=내압검사_AC,
             내용물확인=내용물확인,
             가_감전압=가_감전압,
             HI_POT_내부검사=HI_POT_내부검사,
-            REMARK=REMARK,
+            특이사항=특이사항,
             부적합수량=부적합수량,
             적합수량=적합수량,
         )
@@ -255,7 +278,7 @@ def finalcheckregister(request, pk):
     return render(
         request,
         "qualitycontrols/finalcheckregister.html",
-        {"form": form, "finalcheck": finalcheck,},
+        {"form": form, "finalcheck": finalcheck, "selectlist": selectlist},
     )
 
 
@@ -263,6 +286,20 @@ def finalcheckregisternotin(request, pk):
 
     user = request.user
     finalcheck = QC_models.FinalCheck.objects.get_or_none(pk=pk)
+    selectlist = [
+        "포장검사",
+        "동작검사",
+        "내부검사",
+        "외관검사",
+        "내용물확인",
+        "전원전압",
+        "POWERTRANS",
+        "FUSE_전_ULUSA",
+        "LABEL_인쇄물",
+        "내용물",
+        "내압검사_DC",
+        "내압검사_AC",
+    ]
 
     def give_number():
         while True:
@@ -278,17 +315,24 @@ def finalcheckregisternotin(request, pk):
     form = forms.FinalCheckRegisterForm(request.POST or None)
     code = give_number()
     form.initial = {
+        "치명적불량": 0,
+        "중불량": 0.4,
+        "경불량": 4.5,
+        "샘플링방식": "랜덤샘플링방식",
+        "검사수준": "보통검사",
         "최종검사코드": code,
+        "내압검사_DC": "NO",
+        "내압검사_AC": "OK",
     }
 
     if form.is_valid():
         최종검사코드 = form.cleaned_data.get("최종검사코드")
         검시일 = form.cleaned_data.get("검시일")
-        CR = form.cleaned_data.get("CR")
-        MA = form.cleaned_data.get("MA")
-        MI = form.cleaned_data.get("MI")
+        치명적불량 = form.cleaned_data.get("치명적불량")
+        중불량 = form.cleaned_data.get("중불량")
+        경불량 = form.cleaned_data.get("경불량")
         검사수준 = form.cleaned_data.get("검사수준")
-        Sample방식 = form.cleaned_data.get("Sample방식")
+        샘플링방식 = form.cleaned_data.get("샘플링방식")
         결점수 = form.cleaned_data.get("결점수")
         전원전압 = form.cleaned_data.get("전원전압")
         POWERTRANS = form.cleaned_data.get("POWERTRANS")
@@ -300,11 +344,12 @@ def finalcheckregisternotin(request, pk):
         동작검사 = form.cleaned_data.get("동작검사")
         내부검사 = form.cleaned_data.get("내부검사")
         외관검사 = form.cleaned_data.get("외관검사")
-        내압검사 = form.cleaned_data.get("내압검사")
+        내압검사_DC = form.cleaned_data.get("내압검사_DC")
+        내압검사_AC = form.cleaned_data.get("내압검사_AC")
         내용물확인 = form.cleaned_data.get("내용물확인")
         가_감전압 = form.cleaned_data.get("가_감전압")
         HI_POT_내부검사 = form.cleaned_data.get("HI_POT_내부검사")
-        REMARK = form.cleaned_data.get("REMARK")
+        특이사항 = form.cleaned_data.get("특이사항")
         부적합수량 = form.cleaned_data.get("부적합수량")
         적합수량 = form.cleaned_data.get("적합수량")
         if 검시일 is None:
@@ -316,11 +361,11 @@ def finalcheckregisternotin(request, pk):
             제품=finalcheck.제품,
             최종검사코드=최종검사코드,
             검시일=검시일,
-            CR=CR,
-            MA=MA,
-            MI=MI,
+            치명적불량=치명적불량,
+            중불량=중불량,
+            경불량=경불량,
             검사수준=검사수준,
-            Sample방식=Sample방식,
+            샘플링방식=샘플링방식,
             결점수=결점수,
             전원전압=전원전압,
             POWERTRANS=POWERTRANS,
@@ -332,22 +377,27 @@ def finalcheckregisternotin(request, pk):
             동작검사=동작검사,
             내부검사=내부검사,
             외관검사=외관검사,
-            내압검사=내압검사,
+            내압검사_DC=내압검사_DC,
+            내압검사_AC=내압검사_AC,
             내용물확인=내용물확인,
             가_감전압=가_감전압,
             HI_POT_내부검사=HI_POT_내부검사,
-            REMARK=REMARK,
+            특이사항=특이사항,
             부적합수량=부적합수량,
             적합수량=적합수량,
         )
+        SS_models.StockOfSingleProductInRequest.objects.create(
+            단품=finalcheck.제품, 입고요청수량=적합수량, 입고요청자=user, 입고요청일=timezone.now().date(),
+        )
 
-        messages.success(request, "최종검사 등록이 완료되었습니다.")
+        messages.success(request, "최종검사 등록이 완료되었습니다.(단품입고요청 자동완료)")
 
         return redirect(reverse("qualitycontrols:finalchecklist"))
+
     return render(
         request,
         "qualitycontrols/finalcheckregister.html",
-        {"form": form, "finalcheck": finalcheck,},
+        {"form": form, "finalcheck": finalcheck, "selectlist": selectlist,},
     )
 
 
@@ -1692,7 +1742,7 @@ def materialoutrequest(request):
             messages.error(request, "출고요청수량이 가용재고보다 더 많습니다.")
             return render(
                 request,
-                "qualitycontrols/materialregister.html",
+                "qualitycontrols/materialoutrequest.html",
                 {
                     "customer": customer,
                     "form": form,
@@ -1717,7 +1767,7 @@ def materialoutrequest(request):
 
     return render(
         request,
-        "qualitycontrols/materialregister.html",
+        "qualitycontrols/materialoutrequest.html",
         {
             "customer": customer,
             "form": form,
@@ -1766,3 +1816,171 @@ def deletematerialoutrequest(request, pk):
     materialoutrequest.delete()
     messages.success(request, "자재출고요청이 철회되었습니다.")
     return redirect(reverse("qualitycontrols:managematerialoutrequest"))
+
+
+def ASrequestlist(request):
+    user = request.user
+    search = request.GET.get("search")
+
+    if search is None:
+        s_order = []
+        order = AS_models.ASRepairRequest.objects.all().order_by("-created")
+        for s in order:
+            try:
+                s.수리내역서
+            except:
+                s_order.append(s)
+
+        s_bool = False
+    else:
+        s_bool = True
+        order = AS_models.ASRepairRequest.objects.filter(
+            Q(신청자__contains=search)
+            | Q(신청품목__모델명__contains=search)
+            | Q(신청품목__모델코드__contains=search)
+            | Q(수리요청코드__contains=search)
+        ).order_by("-created")
+        s_order = []
+        for s in order:
+            try:
+                s.수리내역서
+            except:
+                s_order.append(s)
+
+    pagediv = 7
+
+    totalpage = int(math.ceil(len(s_order) / pagediv))
+    paginator = Paginator(s_order, pagediv, orphans=0)
+    page = request.GET.get("page", "1")
+    s_order = paginator.get_page(page)
+    nextpage = int(page) + 1
+    previouspage = int(page) - 1
+    notsamebool = True
+    nonpage = False
+    if totalpage == 0:
+        nonpage = True
+    if int(page) == totalpage:
+        notsamebool = False
+    if (search is None) or (search == ""):
+        search = "search"
+    return render(
+        request,
+        "qualitycontrols/ASrequestlist.html",
+        {
+            "s_order": s_order,
+            "search": search,
+            "page": page,
+            "totalpage": totalpage,
+            "notsamebool": notsamebool,
+            "nextpage": nextpage,
+            "previouspage": previouspage,
+            "s_bool": s_bool,
+            "nonpage": nonpage,
+        },
+    )
+
+
+def repairregisterAS(request, pk):
+    user = request.user
+    ASrequest = AS_models.ASRepairRequest.objects.get_or_none(pk=pk)
+
+    form = forms.UploadRepairForm(request.POST)
+
+    if form.is_valid():
+        불량위치및자재 = form.cleaned_data.get("불량위치및자재")
+        수리내용 = form.cleaned_data.get("수리내용")
+        실수리수량 = form.cleaned_data.get("실수리수량")
+        폐기수량 = form.cleaned_data.get("폐기수량")
+        특이사항 = form.cleaned_data.get("특이사항")
+
+        SM = QC_models.RepairRegister.objects.create(
+            AS수리의뢰=ASrequest,
+            수리최종="AS",
+            작성자=user,
+            불량위치및자재=불량위치및자재,
+            특이사항=특이사항,
+            수리내용=수리내용,
+            실수리수량=실수리수량,
+            폐기수량=폐기수량,
+            제품=ASrequest.신청품목,
+        )
+        rM = QC_models.FinalCheck.objects.create(수리내역서=SM, 제품=SM.제품)
+
+        messages.success(request, "수리내역서 등록이 완료되었습니다.(최종검사의뢰 완료)")
+        return redirect(reverse("qualitycontrols:qualitycontrolshome"))
+    return render(
+        request,
+        "qualitycontrols/repairregisterAS.html",
+        {"form": form, "ASrequest": ASrequest,},
+    )
+
+
+def repairrequestdetail(request, pk):
+    user = request.user
+    repair = AS_models.ASRepairRequest.objects.get_or_none(pk=pk)
+    return render(
+        request,
+        "qualitycontrols/repairrequestdetail.html",
+        {"repair": repair, "user": user,},
+    )
+
+
+def repairlist(request):
+    user = request.user
+    search_m = request.GET.get("search_m")
+    if search_m is None:
+        s_order_m = (
+            QC_models.RepairRegister.objects.filter(작성자=user)
+            .filter(수리최종="AS")
+            .order_by("-created")
+        )
+        s_bool_m = False
+    else:
+        s_bool_m = True
+
+        s_order_m = (
+            QC_models.RepairRegister.objects.filter(작성자=user)
+            .filter(수리최종="AS")
+            .filter(
+                Q(AS수리의뢰__수리요청코드__contains=search_m)
+                | Q(AS수리의뢰__신청품목__모델명__contains=search_m)
+                | Q(AS수리의뢰__신청품목__모델코드__contains=search_m)
+                | Q(작성자__first_name__contains=search_m)
+                | Q(불량위치및자재__contains=search_m)
+                | Q(수리내용__contains=search_m)
+            )
+            .order_by("-created")
+        )
+
+    pagediv = 7
+
+    totalpage_m = int(math.ceil(len(s_order_m) / pagediv))
+    paginator_m = Paginator(s_order_m, pagediv, orphans=0)
+    page_m = request.GET.get("page_m", "1")
+    s_order_m = paginator_m.get_page(page_m)
+    nextpage_m = int(page_m) + 1
+    previouspage_m = int(page_m) - 1
+    nonpage_m = False
+    notsamebool_m = True
+    if totalpage_m == 0:
+        nonpage_m = True
+    if int(page_m) == totalpage_m:
+        notsamebool_m = False
+    if (search_m is None) or (search_m == ""):
+        search_m = "search"
+
+    return render(
+        request,
+        "qualitycontrols/repairlist.html",
+        {
+            "s_order_m": s_order_m,
+            "search_m": search_m,
+            "page_m": page_m,
+            "totalpage_m": totalpage_m,
+            "notsamebool_m": notsamebool_m,
+            "nextpage_m": nextpage_m,
+            "previouspage_m": previouspage_m,
+            "s_bool_m": s_bool_m,
+            "nonpage_m": nonpage_m,
+        },
+    )

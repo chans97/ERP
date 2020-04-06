@@ -32,11 +32,12 @@ class FinalCheckRegisterForm(forms.ModelForm):
             "동작검사",
             "내부검사",
             "외관검사",
-            "내압검사",
+            "내압검사_DC",
+            "내압검사_AC",
             "내용물확인",
             "가_감전압",
             "HI_POT_내부검사",
-            "REMARK",
+            "특이사항",
             "부적합수량",
             "적합수량",
         )
@@ -49,8 +50,14 @@ class FinalCheckRegisterForm(forms.ModelForm):
             "동작검사": forms.RadioSelect(),
             "내부검사": forms.RadioSelect(),
             "외관검사": forms.RadioSelect(),
-            "내압검사": forms.RadioSelect(),
             "내용물확인": forms.RadioSelect(),
+            "전원전압": forms.RadioSelect(),
+            "POWERTRANS": forms.RadioSelect(),
+            "FUSE_전_ULUSA": forms.RadioSelect(),
+            "LABEL_인쇄물": forms.RadioSelect(),
+            "내용물": forms.RadioSelect(),
+            "내압검사_DC": forms.RadioSelect(),
+            "내압검사_AC": forms.RadioSelect(),
         }
 
     def clean(self):
@@ -458,6 +465,26 @@ class materialoutrequest(forms.ModelForm):
             self.is_bound = True
             self.cleaned_data["자재"] = material
             return self.cleaned_data
+
+    def save(self, *arg, **kwargs):
+        partner = super().save(commit=False)
+        return partner
+
+
+class UploadRepairForm(forms.ModelForm):
+    class Meta:
+        model = models.RepairRegister
+        fields = (
+            "불량위치및자재",
+            "수리내용",
+            "실수리수량",
+            "폐기수량",
+            "특이사항",
+        )
+        widgets = {
+            "실수리수량": forms.NumberInput(attrs={"size": "10", "min": "0"}),
+            "폐기수량": forms.NumberInput(attrs={"size": "10", "min": "0"}),
+        }
 
     def save(self, *arg, **kwargs):
         partner = super().save(commit=False)

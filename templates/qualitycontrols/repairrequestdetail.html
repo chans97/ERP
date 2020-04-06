@@ -1,0 +1,114 @@
+{%extends "qualitycontrols/qualitycontrolshome.html"%}
+{% load static%}
+{% block page_title%}
+수리상세
+{%endblock%}
+
+
+{%block head_title%}
+<i class="fas fa-angle-right mx-1 text-base"></i>
+<a href="{%url "producemanages:ASrequestlist"%}">
+
+
+    수리등록:AS요청<i class="fas fa-angle-right text-base mx-1"></i>
+</a>
+<span class="text-gray-700">
+    AS요청 ({{repair.수리요청코드}})</span>
+{%endblock head_title %}
+
+
+{%block main_contens%}
+
+<div class="w-full h-full pl-32 -mt-6 font-semibold pt-12 flex flex-col ">
+
+    <div class="p-6 flex flex-col w-full">
+        <div class="flex flex-col w-full">
+            <div class="flex flex-row justify-between w-full ">
+                <div class=" border-b w-64 mb-3 font-semibold border-gray-600 pb-2">AS요청 ({{repair.수리요청코드}})
+                </div>
+
+                <div class="flex flex-row">
+                    {%if user == repair.작성자%}
+                    {%if finalcheckboolean %}
+                    {%if repair.수리최종 == "최종검사결과"%}
+                    <div class="mt-2">
+                        <a href="{%url "producemanages:repairupdateindetail" repair.pk%}">
+                            <div class="btn-link bg-teal-800 hover:font-bold">
+                                수리 수정 </div>
+                        </a>
+                    </div>
+                    {%else%}
+                    <div class="mt-2">
+                        <a href="{%url "producemanages:repairupdateindetailAS" repair.pk%}">
+                            <div class="btn-link bg-teal-800 hover:font-bold">
+                                수리 수정 </div>
+                        </a>
+                    </div>
+                    {%endif%}
+
+                    <div class="mt-2 ml-3">
+                        <a href="{%url "producemanages:repairdeleteensure" repair.pk%}">
+                            <div class="btn-link bg-red-800 hover:font-bold">
+                                수리 삭제 </div>
+                        </a>
+                    </div>
+
+
+
+
+                    {%endif%}
+                    {%if repair.finalcheckboolean == "최종검사의뢰완료" %}
+                    <div class="mt-2 ml-3">
+                        <a href="{%url "producemanages:finalcheckrequestdelete" repair.최종검사.pk%}">
+                            <div class="btn-link bg-green-800 hover:font-bold w-40 p-1 px-2">
+                                최종검사의뢰 철회 </div>
+                        </a>
+                    </div> {%endif%}
+                    {%endif%}
+
+                </div>
+
+            </div>
+            <div class="flex ">
+
+                <table class="table-fixed text-sm">
+                    <thead>
+                        <tr>
+                            <th class="border border-r-0 bg-gray-400  py-2 w-40 text-right">{{repair.수리요청코드}}
+                            </th>
+                            <th class="border border-l-0 bg-gray-400  py-2 w-56 text-left">의 수리요청</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="border px-4 py-2 bg-gray-200">수리요청코드</td>
+                            <td class="border px-4 py-2">{{repair.수리요청코드}}</td>
+                        </tr>
+                        <tr>
+                            <td class="border px-4 py-2 bg-gray-200">신청자</td>
+                            <td class="border px-4 py-2">{{repair.신청자}}</td>
+                        </tr>
+                        <tr>
+                            <td class="border px-4 py-2 bg-gray-200">신청품목</td>
+                            <td class="border px-4 py-2">{{repair.신청품목}}</td>
+                        </tr>
+                        <tr>
+                            <td class="border px-4 py-2 bg-gray-200">신청수량</td>
+                            <td class="border px-4 py-2">{{repair.신청수량}}</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+
+
+
+
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
+{%endblock main_contens %}

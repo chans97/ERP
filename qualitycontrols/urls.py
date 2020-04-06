@@ -230,4 +230,15 @@ urlpatterns = [
         views.deletematerialoutrequest,
         name="deletematerialoutrequest",
     ),
+    path("ASrequestlist/", views.ASrequestlist, name="ASrequestlist",),
+    path(
+        "repairregisterAS/<int:pk>/", views.repairregisterAS, name="repairregisterAS",
+    ),
+    path(
+        "repairrequestdetail/<int:pk>/",
+        views.repairrequestdetail,
+        name="repairrequestdetail",
+    ),
+    path("repairlist/", views.repairlist, name="repairlist",),
+    
 ]

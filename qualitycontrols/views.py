@@ -554,6 +554,20 @@ class finalcheckedit(user_mixins.LoggedInOnlyView, UpdateView):
         pk = self.kwargs.get("pk")
         finalcheck = QC_models.FinalCheckRegister.objects.get_or_none(pk=pk)
         context["finalcheck"] = finalcheck
+        context["selectlist"] = [
+            "포장검사",
+            "동작검사",
+            "내부검사",
+            "외관검사",
+            "내용물확인",
+            "전원전압",
+            "POWERTRANS",
+            "FUSE_전_ULUSA",
+            "LABEL_인쇄물",
+            "내용물",
+            "내압검사_DC",
+            "내압검사_AC",
+        ]
         return self.response_class(
             request=self.request,
             template=self.get_template_names(),
@@ -572,11 +586,11 @@ class finalcheckedit(user_mixins.LoggedInOnlyView, UpdateView):
         self.object = form.save()
         최종검사코드 = form.cleaned_data.get("최종검사코드")
         검시일 = form.cleaned_data.get("검시일")
-        CR = form.cleaned_data.get("CR")
-        MA = form.cleaned_data.get("MA")
-        MI = form.cleaned_data.get("MI")
+        치명적불량 = form.cleaned_data.get("치명적불량")
+        중불량 = form.cleaned_data.get("중불량")
+        경불량 = form.cleaned_data.get("경불량")
         검사수준 = form.cleaned_data.get("검사수준")
-        Sample방식 = form.cleaned_data.get("Sample방식")
+        샘플링방식 = form.cleaned_data.get("샘플링방식")
         결점수 = form.cleaned_data.get("결점수")
         전원전압 = form.cleaned_data.get("전원전압")
         POWERTRANS = form.cleaned_data.get("POWERTRANS")
@@ -588,22 +602,23 @@ class finalcheckedit(user_mixins.LoggedInOnlyView, UpdateView):
         동작검사 = form.cleaned_data.get("동작검사")
         내부검사 = form.cleaned_data.get("내부검사")
         외관검사 = form.cleaned_data.get("외관검사")
-        내압검사 = form.cleaned_data.get("내압검사")
+        내압검사_AC = form.cleaned_data.get("내압검사_AC")
+        내압검사_DC = form.cleaned_data.get("내압검사_DC")
         내용물확인 = form.cleaned_data.get("내용물확인")
         가_감전압 = form.cleaned_data.get("가_감전압")
         HI_POT_내부검사 = form.cleaned_data.get("HI_POT_내부검사")
-        REMARK = form.cleaned_data.get("REMARK")
+        특이사항 = form.cleaned_data.get("특이사항")
         부적합수량 = form.cleaned_data.get("부적합수량")
         적합수량 = form.cleaned_data.get("적합수량")
         pk = self.kwargs.get("pk")
         finalcheck = QC_models.FinalCheckRegister.objects.get_or_none(pk=pk)
         finalcheck.최종검사코드 = 최종검사코드
         finalcheck.검시일 = 검시일
-        finalcheck.CR = CR
-        finalcheck.MA = MA
-        finalcheck.MI = MI
+        finalcheck.치명적불량 = 치명적불량
+        finalcheck.중불량 = 중불량
+        finalcheck.경불량 = 경불량
         finalcheck.검사수준 = 검사수준
-        finalcheck.Sample방식 = Sample방식
+        finalcheck.샘플링방식 = 샘플링방식
         finalcheck.결점수 = 결점수
         finalcheck.전원전압 = 전원전압
         finalcheck.POWERTRANS = POWERTRANS
@@ -615,11 +630,12 @@ class finalcheckedit(user_mixins.LoggedInOnlyView, UpdateView):
         finalcheck.동작검사 = 동작검사
         finalcheck.내부검사 = 내부검사
         finalcheck.외관검사 = 외관검사
-        finalcheck.내압검사 = 내압검사
+        finalcheck.내압검사_AC = 내압검사_AC
+        finalcheck.내압검사_C = 내압검사_C
         finalcheck.내용물확인 = 내용물확인
         finalcheck.가_감전압 = 가_감전압
         finalcheck.HI_POT_내부검사 = HI_POT_내부검사
-        finalcheck.REMARK = REMARK
+        finalcheck.특이사항 = 특이사항
         finalcheck.부적합수량 = 부적합수량
         finalcheck.적합수량 = 적합수량
 

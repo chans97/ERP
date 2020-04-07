@@ -194,10 +194,21 @@ class ASrepairrequestregisterForm(forms.ModelForm):
         model = models.ASRepairRequest
         fields = (
             "수리요청코드",
+            "고객성명",
+            "고객주소",
+            "고객전화",
+            "고객팩스",
+            "AS의뢰내용",
+            "시리얼번호",
+            "사용자액세서리",
+            "택배관련",
             "신청수량",
         )
         help_texts = {
             "수리요청코드": "*수리요청코드 앞에 RR을 붙여주시길 바랍니다.(한 번 설정하면, 바꿀 수 없습니다.)",
+        }
+        widgets = {
+            "택배관련": forms.RadioSelect(),
         }
 
     def save(self, *arg, **kwargs):
@@ -229,6 +240,10 @@ class ASrepairrequestregisterForm(forms.ModelForm):
 
 
 class ASrepairrequestregisterRackForm(forms.Form):
+    택배관련_CHOICES = (
+        ("선불", "선불"),
+        ("착불", "착불"),
+    )
 
     수리요청코드 = forms.CharField(
         max_length=20,
@@ -238,6 +253,14 @@ class ASrepairrequestregisterRackForm(forms.Form):
     )
     신청수량 = forms.IntegerField()
     신청품목 = forms.CharField()
+    고객성명 = forms.CharField()
+    고객주소 = forms.CharField()
+    고객전화 = forms.CharField()
+    고객팩스 = forms.CharField()
+    AS의뢰내용 = forms.CharField()
+    시리얼번호 = forms.CharField()
+    사용자액세서리 = forms.CharField()
+    택배관련 = forms.ChoiceField(choices=택배관련_CHOICES, widget=forms.RadioSelect())
 
     def clean(self):
         self.is_bound = False

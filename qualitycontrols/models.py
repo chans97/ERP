@@ -134,11 +134,11 @@ class FinalCheckRegister(TimeStampedModel):
         choices=OKNO_CHOICES, max_length=20, blank=True, null=True
     )
     내용물확인 = models.CharField(choices=OKNO_CHOICES, max_length=20, blank=True, null=True)
-    가_감전압 = models.CharField(max_length=50, blank=True)
-    HI_POT_내부검사 = models.CharField(max_length=50, blank=True)
-    특이사항 = models.TextField(max_length=80, blank=True)
-    부적합수량 = models.IntegerField()
-    적합수량 = models.IntegerField()
+    가_감전압 = models.CharField(max_length=50, blank=True, null=True)
+    HI_POT_내부검사 = models.CharField(max_length=50, blank=True, null=True)
+    특이사항 = models.TextField(max_length=80, blank=True, null=True)
+    부적합수량 = models.IntegerField(null=True)
+    적합수량 = models.IntegerField(null=True)
     제품 = models.ForeignKey(
         SI_models.SingleProduct,
         related_name="최종검사등록",

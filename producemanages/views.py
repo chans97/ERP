@@ -860,7 +860,6 @@ def workdonelist(request):
     user = request.user
     search = request.GET.get("search")
     search_m = request.GET.get("search_m")
-    search_t = request.GET.get("search_t")
 
     if search_m is None:
         s_order_m = []
@@ -949,56 +948,7 @@ def workdonelist(request):
             except:
                 s_order.append(s)
 
-    if search_t is None:
-        s_order_t = []
-        order = (
-            QC_models.RepairRegister.objects.filter(작성자=user)
-            .filter(수리최종="AS")
-            .order_by("-created")
-        )
-        for s in order:
-            try:
-                s.최종검사
-            except:
-                s_order_t.append(s)
-        s_bool_t = False
-    else:
-        s_bool_t = True
-        s_order_t = []
-        order = (
-            QC_models.RepairRegister.objects.filter(작성자=user)
-            .filter(수리최종="AS")
-            .filter(
-                Q(AS수리의뢰__수리요청코드__contains=search_t)
-                | Q(AS수리의뢰__신청품목__모델명__contains=search_t)
-                | Q(AS수리의뢰__신청품목__모델코드__contains=search_t)
-                | Q(작성자__first_name__contains=search_t)
-                | Q(불량위치및자재__contains=search_t)
-                | Q(수리내용__contains=search_t)
-            )
-            .order_by("-created")
-        )
-        for s in order:
-            try:
-                s.최종검사
-            except:
-                s_order_t.append(s)
-
     pagediv = 7
-    totalpage_t = int(math.ceil(len(s_order_t) / pagediv))
-    paginator_t = Paginator(s_order_t, pagediv, orphans=0)
-    page_t = request.GET.get("page_t", "1")
-    s_order_t = paginator_t.get_page(page_t)
-    nextpage_t = int(page_t) + 1
-    previouspage_t = int(page_t) - 1
-    nonpage_t = False
-    notsamebool_t = True
-    if totalpage_t == 0:
-        nonpage_t = True
-    if int(page_t) == totalpage_t:
-        notsamebool_t = False
-    if (search_t is None) or (search_t == ""):
-        search_t = "search"
 
     totalpage_m = int(math.ceil(len(s_order_m) / pagediv))
     paginator_m = Paginator(s_order_m, pagediv, orphans=0)
@@ -1033,7 +983,6 @@ def workdonelist(request):
         request,
         "producemanages/workdonelist.html",
         {
-            "s_order_t": s_order_t,
             "s_order": s_order,
             "search": search,
             "page": page,
@@ -1052,15 +1001,6 @@ def workdonelist(request):
             "previouspage_m": previouspage_m,
             "s_bool_m": s_bool_m,
             "nonpage_m": nonpage_m,
-            "s_order_t": s_order_t,
-            "search_t": search_t,
-            "page_t": page_t,
-            "totalpage_t": totalpage_t,
-            "notsamebool_t": notsamebool_t,
-            "nextpage_t": nextpage_t,
-            "previouspage_t": previouspage_t,
-            "s_bool_t": s_bool_t,
-            "nonpage_t": nonpage_t,
         },
     )
 
@@ -1324,30 +1264,6 @@ class repairupdate(user_mixins.LoggedInOnlyView, UpdateView):
 def repairlist(request):
     user = request.user
     search = request.GET.get("search")
-    search_m = request.GET.get("search_m")
-    if search_m is None:
-        s_order_m = (
-            QC_models.RepairRegister.objects.filter(작성자=user)
-            .filter(수리최종="AS")
-            .order_by("-created")
-        )
-        s_bool_m = False
-    else:
-        s_bool_m = True
-
-        s_order_m = (
-            QC_models.RepairRegister.objects.filter(작성자=user)
-            .filter(수리최종="AS")
-            .filter(
-                Q(AS수리의뢰__수리요청코드__contains=search_m)
-                | Q(AS수리의뢰__신청품목__모델명__contains=search_m)
-                | Q(AS수리의뢰__신청품목__모델코드__contains=search_m)
-                | Q(작성자__first_name__contains=search_m)
-                | Q(불량위치및자재__contains=search_m)
-                | Q(수리내용__contains=search_m)
-            )
-            .order_by("-created")
-        )
 
     if search is None:
         l_order = (
@@ -1373,21 +1289,6 @@ def repairlist(request):
         )
 
     pagediv = 7
-
-    totalpage_m = int(math.ceil(len(s_order_m) / pagediv))
-    paginator_m = Paginator(s_order_m, pagediv, orphans=0)
-    page_m = request.GET.get("page_m", "1")
-    s_order_m = paginator_m.get_page(page_m)
-    nextpage_m = int(page_m) + 1
-    previouspage_m = int(page_m) - 1
-    nonpage_m = False
-    notsamebool_m = True
-    if totalpage_m == 0:
-        nonpage_m = True
-    if int(page_m) == totalpage_m:
-        notsamebool_m = False
-    if (search_m is None) or (search_m == ""):
-        search_m = "search"
 
     totalpage = int(math.ceil(len(l_order) / pagediv))
     paginator = Paginator(l_order, pagediv, orphans=0)
@@ -1416,15 +1317,6 @@ def repairlist(request):
             "previouspage": previouspage,
             "s_bool": s_bool,
             "nonpage": nonpage,
-            "s_order_m": s_order_m,
-            "search_m": search_m,
-            "page_m": page_m,
-            "totalpage_m": totalpage_m,
-            "notsamebool_m": notsamebool_m,
-            "nextpage_m": nextpage_m,
-            "previouspage_m": previouspage_m,
-            "s_bool_m": s_bool_m,
-            "nonpage_m": nonpage_m,
         },
     )
 
@@ -1498,7 +1390,6 @@ def checkdonelist(request):
     user = request.user
     search = request.GET.get("search")
     search_m = request.GET.get("search_m")
-    search_t = request.GET.get("search_t")
 
     if search_m is None:
         s_order_m = []
@@ -1584,58 +1475,7 @@ def checkdonelist(request):
             except:
                 pass
 
-    if search_t is None:
-        s_order_t = []
-        order = (
-            QC_models.RepairRegister.objects.filter(작성자=user)
-            .filter(수리최종="AS")
-            .order_by("-created")
-        )
-        for s in order:
-            try:
-                s.최종검사
-                s_order_t.append(s)
-            except:
-                pass
-        s_bool_t = False
-    else:
-        s_bool_t = True
-        s_order_t = []
-        order = (
-            QC_models.RepairRegister.objects.filter(작성자=user)
-            .filter(수리최종="AS")
-            .filter(
-                Q(AS수리의뢰__수리요청코드__contains=search_t)
-                | Q(AS수리의뢰__신청품목__모델명__contains=search_t)
-                | Q(AS수리의뢰__신청품목__모델코드__contains=search_t)
-                | Q(작성자__first_name__contains=search_t)
-                | Q(불량위치및자재__contains=search_t)
-                | Q(수리내용__contains=search_t)
-            )
-            .order_by("-created")
-        )
-        for s in order:
-            try:
-                s.최종검사
-                s_order_t.append(s)
-            except:
-                pass
-
     pagediv = 7
-    totalpage_t = int(math.ceil(len(s_order_t) / pagediv))
-    paginator_t = Paginator(s_order_t, pagediv, orphans=0)
-    page_t = request.GET.get("page_t", "1")
-    s_order_t = paginator_t.get_page(page_t)
-    nextpage_t = int(page_t) + 1
-    previouspage_t = int(page_t) - 1
-    nonpage_t = False
-    notsamebool_t = True
-    if totalpage_t == 0:
-        nonpage_t = True
-    if int(page_t) == totalpage_t:
-        notsamebool_t = False
-    if (search_t is None) or (search_t == ""):
-        search_t = "search"
 
     totalpage_m = int(math.ceil(len(s_order_m) / pagediv))
     paginator_m = Paginator(s_order_m, pagediv, orphans=0)
@@ -1670,7 +1510,6 @@ def checkdonelist(request):
         request,
         "producemanages/checkdonelist.html",
         {
-            "s_order_t": s_order_t,
             "s_order": s_order,
             "search": search,
             "page": page,
@@ -1689,15 +1528,6 @@ def checkdonelist(request):
             "previouspage_m": previouspage_m,
             "s_bool_m": s_bool_m,
             "nonpage_m": nonpage_m,
-            "s_order_t": s_order_t,
-            "search_t": search_t,
-            "page_t": page_t,
-            "totalpage_t": totalpage_t,
-            "notsamebool_t": notsamebool_t,
-            "nextpage_t": nextpage_t,
-            "previouspage_t": previouspage_t,
-            "s_bool_t": s_bool_t,
-            "nonpage_t": nonpage_t,
         },
     )
 

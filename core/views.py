@@ -389,44 +389,30 @@ class threelist(View, user_mixins.LoggedInOnlyView):
     def get_third_queryset(self, request):
         self.search3 = request.GET.get("search3")
         if self.search3 is None:
-            order = QC_models.RepairRegister.objects.filter(수리최종="AS").order_by(
-                "-created"
-            )
+            order = AS_models.ASRepairRequest.objects.all().order_by("-created")
             queryset = []
             for s in order:
                 try:
-                    s.최종검사
-                    try:
-                        s.최종검사.최종검사등록
-                    except:
-                        queryset.append(s)
+                    s.수리내역서
                 except:
-                    pass
+                    queryset.append(s)
+
             self.s_bool3 = False
         else:
             self.s_bool3 = True
-            order = (
-                QC_models.RepairRegister.objects.filter(수리최종="AS")
-                .filter(
-                    Q(AS수리의뢰__수리요청코드__contains=self.search3)
-                    | Q(AS수리의뢰__신청품목__모델명__contains=self.search3)
-                    | Q(AS수리의뢰__신청품목__모델코드__contains=self.search3)
-                    | Q(작성자__first_name__contains=self.search3)
-                    | Q(불량위치및자재__contains=self.search3)
-                    | Q(수리내용__contains=self.search3)
-                )
-                .order_by("-created")
-            )
+            order = AS_models.ASRepairRequest.objects.filter(
+                Q(신청자__contains=search)
+                | Q(신청품목__모델명__contains=search)
+                | Q(신청품목__모델코드__contains=search)
+                | Q(수리요청코드__contains=search)
+            ).order_by("-created")
+
             queryset = []
             for s in order:
                 try:
-                    s.최종검사
-                    try:
-                        s.최종검사.최종검사등록
-                    except:
-                        queryset.append(s)
+                    s.수리내역서
                 except:
-                    pass
+                    queryset.append(s)
         return queryset
 
     def get_page(self):

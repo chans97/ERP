@@ -203,6 +203,11 @@ class ASVisitContents(TimeStampedModel):
 
 
 class ASRepairRequest(TimeStampedModel):
+    택배관련_CHOICES = (
+        ("선불", "선불"),
+        ("착불", "착불"),
+    )
+
     수리요청코드 = models.CharField(max_length=50, null=True, blank=True,)
 
     AS현장방문 = models.ForeignKey(
@@ -218,6 +223,14 @@ class ASRepairRequest(TimeStampedModel):
         null=True,
         blank=True,
     )
+    고객성명 = models.CharField(max_length=50, null=True, blank=True,)
+    고객주소 = models.CharField(max_length=120, null=True, blank=True,)
+    고객전화 = models.CharField(max_length=50, null=True, blank=True,)
+    고객팩스 = models.CharField(max_length=50, null=True, blank=True,)
+    AS의뢰내용 = models.CharField(max_length=50, null=True, blank=True,)
+    시리얼번호 = models.CharField(max_length=50, null=True, blank=True,)
+    사용자액세서리 = models.CharField(max_length=50, null=True, blank=True,)
+    택배관련 = models.CharField(choices=택배관련_CHOICES, max_length=10, default="선불")
     신청수량 = models.IntegerField()
 
     class Meta:
@@ -342,4 +355,3 @@ class ASResults(TimeStampedModel):
             return f"{self.방문.AS현장방문요청.AS접수.접수번호} : AS완료(방문) -'{self.방문.AS현장방문요청.AS접수.의뢰처}'"
         else:
             return f"{self.내부처리.접수번호} : AS완료(내부처리) - '{self.내부처리.의뢰처}'"
-

@@ -81,7 +81,7 @@ def ASregister(request):
             else:
                 return code
 
-    form = forms.ASRegisterForm(request.POST)
+    form = forms.ASRegisterForm(request.POST or None)
     code = give_number()
     form.initial = {
         "접수번호": code,
@@ -178,7 +178,7 @@ def ASregister(request):
 
 
 def afterservicesingle(request, pk):
-    form = forms.ASSingleForm(request.POST)
+    form = forms.ASSingleForm(request.POST or None)
     search = request.GET.get("search")
     if search is None:
         customer = SI_models.SingleProduct.objects.all().order_by("-created")
@@ -235,7 +235,7 @@ def afterservicesingle(request, pk):
 
 
 def afterservicesrack(request, pk):
-    form = forms.ASRackForm(request.POST)
+    form = forms.ASRackForm(request.POST or None)
 
     search = request.GET.get("search")
     if search is None:
@@ -580,7 +580,7 @@ class ASvisitneedlist(core_views.onelist):
 
 def ASvisitregister(request, pk):
     ASrequest = AS_models.ASVisitRequests.objects.get_or_none(pk=pk)
-    form = forms.ASvisitRegisterForm(request.POST)
+    form = forms.ASvisitRegisterForm(request.POST or None)
 
     if form.is_valid():
         AS날짜 = form.cleaned_data.get("AS날짜")
@@ -736,7 +736,7 @@ class ASrevisitneedlist(core_views.onelist):
 
 def ASrevisitregister(request, pk):
     ASvisit = AS_models.ASVisitContents.objects.get_or_none(pk=pk)
-    form = forms.ASrevisitRegisterForm(request.POST)
+    form = forms.ASrevisitRegisterForm(request.POST or None)
 
     if form.is_valid():
         AS날짜 = form.cleaned_data.get("AS날짜")
@@ -1076,7 +1076,7 @@ def ASrepairrequestregistersingle(request, pk):
             else:
                 return code
 
-    form = forms.ASrepairrequestregisterForm(request.POST)
+    form = forms.ASrepairrequestregisterForm(request.POST or None)
     code = give_number()
     single = ASvisit.단품
     form.initial = {"수리요청코드": code, "신청품목": single.모델코드}
@@ -1088,14 +1088,34 @@ def ASrepairrequestregistersingle(request, pk):
         신청품목 = form.cleaned_data.get("신청품목")
         수리요청코드 = form.cleaned_data.get("수리요청코드")
         신청수량 = form.cleaned_data.get("신청수량")
+        고객성명 = form.cleaned_data.get("고객성명")
+        고객주소 = form.cleaned_data.get("고객주소")
+        고객전화 = form.cleaned_data.get("고객전화")
+        고객팩스 = form.cleaned_data.get("고객팩스")
+        시리얼번호 = form.cleaned_data.get("시리얼번호")
+        사용자액세서리 = form.cleaned_data.get("사용자액세서리")
+        AS의뢰내용 = form.cleaned_data.get("AS의뢰내용")
+        택배관련 = form.cleaned_data.get("택배관련")
         SM = AS_models.ASRepairRequest.objects.create(
-            신청품목=신청품목, 수리요청코드=수리요청코드, 신청수량=신청수량, AS현장방문=ASvisit, 신청자=request.user,
+            신청품목=신청품목,
+            수리요청코드=수리요청코드,
+            신청수량=신청수량,
+            AS현장방문=ASvisit,
+            신청자=request.user,
+            고객성명=고객성명,
+            고객주소=고객주소,
+            고객전화=고객전화,
+            고객팩스=고객팩스,
+            시리얼번호=시리얼번호,
+            사용자액세서리=사용자액세서리,
+            택배관련=택배관련,
+            AS의뢰내용=AS의뢰내용,
         )
         messages.success(request, "AS수리의뢰가 등록되었습니다.")
         return redirect(reverse("afterservices:ASrepairorderalllist"))
 
     seletelist = [
-        "AS방법",
+        "택배관련",
     ]
     return render(
         request,
@@ -1125,7 +1145,7 @@ def ASrepairrequestregisterrack(request, pk):
             else:
                 return code
 
-    form = forms.ASrepairrequestregisterRackForm(request.POST)
+    form = forms.ASrepairrequestregisterRackForm(request.POST or None)
     code = give_number()
     form.initial = {
         "수리요청코드": code,
@@ -1135,15 +1155,36 @@ def ASrepairrequestregisterrack(request, pk):
         신청품목 = form.cleaned_data.get("신청품목")
         수리요청코드 = form.cleaned_data.get("수리요청코드")
         신청수량 = form.cleaned_data.get("신청수량")
+        고객성명 = form.cleaned_data.get("고객성명")
+        고객주소 = form.cleaned_data.get("고객주소")
+        고객전화 = form.cleaned_data.get("고객전화")
+        고객팩스 = form.cleaned_data.get("고객팩스")
+        시리얼번호 = form.cleaned_data.get("시리얼번호")
+        사용자액세서리 = form.cleaned_data.get("사용자액세서리")
+        AS의뢰내용 = form.cleaned_data.get("AS의뢰내용")
+        택배관련 = form.cleaned_data.get("택배관련")
         spk = int(신청품목)
         신청품목 = SI_models.SingleProduct.objects.get(pk=spk)
+
         SM = AS_models.ASRepairRequest.objects.create(
-            신청품목=신청품목, 수리요청코드=수리요청코드, 신청수량=신청수량, AS현장방문=ASvisit, 신청자=request.user,
+            신청품목=신청품목,
+            수리요청코드=수리요청코드,
+            신청수량=신청수량,
+            AS현장방문=ASvisit,
+            신청자=request.user,
+            고객성명=고객성명,
+            고객주소=고객주소,
+            고객전화=고객전화,
+            고객팩스=고객팩스,
+            시리얼번호=시리얼번호,
+            사용자액세서리=사용자액세서리,
+            택배관련=택배관련,
+            AS의뢰내용=AS의뢰내용,
         )
         messages.success(request, "AS수리의뢰가 등록되었습니다.")
         return redirect(reverse("afterservices:ASrepairorderalllist"))
     seletelist = [
-        "AS방법",
+        "택배관련",
     ]
 
     return render(
@@ -1321,7 +1362,7 @@ def ASsingleoutrequestregister(request, pk):
 
 def ASsingleoutrequestregistersingle(request, pk):
     ASvisit = AS_models.ASVisitContents.objects.get_or_none(pk=pk)
-    form = forms.ASsingleoutrequestregistersingleForm(request.POST)
+    form = forms.ASsingleoutrequestregistersingleForm(request.POST or None)
     if form.is_valid():
         출하희망일 = form.cleaned_data.get("출하희망일")
         출하요청수량 = form.cleaned_data.get("출하요청수량")
@@ -1360,7 +1401,7 @@ def ASsingleoutrequestregisterrack(request, pk):
             sipk = single.랙구성단품_id
             sin = SI_models.SingleProduct.objects.get(pk=sipk)
             singlelist.append(sin)
-    form = forms.ASsingleoutrequestregisterrackForm(request.POST)
+    form = forms.ASsingleoutrequestregisterrackForm(request.POST or None)
     seletelist = [
         "불량분류",
     ]

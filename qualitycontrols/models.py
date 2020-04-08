@@ -97,6 +97,17 @@ class FinalCheckRegister(TimeStampedModel):
         ("후면 좌측아래", "후면 좌측아래"),
     )
 
+    수리비_CHOICES = (
+        ("무상", "무상"),
+        ("유상", "유상"),
+    )
+
+    택배_CHOICES = (
+        ("선불", "선불"),
+        ("신용", "신용"),
+        ("착불", "착불"),
+    )
+
     최종검사코드 = models.CharField(max_length=20, null=True, blank=True,)
     최종검사의뢰 = models.OneToOneField(
         "FinalCheck", related_name="최종검사등록", on_delete=models.SET_NULL, null=True,
@@ -145,6 +156,33 @@ class FinalCheckRegister(TimeStampedModel):
         on_delete=models.SET_NULL,
         null=True,
     )
+    동작이상유무 = models.CharField(max_length=100, null=True, blank=True)
+    외형이상유무 = models.CharField(max_length=100, null=True, blank=True)
+
+    수리내역 = models.CharField(max_length=100, null=True, blank=True)
+    특기사항 = models.CharField(max_length=100, null=True, blank=True)
+    수리자 = models.ForeignKey(
+        users_models.User,
+        related_name="AS총괄장수리",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+    수리비 = models.CharField(choices=수리비_CHOICES, max_length=100, blank=True, null=True)
+    기본요금 = models.IntegerField(null=True, blank=True)
+    부품비 = models.IntegerField(null=True, blank=True)
+    택배 = models.CharField(choices=택배_CHOICES, max_length=100, blank=True, null=True)
+    화물 = models.CharField(max_length=100, null=True, blank=True)
+    발송날짜 = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True)
+    발송자 = models.ForeignKey(
+        users_models.User,
+        related_name="AS총괄장발송",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+    입금확인 = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True)
+    비고 = models.CharField(max_length=100, null=True, blank=True)
 
     class Meta:
         verbose_name = "최종검사결과등록"
@@ -182,11 +220,11 @@ class RepairRegister(TimeStampedModel):
     작성자 = models.ForeignKey(
         users_models.User, related_name="수리내역서", on_delete=models.SET_NULL, null=True
     )
-    불량위치및자재 = models.TextField(max_length=300)
+    불량위치및자재 = models.TextField(max_length=300, null=True,)
     특이사항 = models.TextField(max_length=300, null=True, blank=True,)
     수리내용 = models.TextField(max_length=300, null=True, blank=True,)
-    실수리수량 = models.IntegerField()
-    폐기수량 = models.IntegerField()
+    실수리수량 = models.IntegerField(null=True,)
+    폐기수량 = models.IntegerField(null=True,)
     제품 = models.ForeignKey(
         SI_models.SingleProduct,
         related_name="수리내역서",

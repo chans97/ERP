@@ -240,5 +240,11 @@ urlpatterns = [
         name="repairrequestdetail",
     ),
     path("repairlist/", views.repairlist, name="repairlist",),
+    path(
+        "AStotalregister/<int:pk>/",
+        views.AStotalregister,
+        name="AStotalregister",
+    ),
+    
     
 ]

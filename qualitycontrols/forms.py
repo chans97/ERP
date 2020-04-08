@@ -489,3 +489,57 @@ class UploadRepairForm(forms.ModelForm):
     def save(self, *arg, **kwargs):
         partner = super().save(commit=False)
         return partner
+
+
+class AStotalRegisterForm(forms.ModelForm):
+    발송자 = forms.CharField(max_length=20, required=False)
+    검시자 = forms.CharField(max_length=20, required=False)
+    수리자 = forms.CharField(max_length=20, required=False)
+
+    class Meta:
+        model = models.FinalCheckRegister
+        fields = (
+            "최종검사코드",
+            "검시일",
+            "동작이상유무",
+            "외형이상유무",
+            "수리내역",
+            "특기사항",
+            "수리비",
+            "기본요금",
+            "부품비",
+            "택배",
+            "화물",
+            "발송날짜",
+            "입금확인",
+            "비고",
+        )
+        help_texts = {
+            "최종검사코드": "*최종검사코드 앞에 FC를 붙여주시길 바랍니다.(한 번 설정하면, 바꿀 수 없습니다.)",
+            "검시일": "*형식 : yyyy-mm-dd(기본값은 오늘입니다.)",
+            "발송날짜": "*형식 : yyyy-mm-dd(기본값은 오늘입니다.)",
+            "입금확인": "*형식 : yyyy-mm-dd(기본값은 오늘입니다.)",
+        }
+        widgets = {
+            "수리비": forms.RadioSelect(),
+            "택배": forms.RadioSelect(),
+        }
+
+    def clean(self):
+        code = self.cleaned_data.get("최종검사코드")
+        partner = models.FinalCheckRegister.objects.filter(최종검사코드=code)
+        partner = list(partner)
+        if code:
+            code = code[0:2]
+            if partner:
+                self.add_error("최종검사코드", forms.ValidationError("*해당 최종검사코드는 이미 존재합니다."))
+            elif code != "FC":
+                self.add_error(
+                    "최종검사코드", forms.ValidationError("*최종검사코드는 FC로 시작해야 합니다.")
+                )
+
+            return self.cleaned_data
+
+    def save(self, *arg, **kwargs):
+        partner = super().save(commit=False)
+        return partner

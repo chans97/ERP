@@ -1,0 +1,359 @@
+{%extends "qualitycontrols/qualitycontrolshome.html"%}
+{%load static%}
+{% block page_title%}
+AS총괄장 등록
+{%endblock%}
+
+
+{%block head_title%}
+<i class="fas fa-angle-right text-base mx-1"></i>AS총괄장 등록</div>
+{%endblock head_title %}
+
+
+{%block main_contens%}
+<div class="w-11/12 h-full ml-32 -mt-6 font-normal pt-12 flex flex-row">
+
+    <div class="flex flex-col p-6 w-full ">
+        <span class="border-b w-1/3 mb-3 border-gray-600 pb-2 font-semibold text-base">'{{ASrequest.수리요청코드}}'
+            -AS총괄장 등록
+        </span>
+
+        <div class="flex ">
+
+            <div class=" flex flex-col px-12 justify-center">
+
+
+
+                <form method="POST" class="flex flex-col justify-center items-center" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <div class=" flex flex-col justify-center ">
+                        <table class="table-fixed text-sm w-full">
+                            <thead>
+                                <tr>
+                                    <th class="border border-r-0 bg-gray-400 py-2   w-10 text-right"></th>
+                                    <th class="border border-r-0 bg-gray-400 py-2   w-24 text-right">AS</th>
+                                    <th class="border border-l-0 bg-gray-400  py-2 w-10 text-left">총괄장</th>
+                                    <th class="border border-r-0 bg-gray-400 py-2   w-24 text-right"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="border border-b-0 px-4 py-2 bg-gray-200 w-40">동작이상유무</td>
+                                    <td class="border border-b-0 px-4 py-2 w-48">
+                                        <div class="flex w-full">
+                                            <ul id="id_POWERTRANS">
+                                                <li><label for="id_동작이상유무_1"><input type="radio" name="동작이상유무"
+                                                            value="의뢰내용과 같음" id="id_동작이상유무_1" onclick="hideinput();">
+                                                        의뢰내용과 같음</label>
+                                                </li>
+                                                <li><label for="id_동작이상유무_2"><input type="radio" name="동작이상유무"
+                                                            value="이상 없음" id="id_동작이상유무_2" onclick="hideinput();">
+                                                        이상 없음</label>
+                                                </li>
+                                                <li>
+                                                    <label for="id_동작이상유무_3 "
+                                                        class="flex flex-row justify-start items-center">
+                                                        <input type="radio" name="동작이상유무" value="" id="id_동작이상유무_3"
+                                                            onclick="showinput();">
+                                                        <span class="w-10 ml-1">
+                                                            기타
+                                                        </span>
+                                                        <input type="text" name="동작이상유무값" id="동작이상유무값"
+                                                            class="border ml-2" placeholder="기타 내용을 입력하세요.">
+
+                                                    </label>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="text-xs text-teal-700">
+                                        </div>
+                                    </td>
+                                    <td class="border px-4 py-2 bg-gray-200 w-40 h-20">외형이상유무</td>
+
+                                    <td class="border px-4 py-2 w-48">
+                                        <div class="flex border hover:border-gray-500 w-full h-20">
+                                            <textarea name="외형이상유무" class="h-full" cols="30" rows="10"></textarea>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="border  px-4 py-2 bg-gray-200 w-40"> 검사일</td>
+                                    <td class="border  px-4 py-2 w-48">
+                                        <div class="flex border hover:border-gray-500 w-full">
+                                            <input type="text" name="검시일" size="10" id="date2" />
+                                        </div>
+                                    </td>
+                                    <td class="border px-4 py-2 bg-gray-200 w-40">검사자</td>
+
+                                    <td class="border px-4 py-2 w-48">
+                                        <div class="flex border hover:border-gray-500 w-full">
+                                            <input type="text" name="검시자" size="10" />
+                                        </div>
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td class="border border-b-0 px-4 py-2 bg-gray-200 w-40">수리내역</td>
+                                    <td class="border border-b-0 px-4 py-2 w-48">
+                                        <div class="flex border hover:border-gray-500 w-full h-20">
+                                            <textarea name="수리내역" class="h-full" cols="30" rows="10"></textarea>
+                                        </div>
+                                    </td>
+                                    <td class="border px-4 py-2 bg-gray-200 w-40 h-20">특기사항</td>
+
+                                    <td class="border px-4 py-2 w-48">
+                                        <div class="flex border hover:border-gray-500 w-full h-20">
+                                            <textarea name="특기사항" class="h-full" cols="30" rows="10"></textarea>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-t-0 px-4 py-2 bg-gray-200 w-40"></td>
+                                    <td class="border border-t-0 px-4 py-2 w-48"></td>
+                                    <td class="border px-4 py-2 bg-gray-200 w-40">수리자</td>
+
+                                    <td class="border px-4 py-2 w-48">
+                                        <div class="flex border hover:border-gray-500 w-full">
+                                            <input type="text" name="수리자" size="10" />
+                                        </div>
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td class="border border-b-0 px-4 py-2 bg-gray-200 w-40">발송관련</td>
+                                    <td class="border border-b-0 px-4 py-2 w-48">
+                                        <div class="flex w-full">
+                                            수리비 (
+                                            <ul id="id_수리비" class="flex">
+                                                <li><label for="id_수리비_1"><input type="radio" name="수리비" value="무상"
+                                                            id="id_수리비_1" class="m-1">
+                                                        무상, </label>
+                                                </li>
+                                                <li><label for="id_수리비_2"><input type="radio" name="수리비" value="유상"
+                                                            id="id_수리비_2" class="m-1">
+                                                        유상</label>
+                                                </li>
+
+                                            </ul>)
+                                        </div>
+                                        <div class="flex w-full mt-2">
+                                            <span class=" w-32 ">
+
+                                                기본요금( \
+                                            </span>
+                                            <input type="number" name="기본요금" id="기본요금" class="border m-1">
+                                            <span class=" w-4 ">
+
+                                                )
+                                            </span>
+                                        </div>
+                                        <div class="flex w-full mt-2">
+                                            <span class=" w-32 ">
+
+                                                부 품 비 ( \
+                                            </span>
+                                            <input type="number" name="부품비" id="부품비" class="border m-1">
+                                            <span class=" w-4 ">
+
+                                                )
+                                            </span>
+                                        </div>
+
+                                    </td>
+                                    <td class="border bg-gray-200 w-40 h-20">
+                                        <table class="w-full h-full">
+                                            <tbody>
+
+                                                <tr class="  h-20">
+                                                    <td class="border px-4 py-2">
+                                                        택배
+                                                    </td>
+
+                                                </tr>
+                                                <tr>
+                                                    <td class="border px-4 py-2">
+                                                        화물
+                                                    </td>
+
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+
+                                    </td>
+
+                                    <td class="border w-48">
+                                        <table class="w-full h-full">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="border px-4 py-2">
+                                                        <ul id="id_POWERTRANS">
+                                                            <li><label for="id_택배_1"><input type="radio" name="택배"
+                                                                        value="선불" id="id_택배_1">
+                                                                    선불</label>
+                                                            </li>
+                                                            <li><label for="id_택배_2"><input type="radio" name="택배"
+                                                                        value="신용" id="id_택배_2">
+                                                                    신용</label>
+                                                            </li>
+                                                            <li>
+                                                                <label for="id_택배_3 "
+                                                                    class="flex flex-row justify-start items-center">
+                                                                    <input type="radio" name="택배" value="착불"
+                                                                        id="id_택배_3">
+                                                                    <span class="w-10 ml-1">
+                                                                        착불
+                                                                    </span>
+
+                                                                </label>
+                                                            </li>
+                                                        </ul>
+                                                    </td>
+
+                                                </tr>
+                                                <tr>
+                                                    <td class="border px-4 py-2">
+                                                        <div class="flex border hover:border-gray-500 w-full">
+                                                            <input name="화물" class="h-full w-full" cols="30" rows="10">
+
+                                                        </div>
+                                                    </td>
+
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-t-0 border-b-0 px-4 py-2 bg-gray-200 w-40"></td>
+                                    <td
+                                        class="border border-t-2 border-b-0  border-dotted border-gray-500 px-4 py-2 w-48">
+
+                                        <div class="flex  hover:border-gray-500 flex">
+                                            <span class=" w-32 ">
+
+                                                합 계 : (\
+                                            </span>
+
+                                            <input type="text" id="result" value="" class="border m-1">)
+                                        </div>
+
+                                    </td>
+                                    <td class="border px-4 py-2 bg-gray-200 w-40">발송날짜</td>
+
+                                    <td class="border px-4 py-2 w-48">
+                                        <div class="flex border hover:border-gray-500 w-full">
+                                            <input type="text" name="발송날짜" size="10" id="date4" />
+                                        </div>
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td class="border border-t-0 px-4 py-2 bg-gray-200 w-40"></td>
+                                    <td class="border border-t-0 w-48">
+                                        <table class="w-full h-full">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="border  px-4 py-2 w-24">입금확인</td>
+                                                    <td class="border  px-4 py-2 w-48">
+                                                        <div class="flex border hover:border-gray-500 w-full">
+                                                            <input type="text" name="입금확인" size="10" id="date3" />
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+
+                                        </table>
+                                    </td>
+                                    <td class="border px-4 py-2 bg-gray-200 w-40">발송자</td>
+
+                                    <td class="border px-4 py-2 w-48">
+                                        <div class="flex border hover:border-gray-500 w-full">
+                                            <input type="text" name="발송자" size="10" />
+                                        </div>
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td class="border border-t-0 border-b-0 px-4 py-2 bg-gray-200 w-40">비고</td>
+                                    <td class="border px-4 py-2 w-48">
+                                        <div class="flex border hover:border-gray-500 w-full">
+                                            <input type="text" name="비고" size="10" />
+                                        </div>
+                                    </td>
+                                    <td class="border border-t-0 border-b-0 px-4 py-2 bg-gray-200 w-40">최종검사코드</td>
+                                    <td class="border px-4 py-2 w-48">
+                                        <div class="flex border hover:border-gray-500 w-full">
+                                            <input type="text" name="최종검사코드" size="10" value={{code}} />
+                                        </div>
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <button class="btn-link felx mt-5 h-10 w-2/4">
+                        <div class="text-sm forn-bold">AS총괄장 등록</div>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    $("#동작이상유무값").hide();
+    function showinput() {
+        $("#동작이상유무값").slideDown(200);
+    }
+    function hideinput() {
+        $("#동작이상유무값").slideUp(200);
+    }
+
+
+    $("#동작이상유무값").on("change keyup paste", function () {
+        currentVal3 = $("#동작이상유무값").val();
+        var oldVal = "-"
+        if (currentVal3 == oldVal) {
+            return;
+        }
+        oldVal = currentVal3;
+        var radio_btn = document.getElementById("동작이상유무값");
+        document.getElementById("id_동작이상유무_3").value = radio_btn.value;
+        console.log(radio_btn.value)
+    });
+
+    currentVal = 0
+    currentVal2 = 0
+    $("#기본요금").on("change keyup paste", function first() {
+        currentVal = $("#기본요금").val();
+        var oldVal = "-"
+        if (currentVal == oldVal) {
+            return;
+        }
+        oldVal = currentVal;
+        result = Number(currentVal) + Number(currentVal2)
+        document.getElementById("result").value = result;
+
+    });
+
+    $("#부품비").on("change keyup paste", function () {
+        currentVal2 = $("#부품비").val();
+        var oldVal2 = "-"
+        if (currentVal2 == oldVal2) {
+            return;
+        }
+        oldVal2 = currentVal2;
+
+        result = Number(currentVal) + Number(currentVal2)
+        document.getElementById("result").value = result;
+
+    });
+</script>
+{%endblock main_contens %}

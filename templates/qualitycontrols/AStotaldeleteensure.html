@@ -1,12 +1,12 @@
-{%extends "afterservices/afterserviceshome.html"%}
+{%extends "qualitycontrols/qualitycontrolshome.html"%}
 {% load static%}
 {% block page_title%}
-AS수리요청삭제
+AS총괄장삭제
 {%endblock%}
 
 
 {%block head_title%}
-<i class="fas fa-angle-right text-base mx-1"></i><span class="text-gray-700">{{repairrequest}} 삭제확인</span>
+<i class="fas fa-angle-right text-base mx-1"></i><span class="text-gray-700">{{ASrequest.최종검사코드}} 삭제확인</span>
 {%endblock head_title %}
 
 
@@ -17,7 +17,8 @@ AS수리요청삭제
     <div class="p-6 flex flex-col w-full">
         <div class="flex flex-col w-full">
             <div class="flex flex-row justify-between w-full ">
-                <div class=" border-b w-64 mb-3 font-semibold border-gray-600 pb-2">AS수리요청 삭제확인 <div>- {{repairrequest}}
+                <div class=" border-b w-64 mb-3 font-semibold border-gray-600 pb-2">AS총괄장 삭제확인 <div>-
+                        {{ASrequest.최종검사코드}}
                     </div>
                 </div>
 
@@ -28,18 +29,18 @@ AS수리요청삭제
 
             </div>
             <div class="item-center">
-                <div>정말 AS수리요청 <span class="font-semibold">"{{repairrequest.수리요청코드}}"</span>을(를) 삭제하시겠습니까?</div>
+                <div>정말 AS총괄장 <span class="font-semibold">"{{ASrequest.최종검사코드}}"</span>을(를) 삭제하시겠습니까?</div>
                 <div class="text-sm mt-5 text-red-600 font-extrabold">*이와 관련된 모든 자료가 사라질 수도 있습니다.</div>
                 <div class="text-sm text-red-600 font-extrabold">*이와 관련된 자료에 오류가 발생할 수도 있습니다.</div>
                 <div class="flex flex-row mt-5">
                     <div class="mt-2">
-                        <a href="{%url "afterservices:repairrequestdetail" repairrequest.pk%}">
+                        <a href="{%url "qualitycontrols:repairdetail" ASrequest.최종검사의뢰.수리내역서.pk %}">
                             <div class="btn-link bg-teal-800">
                                 돌아가기 </div>
                         </a>
                     </div>
                     <div class="mt-2">
-                        <a href="{%url "afterservices:repairrequestdelete" repairrequest.pk %}">
+                        <a href="{%url "qualitycontrols:AStotaldelete" ASrequest.pk %}">
                             <div class="btn-link  bg-red-800 ml-12">
                                 삭제확인 </div>
                         </a>

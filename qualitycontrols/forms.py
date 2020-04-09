@@ -543,3 +543,12 @@ class AStotalRegisterForm(forms.ModelForm):
     def save(self, *arg, **kwargs):
         partner = super().save(commit=False)
         return partner
+
+class AStotalEditForm(AStotalRegisterForm):
+    def clean(self):
+        code = self.cleaned_data.get("최종검사코드")
+        partner = models.FinalCheckRegister.objects.filter(최종검사코드=code)
+        partner = list(partner)
+        if code:
+            code = code[0:2]
+            return self.cleaned_data

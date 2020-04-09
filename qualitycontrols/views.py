@@ -2036,25 +2036,41 @@ def AStotalregister(request, pk):
         입금확인 = form.cleaned_data.get("입금확인")
         비고 = form.cleaned_data.get("비고")
         검시일 = form.cleaned_data.get("검시일")
-
         발송자 = form.cleaned_data.get("발송자")
         검시자 = form.cleaned_data.get("검시자")
         수리자 = form.cleaned_data.get("수리자")
         try:
-            print(발송자, 검시자, 수리자)
+            problem = 발송자
             발송자 = user_models.User.objects.filter(first_name=발송자)[0]
-            print("its go")
+            problem = 검시자
             검시자 = user_models.User.objects.filter(first_name=검시자)[0]
-            print("its go2")
+            problem = 수리자
             수리자 = user_models.User.objects.filter(first_name=수리자)[0]
-            print("its go3")
-            print(발송자, 검시자, 수리자)
         except:
-            messages.error(request, "발송/검시/수리자 가 등록된 사용자가 아닙니다.")
+            messages.error(request, f"{problem}(이)가 등록된 사용자가 아닙니다.")
             return render(
                 request,
                 "qualitycontrols/AStotalregister.html",
-                {"form": form, "ASrequest": ASrequest, "code": code},
+                {
+                    "ASrequest": ASrequest,
+                    "최종검사코드": 최종검사코드,
+                    "동작이상유무": 동작이상유무,
+                    "외형이상유무": 외형이상유무,
+                    "수리내역": 수리내역,
+                    "특기사항": 특기사항,
+                    "수리비": 수리비,
+                    "기본요금": 기본요금,
+                    "부품비": 부품비,
+                    "택배": 택배,
+                    "화물": 화물,
+                    "발송날짜": 발송날짜,
+                    "입금확인": 입금확인,
+                    "비고": 비고,
+                    "검시일": 검시일,
+                    "발송자": 발송자,
+                    "검시자": 검시자,
+                    "수리자": 수리자,
+                },
             )
 
         SM = QC_models.RepairRegister.objects.create(
@@ -2091,8 +2107,255 @@ def AStotalregister(request, pk):
         messages.success(request, "AS총괄장 등록이 완료되었습니다.")
 
         return redirect(reverse("qualitycontrols:finalcheckdonelist"))
+
+    else:
+        form.cleaned_data = {}
+        최종검사코드 = form.cleaned_data.get("최종검사코드", code)
+        동작이상유무 = form.cleaned_data.get("동작이상유무", "")
+        외형이상유무 = form.cleaned_data.get("외형이상유무", "")
+        수리내역 = form.cleaned_data.get("수리내역", "")
+        특기사항 = form.cleaned_data.get("특기사항", "")
+        수리비 = form.cleaned_data.get("수리비", "")
+        기본요금 = form.cleaned_data.get("기본요금", "")
+        부품비 = form.cleaned_data.get("부품비", "")
+        택배 = form.cleaned_data.get("택배", "")
+        화물 = form.cleaned_data.get("화물", "")
+        발송날짜 = form.cleaned_data.get("발송날짜", "")
+        입금확인 = form.cleaned_data.get("입금확인", "")
+        비고 = form.cleaned_data.get("비고", "")
+        검시일 = form.cleaned_data.get("검시일", "")
+        발송자 = form.cleaned_data.get("발송자", "")
+        검시자 = form.cleaned_data.get("검시자", "")
+        수리자 = form.cleaned_data.get("수리자", "")
+
+        messages.error(request, f"정확히 입력해주세요.")
+        return render(
+            request,
+            "qualitycontrols/AStotalregister.html",
+            {
+                "ASrequest": ASrequest,
+                "최종검사코드": 최종검사코드,
+                "동작이상유무": 동작이상유무,
+                "외형이상유무": 외형이상유무,
+                "수리내역": 수리내역,
+                "특기사항": 특기사항,
+                "수리비": 수리비,
+                "기본요금": 기본요금,
+                "부품비": 부품비,
+                "택배": 택배,
+                "화물": 화물,
+                "발송날짜": 발송날짜,
+                "입금확인": 입금확인,
+                "비고": 비고,
+                "검시일": 검시일,
+                "발송자": 발송자,
+                "검시자": 검시자,
+                "수리자": 수리자,
+            },
+        )
+
     return render(
         request,
         "qualitycontrols/AStotalregister.html",
-        {"form": form, "ASrequest": ASrequest, "code": code},
+        {"form": form, "ASrequest": ASrequest, "code": code, "검시자": ""},
     )
+
+
+def AStotaledit(request, pk):
+    user = request.user
+    ASrequest = QC_models.FinalCheckRegister.objects.get_or_none(pk=pk)
+    form = forms.AStotalEditForm(request.POST or None)
+    code = ASrequest.최종검사코드
+
+    if form.is_valid():
+        최종검사코드 = form.cleaned_data.get("최종검사코드")
+        동작이상유무 = form.cleaned_data.get("동작이상유무")
+        외형이상유무 = form.cleaned_data.get("외형이상유무")
+        수리내역 = form.cleaned_data.get("수리내역")
+        특기사항 = form.cleaned_data.get("특기사항")
+        수리비 = form.cleaned_data.get("수리비")
+        기본요금 = form.cleaned_data.get("기본요금")
+        부품비 = form.cleaned_data.get("부품비")
+        택배 = form.cleaned_data.get("택배")
+        화물 = form.cleaned_data.get("화물")
+        발송날짜 = form.cleaned_data.get("발송날짜")
+        입금확인 = form.cleaned_data.get("입금확인")
+        비고 = form.cleaned_data.get("비고")
+        검시일 = form.cleaned_data.get("검시일")
+        발송자 = form.cleaned_data.get("발송자")
+        검시자 = form.cleaned_data.get("검시자")
+        수리자 = form.cleaned_data.get("수리자")
+        try:
+            problem = 발송자
+            발송자 = user_models.User.objects.filter(first_name=발송자)[0]
+            problem = 검시자
+            검시자 = user_models.User.objects.filter(first_name=검시자)[0]
+            problem = 수리자
+            수리자 = user_models.User.objects.filter(first_name=수리자)[0]
+        except:
+            messages.error(request, f"{problem}(이)가 등록된 사용자가 아닙니다.")
+            return render(
+                request,
+                "qualitycontrols/AStotalregister.html",
+                {
+                    "ASrequest": ASrequest.최종검사의뢰.수리내역서.AS수리의뢰,
+                    "최종검사코드": 최종검사코드,
+                    "동작이상유무": 동작이상유무,
+                    "외형이상유무": 외형이상유무,
+                    "수리내역": 수리내역,
+                    "특기사항": 특기사항,
+                    "수리비": 수리비,
+                    "기본요금": 기본요금,
+                    "부품비": 부품비,
+                    "택배": 택배,
+                    "화물": 화물,
+                    "발송날짜": 발송날짜,
+                    "입금확인": 입금확인,
+                    "비고": 비고,
+                    "검시일": 검시일,
+                    "발송자": 발송자,
+                    "검시자": 검시자,
+                    "수리자": 수리자,
+                },
+            )
+        SM = ASrequest.최종검사의뢰.수리내역서
+        SM.특이사항 = 특기사항
+        SM.수리내용 = 수리내역
+
+        SM.save()
+
+        ASrequest.검시자 = 검시자
+        ASrequest.최종검사코드 = 최종검사코드
+        ASrequest.검시일 = 검시일
+        ASrequest.동작이상유무 = 동작이상유무
+        ASrequest.외형이상유무 = 외형이상유무
+        ASrequest.수리내역 = 수리내역
+        ASrequest.특기사항 = 특기사항
+        ASrequest.수리비 = 수리비
+        ASrequest.기본요금 = 기본요금
+        ASrequest.부품비 = 부품비
+        ASrequest.택배 = 택배
+        ASrequest.화물 = 화물
+        ASrequest.발송날짜 = 발송날짜
+        ASrequest.입금확인 = 입금확인
+        ASrequest.비고 = 비고
+        ASrequest.발송자 = 발송자
+        ASrequest.수리자 = 수리자
+        ASrequest.save()
+
+        messages.success(request, "AS총괄장 수정이 완료되었습니다.")
+
+        return redirect(
+            reverse(
+                "qualitycontrols:repairdetail",
+                kwargs={"pk": ASrequest.최종검사의뢰.수리내역서.pk},
+            )
+        )
+
+    else:
+        form.cleaned_data = {}
+        최종검사코드 = form.cleaned_data.get("최종검사코드", ASrequest.최종검사코드)
+        동작이상유무 = form.cleaned_data.get("동작이상유무", ASrequest.동작이상유무)
+        외형이상유무 = form.cleaned_data.get("외형이상유무", ASrequest.외형이상유무)
+        수리내역 = form.cleaned_data.get("수리내역", ASrequest.수리내역)
+        특기사항 = form.cleaned_data.get("특기사항", ASrequest.특기사항)
+        수리비 = form.cleaned_data.get("수리비", ASrequest.수리비)
+        기본요금 = form.cleaned_data.get("기본요금", ASrequest.기본요금)
+        부품비 = form.cleaned_data.get("부품비", ASrequest.부품비)
+        택배 = form.cleaned_data.get("택배", ASrequest.택배)
+        화물 = form.cleaned_data.get("화물", ASrequest.화물)
+        발송날짜 = form.cleaned_data.get("발송날짜", ASrequest.발송날짜)
+        입금확인 = form.cleaned_data.get("입금확인", ASrequest.입금확인)
+        비고 = form.cleaned_data.get("비고", ASrequest.비고)
+        검시일 = form.cleaned_data.get("검시일", ASrequest.검시일)
+        발송자 = form.cleaned_data.get("발송자", ASrequest.발송자)
+        검시자 = form.cleaned_data.get("검시자", ASrequest.검시자)
+        수리자 = form.cleaned_data.get("수리자", ASrequest.수리자)
+
+        messages.error(request, "내용을 입력해주세요.")
+        return render(
+            request,
+            "qualitycontrols/AStotalregister.html",
+            {
+                "ASrequest": ASrequest.최종검사의뢰.수리내역서.AS수리의뢰,
+                "최종검사코드": 최종검사코드,
+                "동작이상유무": 동작이상유무,
+                "외형이상유무": 외형이상유무,
+                "수리내역": 수리내역,
+                "특기사항": 특기사항,
+                "수리비": 수리비,
+                "기본요금": 기본요금,
+                "부품비": 부품비,
+                "택배": 택배,
+                "화물": 화물,
+                "발송날짜": 발송날짜,
+                "입금확인": 입금확인,
+                "비고": 비고,
+                "검시일": 검시일,
+                "발송자": 발송자,
+                "검시자": 검시자,
+                "수리자": 수리자,
+            },
+        )
+
+    최종검사코드 = ASrequest.최종검사코드
+    동작이상유무 = ASrequest.동작이상유무
+    외형이상유무 = ASrequest.외형이상유무
+    수리내역 = ASrequest.수리내역
+    특기사항 = ASrequest.특기사항
+    수리비 = ASrequest.수리비
+    기본요금 = ASrequest.기본요금
+    부품비 = ASrequest.부품비
+    택배 = ASrequest.택배
+    화물 = ASrequest.화물
+    발송날짜 = ASrequest.발송날짜
+    입금확인 = ASrequest.입금확인
+    비고 = ASrequest.비고
+    검시일 = ASrequest.검시일
+    발송자 = ASrequest.발송자
+    검시자 = ASrequest.검시자
+    수리자 = ASrequest.수리자
+
+    return render(
+        request,
+        "qualitycontrols/AStotalregister.html",
+        {
+            "ASrequest": ASrequest.최종검사의뢰.수리내역서.AS수리의뢰,
+            "최종검사코드": 최종검사코드,
+            "동작이상유무": 동작이상유무,
+            "외형이상유무": 외형이상유무,
+            "수리내역": 수리내역,
+            "특기사항": 특기사항,
+            "수리비": 수리비,
+            "기본요금": 기본요금,
+            "부품비": 부품비,
+            "택배": 택배,
+            "화물": 화물,
+            "발송날짜": 발송날짜,
+            "입금확인": 입금확인,
+            "비고": 비고,
+            "검시일": 검시일,
+            "발송자": 발송자,
+            "검시자": 검시자,
+            "수리자": 수리자,
+        },
+    )
+
+
+def AStotaldeleteensure(request, pk):
+    ASrequest = QC_models.FinalCheckRegister.objects.get_or_none(pk=pk)
+    return render(
+        request, "qualitycontrols/AStotaldeleteensure.html", {"ASrequest": ASrequest},
+    )
+
+
+def AStotaldelete(request, pk):
+    ASrequest = QC_models.FinalCheckRegister.objects.get_or_none(pk=pk)
+    ASrepair = ASrequest.최종검사의뢰.수리내역서
+    AScheckrequest = ASrequest.최종검사의뢰
+
+    ASrequest.delete()
+    AScheckrequest.delete()
+    ASrepair.delete()
+
+    return redirect(reverse("qualitycontrols:finalchecklist"))

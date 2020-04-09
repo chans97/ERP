@@ -240,11 +240,12 @@ urlpatterns = [
         name="repairrequestdetail",
     ),
     path("repairlist/", views.repairlist, name="repairlist",),
+    path("AStotalregister/<int:pk>/", views.AStotalregister, name="AStotalregister",),
+    path("AStotaledit/<int:pk>/", views.AStotaledit, name="AStotaledit",),
     path(
-        "AStotalregister/<int:pk>/",
-        views.AStotalregister,
-        name="AStotalregister",
+        "AStotaldeleteensure/<int:pk>/",
+        views.AStotaldeleteensure,
+        name="AStotaldeleteensure",
     ),
-    
-    
+    path("AStotaldelete/<int:pk>/", views.AStotaldelete, name="AStotaldelete",),
 ]

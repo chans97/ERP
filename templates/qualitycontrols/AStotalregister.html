@@ -44,23 +44,28 @@ AS총괄장 등록
                                         <div class="flex w-full">
                                             <ul id="id_POWERTRANS">
                                                 <li><label for="id_동작이상유무_1"><input type="radio" name="동작이상유무"
-                                                            value="의뢰내용과 같음" id="id_동작이상유무_1" onclick="hideinput();">
+                                                            value="의뢰내용과 같음" id="id_동작이상유무_1" onclick="hideinput();"
+                                                            {% if 동작이상유무 == "의뢰내용과 같음" %} checked {% endif %}>
                                                         의뢰내용과 같음</label>
                                                 </li>
                                                 <li><label for="id_동작이상유무_2"><input type="radio" name="동작이상유무"
-                                                            value="이상 없음" id="id_동작이상유무_2" onclick="hideinput();">
+                                                            value="이상 없음" id="id_동작이상유무_2" onclick="hideinput();"
+                                                            {% if 동작이상유무 == "이상 없음" %} checked {% endif %}>
                                                         이상 없음</label>
                                                 </li>
                                                 <li>
                                                     <label for="id_동작이상유무_3 "
                                                         class="flex flex-row justify-start items-center">
                                                         <input type="radio" name="동작이상유무" value="" id="id_동작이상유무_3"
-                                                            onclick="showinput();">
+                                                            onclick="showinput();" {% if 동작이상유무 == "이상 없음" %}
+                                                            {%elif 동작이상유무 == "의뢰내용과 같음" %} {% else %} checked
+                                                            {% endif %}>
                                                         <span class="w-10 ml-1">
                                                             기타
                                                         </span>
                                                         <input type="text" name="동작이상유무값" id="동작이상유무값"
-                                                            class="border ml-2" placeholder="기타 내용을 입력하세요.">
+                                                            class="border ml-2" placeholder="기타 내용을 입력하세요."
+                                                            value={{동작이상유무}}>
 
                                                     </label>
                                                 </li>
@@ -73,7 +78,8 @@ AS총괄장 등록
 
                                     <td class="border px-4 py-2 w-48">
                                         <div class="flex border hover:border-gray-500 w-full h-20">
-                                            <textarea name="외형이상유무" class="h-full" cols="30" rows="10"></textarea>
+                                            <textarea name="외형이상유무" class="h-full" cols="30"
+                                                rows="10">{{외형이상유무}}</textarea>
                                         </div>
                                     </td>
                                 </tr>
@@ -81,14 +87,14 @@ AS총괄장 등록
                                     <td class="border  px-4 py-2 bg-gray-200 w-40"> 검사일</td>
                                     <td class="border  px-4 py-2 w-48">
                                         <div class="flex border hover:border-gray-500 w-full">
-                                            <input type="text" name="검시일" size="10" id="date2" />
+                                            <input type="text" name="검시일" size="10" id="date2" value={{검시일}}>
                                         </div>
                                     </td>
                                     <td class="border px-4 py-2 bg-gray-200 w-40">검사자</td>
 
                                     <td class="border px-4 py-2 w-48">
                                         <div class="flex border hover:border-gray-500 w-full">
-                                            <input type="text" name="검시자" size="10" />
+                                            <input type="text" name="검시자" size="10" value={{검시자}}>
                                         </div>
                                     </td>
 
@@ -97,14 +103,14 @@ AS총괄장 등록
                                     <td class="border border-b-0 px-4 py-2 bg-gray-200 w-40">수리내역</td>
                                     <td class="border border-b-0 px-4 py-2 w-48">
                                         <div class="flex border hover:border-gray-500 w-full h-20">
-                                            <textarea name="수리내역" class="h-full" cols="30" rows="10"></textarea>
+                                            <textarea name="수리내역" class="h-full" cols="30" rows="10">{{수리내역}}</textarea>
                                         </div>
                                     </td>
                                     <td class="border px-4 py-2 bg-gray-200 w-40 h-20">특기사항</td>
 
                                     <td class="border px-4 py-2 w-48">
                                         <div class="flex border hover:border-gray-500 w-full h-20">
-                                            <textarea name="특기사항" class="h-full" cols="30" rows="10"></textarea>
+                                            <textarea name="특기사항" class="h-full" cols="30" rows="10">{{특기사항}}</textarea>
                                         </div>
                                     </td>
                                 </tr>
@@ -115,7 +121,7 @@ AS총괄장 등록
 
                                     <td class="border px-4 py-2 w-48">
                                         <div class="flex border hover:border-gray-500 w-full">
-                                            <input type="text" name="수리자" size="10" />
+                                            <input type="text" name="수리자" size="10" value={{수리자}}>
                                         </div>
                                     </td>
 
@@ -127,11 +133,13 @@ AS총괄장 등록
                                             수리비 (
                                             <ul id="id_수리비" class="flex">
                                                 <li><label for="id_수리비_1"><input type="radio" name="수리비" value="무상"
-                                                            id="id_수리비_1" class="m-1">
+                                                            id="id_수리비_1" class="m-1" {% if 수리비 == "무상" %} checked
+                                                            {% endif %}>
                                                         무상, </label>
                                                 </li>
                                                 <li><label for="id_수리비_2"><input type="radio" name="수리비" value="유상"
-                                                            id="id_수리비_2" class="m-1">
+                                                            id="id_수리비_2" class="m-1" {% if 수리비 == "유상" %} checked
+                                                            {% endif %}>
                                                         유상</label>
                                                 </li>
 
@@ -142,7 +150,8 @@ AS총괄장 등록
 
                                                 기본요금( \
                                             </span>
-                                            <input type="number" name="기본요금" id="기본요금" class="border m-1">
+                                            <input type="number" name="기본요금" id="기본요금" class="border m-1"
+                                                value={{기본요금}}>
                                             <span class=" w-4 ">
 
                                                 )
@@ -153,7 +162,7 @@ AS총괄장 등록
 
                                                 부 품 비 ( \
                                             </span>
-                                            <input type="number" name="부품비" id="부품비" class="border m-1">
+                                            <input type="number" name="부품비" id="부품비" class="border m-1" value={{부품비}}>
                                             <span class=" w-4 ">
 
                                                 )
@@ -190,18 +199,21 @@ AS총괄장 등록
                                                     <td class="border px-4 py-2">
                                                         <ul id="id_POWERTRANS">
                                                             <li><label for="id_택배_1"><input type="radio" name="택배"
-                                                                        value="선불" id="id_택배_1">
+                                                                        value="선불" id="id_택배_1" {% if 택배 == "선불" %}
+                                                                        checked {% endif %}>
                                                                     선불</label>
                                                             </li>
                                                             <li><label for="id_택배_2"><input type="radio" name="택배"
-                                                                        value="신용" id="id_택배_2">
+                                                                        value="신용" id="id_택배_2" {% if 택배 == "신용" %}
+                                                                        checked {% endif %}>
                                                                     신용</label>
                                                             </li>
                                                             <li>
                                                                 <label for="id_택배_3 "
                                                                     class="flex flex-row justify-start items-center">
                                                                     <input type="radio" name="택배" value="착불"
-                                                                        id="id_택배_3">
+                                                                        id="id_택배_3" {% if 택배 == "착불" %} checked
+                                                                        {% endif %}>
                                                                     <span class="w-10 ml-1">
                                                                         착불
                                                                     </span>
@@ -215,7 +227,8 @@ AS총괄장 등록
                                                 <tr>
                                                     <td class="border px-4 py-2">
                                                         <div class="flex border hover:border-gray-500 w-full">
-                                                            <input name="화물" class="h-full w-full" cols="30" rows="10">
+                                                            <input name="화물" class="h-full w-full" cols="30" rows="10"
+                                                                value={{화물}}>
 
                                                         </div>
                                                     </td>
@@ -246,7 +259,8 @@ AS총괄장 등록
 
                                     <td class="border px-4 py-2 w-48">
                                         <div class="flex border hover:border-gray-500 w-full">
-                                            <input type="text" name="발송날짜" size="10" id="date4" />
+                                            <input type="text" name="발송날짜" size="10" id="date4" value={%if 발송날짜%}
+                                                {{발송날짜.year}}-{{발송날짜.month}}-{{발송날짜.day}} {%endif%}>
                                         </div>
                                     </td>
 
@@ -260,7 +274,9 @@ AS총괄장 등록
                                                     <td class="border  px-4 py-2 w-24">입금확인</td>
                                                     <td class="border  px-4 py-2 w-48">
                                                         <div class="flex border hover:border-gray-500 w-full">
-                                                            <input type="text" name="입금확인" size="10" id="date3" />
+                                                            <input type="text" name="입금확인" size="10" id="date3"
+                                                                value={%if 입금확인%}
+                                                                {{입금확인.year}}-{{입금확인.month}}-{{입금확인.day}} {%endif%}>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -272,7 +288,7 @@ AS총괄장 등록
 
                                     <td class="border px-4 py-2 w-48">
                                         <div class="flex border hover:border-gray-500 w-full">
-                                            <input type="text" name="발송자" size="10" />
+                                            <input type="text" name="발송자" size="10" value={{발송자}}>
                                         </div>
                                     </td>
 
@@ -281,13 +297,13 @@ AS총괄장 등록
                                     <td class="border border-t-0 border-b-0 px-4 py-2 bg-gray-200 w-40">비고</td>
                                     <td class="border px-4 py-2 w-48">
                                         <div class="flex border hover:border-gray-500 w-full">
-                                            <input type="text" name="비고" size="10" />
+                                            <input type="text" name="비고" size="10" value={{비고}}>
                                         </div>
                                     </td>
                                     <td class="border border-t-0 border-b-0 px-4 py-2 bg-gray-200 w-40">최종검사코드</td>
                                     <td class="border px-4 py-2 w-48">
                                         <div class="flex border hover:border-gray-500 w-full">
-                                            <input type="text" name="최종검사코드" size="10" value={{code}} />
+                                            <input type="text" name="최종검사코드" size="10" value={{code}}{{최종검사코드}}>
                                         </div>
                                     </td>
 
@@ -308,7 +324,17 @@ AS총괄장 등록
 </div>
 
 <script>
+    currentVal = $("#기본요금").val()
+    currentVal2 = $("#부품비").val()
+    var result = Number(currentVal) + Number(currentVal2)
+    document.getElementById("result").value = result
+
+
     $("#동작이상유무값").hide();
+    var radioVal = document.querySelector('input[name="동작이상유무"]:checked').id
+    if (radioVal == "id_동작이상유무_3") {
+        $("#동작이상유무값").show();
+    }
     function showinput() {
         $("#동작이상유무값").slideDown(200);
     }
@@ -331,6 +357,7 @@ AS총괄장 등록
 
     currentVal = 0
     currentVal2 = 0
+
     $("#기본요금").on("change keyup paste", function first() {
         currentVal = $("#기본요금").val();
         var oldVal = "-"

@@ -4,6 +4,7 @@ from orders import models as orders_models
 from users import models as users_models
 from StandardInformation import models as SI_models
 from producemanages import models as proms_models
+from qualitycontrols import models as QC_models
 
 
 class StockOfMaterial(TimeStampedModel):
@@ -71,6 +72,13 @@ class StockOfMaterialInRequest(TimeStampedModel):
     )
     입고요청일 = models.DateField(auto_now=False, auto_now_add=False)
     입고유형 = models.CharField(choices=입고유형_CHOICES, max_length=10, null=True, default=일반)
+    수입검사 = models.OneToOneField(
+        QC_models.MaterialCheck,
+        related_name="자재입고요청",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
 
     class Meta:
         verbose_name = "자재입고요청"

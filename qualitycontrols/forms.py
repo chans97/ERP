@@ -103,18 +103,23 @@ class MaterialCheckRegisterForm(forms.ModelForm):
         model = models.MaterialCheck
         fields = (
             "수입검사코드",
-            "검사지침서번호",
+            "검사지침서",
             "검사일자",
             "검사항목",
             "판정기준",
             "시료크기",
-            "합격수량",
-            "불합격수량",
-            "불합격내용",
+            "적합수량",
+            "부적합수량",
+            "부적합내용",
         )
         help_texts = {
             "수입검사코드": "*수입검사코드 앞에 MR을 붙여주시길 바랍니다.(한 번 설정하면, 바꿀 수 없습니다.)",
             "검사일자": "*형식 : yyyy-mm-dd(기본값은 오늘입니다.)",
+        }
+
+        widgets = {
+            "검사지침서": forms.RadioSelect(),
+            "판정기준": forms.RadioSelect(),
         }
 
     def clean(self):
@@ -147,6 +152,7 @@ class LowMetarialRegisterForm(forms.ModelForm):
             "검토일",
             "부적합자재의내용과검토방안",
             "처리방안",
+            "첨부파일",
         )
         help_texts = {
             "자재부적합코드": "*수입검사코드 앞에 LR을 붙여주시길 바랍니다.",
@@ -543,6 +549,7 @@ class AStotalRegisterForm(forms.ModelForm):
     def save(self, *arg, **kwargs):
         partner = super().save(commit=False)
         return partner
+
 
 class AStotalEditForm(AStotalRegisterForm):
     def clean(self):

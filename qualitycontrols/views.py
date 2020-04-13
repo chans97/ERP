@@ -688,14 +688,14 @@ def materialcheckregister(request, pk):
 
     if form.is_valid():
         수입검사코드 = form.cleaned_data.get("수입검사코드")
-        검사지침서번호 = form.cleaned_data.get("검사지침서번호")
+        검사지침서 = form.cleaned_data.get("검사지침서")
         검사일자 = form.cleaned_data.get("검사일자")
         검사항목 = form.cleaned_data.get("검사항목")
         판정기준 = form.cleaned_data.get("판정기준")
         시료크기 = form.cleaned_data.get("시료크기")
-        합격수량 = form.cleaned_data.get("합격수량")
-        불합격수량 = form.cleaned_data.get("불합격수량")
-        불합격내용 = form.cleaned_data.get("불합격내용")
+        적합수량 = form.cleaned_data.get("적합수량")
+        부적합수량 = form.cleaned_data.get("부적합수량")
+        부적합내용 = form.cleaned_data.get("부적합내용")
         if 검사일자 is None:
             검사일자 = timezone.now().date()
 
@@ -704,31 +704,33 @@ def materialcheckregister(request, pk):
             수입검사의뢰=materialcheck,
             검사자=user,
             수입검사코드=수입검사코드,
-            검사지침서번호=검사지침서번호,
+            검사지침서=검사지침서,
             검사일자=검사일자,
             검사항목=검사항목,
             판정기준=판정기준,
             시료크기=시료크기,
-            합격수량=합격수량,
-            불합격수량=불합격수량,
-            불합격내용=불합격내용,
+            적합수량=적합수량,
+            부적합수량=부적합수량,
+            부적합내용=부적합내용,
         )
 
         SM_models.StockOfMaterialInRequest.objects.create(
             자재=materialcheck.자재,
-            입고요청수량=합격수량,
+            입고요청수량=적합수량,
             입고요청자=user,
             입고요청일=timezone.now().date(),
             입고유형="일반",
+            수입검사=SM,
         )
 
         messages.success(request, "수입검사 등록이 완료되었습니다.(자재입고요청 완료)")
 
         return redirect(reverse("qualitycontrols:materialchecklist"))
+    selectlist = ["검사지침서", "판정기준"]
     return render(
         request,
         "qualitycontrols/materialcheckregister.html",
-        {"form": form, "materialcheck": materialcheck,},
+        {"form": form, "materialcheck": materialcheck, "selectlist": selectlist,},
     )
 
 
@@ -739,7 +741,7 @@ class lowmateriallist(core_views.onelist):
         self.search = request.GET.get("search")
         if self.search is None:
             materialchecklist = QC_models.MaterialCheck.objects.exclude(
-                불합격수량=0
+                부적합수량=0
             ).order_by("-created")
             queryset = []
             for s in materialchecklist:
@@ -751,7 +753,7 @@ class lowmateriallist(core_views.onelist):
         else:
             self.s_bool = True
             materialchecklist = (
-                QC_models.MaterialCheck.objects.exclude(불합격수량=0)
+                QC_models.MaterialCheck.objects.exclude(부적합수량=0)
                 .filter(
                     Q(수입검사코드__contains=self.search)
                     | Q(검사지침서번호__contains=self.search)
@@ -760,7 +762,7 @@ class lowmateriallist(core_views.onelist):
                     | Q(검사자__first_name__contains=self.search)
                     | Q(자재__자재코드__contains=self.search)
                     | Q(자재__자재품명__contains=self.search)
-                    | Q(불합격내용__contains=self.search)
+                    | Q(부적합내용__contains=self.search)
                 )
                 .order_by("-created")
             )
@@ -799,6 +801,11 @@ def lowmaterialregister(request, pk):
         검토일 = form.cleaned_data.get("검토일")
         부적합자재의내용과검토방안 = form.cleaned_data.get("부적합자재의내용과검토방안")
         처리방안 = form.cleaned_data.get("처리방안")
+        try:
+            첨부파일 = request.FILES["첨부파일"]
+
+        except Exception:
+            첨부파일 = None
         if 검토일 is None:
             검토일 = timezone.now().date()
 
@@ -810,10 +817,10 @@ def lowmaterialregister(request, pk):
             부적합자재의내용과검토방안=부적합자재의내용과검토방안,
             처리방안=처리방안,
             자재=materialcheck.자재,
+            첨부파일=첨부파일,
         )
 
         messages.success(request, "자재부적합 보고서 등록이 완료되었습니다.")
-
         return redirect(reverse("qualitycontrols:lowmateriallist"))
     return render(
         request,
@@ -841,7 +848,8 @@ class materialcheckalllist(core_views.onelist):
                 | Q(검사자__first_name__contains=self.search)
                 | Q(자재__자재코드__contains=self.search)
                 | Q(자재__자재품명__contains=self.search)
-                | Q(불합격내용__contains=self.search)
+                | Q(부적합내용__contains=self.search)
+                | Q(검사일자__contains=self.search)
             ).order_by("-created")
         return queryset
 
@@ -889,6 +897,7 @@ class lowmetarialedit(user_mixins.LoggedInOnlyView, UpdateView):
         검토일 = form.cleaned_data.get("검토일")
         부적합자재의내용과검토방안 = form.cleaned_data.get("부적합자재의내용과검토방안")
         처리방안 = form.cleaned_data.get("처리방안")
+
         if 검토일 is None:
             검토일 = timezone.now().date()
 
@@ -898,6 +907,11 @@ class lowmetarialedit(user_mixins.LoggedInOnlyView, UpdateView):
         lowmetarial.검토일 = 검토일
         lowmetarial.부적합자재의내용과검토방안 = 부적합자재의내용과검토방안
         lowmetarial.처리방안 = 처리방안
+        try:
+            첨부파일 = self.request.FILES["첨부파일"]
+            lowmetarial.첨부파일 = 첨부파일
+        except Exception:
+            pass
 
         lowmetarial.save()
         messages.success(self.request, "자재부적합보고서 수정이 완료되었습니다.")
@@ -951,28 +965,33 @@ class materialcheckedit(user_mixins.LoggedInOnlyView, UpdateView):
     def form_valid(self, form):
         self.object = form.save()
         수입검사코드 = form.cleaned_data.get("수입검사코드")
-        검사지침서번호 = form.cleaned_data.get("검사지침서번호")
+        검사지침서 = form.cleaned_data.get("검사지침서")
         검사일자 = form.cleaned_data.get("검사일자")
         검사항목 = form.cleaned_data.get("검사항목")
         판정기준 = form.cleaned_data.get("판정기준")
         시료크기 = form.cleaned_data.get("시료크기")
-        합격수량 = form.cleaned_data.get("합격수량")
-        불합격수량 = form.cleaned_data.get("불합격수량")
-        불합격내용 = form.cleaned_data.get("불합격내용")
+        적합수량 = form.cleaned_data.get("적합수량")
+        부적합수량 = form.cleaned_data.get("부적합수량")
+        부적합내용 = form.cleaned_data.get("부적합내용")
         if 검사일자 is None:
             검사일자 = timezone.now().date()
         pk = self.kwargs.get("pk")
         materialcheck = QC_models.MaterialCheck.objects.get_or_none(pk=pk)
         materialcheck.수입검사코드 = form.cleaned_data.get("수입검사코드")
-        materialcheck.검사지침서번호 = form.cleaned_data.get("검사지침서번호")
+        materialcheck.검사지침서 = form.cleaned_data.get("검사지침서")
         materialcheck.검사일자 = form.cleaned_data.get("검사일자")
         materialcheck.검사항목 = form.cleaned_data.get("검사항목")
         materialcheck.판정기준 = form.cleaned_data.get("판정기준")
         materialcheck.시료크기 = form.cleaned_data.get("시료크기")
-        materialcheck.합격수량 = form.cleaned_data.get("합격수량")
-        materialcheck.불합격수량 = form.cleaned_data.get("불합격수량")
-        materialcheck.불합격내용 = form.cleaned_data.get("불합격내용")
+        materialcheck.적합수량 = form.cleaned_data.get("적합수량")
+        materialcheck.부적합수량 = form.cleaned_data.get("부적합수량")
+        materialcheck.부적합내용 = form.cleaned_data.get("부적합내용")
         materialcheck.save()
+
+        IR = materialcheck.자재입고요청
+        IR.입고요청수량 = 적합수량
+        IR.save()
+
         messages.success(self.request, "수입검사결과 수정이 완료되었습니다.")
         return super().form_valid(form)
 
@@ -988,7 +1007,10 @@ def materialcheckdeleteensure(request, pk):
 
 def materialcheckdelete(request, pk):
     materialcheck = QC_models.MaterialCheck.objects.get_or_none(pk=pk)
+    IR = materialcheck.자재입고요청
+    IR.delete()
     materialcheck.delete()
+
     messages.success(request, "수입검사결과 삭제가 완료되었습니다.")
     return redirect(reverse("qualitycontrols:qualitycontrolshome"))
 
@@ -2359,3 +2381,18 @@ def AStotaldelete(request, pk):
     ASrepair.delete()
 
     return redirect(reverse("qualitycontrols:finalchecklist"))
+
+
+def file_download(request, pk):
+    """파일 다운로드 유니코드화 패치"""
+    low = QC_models.LowMetarial.objects.get_or_none(pk=pk)
+    filepath = low.첨부파일.path
+    title = low.첨부파일.__str__()
+    title = urllib.parse.quote(title.encode("utf-8"))
+    title = title.replace("lowmaterial/", "")
+
+    with open(filepath, "rb") as f:
+        response = HttpResponse(f, content_type="application/force-download")
+        titling = 'attachment; filename="{}"'.format(title)
+        response["Content-Disposition"] = titling
+        return response

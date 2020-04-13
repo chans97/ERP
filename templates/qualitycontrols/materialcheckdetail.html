@@ -61,8 +61,8 @@
                                     <td class="border px-4 py-2">{{materialcheck.수입검사코드}}</td>
                                 </tr>
                                 <tr>
-                                    <td class="border px-4 py-2 bg-gray-200">검사지침서번호</td>
-                                    <td class="border px-4 py-2">{{materialcheck.검사지침서번호}}</td>
+                                    <td class="border px-4 py-2 bg-gray-200">검사지침서</td>
+                                    <td class="border px-4 py-2">{{materialcheck.검사지침서}}</td>
                                 </tr>
                                 <tr>
                                     <td class="border px-4 py-2 bg-gray-200">검사자</td>
@@ -88,16 +88,16 @@
                                     <td class="border px-4 py-2">{{materialcheck.시료크기}}</td>
                                 </tr>
                                 <tr>
-                                    <td class="border px-4 py-2 bg-gray-200">합격수량</td>
-                                    <td class="border px-4 py-2">{{materialcheck.합격수량}}</td>
+                                    <td class="border px-4 py-2 bg-gray-200">적합수량</td>
+                                    <td class="border px-4 py-2">{{materialcheck.적합수량}}</td>
                                 </tr>
                                 <tr>
-                                    <td class="border px-4 py-2 bg-gray-200">불합격수량</td>
-                                    <td class="border px-4 py-2">{{materialcheck.불합격수량}}</td>
+                                    <td class="border px-4 py-2 bg-gray-200">부적합수량</td>
+                                    <td class="border px-4 py-2">{{materialcheck.부적합수량}}</td>
                                 </tr>
                                 <tr>
-                                    <td class="border px-4 py-2 bg-gray-200">불합격내용</td>
-                                    <td class="border px-4 py-2">{{materialcheck.불합격내용}}</td>
+                                    <td class="border px-4 py-2 bg-gray-200">부적합내용</td>
+                                    <td class="border px-4 py-2">{{materialcheck.부적합내용}}</td>
                                 </tr>
                                 <tr>
                                     <td class="border px-4 py-2 bg-gray-200">자재코드</td>
@@ -172,6 +172,22 @@
                                     <td class="border px-4 py-2 bg-gray-200">자재명</td>
                                     <td class="border px-4 py-2">{{materialcheck.자재.자재품명}}</td>
                                 </tr>
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200">첨부파일</td>
+                                    <td class="border px-4 py-2 hover:font-bold hover:text-blue-700">
+                                        <a href="{%url "qualitycontrols:file_download"  materialcheck.자재부적합보고서.pk %}">
+
+
+                                            <script>
+                                                var name = "{{ materialcheck.자재부적합보고서.첨부파일 }}";
+                                                var result = name.replace("lowmaterial/", "");
+                                                document.write(result)
+                                            </script>
+
+                                        </a>
+                                    </td>
+                                </tr>
+
 
 
                         </table>

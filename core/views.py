@@ -102,6 +102,9 @@ class onelist(View, user_mixins.LoggedInOnlyView):
                 | Q(의뢰자__first_name__contains=self.search)
                 | Q(자재__자재코드__contains=self.search)
                 | Q(자재__자재품명__contains=self.search)
+                | Q(created__contains=self.search)
+                | Q(created__month__contains=self.search)
+                | Q(created__day__contains=self.search)
             ).order_by("-created")
             queryset = []
             for s in materialchecklist:

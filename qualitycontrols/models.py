@@ -281,6 +281,18 @@ class MaterialCheckRegister(TimeStampedModel):
 
 
 class MaterialCheck(TimeStampedModel):
+    검사지침서_CHOICES = (
+        ("CAE SHI-16-01", "CAE SHI-16-01"),
+        ("PCB SHI 10-01", "PCB SHI 10-01"),
+        ("트랜스 SHI 11-06", "트랜스 SHI 11-06"),
+        ("사출 성형품 SHI 16-02", "사출 성형품 SHI 16-02"),
+    )
+
+    판정기준_CHOICES = (
+        ("AC 0", "AC 0"),
+        ("Re 1", "Re 1"),
+    )
+
     수입검사코드 = models.CharField(max_length=20)
     수입검사의뢰 = models.OneToOneField(
         "MaterialCheckRegister",
@@ -288,17 +300,19 @@ class MaterialCheck(TimeStampedModel):
         on_delete=models.SET_NULL,
         null=True,
     )
-    검사지침서번호 = models.CharField(max_length=20)
+    검사지침서 = models.CharField(
+        choices=검사지침서_CHOICES, max_length=32, null=True, blank=True,
+    )
     검사자 = models.ForeignKey(
         users_models.User, related_name="수입검사", on_delete=models.SET_NULL, null=True
     )
     검사일자 = models.DateField(auto_now=False, auto_now_add=False, blank=True, null=True)
     검사항목 = models.CharField(max_length=20, null=True, blank=True,)
-    판정기준 = models.CharField(max_length=20, null=True, blank=True,)
+    판정기준 = models.CharField(choices=판정기준_CHOICES, max_length=20, null=True, blank=True,)
     시료크기 = models.IntegerField()
-    합격수량 = models.IntegerField()
-    불합격수량 = models.IntegerField()
-    불합격내용 = models.TextField(max_length=100, null=True, blank=True,)
+    적합수량 = models.IntegerField()
+    부적합수량 = models.IntegerField()
+    부적합내용 = models.TextField(max_length=100, null=True, blank=True,)
     자재 = models.ForeignKey(
         SI_models.Material, related_name="수입검사", on_delete=models.SET_NULL, null=True
     )
@@ -359,6 +373,7 @@ class LowMetarial(TimeStampedModel):
         on_delete=models.SET_NULL,
         null=True,
     )
+    첨부파일 = models.FileField(blank=True, null=True, upload_to="lowmaterial")
 
     class Meta:
         verbose_name = "자재부적합보고서"

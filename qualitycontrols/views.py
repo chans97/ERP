@@ -1097,6 +1097,7 @@ class measureedit(user_mixins.LoggedInOnlyView, UpdateView):
         measure.설치년월일 = form.cleaned_data.get("설치년월일")
         measure.사용공정명 = form.cleaned_data.get("사용공정명")
         measure.설치장소 = form.cleaned_data.get("설치장소")
+        measure.구매금액 = form.cleaned_data.get("구매금액")
         measure.file = form.cleaned_data.get("file")
         measure.save()
         messages.success(self.request, "계측기 수정이 완료되었습니다.")
@@ -1480,6 +1481,8 @@ def measuredetailregister(request):
         설치년월일 = form.cleaned_data.get("설치년월일")
         사용공정명 = form.cleaned_data.get("사용공정명")
         설치장소 = form.cleaned_data.get("설치장소")
+        구매금액 = form.cleaned_data.get("구매금액")
+
         try:
             file = request.FILES["file"]
 
@@ -1496,10 +1499,10 @@ def measuredetailregister(request):
             설치장소=설치장소,
             file=file,
             작성자=request.user,
+            구매금액=구매금액,
         )
 
         messages.success(request, "계측기 등록이 완료되었습니다.")
-
         return redirect(reverse("qualitycontrols:measurelist"))
     return render(request, "qualitycontrols/measureregister.html", {"form": form,},)
 

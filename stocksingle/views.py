@@ -111,6 +111,9 @@ def ordersingleoutregister(request, pk):
 
         출하희망일 = form.cleaned_data.get("출하희망일")
         출하요청수량 = form.cleaned_data.get("출하요청수량")
+        수취인 = form.cleaned_data.get("수취인")
+        수취인주소 = form.cleaned_data.get("수취인주소")
+        연락처 = form.cleaned_data.get("연락처")
         if order.singlestockincludeexception() < 출하요청수량:
             messages.error(request, "출하요청수량이 출하요청제외수량보다 더 많습니다.")
             return render(
@@ -130,7 +133,15 @@ def ordersingleoutregister(request, pk):
         고객사 = order.고객사명
         출하요청자 = user
         SM = models.StockOfSingleProductOutRequest.objects.create(
-            출하희망일=출하희망일, 출하요청수량=출하요청수량, 수주=수주, 단품=단품, 고객사=고객사, 출하요청자=출하요청자,
+            출하희망일=출하희망일,
+            출하요청수량=출하요청수량,
+            수주=수주,
+            단품=단품,
+            고객사=고객사,
+            출하요청자=출하요청자,
+            수취인=수취인,
+            수취인주소=수취인주소,
+            연락처=연락처,
         )
         messages.success(request, "출하요청 등록이 완료되었습니다.")
         return redirect(reverse("stocksingle:ordersingleout"))
@@ -163,6 +174,9 @@ def orderstocksingleedit(request, pk):
     pk = order.pk
     user = request.user
     출하요청수량 = orderstocksingle.출하요청수량
+    수취인 = orderstocksingle.수취인
+    수취인주소 = orderstocksingle.수취인주소
+    연락처 = orderstocksingle.연락처
     if orderstocksingle.출하희망일 is None:
         출하희망일 = ""
     else:
@@ -172,6 +186,10 @@ def orderstocksingleedit(request, pk):
 
         출하희망일f = form.cleaned_data.get("출하희망일")
         출하요청수량f = form.cleaned_data.get("출하요청수량")
+        수취인f = form.cleaned_data.get("수취인")
+        수취인주소f = form.cleaned_data.get("수취인주소")
+        연락처f = form.cleaned_data.get("연락처")
+
         if (order.singlestockincludeexception() + 출하요청수량) < 출하요청수량f:
             messages.error(request, "출하요청수량이 출하요청제외수량보다 더 많습니다.")
             return render(
@@ -184,6 +202,9 @@ def orderstocksingleedit(request, pk):
                     "single": orderstocksingle.단품,
                     "출하요청수량": 출하요청수량,
                     "출하희망일": 출하희망일,
+                    "수취인": 수취인,
+                    "수취인주소": 수취인주소,
+                    "연락처": 연락처,
                 },
             )
         elif (order.needtoout() + 출하요청수량) < 출하요청수량f:
@@ -198,6 +219,9 @@ def orderstocksingleedit(request, pk):
                     "single": orderstocksingle.단품,
                     "출하요청수량": 출하요청수량,
                     "출하희망일": 출하희망일,
+                    "수취인": 수취인,
+                    "수취인주소": 수취인주소,
+                    "연락처": 연락처,
                 },
             )
         단품 = orderstocksingle.단품
@@ -207,6 +231,9 @@ def orderstocksingleedit(request, pk):
 
         orderstocksingle.출하희망일 = 출하희망일f
         orderstocksingle.출하요청수량 = 출하요청수량f
+        orderstocksingle.수취인 = 수취인f
+        orderstocksingle.수취인주소 = 수취인주소f
+        orderstocksingle.연락처 = 연락처f
         orderstocksingle.save()
 
         messages.success(request, "출하요청 수정이 완료되었습니다.")
@@ -222,6 +249,9 @@ def orderstocksingleedit(request, pk):
             "single": orderstocksingle.단품,
             "출하요청수량": 출하요청수량,
             "출하희망일": 출하희망일,
+            "수취인": 수취인,
+            "수취인주소": 수취인주소,
+            "연락처": 연락처,
         },
     )
 

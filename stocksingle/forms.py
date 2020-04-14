@@ -9,6 +9,9 @@ class UploadSingleOutForm(forms.ModelForm):
         fields = (
             "출하요청수량",
             "출하희망일",
+            "수취인",
+            "수취인주소",
+            "연락처",
         )
         help_texts = {
             "출하희망일": "*형식 : (yyyy-mm-dd) (필수항목이 아닙니다.)",

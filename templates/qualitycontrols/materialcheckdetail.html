@@ -176,14 +176,11 @@
                                     <td class="border px-4 py-2 bg-gray-200">첨부파일</td>
                                     <td class="border px-4 py-2 hover:font-bold hover:text-blue-700">
                                         <a href="{%url "qualitycontrols:file_download"  materialcheck.자재부적합보고서.pk %}">
-
-
                                             <script>
                                                 var name = "{{ materialcheck.자재부적합보고서.첨부파일 }}";
                                                 var result = name.replace("lowmaterial/", "");
                                                 document.write(result)
                                             </script>
-
                                         </a>
                                     </td>
                                 </tr>

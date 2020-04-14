@@ -85,6 +85,12 @@
                                 <td class="border px-4 py-2">{{measure.사용공정명}}</td>
                             </tr>
                             <tr>
+                                <td class="border px-4 py-2 bg-gray-200">구매금액</td>
+                                <td class="border px-4 py-2 hover:text-blue-700 hover:font-bold">
+                                    {{measure.구매금액}}원
+                                </td>
+                            </tr>
+                            <tr>
                                 <td class="border px-4 py-2 bg-gray-200">설치년월일</td>
                                 <td class="border px-4 py-2">{%if measure.설치년월일 is None%}
                                     {%else%}

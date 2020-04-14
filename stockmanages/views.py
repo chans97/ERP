@@ -294,7 +294,7 @@ def materialinregister(request, pk):
     if form.is_valid():
         입고일 = form.cleaned_data.get("입고일")
         입고수량 = form.cleaned_data.get("입고수량")
-        입고유형 = form.cleaned_data.get("입고유형")
+        입고유형 = "일반"
         if 입고일 is None:
             입고일 = timezone.now().date()
         SM = models.StockOfMaterialIn.objects.create(

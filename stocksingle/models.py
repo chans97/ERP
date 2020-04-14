@@ -205,6 +205,10 @@ class StockOfSingleProductOutRequest(TimeStampedModel):
         null=True,
         blank=True,
     )
+    수취인 = models.CharField(max_length=12, null=True, blank=True)
+    수취인주소 = models.CharField(max_length=100, null=True, blank=True)
+    연락처 = models.CharField(max_length=50, null=True, blank=True)
+
     출하요청수량 = models.IntegerField()
     출하요청자 = models.ForeignKey(
         users_models.User, related_name="단품출하요청", on_delete=models.SET_NULL, null=True,

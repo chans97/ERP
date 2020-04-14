@@ -85,10 +85,14 @@
                                 <td class="border px-4 py-2">{{measurerepair.특이사항}}</td>
                             </tr>
                             <tr>
-                                <td class="border px-4 py-2 bg-gray-200">계측기사진</td>
+                                <td class="border px-4 py-2 bg-gray-200">첨부파일</td>
                                 <td class="border px-4 py-2 hover:text-blue-700 hover:font-bold">
                                     <a href="{%url "qualitycontrols:file_downloadforrepair" measurerepair.pk%}">
-                                        {{measurerepair.file}}
+                                        <script>
+                                            var file = "{{measurerepair.file}}"
+                                            var result = file.replace("images/", "")
+                                            document.write(result)
+                                        </script>
                                     </a>
                                 </td>
                             </tr>

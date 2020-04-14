@@ -112,6 +112,9 @@ def orderrackoutregister(request, pk):
 
         출하희망일 = form.cleaned_data.get("출하희망일")
         출하요청수량 = form.cleaned_data.get("출하요청수량")
+        수취인 = form.cleaned_data.get("수취인")
+        수취인주소 = form.cleaned_data.get("수취인주소")
+        연락처 = form.cleaned_data.get("연락처")
         if order.rackstockincludeexception() < 출하요청수량:
             messages.error(request, "출하요청수량이 출하예정제외랙추정수량보다 더 많습니다.")
             return render(
@@ -131,7 +134,15 @@ def orderrackoutregister(request, pk):
         고객사 = order.고객사명
         출하요청자 = user
         SM = models.StockOfRackProductOutRequest.objects.create(
-            출하희망일=출하희망일, 출하요청수량=출하요청수량, 수주=수주, 랙=랙, 고객사=고객사, 출하요청자=출하요청자,
+            출하희망일=출하희망일,
+            출하요청수량=출하요청수량,
+            수주=수주,
+            랙=랙,
+            고객사=고객사,
+            출하요청자=출하요청자,
+            수취인=수취인,
+            수취인주소=수취인주소,
+            연락처=연락처,
         )
         messages.success(request, "출하요청 등록이 완료되었습니다.")
         return redirect(reverse("stockrack:orderrackout"))
@@ -174,6 +185,9 @@ def orderstockrackedit(request, pk):
     pk = order.pk
     user = request.user
     출하요청수량 = orderstockrack.출하요청수량
+    수취인 = orderstockrack.수취인
+    수취인주소 = orderstockrack.수취인주소
+    연락처 = orderstockrack.연락처
     if orderstockrack.출하희망일 is None:
         출하희망일 = ""
     else:
@@ -183,6 +197,10 @@ def orderstockrackedit(request, pk):
 
         출하희망일f = form.cleaned_data.get("출하희망일")
         출하요청수량f = form.cleaned_data.get("출하요청수량")
+        수취인f = form.cleaned_data.get("수취인")
+        수취인주소f = form.cleaned_data.get("수취인주소")
+        연락처f = form.cleaned_data.get("연락처")
+
         if (order.rackstockincludeexception() + 출하요청수량) < 출하요청수량f:
             messages.error(request, "출하요청수량이 출하예정제외랙추정수량보다 더 많습니다.")
             return render(
@@ -194,6 +212,9 @@ def orderstockrackedit(request, pk):
                     "list": order,
                     "출하요청수량": 출하요청수량,
                     "출하희망일": 출하희망일,
+                    "수취인": 수취인,
+                    "수취인주소": 수취인주소,
+                    "연락처": 연락처,
                     "rack": orderstockrack.랙,
                 },
             )
@@ -209,6 +230,9 @@ def orderstockrackedit(request, pk):
                     "list": order,
                     "출하요청수량": 출하요청수량,
                     "출하희망일": 출하희망일,
+                    "수취인": 수취인,
+                    "수취인주소": 수취인주소,
+                    "연락처": 연락처,
                     "rack": orderstockrack.랙,
                 },
             )
@@ -228,6 +252,9 @@ def orderstockrackedit(request, pk):
 
         orderstockrack.출하희망일 = 출하희망일f
         orderstockrack.출하요청수량 = 출하요청수량f
+        orderstockrack.수취인 = 수취인f
+        orderstockrack.수취인주소 = 수취인주소f
+        orderstockrack.연락처 = 연락처f
         orderstockrack.save()
 
         messages.success(request, "출하요청 수정이 완료되었습니다.")
@@ -243,6 +270,9 @@ def orderstockrackedit(request, pk):
             "출하요청수량": 출하요청수량,
             "출하희망일": 출하희망일,
             "rack": orderstockrack.랙,
+            "수취인": 수취인,
+            "수취인주소": 수취인주소,
+            "연락처": 연락처,
         },
     )
 

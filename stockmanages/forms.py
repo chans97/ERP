@@ -50,7 +50,6 @@ class materialinregisterForm(forms.ModelForm):
         fields = (
             "입고일",
             "입고수량",
-            "입고유형",
         )
         help_texts = {
             "입고일": "형식 : yyyy-mm-dd (기본값은 오늘입니다.)",

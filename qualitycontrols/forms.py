@@ -223,6 +223,7 @@ class measureeditForm(forms.ModelForm):
             "설치년월일",
             "사용공정명",
             "설치장소",
+            "구매금액",
             "file",
         )
         help_texts = {
@@ -360,11 +361,13 @@ class measureregisterForm(forms.ModelForm):
             "설치년월일",
             "사용공정명",
             "설치장소",
+            "구매금액",
             "file",
         )
         help_texts = {
             "계측기코드": "*계측기코드 앞에 MS을 붙여주시길 바랍니다.",
             "설치년월일": "*형식 : yyyy-mm-dd(기본값은 오늘입니다.)",
+            "구매금액": "* '원' 을 제외하고 숫자만 입력해주세요.",
         }
         labels = {"file": "계측기사진"}
 

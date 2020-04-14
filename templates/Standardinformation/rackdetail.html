@@ -21,6 +21,9 @@
             <div class="flex flex-row justify-between w-full ">
                 <div class=" border-b w-64 mb-3 font-semibold border-gray-600 pb-2">랙상세 - {{rack}} </div>
 
+                {% if rack.작성자 == user %}
+
+
                 <div class="flex flex-row">
                     <div class="mt-2">
                         <a href="{%url "StandardInformation:rackedit" rack.pk%}">
@@ -37,6 +40,7 @@
 
                 </div>
 
+                {% endif %}
             </div>
             <div class="flex">
                 <table class="table-fixed text-sm">

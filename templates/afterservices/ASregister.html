@@ -118,6 +118,41 @@ AS접수
                                     </td>
                                     <td class="border border-gray-400 px-4 py-2">
 
+                                        {% if field.name == "불량분류" %}
+
+                                        <div class="flex w-full">
+                                            <ul id="id_POWERTRANS">
+                                                <li><label for="id_불량분류_1"><input type="radio" name="불량분류"
+                                                            value="사용법미숙지" id="id_불량분류_1" onclick="hideinput();">
+                                                        사용법미숙지</label>
+                                                </li>
+                                                <li><label for="id_불량분류_2"><input type="radio" name="불량분류"
+                                                            value="랙구성케이블오류" id="id_불량분류_2" onclick="hideinput();">
+                                                        랙구성케이블오류</label>
+                                                </li>
+                                                <li><label for="id_불량분류_4"><input type="radio" name="불량분류" value="단품불량"
+                                                            id="id_불량분류_4" onclick="hideinput();">
+                                                        단품불량</label>
+                                                </li>
+                                                <li>
+                                                    <label for="id_불량분류_3 "
+                                                        class="flex flex-row justify-start items-center">
+                                                        <input type="radio" name="불량분류" value="" id="id_불량분류_3"
+                                                            onclick="showinput();">
+                                                        <span class="w-10 ml-1">
+                                                            기타
+                                                        </span>
+                                                        <input type="text" name="불량분류값" id="불량분류값" class="border ml-2"
+                                                            placeholder="기타 내용을 입력하세요.">
+
+                                                    </label>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        {%else%}
+
+
+
                                         <div
                                             class="flex  {%if field.name not in seletelist %} border hover:border-gray-500 w-full {%endif%} ">
                                             {% if field.name == "접수일" %}
@@ -137,6 +172,7 @@ AS접수
                                         {% endfor %}
                                         {% endif %}
 
+                                        {% endif %}
                                     </td>
                                     {% endif %}
                                 </tr>
@@ -145,7 +181,8 @@ AS접수
                         </table>
                     </div>
                     <div class=" flex flex-row justify-around -mx-12">
-                        <button class="btn-link bg-blue-800 text-white w-full px-4 h-12 self-center my-3 pt-0 pb-1">
+                        <button onclick="go();"
+                            class="btn-link bg-blue-800 text-white w-full px-4 h-12 self-center my-3 pt-0 pb-1">
                             <div class="text-base font-medium">단품/랙 입력하기</div>
                         </button> </div>
         </form>
@@ -155,4 +192,29 @@ AS접수
 </div>
 </div>
 </div>
+<script>
+    $("#불량분류값").hide();
+    var radioVal = document.querySelector('input[name="불량분류"]:checked').id
+    if (radioVal == "id_불량분류_3") {
+        $("#불량분류값").show();
+    }
+    function showinput() {
+        $("#불량분류값").slideDown(200);
+    }
+    function hideinput() {
+        $("#불량분류값").slideUp(200);
+    }
+    function go() {
+        currentVal3 = $("#불량분류값").val();
+        var oldVal = "-"
+        if (currentVal3 == oldVal) {
+            return;
+        }
+        oldVal = currentVal3;
+        var radio_btn = document.getElementById("불량분류값");
+        document.getElementById("id_불량분류_3").value = radio_btn.value;
+        console.log(radio_btn.value)
+    };
+</script>
+
 {%endblock main_contens %}

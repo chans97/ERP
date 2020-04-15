@@ -28,8 +28,7 @@ class ASRegisterForm(forms.ModelForm):
             "접수일": "*형식 : yyyy-mm-dd(기본값은 오늘입니다.)",
             "방문요청일": "*형식 : yyyy-mm-dd",
         }
-        widgets = {
-            "불량분류": forms.RadioSelect(),
+        widgets = { 
             "접수제품분류": forms.RadioSelect(),
             "대응유형": forms.RadioSelect(),
         }

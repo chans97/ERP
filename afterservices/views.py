@@ -44,28 +44,24 @@ class afterserviceshome(core_views.onelist):
     def get_first_queryset(self, request):
         self.search = request.GET.get("search")
         if self.search is None:
-            queryset = AS_models.ASRegisters.objects.all().order_by("-created")
+            queryset = AS_models.ASRegisters.objects.order_by("-created")
 
             self.s_bool = False
         else:
             self.s_bool = True
-            queryset = (
-                AS_models.ASRegisters.objects.all()
-                .filter(
-                    Q(접수번호__contains=self.search)
-                    | Q(현상__contains=self.search)
-                    | Q(대응유형__contains=self.search)
-                    | Q(불량분류코드__contains=self.search)
-                    | Q(불량분류__contains=self.search)
-                    | Q(접수자__first_name__contains=self.search)
-                    | Q(단품__모델코드__contains=self.search)
-                    | Q(단품__모델명__contains=self.search)
-                    | Q(랙__랙시리얼코드__contains=self.search)
-                    | Q(랙__랙모델명__contains=self.search)
-                    | Q(의뢰처__거래처명__contains=self.search)
-                )
-                .order_by("-created")
-            )
+            queryset = AS_models.ASRegisters.objects.filter(
+                Q(접수번호__contains=self.search)
+                | Q(현상__contains=self.search)
+                | Q(대응유형__contains=self.search)
+                | Q(불량분류코드__contains=self.search)
+                | Q(불량분류__contains=self.search)
+                | Q(접수자__first_name__contains=self.search)
+                | Q(단품__모델코드__contains=self.search)
+                | Q(단품__모델명__contains=self.search)
+                | Q(랙__랙시리얼코드__contains=self.search)
+                | Q(랙__랙모델명__contains=self.search)
+                | Q(의뢰처__거래처명__contains=self.search)
+            ).order_by("-created")
         return queryset
 
 
@@ -103,6 +99,7 @@ def ASregister(request):
         customer = qs
 
     if form.is_valid():
+
         접수번호 = form.cleaned_data.get("접수번호")
         접수일 = form.cleaned_data.get("접수일")
         현상 = form.cleaned_data.get("현상")
@@ -354,28 +351,24 @@ class ASregisterall(core_views.onelist):
     def get_first_queryset(self, request):
         self.search = request.GET.get("search")
         if self.search is None:
-            queryset = AS_models.ASRegisters.objects.all().order_by("-created")
+            queryset = AS_models.ASRegisters.objects.order_by("-created")
 
             self.s_bool = False
         else:
             self.s_bool = True
-            queryset = (
-                AS_models.ASRegisters.objects.all()
-                .filter(
-                    Q(접수번호__contains=self.search)
-                    | Q(현상__contains=self.search)
-                    | Q(대응유형__contains=self.search)
-                    | Q(불량분류코드__contains=self.search)
-                    | Q(불량분류__contains=self.search)
-                    | Q(접수자__first_name__contains=self.search)
-                    | Q(단품__모델코드__contains=self.search)
-                    | Q(단품__모델명__contains=self.search)
-                    | Q(랙__랙시리얼코드__contains=self.search)
-                    | Q(랙__랙모델명__contains=self.search)
-                    | Q(의뢰처__거래처명__contains=self.search)
-                )
-                .order_by("-created")
-            )
+            queryset = AS_models.ASRegisters.objects.filter(
+                Q(접수번호__contains=self.search)
+                | Q(현상__contains=self.search)
+                | Q(대응유형__contains=self.search)
+                | Q(불량분류코드__contains=self.search)
+                | Q(불량분류__contains=self.search)
+                | Q(접수자__first_name__contains=self.search)
+                | Q(단품__모델코드__contains=self.search)
+                | Q(단품__모델명__contains=self.search)
+                | Q(랙__랙시리얼코드__contains=self.search)
+                | Q(랙__랙모델명__contains=self.search)
+                | Q(의뢰처__거래처명__contains=self.search)
+            ).order_by("-created")
         return queryset
 
 
@@ -1447,3 +1440,19 @@ def ASsingleoutrequestregisterrack(request, pk):
             "seletelist": seletelist,
         },
     )
+
+
+def ASRegisterspost(request, pk):
+    AS = AS_models.ASRegisters.objects.get_or_none(pk=pk)
+    AS.접수보류 = "접수보류"
+    AS.save()
+    messages.success(request, "접수 보류되었습니다.")
+    return redirect(reverse("afterservices:ASrequestdetail", kwargs={"pk": pk}))
+
+
+def ASRegistersreact(request, pk):
+    AS = AS_models.ASRegisters.objects.get_or_none(pk=pk)
+    AS.접수보류 = "진행"
+    AS.save()
+    messages.success(request, "접수 진행되었습니다.")
+    return redirect(reverse("afterservices:ASrequestdetail", kwargs={"pk": pk}))

@@ -22,15 +22,14 @@ class ASRegisters(TimeStampedModel):
         (현장방문, "현장방문"),
     )
 
+    접수보류_CHOICES = (
+        ("진행", "진행"),
+        ("접수보류", "접수보류"),
+    )
+
     사용법미숙지 = "사용법미숙지"
     랙구성케이블오류 = "랙구성케이블오류"
     단품불량 = "단품불량"
-
-    불량분류_CHOICES = (
-        (사용법미숙지, "사용법미숙지"),
-        (랙구성케이블오류, "랙구성케이블오류"),
-        (단품불량, "단품불량"),
-    )
 
     접수번호 = models.CharField(max_length=20, null=True,)
     접수일 = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True)
@@ -39,9 +38,10 @@ class ASRegisters(TimeStampedModel):
     )
     현상 = models.CharField(max_length=100, null=True,)
     불량분류코드 = models.CharField(max_length=20, null=True,)
-    불량분류 = models.CharField(choices=불량분류_CHOICES, max_length=10, default=사용법미숙지)
+    불량분류 = models.CharField(max_length=30)
     접수제품분류 = models.CharField(choices=접수제품분류_CHOICES, max_length=10, default=단품)
     현장명 = models.CharField(max_length=50, null=True,)
+    접수보류 = models.CharField(choices=접수보류_CHOICES, max_length=10, default="진행")
 
     단품 = models.ForeignKey(
         SI_models.SingleProduct,

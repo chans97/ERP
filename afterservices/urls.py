@@ -154,4 +154,8 @@ urlpatterns = [
         views.ASsingleoutrequestregisterrack,
         name="ASsingleoutrequestregisterrack",
     ),
+    path("ASRegisterspost/<int:pk>/", views.ASRegisterspost, name="ASRegisterspost",),
+    path(
+        "ASRegistersreact/<int:pk>/", views.ASRegistersreact, name="ASRegistersreact",
+    ),
 ]

@@ -14,7 +14,7 @@ AS관리
 <div class="flex">
     <div class="w-32 mx-auto h-10/12 fixed items-center font-semibold justify-center pt-5 bg-gray-700 mt-6">
         <div class="font-base text-sm text-left text-orange-100 py-px">
-            <i class="fas fa-bars mr-2 ml-3"></i><a href="{% url "afterservices:afterserviceshome"%}">AS접수</a>
+            <i class="fas fa-bars mr-2 ml-3"></i><a href="{% url "afterservices:afterserviceshome"%}">AS접수부</a>
             <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
             <div class="text-left ml-4 mb-4">
                 <div>
@@ -24,7 +24,7 @@ AS관리
                 <div>
                     <a href="{% url "afterservices:ASvisitrequestslist"%}">
                         <span class=" font-light text-xs text-orange-100 hover:font-bold">
-                            <i class="fas fa-angle-right mr-1"></i>AS방문요청</span></a></div>
+                            <i class="fas fa-angle-right mr-1"></i>AS담당자인계</span></a></div>
                 <div>
                     <a href="{% url "afterservices:ASregisterdoneinsidelist"%}">
                         <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
@@ -33,9 +33,13 @@ AS관리
             </div>
         </div>
         <div class="font-base text-sm text-left text-orange-100 py-px">
-            <i class="fas fa-bars mr-2 ml-3"></i><a href="{% url "afterservices:afterserviceshome"%}">AS담당자</a>
+            <i class="fas fa-bars mr-2 ml-3"></i><a href="{% url "afterservices:afterserviceshome"%}">AS담당부</a>
             <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
             <div class="text-left ml-4 mb-4">
+                <div>
+                    <a href="{% url "afterservices:ASoverneedlist"%}">
+                        <span class=" font-light text-xs text-orange-100 hover:font-bold">
+                            <i class="fas fa-angle-right mr-1"></i>AS처리</span></a></div>
                 <div>
                     <a href="{% url "afterservices:ASvisitneedlist"%}">
                         <span class=" font-light text-xs text-orange-100 hover:font-bold">
@@ -53,6 +57,10 @@ AS관리
                         <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
                             <i class="fas fa-angle-right mr-1"></i>AS현장재방문</span></a></div>
                 <div>
+                    <a href="{% url "afterservices:AScashcheckneedlist"%}">
+                        <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                            <i class="fas fa-angle-right mr-1"></i>AS견적진행</span></a></div>
+                <div>
                     <a href="{% url "afterservices:ASsuccesslist"%}">
                         <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
                             <i class="fas fa-angle-right mr-1"></i>AS완료등록</span></a></div>
@@ -64,7 +72,7 @@ AS관리
     </div>
     {%block main_contens%}
     <div class="flex flex-col">
-        <div class="w-11/12 h-full ml-32 -mt-6 font-semibold pt-12 flex flex-col">
+        <div class="w-full h-full pl-32 -mt-6 font-semibold pt-12 flex flex-col">
             <div class="flex flex-col">
                 <div class="flex flex-col p-6 w-full ">
                     <span class="border-b w-1/3 mb-3 border-gray-600 pb-2 font-semibold text-base">AS접수 목록
@@ -82,49 +90,66 @@ AS관리
                         </form>
                     </div>
                     <div class="flex ">
-                        <div class="flew flex-col">
-                            <table class="table-fixed font-light text-xs w-full">
+                        <div class="flew flex-col ">
+                            <table class="font-light text-xs w-full">
                                 <thead>
                                     <tr>
-                                        <th class="border bg-gray-200 px-4 py-2 w-24">진행상황</th>
-                                        <th class="border bg-gray-200 px-4 py-2 w-24">접수번호</th>
-                                        <th class="border bg-gray-200 px-4 py-2 w-24">현상</th>
-                                        <th class="border bg-gray-200 px-2 py-2 w-24">불량분류코드</th>
-                                        <th class="border bg-gray-200 px-4 py-2 w-32">불량분류</th>
-                                        <th class="border bg-gray-200 px-4 py-2 w-32">대응유형</th>
-                                        <th class="border bg-gray-200 px-4 py-2 w-24">의뢰처</th>
-                                        <th class="border bg-gray-200 px-4 py-2 w-24">제품코드</th>
-                                        <th class="border bg-gray-200 px-4 py-2 w-24">제품명</th>
-                                        <th class="border bg-gray-200 px-4 py-2 w-24">현장명</th>
-                                        <th class="border bg-gray-200 px-4 py-2 w-24">접수일</th>
-                                        <th class="border bg-gray-200 px-4 py-2 w-24">방문요청일</th>
+                                        <th class="border bg-gray-200 px-2 py-2    w-24">진행상황</th>
+                                        <th class="border bg-gray-200 px-2 py-2 w-20">접수번호</th>
+                                        <th class="border bg-gray-200 px-2 py-2 w-20">현상</th>
+                                        <th class="border bg-gray-200 px-2 py-2 w-20">불량분류코드</th>
+                                        <th class="border bg-gray-200 px-2 py-2 w-32">불량분류</th>
+                                        <th class="border bg-gray-200 px-2 py-2 w-20">대응유형</th>
+                                        <th class="border bg-gray-200 px-2 py-2 w-20">인계후</th>
+                                        <th class="border bg-gray-200 px-2 py-2 w-20">의뢰처</th>
+                                        <th class="border bg-gray-200 px-2 py-2 w-20">제품코드</th>
+                                        <th class="border bg-gray-200 px-2 py-2 w-20">제품명</th>
+                                        <th class="border bg-gray-200 px-2 py-2 w-20">현장명</th>
+                                        <th class="border bg-gray-200 px-2 py-2 w-20">접수일</th>
+                                        <th class="border bg-gray-200 px-2 py-2 w-20">방문요청일</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {%for list in queryset%}
                                     <tr>
                                         <td
-                                            class="border px-4 py-2 font-semibold {%if list.process == "AS완료"%} text-green-600{%endif%}">
-                                            {{list.process}}</td>
-                                        <td class="border px-4 py-2 hover:text-blue-700 hover:font-bold">
+                                            class="border px-1 py-2 font-semibold {%if list.process == "AS완료"%} text-green-600{%endif%}">
+
+                                            {% if list.인계후 == "접수보류" %}
+                                            <span class="text-blue-700">
+
+                                                접수보류
+                                            </span>
+                                            {%elif list.인계후 == "접수취소"%}
+                                            <span class="text-red-700">
+
+                                                접수취소
+                                            </span>
+                                            {%else%}
+                                            {{list.process}}
+                                            {% endif %}
+
+                                        </td>
+                                        <td class="border px-2 py-2 hover:text-blue-700 hover:font-bold">
                                             <a href="{%url "afterservices:ASrequestdetail" list.pk%}">
                                                 {{list.접수번호}}</a></td>
-                                        <td class="border px-4 py-2">{{list.현상}}</td>
-                                        <td class="border px-4 py-2">{{list.불량분류코드}}</td>
-                                        <td class="border px-4 py-2">{{list.불량분류}}</td>
-                                        <td class="border px-4 py-2">{{list.대응유형}}</td>
-                                        <td class="border px-4 py-2">{{list.의뢰처}}</td>
+                                        <td class="border px-2 py-2">{{list.현상}}</td>
+                                        <td class="border px-2 py-2">{{list.불량분류코드}}</td>
+                                        <td class="border px-2 py-2">{{list.불량분류}}</td>
+                                        <td class="border px-2 py-2">{{list.대응유형}}</td>
+                                        <td class="border px-2 py-2">{{list.인계후}}</td>
+                                        <td class="border px-2 py-2">{{list.의뢰처}}</td>
                                         {%if list.접수제품분류 == "단품"%}
-                                        <td class="border px-4 py-2">{{list.단품.모델코드}}</td>
-                                        <td class="border px-4 py-2">{{list.단품.모델명}}</td>
+                                        <td class="border px-2 py-2">{{list.단품.모델코드}}</td>
+                                        <td class="border px-2 py-2">{{list.단품.모델명}}</td>
                                         {%else%}
-                                        <td class="border px-4 py-2">{{list.랙.랙시리얼코드}}</td>
-                                        <td class="border px-4 py-2">{{list.랙.랙모델명}}</td>
+                                        <td class="border px-2 py-2">{{list.랙.랙시리얼코드}}</td>
+                                        <td class="border px-2 py-2">{{list.랙.랙모델명}}</td>
                                         {%endif%}
-                                        <td class="border px-4 py-2">{{list.현장명}}</td>
-                                        <td class="border px-4 py-2">
+                                        <td class="border px-2 py-2">{{list.현장명}}</td>
+                                        <td class="border px-2 py-2">
                                             {{list.접수일.year}}-{{list.접수일.month}}-{{list.접수일.day}}</td>
-                                        <td class="border px-4 py-2">
+                                        <td class="border px-2 py-2">
                                             {%if list.방문요청일 is None%}
                                             {%else%}
                                             {{list.방문요청일.year}}-{{list.방문요청일.month}}-{{list.방문요청일.day}}{%endif%}

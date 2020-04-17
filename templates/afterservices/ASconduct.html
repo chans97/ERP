@@ -1,0 +1,128 @@
+{%extends "afterservices/afterserviceshome.html"%}
+{%load static%}
+{% block page_title%}
+AS 처리
+{%endblock%}
+
+
+{%block head_title%}
+<i class="fas fa-angle-right mx-1 text-base"></i>
+
+
+AS 처리
+{%endblock head_title %}
+
+
+{%block main_contens%}
+<div class="w-11/12 h-full ml-32 -mt-6 font-normal pt-12 flex flex-row">
+
+    <div class="flex flex-col p-6 w-full ">
+        <span class="border-b w-1/3 mb-3 border-gray-600 pb-2 font-semibold text-base">AS처리
+            <div>-{{asregisters}}</div> </span>
+
+        <div class="flex ">
+
+            <div class=" flex flex-col px-12 justify-center items-center w-7/12">
+
+                <form method="POST" class="w-full flex flex-col justify-center" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+
+                    <div class="w-full justify-center flex flex-col">
+
+
+                        <table class="table-fixed text-sm w-full ">
+                            <thead>
+                                <tr>
+                                    <th class="border border-r-0 bg-gray-200 px-4 py-2 w-32"></th>
+                                    <th class="border border-l-0 bg-gray-200 px-4 py-2 w-56 text-left">AS처리</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for field in form %}
+                                <tr>
+                                    <td class="border border-gray-400 px-4 py-2">
+                                        {{field.name}}
+                                    </td>
+                                    <td class="border border-gray-400 px-4 py-2">
+
+                                        <div
+                                            class=" flex {%if field.name not in seletelist %} border hover:border-gray-500 w-full {%endif%} ">
+
+                                            {{field}}</div>
+                                        <div class="text-xs text-green-700 ">
+
+                                            {{field.help_text}}
+                                        </div>
+                                        {% if field.errors %}
+                                        {% for error in field.errors %}
+                                        <div class="text-red-700 font-light text-xs">*{{error}}</div>
+                                        {% endfor %}
+                                        {% endif %}
+
+                                    </td>
+                                </tr>
+                                {%endfor%}
+                                <tr>
+                                    <td class="border border-gray-400 px-4 py-2">접수번호</td>
+                                    <td class="border border-gray-400 px-4 py-2">{{asregisters.접수번호}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-gray-400 px-4 py-2">접수일</td>
+                                    <td class="border border-gray-400 px-4 py-2">
+                                        {{asregisters.접수일.year}}-{{asregisters.접수일.month}}-{{asregisters.접수일.day}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-gray-400 px-4 py-2">접수자</td>
+                                    <td class="border border-gray-400 px-4 py-2">{{asregisters.접수자}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-gray-400 px-4 py-2">현상</td>
+                                    <td class="border border-gray-400 px-4 py-2">{{asregisters.현상}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-gray-400 px-4 py-2">불량분류코드</td>
+                                    <td class="border border-gray-400 px-4 py-2">{{asregisters.불량분류코드}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-gray-400 px-4 py-2">불량분류</td>
+                                    <td class="border border-gray-400 px-4 py-2">{{asregisters.불량분류}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-gray-400 px-4 py-2">의뢰처</td>
+                                    <td class="border border-gray-400 px-4 py-2">{{asregisters.의뢰처}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-gray-400 px-4 py-2">의뢰자전화번호</td>
+                                    <td class="border border-gray-400 px-4 py-2">{{asregisters.의뢰자전화번호}}</td>
+                                </tr>
+
+                                {%if asregisters.접수제품분류 == "단품"%}
+                                <tr>
+                                    <td class="border border-gray-400 px-4 py-2">단품</td>
+                                    <td class="border border-gray-400 px-4 py-2">{{asregisters.단품}}</td>
+                                </tr>
+                                {%else%}
+                                <tr>
+                                    <td class="border border-gray-400 px-4 py-2">랙</td>
+                                    <td class="border border-gray-400 px-4 py-2">{{asregisters.랙}}</td>
+                                </tr>
+                                {%endif%}
+
+
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class=" flex flex-row justify-around -mx-12">
+                        <button class="btn-link bg-blue-800 text-white w-9/12 h-12 self-center my-3 pt-0 pb-1">
+                            <div class="text-base font-medium">AS처리 등록</div>
+                        </button> </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+</div>
+{%endblock main_contens %}

@@ -15,16 +15,18 @@ class ASRegisters(TimeStampedModel):
     )
 
     내부처리 = "내부처리"
-    현장방문 = "현장방문"
+    담당자연결 = "담당자연결"
 
     대응유형_CHOICES = (
         (내부처리, "내부처리"),
-        (현장방문, "현장방문"),
+        (담당자연결, "담당자연결"),
     )
 
-    접수보류_CHOICES = (
-        ("진행", "진행"),
+    인계후_CHOICES = (
+        (내부처리, "내부처리"),
+        ("현장방문", "현장방문"),
         ("접수보류", "접수보류"),
+        ("접수취소", "접수취소"),
     )
 
     사용법미숙지 = "사용법미숙지"
@@ -41,7 +43,7 @@ class ASRegisters(TimeStampedModel):
     불량분류 = models.CharField(max_length=30)
     접수제품분류 = models.CharField(choices=접수제품분류_CHOICES, max_length=10, default=단품)
     현장명 = models.CharField(max_length=50, null=True,)
-    접수보류 = models.CharField(choices=접수보류_CHOICES, max_length=10, default="진행")
+    인계후 = models.CharField(choices=인계후_CHOICES, max_length=10, default="", null=True,)
 
     단품 = models.ForeignKey(
         SI_models.SingleProduct,
@@ -97,7 +99,11 @@ class ASRegisters(TimeStampedModel):
                         return "현장방문완료"
 
             except:
-                return "현장방문요청완료"
+                try:
+                    self.AS현장방문요청.AS완료
+                    return "AS완료"
+                except:
+                    return "AS담당부 인계완료"
 
         except:
             try:
@@ -156,6 +162,7 @@ class ASVisitContents(TimeStampedModel):
     재방문여부_CHOICES = (
         (완료, "완료"),
         (재방문, "재방문"),
+        ("견적진행", "견적진행"),
     )
     AS현장방문요청 = models.OneToOneField(
         "ASVisitRequests", related_name="AS현장방문", on_delete=models.SET_NULL, null=True
@@ -312,12 +319,20 @@ class ASResults(TimeStampedModel):
 
     완료유형_CHOICES = (
         (내부처리, "내부처리"),
+        ("담당자내부처리", "담당자내부처리"),
         (방문, "방문"),
         (재방문, "재방문"),
     )
 
     내부처리 = models.OneToOneField(
         "ASRegisters",
+        related_name="AS완료",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+    담당자내부처리 = models.OneToOneField(
+        "ASVisitRequests",
         related_name="AS완료",
         on_delete=models.SET_NULL,
         null=True,
@@ -343,6 +358,7 @@ class ASResults(TimeStampedModel):
     완료날짜 = models.DateField(auto_now=False, auto_now_add=False, blank=True, null=True)
 
     완료유형 = models.CharField(choices=완료유형_CHOICES, max_length=10, default=내부처리)
+    처리내용 = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:
         verbose_name = "AS완료"
@@ -353,5 +369,10 @@ class ASResults(TimeStampedModel):
             return f"{self.재방문.전AS현장방문.AS현장방문요청.AS접수.접수번호} : AS완료(재방문) -'{self.재방문.전AS현장방문.AS현장방문요청.AS접수.의뢰처}'"
         elif self.완료유형 == "방문":
             return f"{self.방문.AS현장방문요청.AS접수.접수번호} : AS완료(방문) -'{self.방문.AS현장방문요청.AS접수.의뢰처}'"
+        elif self.완료유형 == "담당자내부처리":
+            return (
+                f"{self.담당자내부처리.AS접수.접수번호} : AS완료(담당자내부처리) -'{self.담당자내부처리.AS접수.의뢰처}'"
+            )
+
         else:
             return f"{self.내부처리.접수번호} : AS완료(내부처리) - '{self.내부처리.의뢰처}'"

@@ -154,8 +154,22 @@ urlpatterns = [
         views.ASsingleoutrequestregisterrack,
         name="ASsingleoutrequestregisterrack",
     ),
-    path("ASRegisterspost/<int:pk>/", views.ASRegisterspost, name="ASRegisterspost",),
+    
     path(
-        "ASRegistersreact/<int:pk>/", views.ASRegistersreact, name="ASRegistersreact",
+        "ASoverneedlist/",
+        views.ASoverneedlist.as_view(),
+        name="ASoverneedlist",
     ),
+    path("ASconduct/<int:pk>/", views.ASconduct, name="ASconduct",),
+    
+    path("ASdonenonvisit/<int:pk>/", views.ASdonenonvisit, name="ASdonenonvisit",),
+    path(
+        "AScashcheckneedlist/",
+        views.AScashcheckneedlist.as_view(),
+        name="AScashcheckneedlist",
+    ),
+    
+    
+    
+    
 ]

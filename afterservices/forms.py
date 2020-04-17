@@ -28,7 +28,7 @@ class ASRegisterForm(forms.ModelForm):
             "접수일": "*형식 : yyyy-mm-dd(기본값은 오늘입니다.)",
             "방문요청일": "*형식 : yyyy-mm-dd",
         }
-        widgets = { 
+        widgets = {
             "접수제품분류": forms.RadioSelect(),
             "대응유형": forms.RadioSelect(),
         }
@@ -304,6 +304,29 @@ class ASsingleoutrequestregisterrackForm(forms.Form):
     출하희망일 = forms.DateField(required=False, help_text="*형식 : yyyy-mm-dd(필수가 아닙니다.)")
     출하요청수량 = forms.IntegerField(widget=forms.NumberInput(attrs={"min": "0"}))
     신청품목 = forms.CharField()
+
+    def save(self, *arg, **kwargs):
+        order = super().save(commit=False)
+        return order
+
+
+class ASdoneinsideForm(forms.ModelForm):
+    class Meta:
+        model = models.ASResults
+        fields = ("처리내용",)
+
+    def save(self, *arg, **kwargs):
+        order = super().save(commit=False)
+        return order
+
+
+class ASconductForm(forms.ModelForm):
+    class Meta:
+        model = models.ASRegisters
+        fields = ("인계후",)
+        widgets = {
+            "인계후": forms.RadioSelect(),
+        }
 
     def save(self, *arg, **kwargs):
         order = super().save(commit=False)

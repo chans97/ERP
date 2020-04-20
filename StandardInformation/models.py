@@ -236,7 +236,7 @@ class Material(TimeStampedModel):
     )
 
     단가 = models.IntegerField(null=True)
-    특이사항 = models.TextField(blank=True)
+    특이사항 = models.TextField(blank=True, null=True)
 
     class Meta:
         verbose_name = "자재"

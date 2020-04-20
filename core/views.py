@@ -18,7 +18,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.core.files.base import ContentFile
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from . import models
+from . import models, forms
 from django.contrib.messages.views import SuccessMessageMixin
 import urllib.request
 from django.db.models import Q
@@ -509,3 +509,194 @@ class threelist(View, user_mixins.LoggedInOnlyView):
                 "s_bool3": self.s_bool3,
             },
         )
+
+
+def migrate(request):
+    return render(request, "migrate/migrate.html")
+
+
+def partnermigrate(request):
+    form = forms.partnermigrate(request.POST)
+    if form.is_valid():
+        try:
+            Excelfile = request.FILES["Excelfile"]
+        except:
+            Excelfile = None
+        print(Excelfile)
+
+        result = open(Excelfile, "w")
+
+        while True:
+            line = result.readline()
+            print(line)
+
+            if not line:
+                break
+        result.close()
+
+        messages.success(request, "거래처가 등록되었습니다.")
+        return redirect(reverse("StandardInformation:partner"))
+
+    else:
+        try:
+            Excelfile = request.FILES["Excelfile"]
+        except:
+            return render(request, "migrate/partnermigrate.html", {"form": form})
+
+        single = models.partnermigrate.objects.create()
+        single.Excelfile = Excelfile
+        single.save()
+        result = open(single.Excelfile.path, "rt", encoding="UTF8")
+        messages.success(request, "엑셀파일을 읽는 중 입니다.")
+
+        num = 0
+        while True:
+
+            num += 1
+            line = result.readline()
+            if not line:
+                break
+            aline = line.split(",")
+            if aline[0] == "구매처":
+                거래처구분 = "고객"
+            else:
+                거래처구분 = aline[0]
+            print(num)
+            if num != 1:
+                SI_models.Partner.objects.create(
+                    작성자=request.user,
+                    작성일=timezone.now(),
+                    거래처구분=거래처구분,
+                    거래처코드=aline[1],
+                    거래처명=aline[2],
+                    사업자등록번호=aline[3],
+                    담당자=request.user,
+                    거래처담당자=aline[4],
+                    연락처=aline[5],
+                    이메일=aline[6],
+                    사업장주소=aline[7],
+                    특이사항="",
+                    사용여부=True,
+                )
+                print(num, ":", aline)
+
+        result.close()
+        messages.success(request, "완료되었습니다.")
+        return redirect(reverse("StandardInformation:partner"))
+
+    return render(request, "migrate/partnermigrate.html", {"form": form})
+
+
+def materialmigrate(request):
+    form = forms.partnermigrate(request.POST)
+    if form.is_valid():
+        try:
+            Excelfile = request.FILES["Excelfile"]
+        except:
+            Excelfile = None
+        print(Excelfile)
+
+        result = open(Excelfile, "w")
+
+        while True:
+            line = result.readline()
+            print(line)
+
+            if not line:
+                break
+        result.close()
+
+        messages.success(request, "거래처가 등록되었습니다.")
+        return redirect(reverse("StandardInformation:partner"))
+    else:
+        try:
+            Excelfile = request.FILES["Excelfile"]
+        except:
+            return render(request, "migrate/materialmigrate.html", {"form": form})
+        single = models.partnermigrate.objects.create()
+        single.Excelfile = Excelfile
+        single.save()
+        result = open(single.Excelfile.path, "rt", encoding="UTF8")
+        messages.success(request, "엑셀파일을 읽는 중 입니다.")
+        num = 0
+        while True:
+            num += 1
+            line = result.readline()
+            if not line:
+                break
+            aline = line.split(",")
+            name = aline[4]
+            자재공급업체 = SI_models.SupplyPartner.objects.get_or_none(거래처명=name)
+            if 자재공급업체:
+                if num != 1:
+                    SI_models.Material.objects.create(
+                        작성자=request.user,
+                        자재코드=aline[0],
+                        자재품명=aline[1],
+                        규격=aline[2],
+                        단위=aline[3],
+                        자재공급업체=자재공급업체,
+                    )
+            else:
+                messages.error(request, f"{name}(은)는 등록되지 않은 업체입니다.")
+
+        result.close()
+        messages.success(request, "완료되었습니다.")
+        return redirect(reverse("stockmanages:materialStandarInformation"))
+    return render(request, "migrate/materialmigrate.html", {"form": form})
+
+
+def measuremigrate(request):
+    form = forms.partnermigrate(request.POST)
+    if form.is_valid():
+        try:
+            Excelfile = request.FILES["Excelfile"]
+        except:
+            Excelfile = None
+        result = open(Excelfile, "w")
+        while True:
+            line = result.readline()
+            if not line:
+                break
+        result.close()
+        messages.success(request, "완료되었습니다.")
+        return redirect(reverse("StandardInformation:partner"))
+    else:
+        try:
+            Excelfile = request.FILES["Excelfile"]
+        except:
+            return render(request, "migrate/measuremigrate.html", {"form": form})
+        single = models.partnermigrate.objects.create()
+        single.Excelfile = Excelfile
+        single.save()
+        result = open(single.Excelfile.path, "rt", encoding="UTF8")
+        messages.success(request, "엑셀파일을 읽는 중 입니다.")
+        num = 0
+        while True:
+            num += 1
+            line = result.readline()
+            if not line:
+                break
+            aline = line.split(",")
+
+            if num != 1:
+                date = aline[3]
+                datestr = str(date)
+                datelist = datestr.split(".")
+                print(num, datelist)
+                설치년월일 = datelist[0] + "-" + datelist[1] + "-" + "01"
+
+                SM = SI_models.Measure.objects.create(
+                    계측기코드=aline[4],
+                    계측기명=aline[1],
+                    자산관리번호=aline[2],
+                    설치년월일=설치년월일,
+                    설치장소=aline[6],
+                    작성자=request.user,
+                )
+            print(num, "done")
+        result.close()
+        messages.success(request, "완료되었습니다.")
+        return redirect(reverse("qualitycontrols:measurelist"))
+
+    return render(request, "migrate/measuremigrate.html", {"form": form})

@@ -159,8 +159,8 @@ USE_TZ = False
 MEDIA_ROOT = os.path.join(BASE_DIR, "uploads")
 MEDIA_URL = "/media/"
 
-# STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 # STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, "static"))
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
+# STATIC_ROOT = os.path.join(BASE_DIR, "static")
 STATIC_URL = "/static/"
 AUTH_USER_MODEL = "users.User"

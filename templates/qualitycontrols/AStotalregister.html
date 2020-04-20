@@ -28,6 +28,72 @@ AS총괄장 등록
                     {% csrf_token %}
 
                     <div class=" flex flex-col justify-center ">
+                        <table class="table-fixed text-sm w-full mb-3">
+                            <thead>
+                                <tr>
+                                    <th class="border border-r-0 bg-gray-400  py-2 w-40 text-right">
+                                    </th>
+                                    <th class="border border-r-0 border-l-0 bg-gray-400  py-2 w-56 text-right">
+                                        {{ASrequest.수리요청코드}}
+                                    </th>
+                                    <th class="border border-r-0 border-l-0 bg-gray-400  py-2 w-40 text-left">의 수리요청
+                                    </th>
+                                    <th class="border border-l-0 bg-gray-400  py-2 w-56 text-left"></th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200">수리요청코드</td>
+                                    <td class="border px-4 py-2">{{ASrequest.수리요청코드}}</td>
+
+                                    <td class="border px-4 py-2 bg-gray-200">AS현장방문</td>
+                                    <td class="border px-4 py-2">{{ASrequest.AS현장방문}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200">신청자</td>
+                                    <td class="border px-4 py-2">{{ASrequest.신청자}}</td>
+
+                                    <td class="border px-4 py-2 bg-gray-200">신청품목</td>
+                                    <td class="border px-4 py-2">{{ASrequest.신청품목}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200">고객성명</td>
+                                    <td class="border px-4 py-2">{{ASrequest.고객성명}}</td>
+
+                                    <td class="border px-4 py-2 bg-gray-200">고객주소</td>
+                                    <td class="border px-4 py-2">{{ASrequest.고객주소}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200">고객전화</td>
+                                    <td class="border px-4 py-2">{{ASrequest.고객전화}}</td>
+
+                                    <td class="border px-4 py-2 bg-gray-200">고객팩스</td>
+                                    <td class="border px-4 py-2">{{ASrequest.고객팩스}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200">AS의뢰내용</td>
+                                    <td class="border px-4 py-2">{{ASrequest.AS의뢰내용}}</td>
+
+                                    <td class="border px-4 py-2 bg-gray-200">시리얼번호</td>
+                                    <td class="border px-4 py-2">{{ASrequest.시리얼번호}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200">사용자액세서리</td>
+                                    <td class="border px-4 py-2">{{ASrequest.사용자액세서리}}</td>
+
+                                    <td class="border px-4 py-2 bg-gray-200">택배관련</td>
+                                    <td class="border px-4 py-2">{{ASrequest.택배관련}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-4 py-2 bg-gray-200">신청수량</td>
+                                    <td class="border px-4 py-2">{{ASrequest.신청수량}}</td>
+                                    <td class="border px-4 py-2 bg-gray-200"></td>
+                                    <td class="border px-4 py-2"></td>
+                                </tr>
+
+                            </tbody>
+                        </table>
                         <table class="table-fixed text-sm w-full">
                             <thead>
                                 <tr>

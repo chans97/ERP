@@ -13,3 +13,7 @@ class TimeStampedModel(models.Model):
     class Meta:
         abstract = True
 
+
+class partnermigrate(models.Model):
+
+    Excelfile = models.FileField(null=True, upload_to="migrate")

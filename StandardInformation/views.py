@@ -94,7 +94,7 @@ def UploadPartnerView(request):
             start_code = "PN"
             n = randint(1, 999999)
             num = str(n).zfill(6)
-            code = start_code + num
+            code = num
             obj = models.Partner.objects.get_or_none(거래처코드=code)
             if obj:
                 pass

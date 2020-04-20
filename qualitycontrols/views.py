@@ -2386,7 +2386,7 @@ def AStotaldelete(request, pk):
     return redirect(reverse("qualitycontrols:finalchecklist"))
 
 
-def file_download(request, pk):
+def file_download_forlow(request, pk):
     """파일 다운로드 유니코드화 패치"""
     low = QC_models.LowMetarial.objects.get_or_none(pk=pk)
     filepath = low.첨부파일.path

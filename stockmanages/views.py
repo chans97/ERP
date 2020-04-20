@@ -162,7 +162,7 @@ def materialcheckrequest(request):
             else:
                 return code
 
-    form = forms.materialcheckrequest(request.POST)
+    form = forms.materialcheckrequest(request.POST or None)
     code = give_number()
     form.initial = {
         "수입검사의뢰코드": code,
@@ -289,7 +289,7 @@ class materialinrequestlist(core_views.onelist):
 def materialinregister(request, pk):
     materialinrequest = models.StockOfMaterialInRequest.objects.get_or_none(pk=pk)
 
-    form = forms.materialinregisterForm(request.POST)
+    form = forms.materialinregisterForm(request.POST or None)
 
     if form.is_valid():
         입고일 = form.cleaned_data.get("입고일")
@@ -392,7 +392,7 @@ class materialoutrequestlist(core_views.onelist):
 def materialoutregister(request, pk):
     materialoutrequest = models.StockOfMaterialOutRequest.objects.get_or_none(pk=pk)
 
-    form = forms.materialoutregisterForm(request.POST)
+    form = forms.materialoutregisterForm(request.POST or None)
     seletelist = [
         "출고유형",
     ]
@@ -481,7 +481,7 @@ def updatestockofmaterial(request):
         ).order_by("-created")
         material = qs
 
-    form = forms.updatestockofmaterial(request.POST)
+    form = forms.updatestockofmaterial(request.POST or None)
     seletelist = [
         "불량분류",
     ]
@@ -617,7 +617,7 @@ class singleinrequestlist(core_views.onelist):
 def singleinregister(request, pk):
     singleinrequest = SS_models.StockOfSingleProductInRequest.objects.get_or_none(pk=pk)
 
-    form = forms.singleinregisterForm(request.POST)
+    form = forms.singleinregisterForm(request.POST or None)
     now = timezone.now().date()
     form.initial = {"입고일": now}
 
@@ -742,7 +742,7 @@ def singleoutregister(request, pk):
         pk=pk
     )
 
-    form = forms.singleoutregisterForm(request.POST)
+    form = forms.singleoutregisterForm(request.POST or None)
     seletelist = [
         "출고유형",
     ]
@@ -822,7 +822,7 @@ def updatestockofsingle(request):
         ).order_by("-created")
         single = qs
 
-    form = forms.updatestockofsingle(request.POST)
+    form = forms.updatestockofsingle(request.POST or None)
     seletelist = [
         "불량분류",
     ]
@@ -998,7 +998,7 @@ class rackoutrequestlist(core_views.onelist):
 def rackoutregister(request, pk):
     rackoutrequest = SR_models.StockOfRackProductOutRequest.objects.get_or_none(pk=pk)
 
-    form = forms.rackoutregisterForm(request.POST)
+    form = forms.rackoutregisterForm(request.POST or None)
     form.initial = {
         "출하수량": rackoutrequest.출하요청수량,
     }
@@ -1109,7 +1109,7 @@ def singleregister(request):
             else:
                 return code
 
-    form = SI_forms.UploadSingleForm(request.POST)
+    form = SI_forms.UploadSingleForm(request.POST or None)
     code = give_number()
     form.initial = {
         "모델코드": code,
@@ -1129,7 +1129,7 @@ def singleregister(request):
 
 def singlematerial(request, pk):
     single = SI_models.SingleProduct.objects.get(pk=pk)
-    form = SI_forms.UploadSingleMaterialForm(request.POST)
+    form = SI_forms.UploadSingleMaterialForm(request.POST or None)
 
     search = request.GET.get("search")
     if search is None:
@@ -1280,8 +1280,8 @@ def materialregister(request):
             else:
                 return code
 
-    form = SI_forms.UploadmaterialForm(request.POST)
-    code = give_number()
+    form = SI_forms.UploadmaterialForm(request.POST or None)
+    code = ""
     form.initial = {
         "자재코드": code,
     }

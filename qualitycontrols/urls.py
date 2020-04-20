@@ -248,6 +248,9 @@ urlpatterns = [
         name="AStotaldeleteensure",
     ),
     path("AStotaldelete/<int:pk>/", views.AStotaldelete, name="AStotaldelete",),
-    path("file_download/<int:pk>/", views.file_download, name="file_download",),
-
+    path(
+        "file_download_forlow/<int:pk>/",
+        views.file_download_forlow,
+        name="file_download_forlow",
+    ),
 ]

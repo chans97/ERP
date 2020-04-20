@@ -28,16 +28,20 @@ class UploadPartnerForm(forms.ModelForm):
 
     def clean(self):
         code = self.cleaned_data.get("거래처코드", "123")
+        거래처명 = self.cleaned_data.get("거래처명", "123")
         partner = models.Partner.objects.filter(거래처코드=code)
         partner = list(partner)
+        partnername = models.Partner.objects.filter(거래처명=거래처명)
+        partnername = list(partnername)
+
         if code == "123":
             self.is_bound = False
 
         code = code[0:2]
         if partner:
             self.add_error("거래처코드", forms.ValidationError("*해당 거래처코드는 이미 존재합니다."))
-        elif code != "PN":
-            self.add_error("거래처코드", forms.ValidationError("*거래처 코드는 PN으로 시작해야 합니다."))
+        elif partnername:
+            self.add_error("거래처명", forms.ValidationError("*해당 거래처명은 이미 존재합니다."))
 
     def save(self, *arg, **kwargs):
         partner = super().save(commit=False)
@@ -198,7 +202,6 @@ class UploadmaterialForm(forms.ModelForm):
             "특이사항",
         )
         help_texts = {
-            "자재코드": "*자재코드 앞에 MT를 붙여주시길 바랍니다.(한 번 설정하면, 바꿀 수 없습니다.)",
             "단가": "*단가는 '원'을 제외하고 숫자만 입력해주시길 바랍니다. ",
         }
         widgets = {
@@ -218,8 +221,6 @@ class UploadmaterialForm(forms.ModelForm):
         code = code[0:2]
         if single:
             self.add_error("자재코드", forms.ValidationError("*해당 자재코드는 이미 존재합니다."))
-        elif code != "MT":
-            self.add_error("자재코드", forms.ValidationError("*단품 자재코드는 MT로 시작해야 합니다."))
         elif customer is None:
             self.add_error("자재공급업체", forms.ValidationError("*해당 공급사를 찾을 수 없습니다."))
         else:

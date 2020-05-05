@@ -7,6 +7,9 @@ class User(AbstractUser, TimeStampedModel):
     """custom user """
 
     부서 = models.ManyToManyField("Part", related_name="user", null=True)
+    nowPart = models.ForeignKey(
+        "Part", related_name="nowuser", on_delete=models.SET_NULL, null=True
+    )
 
     class Meta:
         verbose_name = "사용자"
@@ -14,6 +17,7 @@ class User(AbstractUser, TimeStampedModel):
 
     def __str__(self):
         return self.first_name
+
     def lenofpart(self):
         num = self.부서.count()
         return num

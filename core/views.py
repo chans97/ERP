@@ -39,17 +39,17 @@ def firstindecide(request):
     user = request.user
     if user.is_authenticated:
 
-        if user.부서.all()[0].부서명 == "영업부":
+        if user.nowPart.pk == 61:
             return redirect(reverse("orders:ordershome"))
-        elif user.부서.all()[0].부서명 == "생산관리부":
+        elif user.nowPart.pk == 62:
             return redirect(reverse("producemanages:producemanageshome"))
-        elif user.부서.all()[0].부서명 == "공정관리부":
+        elif user.nowPart.pk == 63:
             return redirect(reverse("producemanages:producehome"))
-        elif user.부서.all()[0].부서명 == "품질부":
+        elif user.nowPart.pk == 64:
             return redirect(reverse("qualitycontrols:qualitycontrolshome"))
-        elif (user.부서.all()[0].부서명 == "AS담당부") or (user.부서.all()[0].부서명 == "총무부"):
+        elif (user.nowPart.pk == 65) or (user.nowPart.pk == 66):
             return redirect(reverse("afterservices:afterserviceshome"))
-        elif user.부서.all()[0].부서명 == "자재부":
+        elif user.nowPart.pk == 67:
             return redirect(reverse("stockmanages:stockmanageshome"))
         else:
             return render(request, "base.html")
@@ -59,22 +59,24 @@ def firstindecide(request):
 
 
 def parthome(request, pk):
+
+    """선택 부서를 nowPart로 바꿔서 저장"""
+
+    userlist = user_models.User.objects.all()
     part = user_models.Part.objects.get_or_none(pk=pk)
-    partname = part.부서명
-    if partname == "영업부":
-        return redirect(reverse("orders:ordershome"))
-    elif partname == "생산관리부":
-        return redirect(reverse("producemanages:producemanageshome"))
-    elif partname == "공정관리부":
-        return redirect(reverse("producemanages:producehome"))
-    elif partname == "품질부":
-        return redirect(reverse("qualitycontrols:qualitycontrolshome"))
-    elif (partname == "AS담당부") or (partname == "총무부"):
-        return redirect(reverse("afterservices:afterserviceshome"))
-    elif partname == "자재부":
-        return redirect(reverse("stockmanages:stockmanageshome"))
-    else:
-        return render(request, "base.html")
+    request.user.nowPart = part
+    request.user.save()
+    return redirect(reverse("core:home"))
+
+    """
+def 첫번째 부서를 nowPart로 지정하는 함수(request):
+    for user in userlist:
+        if list(user.부서.all()):
+            part = user.부서.all()[0]
+            user.nowPart = part
+            user.save()
+
+    return redirect(reverse("core:home"))"""
 
 
 class onelist(View, user_mixins.LoggedInOnlyView):

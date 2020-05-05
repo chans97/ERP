@@ -35,36 +35,16 @@ class LoginView(FormView):
         return reverse("core:home")
 
 
-class SignUpView(FormView):
-
-    template_name = "users/signup.html"
-    form_class = forms.SignUpForm
-    success_url = reverse_lazy("core:home")
-
-    def form_valid(self, form):
-        form.save()
-        email = form.cleaned_data.get("email")
-        password = form.cleaned_data.get("password")
-        user = authenticate(self.request, username=email, password=password)
-        if user is not None:
-            login(self.request, user)
-        return super().form_valid(form)
-
-
 def SignUpView(request):
     form = forms.SignUpForm(request.POST or None)
-    for field in form:
-        if field.name == "부서":
-            for f in field:
-                result = dir(f)
 
     if form.is_valid():
 
         form.save()
         form.save_m2m()
-        print(form.cleaned_data)
         email = form.cleaned_data.get("email")
         password = form.cleaned_data.get("password")
+
         user = authenticate(request, username=email, password=password)
         if user is not None:
             login(request, user)
@@ -73,7 +53,7 @@ def SignUpView(request):
             messages.success(request, f"가입되었습니다. 환영합니다. {name}님.")
         return redirect(reverse("core:home"))
 
-    return render(request, "users/signup.html", {"form": form, "result": result,},)
+    return render(request, "users/signup.html", {"form": form,},)
 
 
 def log_out(request):

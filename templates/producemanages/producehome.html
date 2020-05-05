@@ -6,188 +6,144 @@
 
 
 {% block content %}
-<div class="w-full bg-gray-400 h-10 items-center -mt-4 font-normal fixed justify-center text-sm py-2 pl-8 ">
-    <a class="hover:font-bold" href="{% url "producemanages:producehome"%}">
-        <div class="">공정진행
-    </a>{%block head_title%} {%endblock head_title %}</div>
-</div>
-<div class="flex">
-    <div class="w-32 mx-auto h-10/12 fixed items-center font-semibold justify-center pt-5 bg-gray-700 mt-6">
-        <div class="font-base text-sm text-left text-orange-100 py-px">
-            <i class="fas fa-bars mr-2 ml-3"></i><a href="{% url "producemanages:producehome"%}">공정진행</a>
-            <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
-            <div class="text-left ml-4 mb-4">
-                <div>
-                    <a href="{% url "producemanages:worklist"%}">
-                        <span class=" font-light text-xs text-orange-100 hover:font-bold">
-                            <i class="fas fa-angle-right mr-1"></i>공정진행등록</span></a></div>
-                <div>
-                    <a href="{% url "producemanages:workdonelist"%}">
-                        <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
-                            <i class="fas fa-angle-right mr-1"></i>최종검사의뢰</span></a></div>
-                <div>
-                    <a href="{% url "producemanages:checkdonelist"%}">
-                        <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
-                            <i class="fas fa-angle-right mr-1"></i>최종검사확인</span></a></div>
 
+{%block main_contens%}
+<div class="flex flex-col">
+    <div class="w-full h-full pl-32 -mt-6 font-semibold pt-12 flex flex-col">
+        <div class="flex flex-col">
+            <div class="flex flex-col p-6 w-full ">
+                <span class="border-b w-1/3 mb-3 border-gray-600 pb-2 font-semibold text-base">작업지시서 목록 </span>
+                <div class="w-64 border h-6 mb-2">
+
+                    <form method="get" action="" class="w-full flex ">
+                        <button class="w-4 h-4 mt-1 ml-1  rounded-xl bg-cover bg-center"
+                            style="background-image:url({% static 'img/search.png' %});"></button>
+
+                        <input name="search" placeholder={{search}}
+                            class="ml-1 w-full border-none search-box text-xs font-medium placeholder-red-400 focus: outline-none" />
+
+                    </form>
+                </div>
+                <div class="flex ">
+                    <div class="flew flex-col">
+                        <table class="table-fixed font-light text-xs w-full">
+                            <thead>
+                                <tr>
+                                    <th class="border bg-gray-200 px-2 py-2 w-24">진행과정</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">수주코드</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">사업장구분</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">영업구분</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">고객사명</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-32">제품코드</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">제품명</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">납품수량</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">수주일자</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">납품요청일</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {%for list in order_m%}
+                                <tr>
+
+
+                                    <td class="border px-2 py-2 font-bold 
+                                        text-blue-800 ">
+                                        {{list.process}}</td>
+                                    <td class="border px-4 py-2  hover:text-blue-700 hover:font-bold "><a
+                                            href="{%url "producemanages:orderdetailforwork" list.pk %}">
+                                            {{list.수주코드}}</a></td>
+                                    <td class="border px-4 py-2">{{list.사업장구분}}</td>
+                                    <td class="border px-4 py-2">{{list.영업구분}}</td>
+                                    <td class="border px-4 py-2">{{list.고객사명}}</td>
+                                    {%if list.제품구분 == "단품"%}
+                                    <td class="border px-4 py-2">{{list.단품모델.모델코드}}</td>
+                                    <td class="border px-4 py-2">{{list.단품모델.모델명}}</td>
+                                    {%else%}
+                                    <td class="border px-4 py-2">{{list.랙모델.랙시리얼코드}}</td>
+                                    <td class="border px-4 py-2">{{list.랙모델.랙모델명}}</td>
+                                    {%endif%}
+
+                                    <td class="border px-4 py-2">{{list.납품수량}}</td>
+                                    <td class="border px-4 py-2">
+                                        {{list.수주일자.year}}-{{list.수주일자.month}}-{{list.수주일자.day}}</td>
+                                    <td class="border px-4 py-2">
+                                        {%if list.납품요청일 is None%}
+                                        {%else%}
+                                        {{list.납품요청일.year}}-{{list.납품요청일.month}}-{{list.납품요청일.day}}{%endif%}
+                                    </td>
+                                </tr>
+                                {%endfor%}
+
+                            </tbody>
+                        </table>
+                        {%if nonpage%}
+                        {%else%}
+                        <div class="flex ml-2">
+                            {% if page != '1' %}
+                            {%if s_bool%}
+                            <a href="?search={{search}}&page={{previouspage}}" class="text-teal-700"><i
+                                    class="fas fa-arrow-left fa-lg mt-2"></i></a>
+                            {%else%}
+                            <a href="?page={{previouspage}}" class="text-teal-700"><i
+                                    class="fas fa-arrow-left fa-lg mt-2"></i></a>
+                            {% endif %}{% endif %}
+                            <span class="mx-3 font-medium  text-base">{{page}} of
+                                {{totalpage}}</span>
+
+                            {% if notsamebool %}
+                            {%if s_bool%}
+                            <a href="?search={{search}}&page={{nextpage}}" class="text-teal-700"><i
+                                    class="fas fa-arrow-right fa-lg mt-2"></i></a>
+                            {%else%}
+                            <a href="?page={{nextpage}}" class="text-teal-700"><i
+                                    class="fas fa-arrow-right fa-lg mt-2"></i></a>
+                            {% endif %}{% endif %}
+                        </div>
+                        {%endif%}
+                    </div>
+
+                </div>
             </div>
+
         </div>
-        <div class="font-base text-sm text-left text-orange-100 py-px">
-            <i class="fas fa-bars mr-2 ml-3"></i><a href="{% url "producemanages:producehome"%}">수리</a>
-            <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
-            <div class="text-left ml-4 mb-4">
-                <div>
-                    <a href="{% url "producemanages:finalchecklist"%}">
-                        <span class=" font-light text-xs text-orange-100 hover:font-bold">
-                            <i class="fas fa-angle-right mr-1"></i>수리등록:최종검사</span></a></div>
-
-                <div>
-                    <a href="{% url "producemanages:repairlist"%}">
-                        <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
-                            <i class="fas fa-angle-right mr-1"></i>수리완료목록</span></a></div>
-
-            </div>
-        </div>
-
-
     </div>
-    {%block main_contens%}
-    <div class="flex flex-col">
-        <div class="w-full h-full pl-32 -mt-6 font-semibold pt-12 flex flex-col">
-            <div class="flex flex-col">
-                <div class="flex flex-col p-6 w-full ">
-                    <span class="border-b w-1/3 mb-3 border-gray-600 pb-2 font-semibold text-base">작업지시서 목록 </span>
+    <div class="w-11/12 h-full ml-32 font-semibold flex flex-col">
+        <div class="flex flex-col">
+            <div class="p-6 pt-0">
+                <div class="border-b w-64 mb-3 border-gray-600 pb-2">전체 공정 현황 </div>
+                <div class="flew flex-col">
                     <div class="w-64 border h-6 mb-2">
 
                         <form method="get" action="" class="w-full flex ">
                             <button class="w-4 h-4 mt-1 ml-1  rounded-xl bg-cover bg-center"
                                 style="background-image:url({% static 'img/search.png' %});"></button>
 
-                            <input name="search" placeholder={{search}}
+                            <input name="search_m" placeholder={{search_m}}
                                 class="ml-1 w-full border-none search-box text-xs font-medium placeholder-red-400 focus: outline-none" />
 
                         </form>
                     </div>
-                    <div class="flex ">
-                        <div class="flew flex-col">
-                            <table class="table-fixed font-light text-xs w-full">
-                                <thead>
-                                    <tr>
-                                        <th class="border bg-gray-200 px-2 py-2 w-24">진행과정</th>
-                                        <th class="border bg-gray-200 px-4 py-2 w-24">수주코드</th>
-                                        <th class="border bg-gray-200 px-4 py-2 w-24">사업장구분</th>
-                                        <th class="border bg-gray-200 px-4 py-2 w-24">영업구분</th>
-                                        <th class="border bg-gray-200 px-4 py-2 w-24">고객사명</th>
-                                        <th class="border bg-gray-200 px-4 py-2 w-32">제품코드</th>
-                                        <th class="border bg-gray-200 px-4 py-2 w-24">제품명</th>
-                                        <th class="border bg-gray-200 px-4 py-2 w-24">납품수량</th>
-                                        <th class="border bg-gray-200 px-4 py-2 w-24">수주일자</th>
-                                        <th class="border bg-gray-200 px-4 py-2 w-24">납품요청일</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {%for list in order_m%}
-                                    <tr>
-
-
-                                        <td class="border px-2 py-2 font-bold 
-                                        text-blue-800 ">
-                                            {{list.process}}</td>
-                                        <td class="border px-4 py-2  hover:text-blue-700 hover:font-bold "><a
-                                                href="{%url "producemanages:orderdetailforwork" list.pk %}">
-                                                {{list.수주코드}}</a></td>
-                                        <td class="border px-4 py-2">{{list.사업장구분}}</td>
-                                        <td class="border px-4 py-2">{{list.영업구분}}</td>
-                                        <td class="border px-4 py-2">{{list.고객사명}}</td>
-                                        {%if list.제품구분 == "단품"%}
-                                        <td class="border px-4 py-2">{{list.단품모델.모델코드}}</td>
-                                        <td class="border px-4 py-2">{{list.단품모델.모델명}}</td>
-                                        {%else%}
-                                        <td class="border px-4 py-2">{{list.랙모델.랙시리얼코드}}</td>
-                                        <td class="border px-4 py-2">{{list.랙모델.랙모델명}}</td>
-                                        {%endif%}
-
-                                        <td class="border px-4 py-2">{{list.납품수량}}</td>
-                                        <td class="border px-4 py-2">
-                                            {{list.수주일자.year}}-{{list.수주일자.month}}-{{list.수주일자.day}}</td>
-                                        <td class="border px-4 py-2">
-                                            {%if list.납품요청일 is None%}
-                                            {%else%}
-                                            {{list.납품요청일.year}}-{{list.납품요청일.month}}-{{list.납품요청일.day}}{%endif%}
-                                        </td>
-                                    </tr>
-                                    {%endfor%}
-
-                                </tbody>
-                            </table>
-                            {%if nonpage%}
-                            {%else%}
-                            <div class="flex ml-2">
-                                {% if page != '1' %}
-                                {%if s_bool%}
-                                <a href="?search={{search}}&page={{previouspage}}" class="text-teal-700"><i
-                                        class="fas fa-arrow-left fa-lg mt-2"></i></a>
-                                {%else%}
-                                <a href="?page={{previouspage}}" class="text-teal-700"><i
-                                        class="fas fa-arrow-left fa-lg mt-2"></i></a>
-                                {% endif %}{% endif %}
-                                <span class="mx-3 font-medium  text-base">{{page}} of
-                                    {{totalpage}}</span>
-
-                                {% if notsamebool %}
-                                {%if s_bool%}
-                                <a href="?search={{search}}&page={{nextpage}}" class="text-teal-700"><i
-                                        class="fas fa-arrow-right fa-lg mt-2"></i></a>
-                                {%else%}
-                                <a href="?page={{nextpage}}" class="text-teal-700"><i
-                                        class="fas fa-arrow-right fa-lg mt-2"></i></a>
-                                {% endif %}{% endif %}
-                            </div>
-                            {%endif%}
-                        </div>
-
-                    </div>
-                </div>
-
-            </div>
-        </div>
-        <div class="w-11/12 h-full ml-32 font-semibold flex flex-col">
-            <div class="flex flex-col">
-                <div class="p-6 pt-0">
-                    <div class="border-b w-64 mb-3 border-gray-600 pb-2">전체 공정 현황 </div>
-                    <div class="flew flex-col">
-                        <div class="w-64 border h-6 mb-2">
-
-                            <form method="get" action="" class="w-full flex ">
-                                <button class="w-4 h-4 mt-1 ml-1  rounded-xl bg-cover bg-center"
-                                    style="background-image:url({% static 'img/search.png' %});"></button>
-
-                                <input name="search_m" placeholder={{search_m}}
-                                    class="ml-1 w-full border-none search-box text-xs font-medium placeholder-red-400 focus: outline-none" />
-
-                            </form>
-                        </div>
-                        <table class="table-fixed font-light text-xs w-full">
-                            <thead>
-                                <tr>
-                                    <th class="border bg-gray-200 px-2 py-2 w-32">진행과정</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">생산코드</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">수주코드</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-32">제품코드</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">제품명</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">납품수량</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">계획생산량</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-32">고객사명</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">생산계획자</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">생산계획일</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">수주일자</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">납품요청일</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {%for list in order%}
-                                <tr>
-                                    <td class="border px-2 py-2 font-bold 
+                    <table class="table-fixed font-light text-xs w-full">
+                        <thead>
+                            <tr>
+                                <th class="border bg-gray-200 px-2 py-2 w-32">진행과정</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-24">생산코드</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-24">수주코드</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-32">제품코드</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-24">제품명</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-24">납품수량</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-24">계획생산량</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-32">고객사명</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-24">생산계획자</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-24">생산계획일</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-24">수주일자</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-24">납품요청일</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {%for list in order%}
+                            <tr>
+                                <td class="border px-2 py-2 font-bold 
                                     {%if list.process == 최종검사완료%}
                                     text-green-700
                                     {%endif%}
@@ -201,63 +157,63 @@
                                     text-blue-800
                                     {%endif%}
                                     text-red-700 ">
-                                        {{list.process}}</td>
-                                    <td class="border px-4 py-2  hover:text-blue-700 hover:font-bold "><a
-                                            href="{%url "producemanages:orderdetailforwork" list.pk %}">
-                                            {{list.생산요청.생산계획.생산계획등록코드}}</a></td>
-                                    <td class="border px-4 py-2  hover:text-blue-700 hover:font-bold "><a
-                                            href="{%url "producemanages:orderdetailforwork" list.pk %}">
-                                            {{list.수주코드}}</a></td>
-                                    <td class="border px-4 py-2">{{list.단품모델.모델코드}}</td>
-                                    <td class="border px-4 py-2">{{list.단품모델.모델명}}</td>
-                                    <td class="border px-4 py-2">{{list.납품수량}}</td>
-                                    <td class="border px-4 py-2">{{list.생산요청.생산계획.계획생산량}}</td>
-                                    <td class="border px-4 py-2">{{list.고객사명}}</td>
-                                    <td class="border px-4 py-2">{{list.생산요청.생산계획.작성자}}</td>
-                                    <td class="border px-4 py-2">
-                                        {{list.생산요청.생산계획.created.year}}-{{list.생산요청.생산계획.created.month}}-{{list.생산요청.생산계획.created.day}}
-                                    </td>
+                                    {{list.process}}</td>
+                                <td class="border px-4 py-2  hover:text-blue-700 hover:font-bold "><a
+                                        href="{%url "producemanages:orderdetailforwork" list.pk %}">
+                                        {{list.생산요청.생산계획.생산계획등록코드}}</a></td>
+                                <td class="border px-4 py-2  hover:text-blue-700 hover:font-bold "><a
+                                        href="{%url "producemanages:orderdetailforwork" list.pk %}">
+                                        {{list.수주코드}}</a></td>
+                                <td class="border px-4 py-2">{{list.단품모델.모델코드}}</td>
+                                <td class="border px-4 py-2">{{list.단품모델.모델명}}</td>
+                                <td class="border px-4 py-2">{{list.납품수량}}</td>
+                                <td class="border px-4 py-2">{{list.생산요청.생산계획.계획생산량}}</td>
+                                <td class="border px-4 py-2">{{list.고객사명}}</td>
+                                <td class="border px-4 py-2">{{list.생산요청.생산계획.작성자}}</td>
+                                <td class="border px-4 py-2">
+                                    {{list.생산요청.생산계획.created.year}}-{{list.생산요청.생산계획.created.month}}-{{list.생산요청.생산계획.created.day}}
+                                </td>
 
-                                    <td class="border px-4 py-2">
-                                        {{list.수주일자.year}}-{{list.수주일자.month}}-{{list.수주일자.day}}</td>
-                                    <td class="border px-4 py-2">
-                                        {%if list.납품요청일 is None%}
-                                        {%else%}
-                                        {{list.납품요청일.year}}-{{list.납품요청일.month}}-{{list.납품요청일.day}}{%endif%}</td>
-                                </tr>
-                                {%endfor%}
+                                <td class="border px-4 py-2">
+                                    {{list.수주일자.year}}-{{list.수주일자.month}}-{{list.수주일자.day}}</td>
+                                <td class="border px-4 py-2">
+                                    {%if list.납품요청일 is None%}
+                                    {%else%}
+                                    {{list.납품요청일.year}}-{{list.납품요청일.month}}-{{list.납품요청일.day}}{%endif%}</td>
+                            </tr>
+                            {%endfor%}
 
-                            </tbody>
-                        </table>
-                        <div class="flex ml-2">
-                            {%if totalpage_m != 0%}
-                            {% if page_m != '1' %}
-                            {%if s_bool_m%}
-                            <a href="?search_m={{search_m}}&page_m={{previouspage_m}}" class="text-teal-700"><i
-                                    class="fas fa-arrow-left fa-lg mt-2"></i></a>
-                            {%else%}
-                            <a href="?page_m={{previouspage_m}}" class="text-teal-700"><i
-                                    class="fas fa-arrow-left fa-lg mt-2"></i></a>
-                            {% endif %}{% endif %}
-                            <span class="mx-3 font-medium  text-base">{{page_m}} of
-                                {{totalpage_m}}</span>
+                        </tbody>
+                    </table>
+                    <div class="flex ml-2">
+                        {%if totalpage_m != 0%}
+                        {% if page_m != '1' %}
+                        {%if s_bool_m%}
+                        <a href="?search_m={{search_m}}&page_m={{previouspage_m}}" class="text-teal-700"><i
+                                class="fas fa-arrow-left fa-lg mt-2"></i></a>
+                        {%else%}
+                        <a href="?page_m={{previouspage_m}}" class="text-teal-700"><i
+                                class="fas fa-arrow-left fa-lg mt-2"></i></a>
+                        {% endif %}{% endif %}
+                        <span class="mx-3 font-medium  text-base">{{page_m}} of
+                            {{totalpage_m}}</span>
 
-                            {% if notsamebool_m %}
-                            {%if s_bool_m%}
-                            <a href="?search_m={{search_m}}&page_m={{nextpage_m}}" class="text-teal-700"><i
-                                    class="fas fa-arrow-right fa-lg mt-2"></i></a>
-                            {%else%}
-                            <a href="?page_m={{nextpage_m}}" class="text-teal-700"><i
-                                    class="fas fa-arrow-right fa-lg mt-2"></i></a>
-                            {% endif %}{% endif %}{% endif %}
-                        </div>
+                        {% if notsamebool_m %}
+                        {%if s_bool_m%}
+                        <a href="?search_m={{search_m}}&page_m={{nextpage_m}}" class="text-teal-700"><i
+                                class="fas fa-arrow-right fa-lg mt-2"></i></a>
+                        {%else%}
+                        <a href="?page_m={{nextpage_m}}" class="text-teal-700"><i
+                                class="fas fa-arrow-right fa-lg mt-2"></i></a>
+                        {% endif %}{% endif %}{% endif %}
                     </div>
                 </div>
-
             </div>
+
         </div>
     </div>
-    {%endblock main_contens %}
+</div>
+{%endblock main_contens %}
 </div>
 </div>
 {%endblock content %}

@@ -23,7 +23,6 @@ class LoginForm(forms.Form):
 
 
 class SignUpForm(forms.ModelForm):
-
     class Meta:
         model = models.User
         fields = ("first_name", "부서", "email")
@@ -69,4 +68,5 @@ class SignUpForm(forms.ModelForm):
         password = self.cleaned_data.get("password")
         user.username = email
         user.set_password(password)
+        user.nowPart = self.cleaned_data.get("부서")[0]
         user.save()

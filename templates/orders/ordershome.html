@@ -6,109 +6,45 @@
 
 
 {% block content %}
-<div class="w-full bg-gray-400 h-10 items-center -mt-4 font-normal fixed justify-center text-sm py-2 pl-8 ">
-    <a class="hover:font-bold" href="{% url "core:home"%}">
-        <div class="">영업관리
-    </a>{%block head_title%} {%endblock head_title %}</div>
-</div>
-<div class="flex">
-    <div class="w-32 mx-auto h-10/12 fixed items-center font-semibold justify-center pt-5 bg-gray-700 mt-6">
-        <div class="font-base text-sm text-left text-orange-100 py-px">
-            <i class="fas fa-bars mr-2 ml-3"></i>수주관리
-            <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
-            <div class="text-left ml-4 mb-4">
-                <div>
-                    <a href="{%url "orders:orderregister"%}">
-                        <span class=" font-light text-xs text-orange-100 hover:font-bold">
-                            <i class="fas fa-angle-right mr-1"></i></i>수주등록</span></a></div>
-                <div>
-                    <a href="{%url "orders:orderproduce"%}">
-                        <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
-                            <i class="fas fa-angle-right mr-1"></i></i>단품생산의뢰</span></a></div>
-                <div>
-                    <a href="{%url "orders:orderproduceforrack"%}">
-                        <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
-                            <i class="fas fa-angle-right mr-1"></i></i>랙생산의뢰</span></a></div>
-                <div>
-                    <a href="{%url "orders:endorder"%}">
-                        <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
-                            <i class="fas fa-angle-right mr-1"></i></i>출하완료등록</span></a></div>
 
-            </div>
-        </div>
-        <div class="font-base text-sm text-left text-orange-100 py-px">
-            <i class="fas fa-bars mr-2 ml-3"></i>출하관리
-            <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
-            <div class="text-left ml-4 mb-4">
-                <div>
-                    <a href="{%url "stocksingle:ordersingleout"%}">
-                        <span class=" font-light text-xs text-orange-100  hover:font-bold">
-                            <i class="fas fa-angle-right mr-1"></i></i>단품출하요청</span></a></div>
-                <div>
-                    <a href="{%url "stockrack:orderrackout"%}">
-                        <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
-                            <i class="fas fa-angle-right mr-1"></i></i>랙출하요청</span></a></div>
+{%block main_contens%}
 
-            </div>
-        </div>
-        <div class="font-base text-sm text-left text-orange-100 py-px mb-4">
-            <i class="fas fa-bars mr-2 ml-3"></i>기준정보
-            <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
-            <div class="text-left ml-4">
-                <div>
-                    <a href="{%url "StandardInformation:partner"%}">
-                        <span class=" font-light text-xs text-orange-100  hover:font-bold">
-                            <i class="fas fa-angle-right mr-1"></i></i>거래처</span></a></div>
-                <div>
-                    <a href="{%url "StandardInformation:single"%}">
-                        <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
-                            <i class="fas fa-angle-right mr-1"></i></i>단품제품</span></a></div>
-                <div>
-                    <a href="{%url "StandardInformation:rack"%}">
-                        <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
-                            <i class="fas fa-angle-right mr-1"></i></i>랙제품</span></a></div>
-            </div>
-        </div>
+<div class="flex flex-col w-full">
+    <div class="w-full pl-32 -mt-6 font-semibold pt-12 flex flex-col">
+        <div class="flex flex-col w-full">
+            <div class="p-6">
+                <div class="border-b w-64 mb-3 border-gray-600 pb-2">내 수주 현황 ({{my_order_count}})</div>
+                <div class="flew flex-col">
+                    <div class="w-64 border h-6 mb-2">
 
-    </div>
-    {%block main_contens%}
+                        <form method="get" action="" class="w-full flex ">
+                            <button class="w-4 h-4 mt-1 ml-1  rounded-xl bg-cover bg-center"
+                                style="background-image:url({% static 'img/search.png' %});"></button>
 
-    <div class="flex flex-col w-full">
-        <div class="w-full pl-32 -mt-6 font-semibold pt-12 flex flex-col">
-            <div class="flex flex-col w-full">
-                <div class="p-6">
-                    <div class="border-b w-64 mb-3 border-gray-600 pb-2">내 수주 현황 ({{my_order_count}})</div>
-                    <div class="flew flex-col">
-                        <div class="w-64 border h-6 mb-2">
+                            <input name="search_m" placeholder={{search_m}}
+                                class="ml-1 w-full border-none search-box text-xs font-medium placeholder-red-400 focus: outline-none" />
 
-                            <form method="get" action="" class="w-full flex ">
-                                <button class="w-4 h-4 mt-1 ml-1  rounded-xl bg-cover bg-center"
-                                    style="background-image:url({% static 'img/search.png' %});"></button>
-
-                                <input name="search_m" placeholder={{search_m}}
-                                    class="ml-1 w-full border-none search-box text-xs font-medium placeholder-red-400 focus: outline-none" />
-
-                            </form>
-                        </div>
-                        <table class="table-fixed font-light text-xs w-full">
-                            <thead>
-                                <tr>
-                                    <th class="border bg-gray-200 px-2 py-2 w-32">진행과정</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">수주코드</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">사업장구분</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">영업구분</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-32">고객사명</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-32">제품코드</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">제품명</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">납품수량</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">수주일자</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">납품요청일</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {%for list in order_m%}
-                                <tr>
-                                    <td class="border px-2 py-2 font-bold 
+                        </form>
+                    </div>
+                    <table class="table-fixed font-light text-xs w-full">
+                        <thead>
+                            <tr>
+                                <th class="border bg-gray-200 px-2 py-2 w-32">진행과정</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-24">수주코드</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-24">사업장구분</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-24">영업구분</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-32">고객사명</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-32">제품코드</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-24">제품명</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-24">납품수량</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-24">수주일자</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-24">납품요청일</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {%for list in order_m%}
+                            <tr>
+                                <td class="border px-2 py-2 font-bold 
                                     {%if list.process == 최종검사완료%}
                                     text-green-700
                                     {%endif%}
@@ -122,103 +58,103 @@
                                     text-blue-800
                                     {%endif%}
                                     text-red-700 ">
-                                        {{list.process}}</td>
-                                    <td class="border px-4 py-2  hover:text-blue-700 hover:font-bold "><a
-                                            href="{%url "orders:orderdetail" list.pk %}">
-                                            {{list.수주코드}}</a></td>
-                                    <td class="border px-4 py-2">{{list.사업장구분}}</td>
-                                    <td class="border px-4 py-2">{{list.영업구분}}</td>
-                                    <td class="border px-4 py-2">{{list.고객사명}}</td>
-                                    {%if list.제품구분 == "단품"%}
-                                    <td class="border px-4 py-2">{{list.단품모델.모델코드}}</td>
-                                    <td class="border px-4 py-2">{{list.단품모델.모델명}}</td>
+                                    {{list.process}}</td>
+                                <td class="border px-4 py-2  hover:text-blue-700 hover:font-bold "><a
+                                        href="{%url "orders:orderdetail" list.pk %}">
+                                        {{list.수주코드}}</a></td>
+                                <td class="border px-4 py-2">{{list.사업장구분}}</td>
+                                <td class="border px-4 py-2">{{list.영업구분}}</td>
+                                <td class="border px-4 py-2">{{list.고객사명}}</td>
+                                {%if list.제품구분 == "단품"%}
+                                <td class="border px-4 py-2">{{list.단품모델.모델코드}}</td>
+                                <td class="border px-4 py-2">{{list.단품모델.모델명}}</td>
+                                {%else%}
+                                <td class="border px-4 py-2">{{list.랙모델.랙시리얼코드}}</td>
+                                <td class="border px-4 py-2">{{list.랙모델.랙모델명}}</td>
+                                {%endif%}
+
+                                <td class="border px-4 py-2">{{list.납품수량}}</td>
+                                <td class="border px-4 py-2">
+                                    {{list.수주일자.year}}-{{list.수주일자.month}}-{{list.수주일자.day}}</td>
+                                <td
+                                    class=" border px-4 py-2 {% if list.납품요청일 <= now %}text-red-600 font-bold{% endif %}">
+
+                                    {%if list.납품요청일 is None%}
                                     {%else%}
-                                    <td class="border px-4 py-2">{{list.랙모델.랙시리얼코드}}</td>
-                                    <td class="border px-4 py-2">{{list.랙모델.랙모델명}}</td>
-                                    {%endif%}
+                                    {{list.납품요청일.year}}-{{list.납품요청일.month}}-{{list.납품요청일.day}}{%endif%}</td>
+                                <td class="px-2 py-2">
+                                    {% if list.납품요청일 <= now %}
+                                    <i class="fas fa-exclamation-circle  text-red-700 blink"></i>{% endif %}
+                                </td>
 
-                                    <td class="border px-4 py-2">{{list.납품수량}}</td>
-                                    <td class="border px-4 py-2">
-                                        {{list.수주일자.year}}-{{list.수주일자.month}}-{{list.수주일자.day}}</td>
-                                    <td
-                                        class=" border px-4 py-2 {% if list.납품요청일 <= now %}text-red-600 font-bold{% endif %}">
+                            </tr>
+                            {%endfor%}
 
-                                        {%if list.납품요청일 is None%}
-                                        {%else%}
-                                        {{list.납품요청일.year}}-{{list.납품요청일.month}}-{{list.납품요청일.day}}{%endif%}</td>
-                                    <td class="px-2 py-2">
-                                        {% if list.납품요청일 <= now %}
-                                        <i class="fas fa-exclamation-circle  text-red-700 blink"></i>{% endif %}
-                                    </td>
+                        </tbody>
+                    </table>
+                    <div class="flex ml-2">
+                        {%if totalpage_m != 0%}
+                        {% if page_m != '1' %}
+                        {%if s_bool_m%}
+                        <a href="?search_m={{search_m}}&page_m={{previouspage_m}}" class="text-teal-700"><i
+                                class="fas fa-arrow-left fa-lg mt-2"></i></a>
+                        {%else%}
+                        <a href="?page_m={{previouspage_m}}" class="text-teal-700"><i
+                                class="fas fa-arrow-left fa-lg mt-2"></i></a>
+                        {% endif %}{% endif %}
+                        <span class="mx-3 font-medium  text-base">{{page_m}} of
+                            {{totalpage_m}}</span>
 
-                                </tr>
-                                {%endfor%}
-
-                            </tbody>
-                        </table>
-                        <div class="flex ml-2">
-                            {%if totalpage_m != 0%}
-                            {% if page_m != '1' %}
-                            {%if s_bool_m%}
-                            <a href="?search_m={{search_m}}&page_m={{previouspage_m}}" class="text-teal-700"><i
-                                    class="fas fa-arrow-left fa-lg mt-2"></i></a>
-                            {%else%}
-                            <a href="?page_m={{previouspage_m}}" class="text-teal-700"><i
-                                    class="fas fa-arrow-left fa-lg mt-2"></i></a>
-                            {% endif %}{% endif %}
-                            <span class="mx-3 font-medium  text-base">{{page_m}} of
-                                {{totalpage_m}}</span>
-
-                            {% if notsamebool_m %}
-                            {%if s_bool_m%}
-                            <a href="?search_m={{search_m}}&page_m={{nextpage_m}}" class="text-teal-700"><i
-                                    class="fas fa-arrow-right fa-lg mt-2"></i></a>
-                            {%else%}
-                            <a href="?page_m={{nextpage_m}}" class="text-teal-700"><i
-                                    class="fas fa-arrow-right fa-lg mt-2"></i></a>
-                            {% endif %}{% endif %}{% endif %}
-                        </div>
+                        {% if notsamebool_m %}
+                        {%if s_bool_m%}
+                        <a href="?search_m={{search_m}}&page_m={{nextpage_m}}" class="text-teal-700"><i
+                                class="fas fa-arrow-right fa-lg mt-2"></i></a>
+                        {%else%}
+                        <a href="?page_m={{nextpage_m}}" class="text-teal-700"><i
+                                class="fas fa-arrow-right fa-lg mt-2"></i></a>
+                        {% endif %}{% endif %}{% endif %}
                     </div>
                 </div>
-
             </div>
+
         </div>
-        <div class="w-full h-full mt-5 pl-32 font-semibold flex flex-col">
-            <div class="flex flex-col w-full">
-                <div class="p-6 w-full">
-                    <div class="border-b w-64 mb-3 border-gray-600 pb-2">전체 수주 현황 ({{order_count}}) </div>
-                    <div class="flew flex-col w-full">
-                        <div class="w-64 border h-6 mb-2">
+    </div>
+    <div class="w-full h-full mt-5 pl-32 font-semibold flex flex-col">
+        <div class="flex flex-col w-full">
+            <div class="p-6 w-full">
+                <div class="border-b w-64 mb-3 border-gray-600 pb-2">전체 수주 현황 ({{order_count}}) </div>
+                <div class="flew flex-col w-full">
+                    <div class="w-64 border h-6 mb-2">
 
-                            <form method="get" action="" class="w-full flex ">
-                                <button class="w-4 h-4 mt-1 ml-1  rounded-xl bg-cover bg-center"
-                                    style="background-image:url({% static 'img/search.png' %});"></button>
+                        <form method="get" action="" class="w-full flex ">
+                            <button class="w-4 h-4 mt-1 ml-1  rounded-xl bg-cover bg-center"
+                                style="background-image:url({% static 'img/search.png' %});"></button>
 
-                                <input name="search" placeholder={{search}}
-                                    class="ml-1 w-full border-none search-box text-xs font-medium placeholder-red-400 focus: outline-none" />
+                            <input name="search" placeholder={{search}}
+                                class="ml-1 w-full border-none search-box text-xs font-medium placeholder-red-400 focus: outline-none" />
 
-                            </form>
-                        </div>
-                        <table class="table-fixed font-light text-xs w-full">
-                            <thead>
-                                <tr>
-                                    <th class="border bg-gray-200 px-2 py-2 w-24">진행과정</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">수주코드</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">사업장구분</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">작성자</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">영업구분</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">고객사명</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">제품코드</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">제품명</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">납품수량</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">수주일자</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">납품요청일</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {%for list in order%}
-                                <tr>
-                                    <td class="border px-2 py-2 font-bold 
+                        </form>
+                    </div>
+                    <table class="table-fixed font-light text-xs w-full">
+                        <thead>
+                            <tr>
+                                <th class="border bg-gray-200 px-2 py-2 w-24">진행과정</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-24">수주코드</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-24">사업장구분</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-24">작성자</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-24">영업구분</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-24">고객사명</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-24">제품코드</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-24">제품명</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-24">납품수량</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-24">수주일자</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-24">납품요청일</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {%for list in order%}
+                            <tr>
+                                <td class="border px-2 py-2 font-bold 
                                         {%if list.process == 최종검사완료%}
                                         text-green-700
                                         {%endif%}
@@ -232,87 +168,86 @@
                                         text-blue-800
                                         {%endif%}
                                         text-red-700 ">
-                                        {{list.process}}</td>
-                                    <td class="border px-4 py-2 font-medium hover:text-blue-700 hover:font-bold"><a
-                                            href="{%url "orders:orderdetail" list.pk %}">
-                                            {{list.수주코드}}</a></td>
-                                    <td class="border px-4 py-2">{{list.사업장구분}}</td>
-                                    <td class="border px-4 py-2">{{list.작성자.first_name}}</td>
-                                    <td class="border px-4 py-2">{{list.영업구분}}</td>
-                                    <td class="border px-4 py-2">{{list.고객사명}}</td>
-                                    {%if list.제품구분 == "단품"%}
-                                    <td class="border px-4 py-2">{{list.단품모델.모델코드}}</td>
-                                    <td class="border px-4 py-2">{{list.단품모델.모델명}}</td>
-                                    {%else%}
-                                    <td class="border px-4 py-2">{{list.랙모델.랙시리얼코드}}</td>
-                                    <td class="border px-4 py-2">{{list.랙모델.랙모델명}}</td>
-                                    {%endif%}
+                                    {{list.process}}</td>
+                                <td class="border px-4 py-2 font-medium hover:text-blue-700 hover:font-bold"><a
+                                        href="{%url "orders:orderdetail" list.pk %}">
+                                        {{list.수주코드}}</a></td>
+                                <td class="border px-4 py-2">{{list.사업장구분}}</td>
+                                <td class="border px-4 py-2">{{list.작성자.first_name}}</td>
+                                <td class="border px-4 py-2">{{list.영업구분}}</td>
+                                <td class="border px-4 py-2">{{list.고객사명}}</td>
+                                {%if list.제품구분 == "단품"%}
+                                <td class="border px-4 py-2">{{list.단품모델.모델코드}}</td>
+                                <td class="border px-4 py-2">{{list.단품모델.모델명}}</td>
+                                {%else%}
+                                <td class="border px-4 py-2">{{list.랙모델.랙시리얼코드}}</td>
+                                <td class="border px-4 py-2">{{list.랙모델.랙모델명}}</td>
+                                {%endif%}
 
-                                    <td class="border px-4 py-2">{{list.납품수량}}</td>
-                                    <td class="border px-4 py-2">
-                                        {{list.수주일자.year}}-{{list.수주일자.month}}-{{list.수주일자.day}}</td>
-                                    <td
-                                        class=" border px-4 py-2 {% if list.납품요청일 <= now %}text-red-600 font-bold{% endif %}">
+                                <td class="border px-4 py-2">{{list.납품수량}}</td>
+                                <td class="border px-4 py-2">
+                                    {{list.수주일자.year}}-{{list.수주일자.month}}-{{list.수주일자.day}}</td>
+                                <td
+                                    class=" border px-4 py-2 {% if list.납품요청일 <= now %}text-red-600 font-bold{% endif %}">
 
-                                        {%if list.납품요청일 is not None%}
-                                        {{list.납품요청일.year}}-{{list.납품요청일.month}}-{{list.납품요청일.day}}{%endif%}</td>
+                                    {%if list.납품요청일 is not None%}
+                                    {{list.납품요청일.year}}-{{list.납품요청일.month}}-{{list.납품요청일.day}}{%endif%}</td>
 
-                                    <td class="px-2 py-2">
-                                        {% if list.납품요청일 <= now %}
-                                        <i class="fas fa-exclamation-circle  text-red-700 blink"
-                                            id="hello"></i>{% endif %}
-                                    </td>
+                                <td class="px-2 py-2">
+                                    {% if list.납품요청일 <= now %}
+                                    <i class="fas fa-exclamation-circle  text-red-700 blink" id="hello"></i>{% endif %}
+                                </td>
 
-                                </tr>
-                                {%endfor%}
+                            </tr>
+                            {%endfor%}
 
-                            </tbody>
-                        </table>
-                        <div class="flex ml-2">
-                            {%if totalpage != 0%}
-                            {% if page != '1' %}
-                            {%if s_bool%}
-                            <a href="?search={{search}}&page={{previouspage}}" class="text-teal-700"><i
-                                    class="fas fa-arrow-left fa-lg mt-2"></i></a>
-                            {%else%}
-                            <a href="?page={{previouspage}}" class="text-teal-700"><i
-                                    class="fas fa-arrow-left fa-lg mt-2"></i></a>
-                            {% endif %}{% endif %}
-                            <span class="mx-3 font-medium  text-base">{{page}} of
-                                {{totalpage}}</span>
+                        </tbody>
+                    </table>
+                    <div class="flex ml-2">
+                        {%if totalpage != 0%}
+                        {% if page != '1' %}
+                        {%if s_bool%}
+                        <a href="?search={{search}}&page={{previouspage}}" class="text-teal-700"><i
+                                class="fas fa-arrow-left fa-lg mt-2"></i></a>
+                        {%else%}
+                        <a href="?page={{previouspage}}" class="text-teal-700"><i
+                                class="fas fa-arrow-left fa-lg mt-2"></i></a>
+                        {% endif %}{% endif %}
+                        <span class="mx-3 font-medium  text-base">{{page}} of
+                            {{totalpage}}</span>
 
-                            {% if notsamebool %}
-                            {%if s_bool%}
-                            <a href="?search={{search}}&page={{nextpage}}" class="text-teal-700"><i
-                                    class="fas fa-arrow-right fa-lg mt-2"></i></a>
-                            {%else%}
-                            <a href="?page={{nextpage}}" class="text-teal-700"><i
-                                    class="fas fa-arrow-right fa-lg mt-2"></i></a>
-                            {% endif %}{% endif %}{% endif %}
-                        </div>
+                        {% if notsamebool %}
+                        {%if s_bool%}
+                        <a href="?search={{search}}&page={{nextpage}}" class="text-teal-700"><i
+                                class="fas fa-arrow-right fa-lg mt-2"></i></a>
+                        {%else%}
+                        <a href="?page={{nextpage}}" class="text-teal-700"><i
+                                class="fas fa-arrow-right fa-lg mt-2"></i></a>
+                        {% endif %}{% endif %}{% endif %}
                     </div>
                 </div>
-
             </div>
+
         </div>
     </div>
-    <script src="//code.jquery.com/jquery-latest.min.js"></script>
-    <script>
-        var element = $(".blink");
-        var shown = true;
-        setInterval(ttoogle, 1000);
-        function ttoogle() {
-            if (shown) {
-                element.hide(25);
-                shown = false;
-            } else {
-                element.show(25);
-                shown = true;
-            }
+</div>
+<script src="//code.jquery.com/jquery-latest.min.js"></script>
+<script>
+    var element = $(".blink");
+    var shown = true;
+    setInterval(ttoogle, 1000);
+    function ttoogle() {
+        if (shown) {
+            element.hide(25);
+            shown = false;
+        } else {
+            element.show(25);
+            shown = true;
         }
-    </script>
+    }
+</script>
 
-    {%endblock main_contens %}
+{%endblock main_contens %}
 </div>
 </div>
 {%endblock content %}

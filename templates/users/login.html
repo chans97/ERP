@@ -9,12 +9,12 @@
     <div
         class="mt-12 container mx-auto my-10 xl:w-4/12 lg:w-4/12 md:w-1/2  flex flex-col items-center p-6 border-gray-400 border">
 
-        {% include 'mixins/auth/auth_form.html' with form=form cta="Log in"%}
+        {% include 'mixins/auth/auth_form.html' with form=form cta="로그인"%}
 
         <div class="mt-5">
 
-            <span class="mr-2">Don't have an account?</span>
-            <a href="{%url "users:signup"%}" class="text-teal-500 font-medium">Sign up</a>
+            <span class="mr-2">계정이 없으십니까?</span>
+            <a href="{%url "users:signup"%}" class="text-teal-500 font-medium">가입하기</a>
         </div>
     </div>
 </div>

@@ -12,7 +12,7 @@ class CustomUserAdmin(admin.ModelAdmin):
         # "username",
     )
 
-    fieldsets = UserAdmin.fieldsets + (("Profile", {"fields": ("부서",)},),)
+    fieldsets = UserAdmin.fieldsets + (("Profile", {"fields": ("부서", "nowPart")},),)
 
 
 @admin.register(models.Company)

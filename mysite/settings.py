@@ -53,7 +53,7 @@ PROJECT_APPS = [
     "stockrack.apps.StockrackConfig",
 ]
 
-THIRD_PARTY_APPS = ["django_seed"]
+THIRD_PARTY_APPS = []
 
 
 INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS

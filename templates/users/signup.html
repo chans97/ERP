@@ -70,14 +70,17 @@ Sign Up
         {% endif %}
         {% endif %}
         {%endfor%}
-
-
-
-        <button class="btn bg-blue-700 text-white font-semibold">Sign up</button>
+        <span class="text-sm font-semibold">
+            *회사 승인 코드를 입력해주세요.
+        </span>
+        <div class="input w-full ">
+            <input type="password" name="pw" placeholder="회사승인코드" required="" id="id_pw"></div>
+        <button class="btn bg-blue-700 text-white font-semibold">가입하기</button>
     </form>
+
     <div class="mt-5">
-        <span class="mr-2">Have an account?</span>
-        <a href="{% url 'users:login' %}" class="text-teal-500 font-medium">Log in</a>
+        <span class="mr-2">계정이 있습니까?</span>
+        <a href="{% url 'users:login' %}" class="text-teal-500 font-medium">로그인</a>
     </div>
 
 </div>

@@ -51,3 +51,8 @@ class Part(TimeStampedModel):
 
     def __str__(self):
         return f"{self.해당회사} - {self.부서명}"
+
+class Passward(TimeStampedModel):
+    """passward for sign up"""
+
+    pw = models.CharField(max_length=12, null=True, blank=True)

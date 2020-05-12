@@ -23,3 +23,8 @@ class CustomCooporation(admin.ModelAdmin):
 @admin.register(models.Part)
 class CustomPart(admin.ModelAdmin):
     pass
+
+
+@admin.register(models.Passward)
+class Passward(admin.ModelAdmin):
+    pass

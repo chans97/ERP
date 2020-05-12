@@ -40,6 +40,12 @@ def SignUpView(request):
 
     if form.is_valid():
 
+        pw = request.POST.get("pw")
+        confirm = models.Passward.objects.all()[0]
+        if pw != confirm.pw:
+            messages.error(request, "회사승인코드를 확인해주세요.")
+            return render(request, "users/signup.html", {"form": form,},)
+
         form.save()
         form.save_m2m()
         email = form.cleaned_data.get("email")

@@ -51,7 +51,6 @@ PROJECT_APPS = [
     "afterservices.apps.AfterservicesConfig",
     "stocksingle.apps.StocksingleConfig",
     "stockrack.apps.StockrackConfig",
-    "parts.apps.PartsConfig",
 ]
 
 THIRD_PARTY_APPS = ["django_seed"]

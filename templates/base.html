@@ -9,9 +9,14 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
     <link rel="stylesheet" href="{% static 'css/styles.css'%}">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <style>
+
+    </style>
+
     <title>{%block page_title%}기본 {%endblock page_title %} | 삼형전자MES
     </title>
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="./jquery-ui-1.12.1/datepicker-ko.js"></script>
@@ -53,7 +58,7 @@
                 buttonImageOnly: true,
             }); $.datepicker.setDefaults($.datepicker.regional['ko']);         //default셋팅
             $("#txt_prodStart").datepicker();
-            $('img.ui-datepicker-trigger').css({ 'margin-right': '5px', 'height': '18px' });  //아이콘(icon) 위치
+            $('img.ui-datepicker-trigger').css({ 'margin-right': '5px', 'height': '18px', "cursor": "pointer" });  //아이콘(icon) 위치
             $('img.ui-datepicker-trigger').attr('align', 'absmiddle');
             $('#date2').datepicker('setDate', 'today');
         });
@@ -64,7 +69,7 @@
                 buttonImageOnly: true,
             }); $.datepicker.setDefaults($.datepicker.regional['ko']);         //default셋팅
             $("#txt_prodStart").datepicker();
-            $('img.ui-datepicker-trigger').css({ 'margin-right': '5px', 'height': '18px' });  //아이콘(icon) 위치
+            $('img.ui-datepicker-trigger').css({ 'margin-right': '5px', 'height': '18px', "cursor": "pointer" });  //아이콘(icon) 위치
             $('img.ui-datepicker-trigger').attr('align', 'absmiddle');
         });
         $(function () {
@@ -74,16 +79,10 @@
                 buttonImageOnly: true,
             }); $.datepicker.setDefaults($.datepicker.regional['ko']);         //default셋팅
             $("#txt_prodStart").datepicker();
-            $('img.ui-datepicker-trigger').css({ 'margin-right': '5px', 'height': '18px' });  //아이콘(icon) 위치
+            $('img.ui-datepicker-trigger').css({ 'margin-right': '5px', 'height': '18px', "cursor": "pointer" });  //아이콘(icon) 위치
             $('img.ui-datepicker-trigger').attr('align', 'absmiddle');
         });
-
-
     </script>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Nanum+Gothic:wght@700&family=Nanum+Myeongjo:wght@700&display=swap"
-        rel="stylesheet">
-
 
 
 
@@ -99,11 +98,7 @@
             <a href="{% url "core:home"%}"><img class=" h-12" src="{% static 'img/logo.png'%}" /></a>
 
         </div>
-        <style>
-            .ui-datepicker-trigger {
-                cursor: pointer;
-            }
-        </style>
+
         {% include "partials/navigation.html"%}
     </header>
     {% if user.pk %}

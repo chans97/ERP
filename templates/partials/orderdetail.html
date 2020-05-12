@@ -36,6 +36,7 @@
                         <th class="border bg-gray-200 px-4 py-2 w-32">제품코드</th>
                         <th class="border bg-gray-200 px-4 py-2 w-24">제품명</th>
                         <th class="border bg-gray-200 px-4 py-2 w-24">납품수량</th>
+                        <th class="border bg-gray-200 px-4 py-2 w-24">담당자</th>
                         <th class="border bg-gray-200 px-4 py-2 w-24">수주일자</th>
                         <th class="border bg-gray-200 px-4 py-2 w-24">납품요청일</th>
                         {%if order.제품구분 == "랙"%}
@@ -60,6 +61,7 @@
                         {%endif%}
 
                         <td class="border px-4 py-2 overflow-x-auto">{{order.납품수량}}</td>
+                        <td class="border px-4 py-2 overflow-x-auto">{{order.작성자}}</td>
                         <td class="border px-4 py-2 overflow-x-auto">
                             {{order.수주일자.year}}-{{order.수주일자.month}}-{{order.수주일자.day}}</td>
                         <td class="border px-4 py-2 overflow-x-auto">

@@ -39,6 +39,7 @@
                                 <th class="border bg-gray-200 px-4 py-2 w-24">납품수량</th>
                                 <th class="border bg-gray-200 px-4 py-2 w-24">수주일자</th>
                                 <th class="border bg-gray-200 px-4 py-2 w-24">납품요청일</th>
+                                <th class="w-8"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -149,6 +150,7 @@
                                 <th class="border bg-gray-200 px-4 py-2 w-24">납품수량</th>
                                 <th class="border bg-gray-200 px-4 py-2 w-24">수주일자</th>
                                 <th class="border bg-gray-200 px-4 py-2 w-24">납품요청일</th>
+                                <th class="w-8"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -195,7 +197,9 @@
 
                                 <td class="px-2 py-2">
                                     {% if list.납품요청일 <= now %}
-                                    <i class="fas fa-exclamation-circle  text-red-700 blink" id="hello"></i>{% endif %}
+                                    <i class="fas fa-exclamation-circle  text-red-700 blink" id="hello"></i>
+
+                                    {% endif %}
                                 </td>
 
                             </tr>

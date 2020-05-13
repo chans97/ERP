@@ -31,7 +31,6 @@ from random import randint
 
 
 class PartnerView(user_mixins.LoggedInOnlyView, ListView):
-    """HomeView Def"""
 
     model = models.Partner
     paginate_by = 6

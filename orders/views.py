@@ -253,6 +253,8 @@ def orderrack(request, pk):
 
 
 def ordershome(request):
+    if request.user.__str__() == "AnonymousUser":
+        return redirect(reverse("users:login"))
 
     user = request.user
     search_m = request.GET.get("search_m")

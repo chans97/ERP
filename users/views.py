@@ -34,8 +34,19 @@ class LoginView(FormView):
     def get_success_url(self):
         return reverse("core:home")
 
+    def get(self, request, *args, **kwargs):
+        """Handle GET requests: instantiate a blank version of the form."""
+        if self.request.user.__str__() != "AnonymousUser":
+            return redirect(reverse("core:home"))
+
+        return self.render_to_response(self.get_context_data())
+
 
 def SignUpView(request):
+
+    if request.user.__str__() != "AnonymousUser":
+        return redirect(reverse("core:home"))
+
     form = forms.SignUpForm(request.POST or None)
 
     if form.is_valid():

@@ -135,6 +135,9 @@ class onelist(View, user_mixins.LoggedInOnlyView):
             self.search = "search"
 
     def get(self, request):
+        if self.request.user.__str__() == "AnonymousUser":
+            return redirect(reverse("users:login"))
+
         self.get_page()
         return render(
             request,
@@ -269,6 +272,8 @@ class twolist(View, user_mixins.LoggedInOnlyView):
             self.search2 = "search"
 
     def get(self, request):
+        if self.request.user.__str__() == "AnonymousUser":
+            return redirect(reverse("users:login"))
         self.get_page()
         self.get_page2()
         return render(
@@ -421,6 +426,7 @@ class threelist(View, user_mixins.LoggedInOnlyView):
         return queryset
 
     def get_page(self):
+
         self.queryset = self.get_first_queryset(self.request)
         self.pagediv = 7
         self.totalpage = int(math.ceil(len(self.queryset) / self.pagediv))
@@ -475,6 +481,8 @@ class threelist(View, user_mixins.LoggedInOnlyView):
             self.search3 = "search"
 
     def get(self, request):
+        if self.request.user.__str__() == "AnonymousUser":
+            return redirect(reverse("users:login"))
         self.get_page()
         self.get_page2()
         self.get_page3()

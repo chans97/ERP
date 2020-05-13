@@ -51,6 +51,9 @@ class OrderDetailForWork(OrderDetail):
 
 def producemanageshome(request):
 
+    if request.user.__str__() == "AnonymousUser":
+        return redirect(reverse("users:login"))
+
     user = request.user
     search = request.GET.get("search")
     search_m = request.GET.get("search_m")
@@ -597,6 +600,8 @@ def workorderdelete(request, pk):
 
 
 def producehome(request):
+    if request.user.__str__() == "AnonymousUser":
+        return redirect(reverse("users:login"))
 
     user = request.user
     search = request.GET.get("search")

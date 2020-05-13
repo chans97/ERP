@@ -117,7 +117,30 @@
                             </tbody>
 
                         </table>
+                        {%if nonpage%}
+                        {%else%}
+                        <div class="flex ml-2">
+                            {% if page != '1' %}
+                            {%if s_bool%}
+                            <a href="?search={{search}}&page={{previouspage}}" class="text-teal-700"><i
+                                    class="fas fa-arrow-left fa-lg mt-2"></i></a>
+                            {%else%}
+                            <a href="?page={{previouspage}}" class="text-teal-700"><i
+                                    class="fas fa-arrow-left fa-lg mt-2"></i></a>
+                            {% endif %}{% endif %}
+                            <span class="mx-3 font-medium  text-base">{{page}} of
+                                {{totalpage}}</span>
 
+                            {% if notsamebool %}
+                            {%if s_bool%}
+                            <a href="?search={{search}}&page={{nextpage}}" class="text-teal-700"><i
+                                    class="fas fa-arrow-right fa-lg mt-2"></i></a>
+                            {%else%}
+                            <a href="?page={{nextpage}}" class="text-teal-700"><i
+                                    class="fas fa-arrow-right fa-lg mt-2"></i></a>
+                            {% endif %}{% endif %}
+                        </div>
+                        {%endif%}
                     </div>
 
                 </div>

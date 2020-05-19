@@ -17,6 +17,7 @@
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
     <link rel="stylesheet" href="{% static 'css/styles.css'%}">
+    <link rel="stylesheet" href="{% static 'css/mystyles.css'%}">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <style>
 
@@ -58,6 +59,28 @@
             datepicker.setDefaults(datepicker.regional.ko);
             return datepicker.regional.ko;
         }));
+        $(function () {
+            $("#date0").datepicker({
+                showOn: "button",
+                buttonImage: "{% static 'img/btn_date.png'%}",
+                buttonImageOnly: true,
+            }); $.datepicker.setDefaults($.datepicker.regional['ko']);         //default셋팅
+            $("#txt_prodStart").datepicker();
+            $('img.ui-datepicker-trigger').css({ 'margin-top': '5px', 'height': '20px', "cursor": "pointer" });  //아이콘(icon) 위치
+            $('img.ui-datepicker-trigger').attr('align', 'absmiddle');
+            $('#date0').datepicker('setDate', 'today');
+        });
+        $(function () {
+            $("#date1").datepicker({
+                showOn: "button",
+                buttonImage: "{% static 'img/btn_date.png'%}",
+                buttonImageOnly: true,
+            }); $.datepicker.setDefaults($.datepicker.regional['ko']);         //default셋팅
+            $("#txt_prodStart").datepicker();
+            $('img.ui-datepicker-trigger').css({ 'margin-top': '5px', 'height': '20px', "cursor": "pointer" });  //아이콘(icon) 위치
+            $('img.ui-datepicker-trigger').attr('align', 'absmiddle');
+            $('#date1').datepicker('setDate', 'today');
+        });
 
         $(function () {
             $("#date2").datepicker({
@@ -122,7 +145,7 @@
     </div>
     {%endif%}
 
-    {% if user.nowPart.pk == 61 %}
+    {% if user.nowPart.pk == 1 or user.nowPart.pk == 61%}
     <div class="flex">
         <div class="w-32 mx-auto h-10/12 fixed items-center font-semibold justify-center pt-5 bg-gray-700 mt-6">
             <div class="font-base text-sm text-left text-orange-100 py-px">
@@ -181,335 +204,362 @@
             </div>
 
         </div>
-        {%elif user.nowPart.pk == 62%}
-        <div class="flex">
-            <div class="w-32 mx-auto h-10/12 fixed items-center font-semibold justify-center pt-5 bg-gray-700 mt-6">
-                <div class="font-base text-sm text-left text-orange-100 py-px">
-                    <i class="fas fa-bars mr-2 ml-3"></i>생산관리
-                    <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
-                    <div class="text-left ml-4 mb-4">
-                        <div>
-                            <a href="{% url "producemanages:produceplanlist"%}">
-                                <span class=" font-light text-xs text-orange-100 hover:font-bold">
-                                    <i class="fas fa-angle-right mr-1"></i></i>생산계획등록</span></a></div>
-                        <div>
-                            <a href="{% url "producemanages:rackmakelist"%}">
-                                <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
-                                    <i class="fas fa-angle-right mr-1"></i></i>랙조립관리</span></a></div>
-                        <div>
-                            <a href="{% url "producemanages:monthlyplanlist"%}">
-                                <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
-                                    <i class="fas fa-angle-right mr-1"></i></i>월별생산계획관리</span></a></div>
+    </div>
+    {%elif user.nowPart.pk == 2 or user.nowPart.pk == 62%}
+    <div class="flex">
+        <div class="w-32 mx-auto h-10/12 fixed items-center font-semibold justify-center pt-5 bg-gray-700 mt-6">
+            <div class="font-base text-sm text-left text-orange-100 py-px">
+                <i class="fas fa-bars mr-2 ml-3"></i>생산관리
+                <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
+                <div class="text-left ml-4 mb-4">
+                    <div>
+                        <a href="{% url "producemanages:produceplanlist"%}">
+                            <span class=" font-light text-xs text-orange-100 hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i></i>생산계획등록</span></a></div>
+                    <div>
+                        <a href="{% url "producemanages:rackmakelist"%}">
+                            <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i></i>랙조립관리</span></a></div>
+                    <div>
+                        <a href="{% url "producemanages:monthlyplanlist"%}">
+                            <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i></i>월별생산계획관리</span></a></div>
 
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+    {%elif user.nowPart.pk == 3 or user.nowPart.pk == 63%}
+    <div class="flex">
+        <div class="w-32 mx-auto h-10/12 fixed items-center font-semibold justify-center pt-5 bg-gray-700 mt-6">
+            <div class="font-base text-sm text-left text-orange-100 py-px">
+                <i class="fas fa-bars mr-2 ml-3"></i><a href="{% url "producemanages:producehome"%}">공정진행</a>
+                <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
+                <div class="text-left ml-4 mb-4">
+                    <div>
+                        <a href="{% url "producemanages:worklist"%}">
+                            <span class=" font-light text-xs text-orange-100 hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>공정진행등록</span></a></div>
+                    <div>
+                        <a href="{% url "producemanages:workdonelist"%}">
+                            <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>최종검사의뢰</span></a></div>
+                    <div>
+                        <a href="{% url "producemanages:checkdonelist"%}">
+                            <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>최종검사확인</span></a></div>
+
+                </div>
+            </div>
+            <div class="font-base text-sm text-left text-orange-100 py-px">
+                <i class="fas fa-bars mr-2 ml-3"></i><a href="{% url "producemanages:producehome"%}">수리</a>
+                <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
+                <div class="text-left ml-4 mb-4">
+                    <div>
+                        <a href="{% url "producemanages:finalchecklist"%}">
+                            <span class=" font-light text-xs text-orange-100 hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>수리등록:최종검사</span></a></div>
+
+                    <div>
+                        <a href="{% url "producemanages:repairlist"%}">
+                            <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>수리완료목록</span></a></div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+    {%elif user.nowPart.pk == 4 or user.nowPart.pk == 64%}
+
+    <div class="flex">
+        <div class="w-32 mx-auto h-10/12 fixed items-center font-semibold justify-center pt-5 bg-gray-700 mt-6">
+            <div class="font-base text-sm text-left text-orange-100 py-px">
+                <i class="fas fa-bars mr-2 ml-3"></i>최종검사
+                <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
+                <div class="text-left ml-4 mb-4">
+                    <div>
+                        <a href="{% url "qualitycontrols:finalchecklist"%}">
+                            <span class=" font-light text-xs text-orange-100 hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>최종검사결과등록 </span></a></div>
+                    <div>
+                        <a href="{% url "qualitycontrols:finalcheckdonelist"%}">
+                            <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>최종검사완료목록</span></a></div>
+
+                </div>
+            </div>
+            <div class="font-base text-sm text-left text-orange-100 py-px">
+                <i class="fas fa-bars mr-2 ml-3"></i>수입검사
+                <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
+                <div class="text-left ml-4 mb-4">
+                    <div>
+                        <a href="{% url "qualitycontrols:materialchecklist"%}">
+                            <span class=" font-light text-xs text-orange-100 hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>수입검사등록</span></a></div>
+                    <div>
+                        <a href="{% url "qualitycontrols:lowmateriallist"%}">
+                            <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>자재부적합등록</span></a></div>
+                    <div>
+                        <a href="{% url "qualitycontrols:materialcheckalllist"%}">
+                            <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>수입검사완료목록</span></a></div>
+
+                </div>
+            </div>
+            <div class="font-base text-sm text-left text-orange-100 py-px">
+                <i class="fas fa-bars mr-2 ml-3"></i>계측기관리
+                <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
+                <div class="text-left ml-4 mb-4">
+                    <div>
+                        <a href="{% url "qualitycontrols:checkmeasurelist"%}">
+                            <span class=" font-light text-xs text-orange-100 hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>계측기점검</span></a></div>
+                    <div>
+                        <a href="{% url "qualitycontrols:repairmeasurelist"%}">
+                            <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>계측기수리</span></a></div>
+                    <div>
+                        <a href="{% url "qualitycontrols:measurelist"%}">
+                            <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>계측기정보</span></a></div>
+
+                </div>
+            </div>
+            <div class="font-base text-sm text-left text-orange-100 py-px">
+                <i class="fas fa-bars mr-2 ml-3"></i>자재출고관리
+                <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
+                <div class="text-left ml-4 mb-4">
+                    <div>
+                        <a href="{% url "qualitycontrols:materialoutrequest"%}">
+                            <span class=" font-light text-xs text-orange-100 hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>자재출고요청</span></a></div>
+                    <div>
+                        <a href="{% url "qualitycontrols:managematerialoutrequest"%}">
+                            <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>자재출고확인</span></a></div>
+
+                </div>
+            </div>
+
+
+
+
+        </div>
+
+    </div>
+
+
+    {%elif user.nowPart.pk == 5 or user.nowPart.pk == 65 or user.nowPart.pk == 6 or user.nowPart.pk == 66%}
+
+    <div class="flex">
+        <div class="w-32 mx-auto h-10/12 fixed items-center font-semibold justify-center pt-5 bg-gray-700 mt-6">
+            <div class="font-base text-sm text-left text-orange-100 py-px">
+                <i class="fas fa-bars mr-2 ml-3"></i><a href="{% url "afterservices:afterserviceshome"%}">AS접수부</a>
+                <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
+                <div class="text-left ml-4 mb-4">
+                    <div>
+                        <a href="{% url "afterservices:ASregister"%}">
+                            <span class=" font-light text-xs text-orange-100 hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>AS접수</span></a></div>
+                    <div>
+                        <a href="{% url "afterservices:ASvisitrequestslist"%}">
+                            <span class=" font-light text-xs text-orange-100 hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>AS담당자인계</span></a></div>
+                    <div>
+                        <a href="{% url "afterservices:ASregisterdoneinsidelist"%}">
+                            <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>AS완료등록</span></a></div>
+
+                </div>
+            </div>
+            <div class="font-base text-sm text-left text-orange-100 py-px">
+                <i class="fas fa-bars mr-2 ml-3"></i><a href="{% url "afterservices:afterserviceshome"%}">AS담당부</a>
+                <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
+                <div class="text-left ml-4 mb-4">
+                    <div>
+                        <a href="{% url "afterservices:ASoverneedlist"%}">
+                            <span class=" font-light text-xs text-orange-100 hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>AS처리</span></a></div>
+                    <div>
+                        <a href="{% url "afterservices:ASvisitneedlist"%}">
+                            <span class=" font-light text-xs text-orange-100 hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>AS현장방문</span></a></div>
+                    <div>
+                        <a href="{% url "afterservices:ASrepairorderalllist"%}">
+                            <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>단품수리의뢰</span></a></div>
+                    <div>
+                        <a href="{% url "afterservices:ASsingleoutalllist"%}">
+                            <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>단품출하요청</span></a></div>
+                    <div>
+                        <a href="{% url "afterservices:ASrevisitneedlist"%}">
+                            <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>AS현장재방문</span></a></div>
+                    <div>
+                        <a href="{% url "afterservices:AScashcheckneedlist"%}">
+                            <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>AS견적진행</span></a></div>
+                    <div>
+                        <a href="{% url "afterservices:ASsuccesslist"%}">
+                            <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>AS완료등록</span></a></div>
+
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+    {%elif user.nowPart.pk == 7 or user.nowPart.pk == 67%}
+    <div class="flex">
+        <div class="w-32 mx-auto h-10/12 fixed items-center font-semibold justify-center pt-5 bg-gray-700 mt-6">
+
+            <div class="font-base text-sm text-left text-orange-100 py-px">
+                <i class="fas fa-bars mr-2 ml-3"></i>단품관리
+                <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
+                <div class="text-left ml-4 mb-4">
+                    <div>
+                        <a href="{% url "stockmanages:singleinlist"%}">
+                            <span class=" font-light text-xs text-orange-100 hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>입고관리</span></a></div>
+                    <div>
+                        <a href="{% url "stockmanages:singleoutlist"%}">
+                            <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>출하관리</span></a></div>
+                    <div>
+                        <a href="{% url "stockmanages:stockofsinglelist"%}">
+                            <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>재고확인</span></a></div>
+                    <div>
+                    </div>
+                </div>
+            </div>
+            <div class="font-base text-sm text-left text-orange-100 py-px">
+                <i class="fas fa-bars mr-2 ml-3"></i>랙관리
+                <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
+                <div class="text-left ml-4 mb-4">
+                    <div>
+                        <a href="{% url "stockmanages:rackoutlist"%}">
+                            <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>출하관리</span></a></div>
+                    <div>
+                        <a href="{% url "stockmanages:stockofracklist"%}">
+                            <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>재고확인</span></a></div>
+                    <div>
                     </div>
                 </div>
 
 
             </div>
-
-
-            {%elif user.nowPart.pk == 63%}
-            <div class="flex">
-                <div class="w-32 mx-auto h-10/12 fixed items-center font-semibold justify-center pt-5 bg-gray-700 mt-6">
-                    <div class="font-base text-sm text-left text-orange-100 py-px">
-                        <i class="fas fa-bars mr-2 ml-3"></i><a href="{% url "producemanages:producehome"%}">공정진행</a>
-                        <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
-                        <div class="text-left ml-4 mb-4">
-                            <div>
-                                <a href="{% url "producemanages:worklist"%}">
-                                    <span class=" font-light text-xs text-orange-100 hover:font-bold">
-                                        <i class="fas fa-angle-right mr-1"></i>공정진행등록</span></a></div>
-                            <div>
-                                <a href="{% url "producemanages:workdonelist"%}">
-                                    <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
-                                        <i class="fas fa-angle-right mr-1"></i>최종검사의뢰</span></a></div>
-                            <div>
-                                <a href="{% url "producemanages:checkdonelist"%}">
-                                    <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
-                                        <i class="fas fa-angle-right mr-1"></i>최종검사확인</span></a></div>
-
-                        </div>
-                    </div>
-                    <div class="font-base text-sm text-left text-orange-100 py-px">
-                        <i class="fas fa-bars mr-2 ml-3"></i><a href="{% url "producemanages:producehome"%}">수리</a>
-                        <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
-                        <div class="text-left ml-4 mb-4">
-                            <div>
-                                <a href="{% url "producemanages:finalchecklist"%}">
-                                    <span class=" font-light text-xs text-orange-100 hover:font-bold">
-                                        <i class="fas fa-angle-right mr-1"></i>수리등록:최종검사</span></a></div>
-
-                            <div>
-                                <a href="{% url "producemanages:repairlist"%}">
-                                    <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
-                                        <i class="fas fa-angle-right mr-1"></i>수리완료목록</span></a></div>
-
-                        </div>
-                    </div>
-
+            <div class="font-base text-sm text-left text-orange-100 py-px">
+                <i class="fas fa-bars mr-2 ml-3"></i>자재관리
+                <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
+                <div class="text-left ml-4 mb-4">
+                    <div>
+                        <a href="{% url "stockmanages:materialchecklist"%}">
+                            <span class=" font-light text-xs text-orange-100 hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>수입검사요청</span></a></div>
+                    <div>
+                        <a href="{% url "stockmanages:materialinlist"%}">
+                            <span class=" font-light text-xs text-orange-100 hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>입고관리</span></a></div>
+                    <div>
+                        <a href="{% url "stockmanages:materialoutlist"%}">
+                            <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>출고관리</span></a></div>
+                    <div>
+                        <a href="{% url "stockmanages:stockofmateriallist"%}">
+                            <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>재고확인</span></a></div>
 
                 </div>
-                {%elif user.nowPart.pk == 64%}
-
-                <div class="flex">
-                    <div
-                        class="w-32 mx-auto h-10/12 fixed items-center font-semibold justify-center pt-5 bg-gray-700 mt-6">
-                        <div class="font-base text-sm text-left text-orange-100 py-px">
-                            <i class="fas fa-bars mr-2 ml-3"></i>최종검사
-                            <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
-                            <div class="text-left ml-4 mb-4">
-                                <div>
-                                    <a href="{% url "qualitycontrols:finalchecklist"%}">
-                                        <span class=" font-light text-xs text-orange-100 hover:font-bold">
-                                            <i class="fas fa-angle-right mr-1"></i>최종검사결과등록 </span></a></div>
-                                <div>
-                                    <a href="{% url "qualitycontrols:finalcheckdonelist"%}">
-                                        <span
-                                            class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
-                                            <i class="fas fa-angle-right mr-1"></i>최종검사완료목록</span></a></div>
-
-                            </div>
-                        </div>
-                        <div class="font-base text-sm text-left text-orange-100 py-px">
-                            <i class="fas fa-bars mr-2 ml-3"></i>수입검사
-                            <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
-                            <div class="text-left ml-4 mb-4">
-                                <div>
-                                    <a href="{% url "qualitycontrols:materialchecklist"%}">
-                                        <span class=" font-light text-xs text-orange-100 hover:font-bold">
-                                            <i class="fas fa-angle-right mr-1"></i>수입검사등록</span></a></div>
-                                <div>
-                                    <a href="{% url "qualitycontrols:lowmateriallist"%}">
-                                        <span
-                                            class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
-                                            <i class="fas fa-angle-right mr-1"></i>자재부적합등록</span></a></div>
-                                <div>
-                                    <a href="{% url "qualitycontrols:materialcheckalllist"%}">
-                                        <span
-                                            class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
-                                            <i class="fas fa-angle-right mr-1"></i>수입검사완료목록</span></a></div>
-
-                            </div>
-                        </div>
-                        <div class="font-base text-sm text-left text-orange-100 py-px">
-                            <i class="fas fa-bars mr-2 ml-3"></i>계측기관리
-                            <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
-                            <div class="text-left ml-4 mb-4">
-                                <div>
-                                    <a href="{% url "qualitycontrols:checkmeasurelist"%}">
-                                        <span class=" font-light text-xs text-orange-100 hover:font-bold">
-                                            <i class="fas fa-angle-right mr-1"></i>계측기점검</span></a></div>
-                                <div>
-                                    <a href="{% url "qualitycontrols:repairmeasurelist"%}">
-                                        <span
-                                            class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
-                                            <i class="fas fa-angle-right mr-1"></i>계측기수리</span></a></div>
-                                <div>
-                                    <a href="{% url "qualitycontrols:measurelist"%}">
-                                        <span
-                                            class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
-                                            <i class="fas fa-angle-right mr-1"></i>계측기정보</span></a></div>
-
-                            </div>
-                        </div>
-                        <div class="font-base text-sm text-left text-orange-100 py-px">
-                            <i class="fas fa-bars mr-2 ml-3"></i>자재출고관리
-                            <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
-                            <div class="text-left ml-4 mb-4">
-                                <div>
-                                    <a href="{% url "qualitycontrols:materialoutrequest"%}">
-                                        <span class=" font-light text-xs text-orange-100 hover:font-bold">
-                                            <i class="fas fa-angle-right mr-1"></i>자재출고요청</span></a></div>
-                                <div>
-                                    <a href="{% url "qualitycontrols:managematerialoutrequest"%}">
-                                        <span
-                                            class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
-                                            <i class="fas fa-angle-right mr-1"></i>자재출고확인</span></a></div>
-
-                            </div>
-                        </div>
-
-
-
-
+            </div>
+            <div class="font-base text-sm text-left text-orange-100 py-px">
+                <i class="fas fa-bars mr-2 ml-3"></i>기준정보
+                <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
+                <div class="text-left ml-4 mb-4">
+                    <div>
+                        <a href="{% url "stockmanages:materialStandarInformation"%}">
+                            <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>자재기준정보</span></a></div>
+                    <div>
+                        <a href="{% url "stockmanages:singleStandarInformation"%}">
+                            <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>단품기준정보</span></a></div>
+                    <div>
                     </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    {%elif user.nowPart.pk == 8 or user.nowPart.pk == 68%}
+    <div class="flex">
+        <div class="w-32 mx-auto h-10/12 fixed items-center font-semibold justify-center pt-5 bg-gray-700 mt-6">
+
+            <div class="font-base text-sm text-left text-orange-100 py-px">
+                <i class="fas fa-bars mr-2 ml-3"></i>수주건수
+                <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
+                <div class="text-left ml-4 mb-4">
+                    <div>
+                        <a href="{% url "stockmanages:singleinlist"%}">
+                            <span class=" font-light text-xs text-orange-100 hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>전체</span></a></div>
+                    <div>
+                        <a href="{% url "stockmanages:singleoutlist"%}">
+                            <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>영업담당자별</span></a></div>
+
+                </div>
+            </div>
+            <div class="font-base text-sm text-left text-orange-100 py-px">
+                <i class="fas fa-bars mr-2 ml-3"></i>출하수량
+                <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
+                <div class="text-left ml-4 mb-4">
+                    <div>
+                        <a href="{% url "stockmanages:singleinlist"%}">
+                            <span class=" font-light text-xs text-orange-100 hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>전체</span></a></div>
+                    <div>
+                        <a href="{% url "stockmanages:singleoutlist"%}">
+                            <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>현장별</span></a></div>
+                    <div>
+                        <a href="{% url "stockmanages:singleoutlist"%}">
+                            <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>영업담당자별</span></a></div>
+
+                </div>
+            </div>
+            <div class="font-base text-xs text-left text-orange-100 py-px">
+                <i class="fas fa-bars mr-2 ml-3"></i>제품별생산수량
+            </div>
+            <div class="font-base text-xs text-left text-orange-100 py-px">
+                <i class="fas fa-bars mr-2 ml-3"></i>최종검사수량
+            </div>
+            <div class="font-base text-xs text-left text-orange-100 py-px">
+                <i class="fas fa-bars mr-2 ml-3"></i>수입검사수량
+            </div>
+
+            <div class="font-base text-xs text-left text-orange-100 py-px mb-5">
+                <i class="fas fa-bars mr-2 ml-3"></i>AS처리건수
+            </div>
+        </div>
+    </div>
+    {% endif %}
 
 
 
-
-                    {%elif user.nowPart.pk == 65 or user.nowPart.pk == 66%}
-
-                    <div class="flex">
-                        <div
-                            class="w-32 mx-auto h-10/12 fixed items-center font-semibold justify-center pt-5 bg-gray-700 mt-6">
-                            <div class="font-base text-sm text-left text-orange-100 py-px">
-                                <i class="fas fa-bars mr-2 ml-3"></i><a
-                                    href="{% url "afterservices:afterserviceshome"%}">AS접수부</a>
-                                <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
-                                <div class="text-left ml-4 mb-4">
-                                    <div>
-                                        <a href="{% url "afterservices:ASregister"%}">
-                                            <span class=" font-light text-xs text-orange-100 hover:font-bold">
-                                                <i class="fas fa-angle-right mr-1"></i>AS접수</span></a></div>
-                                    <div>
-                                        <a href="{% url "afterservices:ASvisitrequestslist"%}">
-                                            <span class=" font-light text-xs text-orange-100 hover:font-bold">
-                                                <i class="fas fa-angle-right mr-1"></i>AS담당자인계</span></a></div>
-                                    <div>
-                                        <a href="{% url "afterservices:ASregisterdoneinsidelist"%}">
-                                            <span
-                                                class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
-                                                <i class="fas fa-angle-right mr-1"></i>AS완료등록</span></a></div>
-
-                                </div>
-                            </div>
-                            <div class="font-base text-sm text-left text-orange-100 py-px">
-                                <i class="fas fa-bars mr-2 ml-3"></i><a
-                                    href="{% url "afterservices:afterserviceshome"%}">AS담당부</a>
-                                <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
-                                <div class="text-left ml-4 mb-4">
-                                    <div>
-                                        <a href="{% url "afterservices:ASoverneedlist"%}">
-                                            <span class=" font-light text-xs text-orange-100 hover:font-bold">
-                                                <i class="fas fa-angle-right mr-1"></i>AS처리</span></a></div>
-                                    <div>
-                                        <a href="{% url "afterservices:ASvisitneedlist"%}">
-                                            <span class=" font-light text-xs text-orange-100 hover:font-bold">
-                                                <i class="fas fa-angle-right mr-1"></i>AS현장방문</span></a></div>
-                                    <div>
-                                        <a href="{% url "afterservices:ASrepairorderalllist"%}">
-                                            <span
-                                                class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
-                                                <i class="fas fa-angle-right mr-1"></i>단품수리의뢰</span></a></div>
-                                    <div>
-                                        <a href="{% url "afterservices:ASsingleoutalllist"%}">
-                                            <span
-                                                class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
-                                                <i class="fas fa-angle-right mr-1"></i>단품출하요청</span></a></div>
-                                    <div>
-                                        <a href="{% url "afterservices:ASrevisitneedlist"%}">
-                                            <span
-                                                class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
-                                                <i class="fas fa-angle-right mr-1"></i>AS현장재방문</span></a></div>
-                                    <div>
-                                        <a href="{% url "afterservices:AScashcheckneedlist"%}">
-                                            <span
-                                                class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
-                                                <i class="fas fa-angle-right mr-1"></i>AS견적진행</span></a></div>
-                                    <div>
-                                        <a href="{% url "afterservices:ASsuccesslist"%}">
-                                            <span
-                                                class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
-                                                <i class="fas fa-angle-right mr-1"></i>AS완료등록</span></a></div>
-
-                                </div>
-                            </div>
-
-
-                        </div>
-
-                        {%elif user.nowPart.pk == 67%}
-                        <div class="flex">
-                            <div
-                                class="w-32 mx-auto h-10/12 fixed items-center font-semibold justify-center pt-5 bg-gray-700 mt-6">
-
-                                <div class="font-base text-sm text-left text-orange-100 py-px">
-                                    <i class="fas fa-bars mr-2 ml-3"></i>단품관리
-                                    <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
-                                    <div class="text-left ml-4 mb-4">
-                                        <div>
-                                            <a href="{% url "stockmanages:singleinlist"%}">
-                                                <span class=" font-light text-xs text-orange-100 hover:font-bold">
-                                                    <i class="fas fa-angle-right mr-1"></i>입고관리</span></a></div>
-                                        <div>
-                                            <a href="{% url "stockmanages:singleoutlist"%}">
-                                                <span
-                                                    class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
-                                                    <i class="fas fa-angle-right mr-1"></i>출하관리</span></a></div>
-                                        <div>
-                                            <a href="{% url "stockmanages:stockofsinglelist"%}">
-                                                <span
-                                                    class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
-                                                    <i class="fas fa-angle-right mr-1"></i>재고확인</span></a></div>
-                                        <div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="font-base text-sm text-left text-orange-100 py-px">
-                                    <i class="fas fa-bars mr-2 ml-3"></i>랙관리
-                                    <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
-                                    <div class="text-left ml-4 mb-4">
-                                        <div>
-                                            <a href="{% url "stockmanages:rackoutlist"%}">
-                                                <span
-                                                    class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
-                                                    <i class="fas fa-angle-right mr-1"></i>출하관리</span></a></div>
-                                        <div>
-                                            <a href="{% url "stockmanages:stockofracklist"%}">
-                                                <span
-                                                    class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
-                                                    <i class="fas fa-angle-right mr-1"></i>재고확인</span></a></div>
-                                        <div>
-                                        </div>
-                                    </div>
-
-
-                                </div>
-                                <div class="font-base text-sm text-left text-orange-100 py-px">
-                                    <i class="fas fa-bars mr-2 ml-3"></i>자재관리
-                                    <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
-                                    <div class="text-left ml-4 mb-4">
-                                        <div>
-                                            <a href="{% url "stockmanages:materialchecklist"%}">
-                                                <span class=" font-light text-xs text-orange-100 hover:font-bold">
-                                                    <i class="fas fa-angle-right mr-1"></i>수입검사요청</span></a></div>
-                                        <div>
-                                            <a href="{% url "stockmanages:materialinlist"%}">
-                                                <span class=" font-light text-xs text-orange-100 hover:font-bold">
-                                                    <i class="fas fa-angle-right mr-1"></i>입고관리</span></a></div>
-                                        <div>
-                                            <a href="{% url "stockmanages:materialoutlist"%}">
-                                                <span
-                                                    class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
-                                                    <i class="fas fa-angle-right mr-1"></i>출고관리</span></a></div>
-                                        <div>
-                                            <a href="{% url "stockmanages:stockofmateriallist"%}">
-                                                <span
-                                                    class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
-                                                    <i class="fas fa-angle-right mr-1"></i>재고확인</span></a></div>
-
-                                    </div>
-                                </div>
-                                <div class="font-base text-sm text-left text-orange-100 py-px">
-                                    <i class="fas fa-bars mr-2 ml-3"></i>기준정보
-                                    <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
-                                    <div class="text-left ml-4 mb-4">
-                                        <div>
-                                            <a href="{% url "stockmanages:materialStandarInformation"%}">
-                                                <span
-                                                    class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
-                                                    <i class="fas fa-angle-right mr-1"></i>자재기준정보</span></a></div>
-                                        <div>
-                                            <a href="{% url "stockmanages:singleStandarInformation"%}">
-                                                <span
-                                                    class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
-                                                    <i class="fas fa-angle-right mr-1"></i>단품기준정보</span></a></div>
-                                        <div>
-                                        </div>
-                                    </div>
-
-
-                                </div>
-                            </div>
-
-                            {% endif %}
-
-
-
-                            {% block content %}
-                            {% endblock %}
-
-
+    {% block content %}
+    {% endblock %}
 
 
 </body>

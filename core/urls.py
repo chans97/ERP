@@ -10,4 +10,5 @@ urlpatterns = [
     path("partnermigrate", views.partnermigrate, name="partnermigrate"),
     path("materialmigrate", views.materialmigrate, name="materialmigrate"),
     path("measuremigrate", views.measuremigrate, name="measuremigrate"),
+    path("managehome", views.managehome, name="managehome"),
 ]

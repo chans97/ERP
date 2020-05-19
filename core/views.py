@@ -39,18 +39,22 @@ def firstindecide(request):
     user = request.user
     if user.is_authenticated:
 
-        if user.nowPart.pk == 61:
+        if user.nowPart.pk == 1 or user.nowPart.pk == 61:
             return redirect(reverse("orders:ordershome"))
-        elif user.nowPart.pk == 62:
+        elif user.nowPart.pk == 2 or user.nowPart.pk == 62:
             return redirect(reverse("producemanages:producemanageshome"))
-        elif user.nowPart.pk == 63:
+        elif user.nowPart.pk == 3 or user.nowPart.pk == 63:
             return redirect(reverse("producemanages:producehome"))
-        elif user.nowPart.pk == 64:
+        elif user.nowPart.pk == 4 or user.nowPart.pk == 64:
             return redirect(reverse("qualitycontrols:qualitycontrolshome"))
-        elif (user.nowPart.pk == 65) or (user.nowPart.pk == 66):
+        elif (user.nowPart.pk == 5 or user.nowPart.pk == 65) or (
+            user.nowPart.pk == 6 or user.nowPart.pk == 66
+        ):
             return redirect(reverse("afterservices:afterserviceshome"))
-        elif user.nowPart.pk == 67:
+        elif user.nowPart.pk == 7 or user.nowPart.pk == 67:
             return redirect(reverse("stockmanages:stockmanageshome"))
+        elif user.nowPart.pk == 8 or user.nowPart.pk == 68:
+            return redirect(reverse("core:managehome"))
         else:
             return render(request, "base.html")
 
@@ -67,16 +71,6 @@ def parthome(request, pk):
     request.user.nowPart = part
     request.user.save()
     return redirect(reverse("core:home"))
-
-    """
-def 첫번째 부서를 nowPart로 지정하는 함수(request):
-    for user in userlist:
-        if list(user.부서.all()):
-            part = user.부서.all()[0]
-            user.nowPart = part
-            user.save()
-
-    return redirect(reverse("core:home"))"""
 
 
 class onelist(View, user_mixins.LoggedInOnlyView):
@@ -710,3 +704,61 @@ def measuremigrate(request):
         return redirect(reverse("qualitycontrols:measurelist"))
 
     return render(request, "migrate/measuremigrate.html", {"form": form})
+
+
+def managehome(request):
+    result = request.GET
+    start = result.get("start")
+    end = result.get("end")
+
+    order = OR_models.OrderRegister.objects.filter(created__range=(start, end))
+    singleorder = OR_models.OrderRegister.objects.filter(제품구분="단품").filter(
+        created__range=(start, end)
+    )
+    rackorder = OR_models.OrderRegister.objects.filter(제품구분="랙").filter(
+        created__range=(start, end)
+    )
+
+    getorder = OR_models.OrderRegister.objects.filter(영업구분="입찰").filter(
+        created__range=(start, end)
+    )
+    insteadorder = OR_models.OrderRegister.objects.filter(영업구분="대리점").filter(
+        created__range=(start, end)
+    )
+    asorder = OR_models.OrderRegister.objects.filter(영업구분="A/S").filter(
+        created__range=(start, end)
+    )
+    inorder = OR_models.OrderRegister.objects.filter(영업구분="내부계획").filter(
+        created__range=(start, end)
+    )
+    monthlyorder = OR_models.OrderRegister.objects.filter(영업구분="월별생산계획").filter(
+        created__range=(start, end)
+    )
+
+    total_num = order.count()
+    single_num = singleorder.count()
+    rack_num = rackorder.count()
+    getorder_num = getorder.count()
+    insteadorder_num = insteadorder.count()
+    asorder_num = asorder.count()
+    inorder_num = inorder.count()
+    monthlyorder_num = monthlyorder.count()
+
+    return render(
+        request,
+        "manage/managehome.html",
+        {
+            "result": result,
+            "start": start,
+            "end": end,
+            "order": order,
+            "total_num": total_num,
+            "single_num": single_num,
+            "rack_num": rack_num,
+            "getorder_num": getorder_num,
+            "insteadorder_num": insteadorder_num,
+            "asorder_num": asorder_num,
+            "inorder_num": inorder_num,
+            "monthlyorder_num": monthlyorder_num,
+        },
+    )

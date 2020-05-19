@@ -1,0 +1,167 @@
+{%extends "base.html"%}
+{%load static%}
+{% block page_title%}
+현황
+{%endblock%}
+
+
+{% block content %}
+{%block main_contens%}
+
+<div class="flex flex-col">
+    <div class="w-full h-full pl-32 -mt-6 font-semibold pt-12 flex flex-col">
+        <div class="flex flex-col p-3">
+
+            {% include 'partials/datelookup.html' with start_day=start %}
+
+
+            {%if start != none%}
+            <div class="w-full  flex flex-row p-10">
+                <div class="flex flex-col items-center w-full">
+
+
+                    <aside class="chart vert flex flex-row items-center w-full">
+                        <canvas id="canPie" width="300" height="200" data-values='{{single_num}}, {{rack_num}}'>
+                            This browser does not support HTML5 Canvas.
+                        </canvas>
+                        <ol class="legend flex flex-col items-center ml-0">
+                            <li class="key one">단품수주 : {{single_num}}건</li>
+                            <li class="key two">랙수주 : {{rack_num}}건</li>
+                        </ol>
+                    </aside>
+                    <span class="text-xs">({{start}}~{{end}}) </span>
+                    <span class="text-xs">총 {{total_num}}건 </span>
+
+                    <span class="font-extrabold text-2xl">Rack/단품 수주건수</span>
+                </div>
+                <div class="flex flex-col items-center w-full">
+                    <aside class="chart vert flex flex-row items-center w-full">
+                        <canvas id="canPie2" width="300" height="200" data-values='{{getorder_num}},
+                        {{insteadorder_num}},
+                        {{asorder_num}},
+                        {{inorder_num}},
+                        {{monthlyorder_num}}'>
+                            This browser does not support HTML5 Canvas.
+                        </canvas>
+                        <ol class="legend flex flex-col items-center">
+                            <li class="key one">입찰 : {{getorder_num}}건</li>
+                            <li class="key two">대리점 : {{insteadorder_num}}건</li>
+                            <li class="key three">A/S : {{asorder_num}}건</li>
+                            <li class="key four">내부계획 : {{inorder_num}}건</li>
+                            <li class="key five">월별생산계획 : {{monthlyorder_num}}건</li>
+                        </ol>
+                    </aside>
+                    <span class="text-xs">({{start}}~{{end}}) </span>
+                    <span class="text-xs">총 {{total_num}}건 </span>
+
+                    <span class="font-extrabold text-2xl">유형별 수주건수</span>
+                </div>
+            </div>
+            {%endif%}
+
+        </div>
+
+    </div>
+    {%endblock main_contens %}
+</div>
+<script>
+    var pieColors = ['rgb(236, 208, 120)', 'rgba(217, 91, 67, 0.7)', 'rgba(192, 41, 66, 0.7)', 'rgba(84, 36, 55, 0.7)', 'rgba(83, 119, 122, 0.7)', 'rgba(119, 146, 174, 0.7)'];
+
+    function getTotal(arr) {
+        var j,
+            myTotal = 0;
+
+        for (j = 0; j < arr.length; j++) {
+            myTotal += (typeof arr[j] === 'number') ? arr[j] : 0;
+        }
+
+        return myTotal;
+    }
+
+    function drawPieChart(canvasId) {
+        var i,
+            canvas = document.getElementById(canvasId),
+            pieData = canvas.dataset.values.split(',').map(function (x) { return parseInt(x, 10) }),
+            halfWidth = canvas.width * .5,
+            halfHeight = canvas.height * .5,
+            ctx = canvas.getContext('2d'),
+            lastend = 0,
+            myTotal = getTotal(pieData);
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (i = 0; i < pieData.length; i++) {
+            ctx.fillStyle = pieColors[i];
+            ctx.beginPath();
+            ctx.moveTo(halfWidth, halfHeight);
+            ctx.arc(halfWidth, halfHeight, halfHeight, lastend, lastend + (Math.PI * 2 * (pieData[i] / myTotal)), false);
+            ctx.lineTo(halfWidth, halfHeight);
+            ctx.fill();
+            lastend += Math.PI * 2 * (pieData[i] / myTotal);
+        }
+    }
+
+    drawPieChart('canPie');
+    drawPieChart('canPie2');
+/*Copyright (c) 2020 by Bryan Kizer (https://codepen.io/belsrc/pen/jefah)
+    
+    Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+    
+    The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+    
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.*/
+
+</script>
+<script>
+    const bool = "{{start}}"
+    const start = document.getElementById("date0")
+    const end = document.getElementById("date1")
+    const nowTime = new Date();
+    const year = nowTime.getFullYear()
+    function thisyear() {
+        start.value = `${year}-01-01`
+        end.value = `${year}-12-31`
+    }
+    function oneHalf() {
+        start.value = `${year}-01-01`
+        end.value = `${year}-06-30`
+    }
+
+    function twoHalf() {
+        start.value = `${year}-07-01`
+        end.value = `${year}-12-31`
+    }
+
+    function oneQuarter() {
+        start.value = `${year}-01-01`
+        end.value = `${year}-03-31`
+    }
+
+    function twoQuarter() {
+        start.value = `${year}-04-01`
+        end.value = `${year}-06-30`
+    }
+
+    function threeQuarter() {
+        start.value = `${year}-07-01`
+        end.value = `${year}-09-30`
+    }
+
+    function fourQuarter() {
+        start.value = `${year}-10-01`
+        end.value = `${year}-12-31`
+    }
+    function init() {
+        console.log(bool)
+        if (bool !== "None") {
+            start.value = "{{ start }}"
+            end.value = "{{end}}"
+        }
+    }
+    $(window).load(function () {
+        init()
+    });
+
+
+</script>
+{%endblock content %}

@@ -6,11 +6,11 @@
 
 
 {%block head_title%}
-<i class="fas fa-angle-right mx-1 text-base"></i>랙조립관리 <i class="fas fa-angle-right mx-1 text-base"></i> 랙조립등록 <i
-    class="fas fa-angle-right mx-1 text-base"></i> {{makerequest}}
+<i class="fas fa-angle-right mx-1 text-base"></i> 생산계획등록 <i class="fas fa-angle-right mx-1 text-base"></i>
+{{orderproduce}}
 {%endblock head_title %}
 
 
 {%block main_contens%}
-{%include "partials/formastable.html" with maintitle=makerequest  tablename="랙조립등록" date="랙조립일자" cta="조립등록"%}
+{%include "partials/formastable.html" with maintitle=orderproduce  tablename="생산계획등록" date="랙조립일자" cta="조립등록"%}
 {%endblock main_contens %}

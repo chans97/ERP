@@ -1309,6 +1309,10 @@ def materialregister(request):
         material.save()
         form.save_m2m()
 
+        models.StockOfMaterial.objects.create(
+            자재=material, 실수량=0, 입고요청포함수량=0, 출고요청제외수량=0
+        )
+
         messages.success(request, "자재 기준정보가 등록되었습니다.")
         return redirect(reverse("stockmanages:materialStandarInformation"))
     pagediv = 10

@@ -28,6 +28,7 @@ from django.http import HttpResponse
 from django.http import FileResponse
 import math
 from random import randint
+from stocksingle import models as SS_models
 
 
 class PartnerView(user_mixins.LoggedInOnlyView, ListView):
@@ -319,6 +320,10 @@ def UploadSingleView(request):
         pk = single.pk
 
         messages.success(request, "해당 단품에 포함되는 자재를 추가해주세요.")
+        SS_models.StockOfSingleProduct.objects.create(
+            단품=single, 실수량=0, 입고요청포함수량=0, 출하요청제외수량=0
+        )
+
         return redirect(
             reverse("StandardInformation:singlematerial", kwargs={"pk": pk})
         )

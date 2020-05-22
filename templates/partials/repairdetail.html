@@ -84,7 +84,8 @@
                         </tr>
                         <tr>
                             <td class="border px-4 py-2 bg-gray-200">검시일</td>
-                            <td class="border px-4 py-2">{{repair.최종검사결과.검시일}}</td>
+                            <td class="border px-4 py-2">
+                                {{repair.최종검사결과.검시일.year}}-{{repair.최종검사결과.검시일.month}}-{{repair.최종검사결과.검시일.day}}</td>
                         </tr>
                         <tr>
                             <td class="border px-4 py-2 bg-gray-200">치명적불량</td>
@@ -300,7 +301,9 @@
                         </tr>
                         <tr>
                             <td class="border px-4 py-2 bg-gray-200">작성일</td>
-                            <td class="border px-4 py-2">{{repair.created.date}}</td>
+                            <td class="border px-4 py-2">
+                                {{repair.created.date.year}}-{{repair.created.date.month}}-{{repair.created.date.day}}
+                            </td>
                         </tr>
                     </tbody>
                 </table>

@@ -1806,17 +1806,22 @@ class monthlyplanlist(core_views.onelist):
                 영업구분="월별생산계획"
             ).order_by("-created")
             monthlyplan = list(monthlyplan)
-            newest = monthlyplan[0]
-            oldest = monthlyplan[-1]
-            yeargap = newest.created.year - oldest.created.year
-            monthgap = newest.created.month - oldest.created.month
-            totalgap = yeargap * 12 + monthgap
-            totalgaprange = list(range(0, totalgap + 1))
-            totalgaprange.sort(reverse=True)
-            self.startyear = oldest.created.year
-            self.startmonth = oldest.created.month
+            try:
+                newest = monthlyplan[0]
+                oldest = monthlyplan[-1]
+                yeargap = newest.created.year - oldest.created.year
+                monthgap = newest.created.month - oldest.created.month
+                totalgap = yeargap * 12 + monthgap
+                totalgaprange = list(range(0, totalgap + 1))
+                totalgaprange.sort(reverse=True)
+                self.startyear = oldest.created.year
+                self.startmonth = oldest.created.month
 
-            queryset = totalgaprange
+                queryset = totalgaprange
+            except:
+                queryset = []
+                self.startyear = None
+                self.startmonth = None
 
             self.s_bool = False
         else:

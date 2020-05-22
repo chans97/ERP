@@ -246,6 +246,7 @@ class Material(TimeStampedModel):
         return self.자재품명
 
 
+
 class SingleProduct(TimeStampedModel):
 
     작성자 = models.ForeignKey(

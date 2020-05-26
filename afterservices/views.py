@@ -62,6 +62,7 @@ class afterserviceshome(core_views.onelist):
                 | Q(랙__랙시리얼코드__contains=self.search)
                 | Q(랙__랙모델명__contains=self.search)
                 | Q(의뢰처__거래처명__contains=self.search)
+                | Q(현장명__contains=self.search)
             ).order_by("-created")
         return queryset
 

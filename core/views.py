@@ -405,10 +405,10 @@ class threelist(View, user_mixins.LoggedInOnlyView):
         else:
             self.s_bool3 = True
             order = AS_models.ASRepairRequest.objects.filter(
-                Q(신청자__contains=search)
-                | Q(신청품목__모델명__contains=search)
-                | Q(신청품목__모델코드__contains=search)
-                | Q(수리요청코드__contains=search)
+                Q(신청자__contains=self.search3)
+                | Q(신청품목__모델명__contains=self.search3)
+                | Q(신청품목__모델코드__contains=self.search3)
+                | Q(수리요청코드__contains=self.search3)
             ).order_by("-created")
 
             queryset = []

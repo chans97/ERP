@@ -365,6 +365,7 @@ class ASResults(TimeStampedModel):
         verbose_name_plural = "AS완료"
 
     def __str__(self):
+
         if self.완료유형 == "재방문":
             return f"{self.재방문.전AS현장방문.AS현장방문요청.AS접수.접수번호} : AS완료(재방문) -'{self.재방문.전AS현장방문.AS현장방문요청.AS접수.의뢰처}'"
         elif self.완료유형 == "방문":

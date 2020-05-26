@@ -206,9 +206,6 @@
                         <th class="border bg-gray-200 px-4 py-2 w-32">제품코드</th>
                         <th class="border bg-gray-200 px-4 py-2 w-24">제품명</th>
                         <th class="border bg-gray-200 px-4 py-2 w-24">수리신청수량</th>
-                        <th class="border bg-gray-200 px-4 py-2 w-24">수리수량</th>
-                        <th class="border bg-gray-200 px-4 py-2 w-24">폐기수량</th>
-                        <th class="border bg-gray-200 px-4 py-2 w-24">작성자</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -219,13 +216,10 @@
 
                         <td class="border px-4 py-2  hover:text-blue-700 hover:font-bold "><a
                                 href="{%url "qualitycontrols:repairdetail" list.pk%}">
-                                {{list.AS수리의뢰.수리요청코드}}</a></td>
-                        <td class="border px-4 py-2">{{list.AS수리의뢰.신청품목.모델코드}}</td>
-                        <td class="border px-4 py-2">{{list.AS수리의뢰.신청품목.모델명}}</td>
-                        <td class="border px-4 py-2">{{list.AS수리의뢰.신청수량}}</td>
-                        <td class="border px-4 py-2">{{list.실수리수량}}</td>
-                        <td class="border px-4 py-2">{{list.폐기수량}}</td>
-                        <td class="border px-4 py-2">{{list.작성자}}</td>
+                                {{list.수리요청코드}}</a></td>
+                        <td class="border px-4 py-2">{{list.신청품목.모델코드}}</td>
+                        <td class="border px-4 py-2">{{list.신청품목.모델명}}</td>
+                        <td class="border px-4 py-2">{{list.신청수량}}</td>
                     </tr>
                     {%endfor%}
 

@@ -453,7 +453,7 @@
             {%else%}
             <div class="border border-dotted border-2 border-gray-800 mb-3"></div>
 
-            {% if repair.최종검사.최종검사등록.검시자 == user  or repair.최종검사.최종검사등록.수리자 == user or repair.최종검사.최종검사등록.발송자 == user%}
+            {% if repair.작성자 == user  or  repair.최종검사.최종검사등록.검시자 == user  or repair.최종검사.최종검사등록.수리자 == user or repair.최종검사.최종검사등록.발송자 == user%}
 
 
 

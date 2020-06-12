@@ -25,8 +25,8 @@ AS관리
 
                     </form>
                 </div>
-                <div class="flex ">
-                    <div class="flew flex-col ">
+                <div class="flex w-full">
+                    <div class="flew flex-col w-full">
                         <table class="font-light text-xs w-full">
                             <thead>
                                 <tr>
@@ -34,9 +34,8 @@ AS관리
                                     <th class="border bg-gray-200 px-2 py-2 w-20">접수번호</th>
                                     <th class="border bg-gray-200 px-2 py-2 w-20">현상</th>
                                     <th class="border bg-gray-200 px-2 py-2 w-20">불량분류코드</th>
-                                    <th class="border bg-gray-200 px-2 py-2 w-32">불량분류</th>
-                                    <th class="border bg-gray-200 px-2 py-2 w-20">대응유형</th>
-                                    <th class="border bg-gray-200 px-2 py-2 w-20">인계후</th>
+                                    <th class="border bg-gray-200 px-2 py-2 w-20">불량분류</th>
+                                    <th class="border bg-gray-200 px-2 py-2 w-20">처리유형</th>
                                     <th class="border bg-gray-200 px-2 py-2 w-20">의뢰처</th>
                                     <th class="border bg-gray-200 px-2 py-2 w-20">제품코드</th>
                                     <th class="border bg-gray-200 px-2 py-2 w-20">제품명</th>
@@ -72,7 +71,6 @@ AS관리
                                     <td class="border px-2 py-2">{{list.현상}}</td>
                                     <td class="border px-2 py-2">{{list.불량분류코드}}</td>
                                     <td class="border px-2 py-2">{{list.불량분류}}</td>
-                                    <td class="border px-2 py-2">{{list.대응유형}}</td>
                                     <td class="border px-2 py-2">{{list.인계후}}</td>
                                     <td class="border px-2 py-2">{{list.의뢰처}}</td>
                                     {%if list.접수제품분류 == "단품"%}

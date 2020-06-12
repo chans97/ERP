@@ -109,10 +109,12 @@ def ASregister(request):
         불량분류 = form.cleaned_data.get("불량분류")
         접수제품분류 = form.cleaned_data.get("접수제품분류")
         대응유형 = form.cleaned_data.get("대응유형")
+        인계후 = form.cleaned_data.get("인계후")
         의뢰처 = form.cleaned_data.get("의뢰처")
         의뢰자전화번호 = form.cleaned_data.get("의뢰자전화번호")
         방문요청일 = form.cleaned_data.get("방문요청일")
         현장명 = form.cleaned_data.get("현장명")
+        비용 = form.cleaned_data.get("비용")
         if 접수일 is None:
             접수일 = timezone.now().date()
         SM = AS_models.ASRegisters.objects.create(
@@ -123,12 +125,15 @@ def ASregister(request):
             불량분류코드=불량분류코드,
             불량분류=불량분류,
             접수제품분류=접수제품분류,
-            대응유형=대응유형,
+            대응유형="담당자연결",
             의뢰처=의뢰처,
             의뢰자전화번호=의뢰자전화번호,
             방문요청일=방문요청일,
             현장명=현장명,
+            비용=비용,
+            인계후=인계후,
         )
+        AS_models.ASVisitRequests.objects.create(AS접수=SM)
 
         pk = SM.pk
 
@@ -153,6 +158,7 @@ def ASregister(request):
         "불량분류",
         "접수제품분류",
         "대응유형",
+        "비용",
     ]
     if int(page) == totalpage:
         notsamebool = False
@@ -394,6 +400,7 @@ class ASRegistersedit(user_mixins.LoggedInOnlyView, UpdateView):
         seletelist = [
             "불량분류",
             "대응유형",
+            "비용",
         ]
         context["asregisters"] = asregisters
         context["seletelist"] = seletelist
@@ -419,8 +426,10 @@ class ASRegistersedit(user_mixins.LoggedInOnlyView, UpdateView):
         불량분류코드 = form.cleaned_data.get("불량분류코드")
         불량분류 = form.cleaned_data.get("불량분류")
         대응유형 = form.cleaned_data.get("대응유형")
+        비용 = form.cleaned_data.get("비용")
         의뢰자전화번호 = form.cleaned_data.get("의뢰자전화번호")
         방문요청일 = form.cleaned_data.get("방문요청일")
+        비용 = form.cleaned_data.get("비용")
         if 접수일 is None:
             접수일 = timezone.now().date()
 
@@ -433,6 +442,7 @@ class ASRegistersedit(user_mixins.LoggedInOnlyView, UpdateView):
         asregisters.대응유형 = 대응유형
         asregisters.의뢰자전화번호 = 의뢰자전화번호
         asregisters.방문요청일 = 방문요청일
+        asregisters.비용 = 비용
         asregisters.save()
         messages.success(self.request, "수정이 완료되었습니다.")
         return redirect(reverse("afterservices:ASrequestdetail", kwargs={"pk": pk}))
@@ -604,6 +614,10 @@ def ASvisitregister(request, pk):
         AS처리내역 = form.cleaned_data.get("AS처리내역")
         특이사항 = form.cleaned_data.get("특이사항")
         재방문여부 = form.cleaned_data.get("재방문여부")
+        처리기사 = form.cleaned_data.get("처리기사")
+        처리회사 = form.cleaned_data.get("처리회사")
+        print(처리기사)
+
         if AS날짜 is None:
             AS날짜 = timezone.now().date()
         SM = AS_models.ASVisitContents.objects.create(
@@ -618,6 +632,8 @@ def ASvisitregister(request, pk):
             접수제품분류=ASrequest.AS접수.접수제품분류,
             단품=ASrequest.AS접수.단품,
             랙=ASrequest.AS접수.랙,
+            처리기사=처리기사,
+            처리회사=처리회사,
         )
         messages.success(request, "AS현장방문이 등록되었습니다.")
         return redirect(reverse("afterservices:ASvisitneedlist"))
@@ -673,6 +689,9 @@ class ASvisitedit(UpdateView):
         AS처리내역 = form.cleaned_data.get("AS처리내역")
         특이사항 = form.cleaned_data.get("특이사항")
         재방문여부 = form.cleaned_data.get("재방문여부")
+        처리기사 = form.cleaned_data.get("처리기사")
+        처리회사 = form.cleaned_data.get("처리회사")
+
         if AS날짜 is None:
             AS날짜 = timezone.now().date()
 
@@ -684,6 +703,8 @@ class ASvisitedit(UpdateView):
         visitRegister.AS처리내역 = AS처리내역
         visitRegister.특이사항 = 특이사항
         visitRegister.재방문여부 = 재방문여부
+        visitRegister.처리기사 = 처리기사
+        visitRegister.처리회사 = 처리회사
         visitRegister.save()
         messages.success(self.request, "수정이 완료되었습니다.")
         pk = visitRegister.AS현장방문요청.AS접수.pk

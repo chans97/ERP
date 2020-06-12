@@ -115,6 +115,11 @@ def orderrackoutregister(request, pk):
         수취인 = form.cleaned_data.get("수취인")
         수취인주소 = form.cleaned_data.get("수취인주소")
         연락처 = form.cleaned_data.get("연락처")
+        try:
+            랙조립도면 = request.FILES["랙조립도면"]
+        except Exception:
+            랙조립도면 = None
+
         if order.rackstockincludeexception() < 출하요청수량:
             messages.error(request, "출하요청수량이 출하예정제외랙추정수량보다 더 많습니다.")
             return render(
@@ -133,6 +138,10 @@ def orderrackoutregister(request, pk):
         랙 = order.랙모델
         고객사 = order.고객사명
         출하요청자 = user
+        수주.랙조립도면 = 랙조립도면
+        print(랙조립도면)
+        수주.save()
+
         SM = models.StockOfRackProductOutRequest.objects.create(
             출하희망일=출하희망일,
             출하요청수량=출하요청수량,

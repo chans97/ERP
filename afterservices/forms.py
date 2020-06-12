@@ -18,10 +18,11 @@ class ASRegisterForm(forms.ModelForm):
             "불량분류코드",
             "불량분류",
             "접수제품분류",
-            "대응유형",
+            "인계후",
             "의뢰자전화번호",
             "방문요청일",
             "현장명",
+            "비용",
         )
         help_texts = {
             "접수번호": "*최종검사코드 앞에 AR을 붙여주시길 바랍니다.(한 번 설정하면, 바꿀 수 없습니다.)",
@@ -31,6 +32,7 @@ class ASRegisterForm(forms.ModelForm):
         widgets = {
             "접수제품분류": forms.RadioSelect(),
             "대응유형": forms.RadioSelect(),
+            "비용": forms.RadioSelect(),
         }
 
     def clean(self):
@@ -117,9 +119,9 @@ class ASRegisterEditForm(forms.ModelForm):
             "현상",
             "불량분류코드",
             "불량분류",
-            "대응유형",
             "의뢰자전화번호",
             "방문요청일",
+            "비용",
         )
         help_texts = {
             "접수일": "*형식 : yyyy-mm-dd(기본값은 오늘입니다.)",
@@ -128,6 +130,7 @@ class ASRegisterEditForm(forms.ModelForm):
         widgets = {
             "불량분류": forms.RadioSelect(),
             "대응유형": forms.RadioSelect(),
+            "비용": forms.RadioSelect(),
         }
 
     def save(self, *arg, **kwargs):
@@ -141,7 +144,8 @@ class ASvisitRegisterForm(forms.ModelForm):
         fields = (
             "AS날짜",
             "AS방법",
-            "고객이름",
+            "처리기사",
+            "처리회사",
             "AS처리내역",
             "특이사항",
             "재방문여부",

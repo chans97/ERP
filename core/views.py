@@ -28,7 +28,8 @@ from django.http import HttpResponse
 import math
 from StandardInformation import models as SI_models
 from stocksingle import models as SS_models
-from stockrack import models as SM_models
+from stockrack import models as SR_models
+from stockmanages import models as SM_models
 from orders import models as OR_models
 from django.utils import timezone
 from qualitycontrols import models as QC_models
@@ -707,6 +708,11 @@ def measuremigrate(request):
 
 
 def managehome(request):
+
+    return render(request, "manage/managehome.html",)
+
+
+def totalorder(request):
     result = request.GET
     start = result.get("start")
     end = result.get("end")
@@ -746,7 +752,7 @@ def managehome(request):
 
     return render(
         request,
-        "manage/managehome.html",
+        "manage/totalorder.html",
         {
             "result": result,
             "start": start,
@@ -760,5 +766,291 @@ def managehome(request):
             "asorder_num": asorder_num,
             "inorder_num": inorder_num,
             "monthlyorder_num": monthlyorder_num,
+        },
+    )
+
+
+def orderbar(request):
+    result = request.GET
+    start = result.get("start")
+    end = result.get("end")
+
+    ordermanlist = user_models.User.objects.filter(부서__in=[1, 61])
+
+    orderlist = []
+
+    for orderman in ordermanlist:
+        ordernum = (
+            OR_models.OrderRegister.objects.filter(작성자__id=orderman.pk)
+            .filter(created__range=(start, end))
+            .count()
+        )
+        one = {"pk": orderman.pk, "name": orderman.first_name, "num": ordernum}
+        orderlist.append(one)
+
+    orderlist = sorted(orderlist, key=lambda person: (-person["num"]))
+    maxnum = orderlist[0]["num"]
+    if maxnum == 0:
+        maxnum = 1
+
+    for ord in orderlist:
+        per = (int(ord["num"]) / maxnum) * 100
+        ord.update(per=per)
+
+    order = OR_models.OrderRegister.objects.filter(created__range=(start, end))
+    total_num = order.count()
+
+    return render(
+        request,
+        "manage/orderbar.html",
+        {
+            "maxnum": maxnum,
+            "orderlist": orderlist,
+            "result": result,
+            "start": start,
+            "end": end,
+            "order": order,
+            "total_num": total_num,
+        },
+    )
+
+
+def outcount(request):
+    result = request.GET
+    start = result.get("start")
+    end = result.get("end")
+
+    rackorder = SR_models.StockOfRackProductOut.objects.filter(
+        created__range=(start, end)
+    )
+    singleorder = SS_models.StockOfSingleProductOut.objects.filter(
+        created__range=(start, end)
+    )
+
+    single_num = singleorder.count()
+    rack_num = rackorder.count()
+    total_num = single_num + rack_num
+
+    return render(
+        request,
+        "manage/outcount.html",
+        {
+            "result": result,
+            "start": start,
+            "end": end,
+            "total_num": total_num,
+            "single_num": single_num,
+            "rack_num": rack_num,
+        },
+    )
+
+
+def productbar(request):
+    result = request.GET
+    start = result.get("start")
+    end = result.get("end")
+
+    singlelist = SI_models.SingleProduct.objects.all()
+    history = SS_models.StockOfSingleProductIn.objects.filter(
+        created__range=(start, end)
+    )
+    singlemakelist = []
+    count = 0
+    for single in singlelist:
+        one = {"name": single.모델명, "num": 0}
+        for stockin in history:
+            if stockin.단품입고요청.단품.pk == single.pk:
+                count = one["num"]
+                count += stockin.입고수량
+                one.update(num=count)
+        singlemakelist.append(one)
+
+    singlemakelist = sorted(singlemakelist, key=lambda single: (-single["num"]))
+    maxnum = singlemakelist[0]["num"]
+    if maxnum == 0:
+        maxnum = 1
+
+    for single in singlemakelist:
+        per = (int(single["num"]) / maxnum) * 100
+        single.update(per=per)
+
+    return render(
+        request,
+        "manage/productbar.html",
+        {
+            "singlemakelist": singlemakelist,
+            "history": history,
+            "singlelist": singlelist,
+            "result": result,
+            "start": start,
+            "end": end,
+        },
+    )
+
+
+def lastchecknum(request):
+    result = request.GET
+    start = result.get("start")
+    end = result.get("end")
+
+    checklist = QC_models.FinalCheckRegister.objects.filter(created__range=(start, end))
+    workflow = []
+    repair = []
+    asrepair = []
+    good = []
+    bad = []
+
+    for check in checklist:
+        if check.최종검사의뢰.작업지시서:
+            if not check.적합수량:
+                check.적합수량 = 0
+            if not check.부적합수량:
+                check.부적합수량 = 0
+            num = int(check.적합수량) + int(check.부적합수량)
+            workflow.append(num)
+        elif check.최종검사의뢰.수리내역서.최종검사결과:
+            if not check.적합수량:
+                check.적합수량 = 0
+            if not check.부적합수량:
+                check.부적합수량 = 0
+            num = int(check.적합수량) + int(check.부적합수량)
+            repair.append(num)
+        elif check.최종검사의뢰.수리내역서.AS수리의뢰:
+            if not check.적합수량:
+                check.적합수량 = 0
+            if not check.부적합수량:
+                check.부적합수량 = 0
+            num = int(check.적합수량) + int(check.부적합수량)
+            asrepair.append(num)
+
+    for check in checklist:
+        good.append(check.적합수량)
+        bad.append(check.부적합수량)
+
+    workflow = sum(workflow)
+    repair = sum(repair)
+    asrepair = sum(asrepair)
+    good_num = sum(good)
+    bad_num = sum(bad)
+    total_num = workflow + repair + asrepair
+
+    return render(
+        request,
+        "manage/lastchecknum.html",
+        {
+            "good_num": good_num,
+            "bad_num": bad_num,
+            "workflow": workflow,
+            "total_num": total_num,
+            "repair": repair,
+            "asrepair": asrepair,
+            "checklist": checklist,
+            "result": result,
+            "start": start,
+            "end": end,
+        },
+    )
+
+
+def incheck(request):
+    result = request.GET
+    start = result.get("start")
+    end = result.get("end")
+
+    inchecklist = QC_models.MaterialCheck.objects.filter(created__range=(start, end))
+    good_num = 0
+    bad_num = 0
+    for check in inchecklist:
+        bad_num += check.부적합수량
+        good_num += check.적합수량
+
+    total_num = good_num + bad_num
+
+    return render(
+        request,
+        "manage/incheck.html",
+        {
+            "result": result,
+            "start": start,
+            "end": end,
+            "total_num": total_num,
+            "bad_num": bad_num,
+            "good_num": good_num,
+        },
+    )
+
+
+def asconduct(request):
+    result = request.GET
+    start = result.get("start")
+    end = result.get("end")
+
+    costnum = []
+    freenum = []
+
+    order = AS_models.ASVisitRequests.objects.filter(created__range=(start, end))
+    for s in order:
+        try:
+            s.AS완료
+            if s.AS접수.비용 == "유상":
+                costnum.append(s)
+            elif s.AS접수.비용 == "무상":
+                freenum.append(s)
+            else:
+                pass
+        except:
+            pass
+
+        try:
+            s.AS현장방문
+            if s.AS현장방문.재방문여부 == "완료":
+                try:
+                    s.AS현장방문.AS완료
+                    if s.AS접수.비용 == "유상":
+                        costnum.append(s)
+                    elif s.AS접수.비용 == "무상":
+                        freenum.append(s)
+                    else:
+                        pass
+                except:
+                    pass
+        except:
+            pass
+    print(costnum)
+    torder = AS_models.ASVisitContents.objects.filter(재방문여부="재방문").filter(
+        created__range=(start, end)
+    )
+    for s in torder:
+        try:
+            s.AS재방문
+            try:
+                s.AS재방문.AS완료
+                test = s.AS현장방문요청.AS접수.비용
+                if test == "유상":
+                    costnum.append(s)
+                elif test == "무상":
+                    freenum.append(s)
+                else:
+                    pass
+            except:
+                pass
+        except:
+            pass
+
+    good_num = len(costnum)
+    bad_num = len(freenum)
+
+    total_num = good_num + bad_num
+
+    return render(
+        request,
+        "manage/asconduct.html",
+        {
+            "result": result,
+            "start": start,
+            "end": end,
+            "total_num": total_num,
+            "bad_num": bad_num,
+            "good_num": good_num,
         },
     )

@@ -22,6 +22,11 @@ class ASRegisters(TimeStampedModel):
         (담당자연결, "담당자연결"),
     )
 
+    비용_CHOICES = (
+        ("유상", "유상"),
+        ("무상", "무상"),
+    )
+
     인계후_CHOICES = (
         (내부처리, "내부처리"),
         ("현장방문", "현장방문"),
@@ -59,7 +64,10 @@ class ASRegisters(TimeStampedModel):
         null=True,
         blank=True,
     )
-    대응유형 = models.CharField(choices=대응유형_CHOICES, max_length=10, default=내부처리)
+    대응유형 = models.CharField(
+        choices=대응유형_CHOICES, max_length=10, default=담당자연결, blank=True, null=True,
+    )
+    비용 = models.CharField(choices=비용_CHOICES, max_length=10, default="유상")
     의뢰처 = models.ForeignKey(
         SI_models.CustomerPartner,
         related_name="AS등록",
@@ -169,7 +177,9 @@ class ASVisitContents(TimeStampedModel):
     )
     AS날짜 = models.DateField(auto_now=False, auto_now_add=False, blank=True, null=True)
     AS방법 = models.CharField(choices=AS방법_CHOICES, max_length=10, default=제품수리)
-    고객이름 = models.CharField(max_length=50, null=True)
+    고객이름 = models.CharField(max_length=50, null=True, blank=True)
+    처리기사 = models.CharField(max_length=50, null=True, blank=True)
+    처리회사 = models.CharField(max_length=50, null=True, blank=True)
     AS처리내역 = models.TextField(null=True)
     특이사항 = models.TextField(null=True, blank=True)
     재방문여부 = models.CharField(choices=재방문여부_CHOICES, max_length=10, default=완료)

@@ -1,0 +1,119 @@
+{%extends "base.html"%}
+{%load static%}
+{% block page_title%}
+현황|영업자별수주현황
+{%endblock%}
+
+{%block head_title%}<i class="fas fa-angle-right text-base mx-1"></i>수주현황<i
+    class="fas fa-angle-right text-base mx-1"></i>영업담당자별
+{%endblock head_title %}
+{% block content %}
+{%block main_contens%}
+
+<div class="flex flex-col">
+    <div class="w-full h-full pl-32 -mt-6 font-semibold pt-12 flex flex-col">
+        <div class="flex flex-col p-3">
+
+            {% include 'partials/datelookup.html' with start_day=start %}
+
+
+
+
+            <div class="w-full  flex flex-row p-10">
+                <div class="w-full">
+                    <div class="w-full flex flex-row justify-center p-3">
+                        <span class="text-lg">
+                            영업담당자별 수주건수
+                        </span>
+                    </div>
+                    <div class="w-full p-3 border">
+                        {%if start == none%}
+                        <span class="m-10">
+                            기간을 조회해주세요.
+                        </span>
+                        {%endif%}
+                        {%if start != none%}
+                        {% for orderman in orderlist %}
+                        <div class=" w-full flex flex-row items-center mx-2 my-5">
+                            <span class="label w-1/12">{{orderman.name}}</span>
+                            <div class="h-6 w-11/12 bg-gray-200 rounded-lg">
+
+                                {% if orderman.num == 0 %}
+
+                                <span class="text-gray-500">{{orderman.num}}건</span>
+                                {% endif %}
+
+                                <div style="width: {{orderman.per}}%;"
+                                    class="h-6 flex flex-row items-center justify-center bg-blue-800 rounded-lg">
+                                    <span class="text-gray-100">{{orderman.num}}건</span></div>
+                            </div>
+                        </div>
+                        {% endfor %}
+
+
+
+                    </div>
+                </div>
+
+            </div>
+            {%endif%}
+
+        </div>
+
+    </div>
+    {%endblock main_contens %}
+</div>
+
+<script>
+    const bool = "{{start}}"
+    const start = document.getElementById("date0")
+    const end = document.getElementById("date1")
+    const nowTime = new Date();
+    const year = nowTime.getFullYear()
+    function thisyear() {
+        start.value = `${year}-01-01`
+        end.value = `${year}-12-31`
+    }
+    function oneHalf() {
+        start.value = `${year}-01-01`
+        end.value = `${year}-06-30`
+    }
+
+    function twoHalf() {
+        start.value = `${year}-07-01`
+        end.value = `${year}-12-31`
+    }
+
+    function oneQuarter() {
+        start.value = `${year}-01-01`
+        end.value = `${year}-03-31`
+    }
+
+    function twoQuarter() {
+        start.value = `${year}-04-01`
+        end.value = `${year}-06-30`
+    }
+
+    function threeQuarter() {
+        start.value = `${year}-07-01`
+        end.value = `${year}-09-30`
+    }
+
+    function fourQuarter() {
+        start.value = `${year}-10-01`
+        end.value = `${year}-12-31`
+    }
+    function init() {
+        console.log(bool)
+        if (bool !== "None") {
+            start.value = "{{ start }}"
+            end.value = "{{end}}"
+        }
+    }
+    $(window).load(function () {
+        init()
+    });
+
+
+</script>
+{%endblock content %}

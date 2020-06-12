@@ -76,11 +76,7 @@ def orderregister(request):
         납품요청일 = form.cleaned_data.get("납품요청일")
         특이사항 = form.cleaned_data.get("특이사항")
         제품구분 = form.cleaned_data.get("제품구분")
-        try:
-            랙조립도면 = request.FILES["랙조립도면"]
 
-        except Exception:
-            랙조립도면 = None
         SM = models.OrderRegister.objects.create(
             작성자=request.user,
             수주코드=수주코드,
@@ -93,7 +89,6 @@ def orderregister(request):
             특이사항=특이사항,
             제품구분=제품구분,
             납품수량=0,
-            랙조립도면=랙조립도면,
         )
 
         pk = SM.pk

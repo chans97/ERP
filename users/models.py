@@ -22,6 +22,10 @@ class User(AbstractUser, TimeStampedModel):
         num = self.부서.count()
         return num
 
+    def ordercount(self):
+        count = self.수주등록.count()
+        return count
+
 
 class Company(TimeStampedModel):
     """회사명"""
@@ -51,6 +55,7 @@ class Part(TimeStampedModel):
 
     def __str__(self):
         return f"{self.해당회사} - {self.부서명}"
+
 
 class Passward(TimeStampedModel):
     """passward for sign up"""

@@ -114,7 +114,11 @@ AS접수
 
 
                                     <td class="border border-gray-400 px-4 py-2">
+                                        {%if field.name == "인계후" %}
+                                        처리방법
+                                        {%else%}
                                         {{field.name}}
+                                        {%endif%}
                                     </td>
                                     <td class="border border-gray-400 px-4 py-2">
 
@@ -149,6 +153,30 @@ AS접수
                                                 </li>
                                             </ul>
                                         </div>
+                                        {%elif field.name == "인계후" %}
+                                        <div class="flex w-full">
+                                            <ul id="id_POWERTRANS">
+                                                <li><label for="id_인계후_1"><input type="radio" name="인계후" value="내부처리"
+                                                            id="id_인계후_1">
+                                                        내부처리</label>
+                                                </li>
+                                                <li><label for="id_인계후_2"><input type="radio" name="인계후" value="현장방문"
+                                                            id="id_인계후_2">
+                                                        현장방문</label>
+                                                </li>
+                                                <li><label for="id_인계후_3"><input type="radio" name="인계후" value="접수보류"
+                                                            id="id_인계후_3 ">
+                                                        접수보류</label>
+                                                </li>
+                                                <li><label for="id_인계후_4"><input type="radio" name="인계후" value="접수취소"
+                                                            id="id_인계후_4">
+                                                        접수취소</label>
+                                                </li>
+
+                                            </ul>
+                                        </div>
+
+
                                         {%else%}
 
 

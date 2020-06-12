@@ -16,18 +16,18 @@
     <div class="flex flex-col p-6 w-full ">
         <span class="border-b w-1/3 mb-3 border-gray-600 pb-2 font-semibold text-base">'{{order}}'- 랙출하요청 </span>
 
-        <div class="flex ">
+        <div class="flex w-full ">
 
-            <div class="flex flex-col pr-3 justify-center">
+            <div class="flex flex-col w-full pr-3 justify-center">
                 <form method="POST" class="flex flex-col justify-center " enctype="multipart/form-data">
                     {% csrf_token %}
-                    <div class="w-8/12 flex flex-col justify-center ">
+                    <div class="w-full flex flex-col justify-center ">
                         <table class="table-fixed font-light text-xs w-full">
                             <thead>
                                 <tr>
                                     <th class="border bg-gray-200 px-2 py-2 w-20">현재랙재고<div>추정수량</div>
                                     </th>
-                                    <th class="border bg-gray-200 px-2 py-2 w-24">출하예정제외<div>랙추정수량</div>
+                                    <th class="border bg-gray-200 px-2 py-2 w-24">출하가능<div>랙추정수량</div>
                                     </th>
                                     <th class="border bg-gray-200 px-2 py-2 w-20">남은납품<div>수량</div>
                                     </th>
@@ -102,18 +102,19 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <table class="table-fixed text-sm mt-10">
-                            <tbody>
+                        <table class="table-auto text-sm mt-10 w-full">
+                            <thead>
                                 <tr>
-                                    <td class="border px-4 py-2 bg-gray-200 w-48">랙출하품목</td>
-                                    <td class="border px-4 py-2 bg-gray-200 w-48">출하요청수량</td>
-
-                                    <td class="border px-4 py-2 bg-gray-200 w-48">출하희망일</td>
-                                    <td class="border px-4 py-2 bg-gray-200 w-48">수취인</td>
-                                    <td class="border px-4 py-2 bg-gray-200 w-64">수취인주소</td>
-                                    <td class="border px-4 py-2 bg-gray-200 w-48">연락처</td>
+                                    <th class="border px-4 py-2 bg-gray-200 w-32">랙출하품목</th>
+                                    <th class="border px-4 py-2 bg-gray-200 w-32">출하요청수량</th>
+                                    <th class="border px-4 py-2 bg-gray-200 w-32">출하희망일</th>
+                                    <th class="border px-4 py-2 bg-gray-200 w-32">수취인</th>
+                                    <th class="border px-4 py-2 bg-gray-200 w-64">수취인주소</th>
+                                    <th class="border px-4 py-2 bg-gray-200 w-32">연락처</th>
+                                    <th class="border px-4 py-2 bg-gray-200 w-32">랙조립도면</th>
                                 </tr>
-
+                            </thead>
+                            <tbody>
                                 <tr>
                                     <td class="border px-4 py-2 bg-gray-200 text-center">
                                         {{order.랙모델}}
@@ -139,6 +140,18 @@
                                         {% endif %}
 
                                         {%endfor%}
+                                    </td>
+                                    <td class="border px-4 py-2">
+                                        <div class="flex border hover:border-gray-500 w-full">
+
+                                            <input type="file" name="랙조립도면" size="10" />
+
+
+                                        </div>
+                                        <div class="text-xs text-teal-700">
+
+                                        </div>
+                                        <div class="text-red-700 font-light text-xs"></div>
                                     </td>
 
                             </tbody>

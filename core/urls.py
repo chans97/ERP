@@ -11,4 +11,11 @@ urlpatterns = [
     path("materialmigrate", views.materialmigrate, name="materialmigrate"),
     path("measuremigrate", views.measuremigrate, name="measuremigrate"),
     path("managehome", views.managehome, name="managehome"),
+    path("totalorder", views.totalorder, name="totalorder"),
+    path("orderbar", views.orderbar, name="orderbar"),
+    path("outcount", views.outcount, name="outcount"),
+    path("productbar", views.productbar, name="productbar"),
+    path("lastchecknum", views.lastchecknum, name="lastchecknum"),
+    path("incheck", views.incheck, name="incheck"),
+    path("asconduct", views.asconduct, name="asconduct"),
 ]

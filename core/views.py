@@ -527,7 +527,6 @@ def partnermigrate(request):
             Excelfile = request.FILES["Excelfile"]
         except:
             Excelfile = None
-        print(Excelfile)
 
         result = open(Excelfile, "w")
 

@@ -616,7 +616,10 @@ def ASvisitregister(request, pk):
         재방문여부 = form.cleaned_data.get("재방문여부")
         처리기사 = form.cleaned_data.get("처리기사")
         처리회사 = form.cleaned_data.get("처리회사")
-        print(처리기사)
+        try:
+            하자파일 = request.FILES["하자파일"]
+        except:
+            하자파일 = None
 
         if AS날짜 is None:
             AS날짜 = timezone.now().date()
@@ -634,6 +637,7 @@ def ASvisitregister(request, pk):
             랙=ASrequest.AS접수.랙,
             처리기사=처리기사,
             처리회사=처리회사,
+            하자파일=하자파일,
         )
         messages.success(request, "AS현장방문이 등록되었습니다.")
         return redirect(reverse("afterservices:ASvisitneedlist"))
@@ -691,10 +695,12 @@ class ASvisitedit(UpdateView):
         재방문여부 = form.cleaned_data.get("재방문여부")
         처리기사 = form.cleaned_data.get("처리기사")
         처리회사 = form.cleaned_data.get("처리회사")
-
+        try:
+            하자파일 = self.request.FILES["하자파일"]
+        except:
+            하자파일 = None
         if AS날짜 is None:
             AS날짜 = timezone.now().date()
-
         pk = self.kwargs.get("pk")
         visitRegister = AS_models.ASVisitContents.objects.get_or_none(pk=pk)
         visitRegister.AS날짜 = AS날짜
@@ -705,6 +711,7 @@ class ASvisitedit(UpdateView):
         visitRegister.재방문여부 = 재방문여부
         visitRegister.처리기사 = 처리기사
         visitRegister.처리회사 = 처리회사
+        visitRegister.하자파일 = 하자파일
         visitRegister.save()
         messages.success(self.request, "수정이 완료되었습니다.")
         pk = visitRegister.AS현장방문요청.AS접수.pk
@@ -1665,3 +1672,19 @@ class AScashcheckneedlist(core_views.onelist):
                 except:
                     queryset.append(s)
         return queryset
+
+
+def baddownload(request, pk):
+    """파일 다운로드 유니코드화 패치"""
+
+    asvisite = models.ASVisitContents.objects.get_or_none(pk=pk)
+    filepath = asvisite.하자파일.path
+    title = asvisite.하자파일.__str__()
+    title = urllib.parse.quote(title.encode("utf-8"))
+    title = title.replace("bad/", "")
+
+    with open(filepath, "rb") as f:
+        response = HttpResponse(f, content_type="application/force-download")
+        titling = 'attachment; filename="{}"'.format(title)
+        response["Content-Disposition"] = titling
+        return response

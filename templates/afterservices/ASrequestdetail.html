@@ -170,6 +170,7 @@ AS접수 상세보기
                         <th class="border bg-gray-200 px-4 py-2 w-24">처리회사</th>
                         <th class="border bg-gray-200 px-4 py-2 w-24">입력자</th>
                         <th class="border bg-gray-200 px-4 py-2 w-24">AS날짜</th>
+                        <th class="border bg-gray-200 px-4 py-2 w-24">하자파일</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -191,7 +192,15 @@ AS접수 상세보기
                         <td class="border px-4 py-2">
                             {{asregister.AS현장방문요청.AS현장방문.AS날짜.year}}-{{asregister.AS현장방문요청.AS현장방문.AS날짜.month}}-{{asregister.AS현장방문요청.AS현장방문.AS날짜.day}}
                         </td>
-
+                        <td class="border px-4 py-2 underline hover:text-indigo-700 hover:font-bold overflow-x-auto">
+                            <a href="{%url "afterservices:baddownload" asregister.AS현장방문요청.AS현장방문.pk %}">
+                                <script>
+                                    var test = "{{asregister.AS현장방문요청.AS현장방문.하자파일}}";
+                                    var result = test.replace('bad/', '');
+                                    document.write(result);
+                                </script>
+                            </a>
+                        </td>
                     </tr>
 
                 </tbody>

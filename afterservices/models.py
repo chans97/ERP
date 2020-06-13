@@ -189,6 +189,7 @@ class ASVisitContents(TimeStampedModel):
     접수제품분류 = models.CharField(
         choices=접수제품분류_CHOICES, max_length=10, blank=True, default=단품
     )
+    하자파일 = models.FileField(blank=True, null=True, upload_to="bad")
 
     단품 = models.ForeignKey(
         SI_models.SingleProduct,

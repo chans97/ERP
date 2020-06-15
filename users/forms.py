@@ -17,9 +17,9 @@ class LoginForm(forms.Form):
             if user.check_password(password):
                 return self.cleaned_data
             else:
-                self.add_error("password", forms.ValidationError("Password is wrong"))
+                self.add_error("password", forms.ValidationError("비밀번호가 틀렸습니다."))
         except models.User.DoesNotExist:
-            self.add_error("email", forms.ValidationError("User does not exist"))
+            self.add_error("email", forms.ValidationError("존재하지 않는 사용자입니다."))
 
 
 class SignUpForm(forms.ModelForm):
@@ -50,7 +50,7 @@ class SignUpForm(forms.ModelForm):
         email = self.cleaned_data["email"]
         try:
             user = models.User.objects.get(username=email)
-            raise forms.ValidationError("*This email already occupied")
+            raise forms.ValidationError("*이미 존제하는 이메일입니다.")
         except models.User.DoesNotExist:
             return email
 
@@ -58,7 +58,7 @@ class SignUpForm(forms.ModelForm):
         password = self.cleaned_data.get("password")
         password1 = self.cleaned_data["password1"]
         if password != password1:
-            raise forms.ValidationError("*Password confirmation does not match")
+            raise forms.ValidationError("*확인 비밀번호가 같지 않습니다.")
         else:
             return password
 
@@ -70,3 +70,38 @@ class SignUpForm(forms.ModelForm):
         user.set_password(password)
         user.nowPart = self.cleaned_data.get("부서")[0]
         user.save()
+
+
+class ForgotEmailForm(forms.ModelForm):
+    class Meta:
+        model = models.User
+        fields = (
+            "first_name",
+            "부서",
+        )
+        widgets = {
+            "first_name": forms.TextInput(attrs={"placeholder": "이름"}),
+            "부서": forms.CheckboxSelectMultiple(),
+        }
+
+    field_order = [
+        "first_name",
+        "부서",
+    ]
+
+
+class ForgotPasswordForm(forms.ModelForm):
+    class Meta:
+        model = models.User
+        fields = ("first_name", "부서", "email")
+        widgets = {
+            "first_name": forms.TextInput(attrs={"placeholder": "이름"}),
+            "부서": forms.CheckboxSelectMultiple(),
+            "email": forms.EmailInput(attrs={"placeholder": "Email"}),
+        }
+
+    field_order = [
+        "first_name",
+        "email",
+        "부서",
+    ]

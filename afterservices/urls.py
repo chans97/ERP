@@ -163,4 +163,7 @@ urlpatterns = [
         name="AScashcheckneedlist",
     ),
     path("baddownload/<int:pk>/", views.baddownload, name="baddownload",),
+    path("costdownload/<int:pk>/", views.costdownload, name="costdownload",),
+    path("costdelete/<int:pk>/", views.costdelete, name="costdelete",),
+    
 ]

@@ -16,6 +16,14 @@
             <span class="mr-2">계정이 없으십니까?</span>
             <a href="{%url "users:signup"%}" class="text-teal-500 font-medium">가입하기</a>
         </div>
+        <div class="pt-2 text-xs border-t mt-2">
+            <span class="mr-2">이메일이 기억안나십니까?</span>
+            <a href="{%url "users:forgotemail"%}" class="text-teal-500 font-medium">이메일 찾기</a>
+        </div>
+        <div class="mt-2 text-xs">
+            <span class="mr-2">비밀번호가 기억안나십니까?</span>
+            <a href="{%url "users:forgotpassword"%}" class="text-teal-500 font-medium">새 비밀번호 설정</a>
+        </div>
     </div>
 </div>
 {%endblock content %}

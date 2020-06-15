@@ -382,9 +382,26 @@ class ASregisterall(core_views.onelist):
 
 def ASrequestdetail(request, pk):
     asregister = AS_models.ASRegisters.objects.get_or_none(pk=pk)
+    post = request.POST
+    if post:
+        try:
+            견적서 = request.FILES["견적서"]
+        except:
+            견적서 = None
+
+        asregister.AS현장방문요청.AS현장방문.견적서 = 견적서
+        asregister.AS현장방문요청.AS현장방문.save()
+
     return render(
         request, "afterservices/ASrequestdetail.html", {"asregister": asregister,}
     )
+
+
+def costdelete(request, pk):
+    asvisit = AS_models.ASRegisters.objects.get_or_none(pk=pk)
+    asvisit.AS현장방문요청.AS현장방문.견적서 = None
+    asvisit.AS현장방문요청.AS현장방문.save()
+    return redirect(reverse("afterservices:ASrequestdetail", kwargs={"pk": pk}))
 
 
 class ASRegistersedit(user_mixins.LoggedInOnlyView, UpdateView):
@@ -1682,6 +1699,22 @@ def baddownload(request, pk):
     title = asvisite.하자파일.__str__()
     title = urllib.parse.quote(title.encode("utf-8"))
     title = title.replace("bad/", "")
+
+    with open(filepath, "rb") as f:
+        response = HttpResponse(f, content_type="application/force-download")
+        titling = 'attachment; filename="{}"'.format(title)
+        response["Content-Disposition"] = titling
+        return response
+
+
+def costdownload(request, pk):
+    """파일 다운로드 유니코드화 패치"""
+
+    asvisite = models.ASVisitContents.objects.get_or_none(pk=pk)
+    filepath = asvisite.견적서.path
+    title = asvisite.견적서.__str__()
+    title = urllib.parse.quote(title.encode("utf-8"))
+    title = title.replace("cost/", "")
 
     with open(filepath, "rb") as f:
         response = HttpResponse(f, content_type="application/force-download")

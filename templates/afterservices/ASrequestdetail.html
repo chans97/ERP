@@ -205,6 +205,50 @@ AS접수 상세보기
 
                 </tbody>
             </table>
+            <div class="flex flex-row justify-start">
+                {% if asregister.AS현장방문요청.AS현장방문.재방문여부 == "견적진행" %}
+                {% if asregister.AS현장방문요청.AS현장방문.견적서 %}
+
+                <div class="mb-10 mt-3 font-semibold text-sm flex felx-row">
+                    견적서 :
+                    <a href="{%url "afterservices:costdownload" asregister.AS현장방문요청.AS현장방문.pk %}">
+                        <span class="ml-3 underline hover:text-indigo-700 hover:font-bold overflow-x-auto">
+                            <script>
+                                var test = "{{asregister.AS현장방문요청.AS현장방문.견적서}}";
+                                var result = test.replace('cost/', '');
+                                document.write(result);
+                            </script>
+                        </span></a>
+                    <a href="{%url "afterservices:costdelete" asregister.pk %}">
+                        <div class="btn-link  bg-red-700 ml-5 hover:font-bold">
+                            파일삭제<i class="fa fa-edit ml-2"></i></div>
+                    </a>
+                </div>
+
+                {%else%}
+                <div class="w-full flex flex-row justify-end mt-5" id="btn-div">
+                    <button class="btn-link  bg-blue-800 ml-5 hover:font-bold w-40 justify-center items-center"
+                        onclick="$(`#cost-div`).show(300); $(`#btn-div`).hide(700);">
+                        견적서 첨부 추가<i class="fa fa-edit ml-2"></i></button>
+                </div>
+
+                <div class="w-8/12 p-5 border rounded-sm mt-4" id="cost-div" style="display: none;">
+                    <div class=" border-b w-64 mb-2 font-semibold border-gray-600 pb-2">
+                        견적서 첨부 추가</div>
+                    <form method="POST" class="w-full flex flex-col justify-center" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="flex flex-row items-center justify-center ">
+                            <input type="file" name="견적서" class="border items-center justify-center p-3">
+                            <button
+                                class="btn-link  bg-blue-800 ml-5 hover:font-bold w-56 h-10 justify-center items-center">
+                                견적서 첨부 추가<i class="fa fa-edit ml-2"></i></button>
+                        </div>
+
+                    </form>
+                </div>
+                {% endif %}
+                {% endif %}
+            </div>
         </div>
         {%endif%}
         {%if asregister.AS현장방문요청.AS현장방문.AS재방문%}

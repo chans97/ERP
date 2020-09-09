@@ -61,7 +61,7 @@ class OrderRegister(TimeStampedModel):
     )
     수주일자 = models.DateField(auto_now=False, auto_now_add=False)
     고객사명 = models.ForeignKey(
-        SI_models.CustomerPartner,
+        SI_models.Partner,
         related_name="수주등록",
         on_delete=models.SET_NULL,
         null=True,

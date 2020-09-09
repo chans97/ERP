@@ -23,7 +23,7 @@ class StockOfRackProductOutRequest(TimeStampedModel):
         null=True,
     )
     고객사 = models.ForeignKey(
-        SI_models.CustomerPartner,
+        SI_models.Partner,
         related_name="랙출하요청",
         on_delete=models.SET_NULL,
         null=True,
@@ -123,7 +123,7 @@ class StockOfRackProductOutRequest(TimeStampedModel):
 
 
 class StockOfRackProductMaker(TimeStampedModel):
-    현재공정_CHOICES = (("배선중", "배선중"), ("소방대기완료", "소방대기완료"))
+    현재공정_CHOICES = (("배선중", "배선중"), ("소방대기중", "소방대기중"), ("완료", "완료"))
     현재공정 = models.CharField(
         choices=현재공정_CHOICES, max_length=10, default="배선중", null=True,
     )

@@ -48,7 +48,7 @@ class UploadOrderForm(forms.Form):
         code = self.cleaned_data.get("수주코드")
         order = models.OrderRegister.objects.get_or_none(수주코드=code)
         거래처코드 = self.cleaned_data.get("거래처코드")
-        customer = SI_models.CustomerPartner.objects.get_or_none(거래처코드=거래처코드)
+        customer = SI_models.Partner.objects.get_or_none(거래처코드=거래처코드)
         if code:
             self.is_bound = True
             code = code[0:2]

@@ -1368,7 +1368,6 @@ class materialedit(user_mixins.LoggedInOnlyView, UpdateView):
         "자재품명",
         "규격",
         "단위",
-        "단가",
         "특이사항",
     )
     template_name = "stockmanages/materialedit.html"

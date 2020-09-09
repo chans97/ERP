@@ -33,6 +33,7 @@ urlpatterns = [
         name="produceplandelete",
     ),
     path("rackmakelist/", views.rackmakelist, name="rackmakelist"),
+    path("rackmakedonelist/", views.rackmakedonelist, name="rackmakedonelist"),
     path("workorder/<int:pk>/", views.workorder, name="workorder",),
     path(
         "workorderupdate/<int:pk>/",

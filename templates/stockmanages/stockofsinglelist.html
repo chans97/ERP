@@ -65,8 +65,9 @@
                                         {{list.단품재고.출하요청제외수량}}</td>
                                     <td class="border px-4 py-2">
                                         {{list.단품재고.입고요청포함수량}}</td>
-                                    <td class="border px-4 py-2">
-                                        {{list.모델코드}}</td>
+                                    <td class="border px-4 py-2 hover:text-blue-700 hover:font-bold">
+                                        <a href="{%url "StandardInformation:singledetail" list.pk %}">
+                                            {{list.모델코드}}</a></td>
                                     <td class="border px-4 py-2">{{list.모델명}}</td>
                                     <td class="border px-4 py-2">{{list.규격}}</td>
                                     <td class="border px-4 py-2">{{list.단위}}</td>

@@ -52,16 +52,16 @@ def orderregister(request):
 
     search = request.GET.get("search")
     if search is None:
-        customer = SI_models.CustomerPartner.objects.all().order_by("-created")
+        customer = SI_models.Partner.objects.all().order_by("-created")
         s_bool = False
     else:
         s_bool = True
-        qs = SI_models.CustomerPartner.objects.filter(
-            Q(고객작성자__first_name=search)
+        qs = SI_models.Partner.objects.filter(
+            Q(작성자__first_name=search)
             | Q(거래처구분=search)
             | Q(거래처코드=search)
             | Q(거래처명__contains=search)
-            | Q(고객담당자__first_name=search)
+            | Q(담당자__first_name=search)
             | Q(사업장주소__contains=search)
         ).order_by("-created")
         customer = qs

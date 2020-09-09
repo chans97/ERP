@@ -80,11 +80,9 @@ class UploadSingleForm(forms.ModelForm):
             "모델명",
             "규격",
             "단위",
-            "단가",
         )
         help_texts = {
             "모델코드": "*모델코드 앞에 SP를 붙여주시길 바랍니다.(한 번 설정하면, 바꿀 수 없습니다.)",
-            "단가": "*단가는 '원'을 제외하고 숫자만 입력해주시길 바랍니다. ",
         }
 
     def clean(self):
@@ -198,12 +196,9 @@ class UploadmaterialForm(forms.ModelForm):
             "자재품명",
             "규격",
             "단위",
-            "단가",
             "특이사항",
         )
-        help_texts = {
-            "단가": "*단가는 '원'을 제외하고 숫자만 입력해주시길 바랍니다. ",
-        }
+        help_texts = {}
         widgets = {
             "단위": forms.RadioSelect(),
             "품목": forms.RadioSelect(),

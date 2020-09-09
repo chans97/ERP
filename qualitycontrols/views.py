@@ -428,9 +428,9 @@ class finalcheckdonelist(core_views.threelist):
                 OR_models.OrderRegister.objects.filter(제품구분="단품")
                 .filter(
                     Q(수주코드__contains=self.search)
-                    | Q(영업구분=self.search)
-                    | Q(제품구분=self.search)
-                    | Q(사업장구분=self.search)
+                    | Q(영업구분__contains=self.search)
+                    | Q(제품구분__contains=self.search)
+                    | Q(사업장구분__contains=self.search)
                     | Q(고객사명__거래처명__contains=self.search)
                     | Q(단품모델__모델명__contains=self.search)
                     | Q(단품모델__모델코드__contains=self.search)
@@ -631,7 +631,7 @@ class finalcheckedit(user_mixins.LoggedInOnlyView, UpdateView):
         finalcheck.내부검사 = 내부검사
         finalcheck.외관검사 = 외관검사
         finalcheck.내압검사_AC = 내압검사_AC
-        finalcheck.내압검사_C = 내압검사_C
+        finalcheck.내압검사_DC = 내압검사_DC
         finalcheck.내용물확인 = 내용물확인
         finalcheck.가_감전압 = 가_감전압
         finalcheck.HI_POT_내부검사 = HI_POT_내부검사

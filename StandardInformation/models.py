@@ -246,7 +246,6 @@ class Material(TimeStampedModel):
         return self.자재품명
 
 
-
 class SingleProduct(TimeStampedModel):
 
     작성자 = models.ForeignKey(
@@ -254,7 +253,7 @@ class SingleProduct(TimeStampedModel):
     )
     작성일 = models.DateField(auto_now=True, auto_now_add=False)
     모델코드 = models.CharField(max_length=80, blank=True)
-    모델명 = models.CharField(max_length=30, blank=True)
+    모델명 = models.CharField(max_length=30)
     규격 = models.CharField(max_length=80, blank=True)
     단위 = models.CharField(max_length=10, blank=True)
     단가 = models.IntegerField(null=True)

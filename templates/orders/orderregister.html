@@ -43,10 +43,11 @@
                             <tr>
                                 <th class="border bg-gray-200 px-1 py-2 w-12">선택</th>
                                 <th class="border bg-gray-200 px-4 py-2 w-24">거래처코드</th>
-                                <th class="border bg-gray-200 px-4 py-2 w-40">거래처명</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-24">거래처구분</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-24">거래처명</th>
                                 <th class="border bg-gray-200 px-4 py-2 w-48">사업장주소</th>
-                                <th class="border bg-gray-200 px-4 py-2 w-24">고객작성자</th>
-                                <th class="border bg-gray-200 px-4 py-2 w-24">고객담당자</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-24">작성자</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-24">담당자</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -61,10 +62,11 @@
                                     </td>
                                     <td class="border px-4 py-2 hover:text-blue-700">
                                         {{list.거래처코드}}</td>
+                                    <td class="border px-4 py-2">{{list.거래처구분}}</td>
                                     <td class="border px-4 py-2">{{list.거래처명}}</td>
                                     <td class="border px-4 py-2">{{list.사업장주소}}</td>
-                                    <td class="border px-4 py-2">{{list.고객작성자}}</td>
-                                    <td class="border px-4 py-2">{{list.고객담당자}}</td>
+                                    <td class="border px-4 py-2">{{list.작성자}}</td>
+                                    <td class="border px-4 py-2">{{list.담당자}}</td>
                                 </tr>
                                 {%endfor%}
                             </ul>

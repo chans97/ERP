@@ -18,4 +18,5 @@ urlpatterns = [
     path("lastchecknum", views.lastchecknum, name="lastchecknum"),
     path("incheck", views.incheck, name="incheck"),
     path("asconduct", views.asconduct, name="asconduct"),
+    path("makeCompanyPart", views.makeCompanyPart, name="makeCompanyPart"),
 ]

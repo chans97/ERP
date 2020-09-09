@@ -221,6 +221,10 @@
                             <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
                                 <i class="fas fa-angle-right mr-1"></i></i>랙조립관리</span></a></div>
                     <div>
+                        <a href="{% url "producemanages:rackmakedonelist"%}">
+                            <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i></i>랙조립완료목록</span></a></div>
+                    <div>
                         <a href="{% url "producemanages:monthlyplanlist"%}">
                             <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
                                 <i class="fas fa-angle-right mr-1"></i></i>월별생산계획관리</span></a></div>
@@ -269,6 +273,98 @@
 
                 </div>
             </div>
+
+            <div class="font-base text-sm text-left text-orange-100 py-px">
+                <i class="fas fa-bars mr-2 ml-3"></i>자재출고관리
+                <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
+                <div class="text-left ml-4 mb-4">
+                    <div>
+                        <a href="{% url "qualitycontrols:materialoutrequest"%}">
+                            <span class=" font-light text-xs text-orange-100 hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>자재출고요청</span></a></div>
+                    <div>
+                        <a href="{% url "qualitycontrols:managematerialoutrequest"%}">
+                            <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>자재출고확인</span></a></div>
+
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+    {%elif user.nowPart.pk == 4 or user.nowPart.pk == 64%}
+
+    <div class="flex">
+        <div class="w-32 mx-auto h-10/12 fixed items-center font-semibold justify-center pt-3 bg-gray-700 mt-6">
+            <div class="font-base text-sm text-left text-orange-100 py-px">
+                <i class="fas fa-bars mr-2 ml-3"></i>최종검사
+                <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
+                <div class="text-left ml-4 mb-2">
+                    <div>
+                        <a href="{% url "qualitycontrols:finalchecklist"%}">
+                            <span class=" font-light text-xs text-orange-100 hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>최종검사결과등록 </span></a></div>
+                    <div>
+                        <a href="{% url "qualitycontrols:finalcheckdonelist"%}">
+                            <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>최종검사완료목록</span></a></div>
+
+                </div>
+            </div>
+            <div class="font-base text-sm text-left text-orange-100 py-px">
+                <i class="fas fa-bars mr-2 ml-3"></i>수입검사
+                <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
+                <div class="text-left ml-4 mb-2">
+                    <div>
+                        <a href="{% url "qualitycontrols:materialchecklist"%}">
+                            <span class=" font-light text-xs text-orange-100 hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>수입검사등록</span></a></div>
+                    <div>
+                        <a href="{% url "qualitycontrols:lowmateriallist"%}">
+                            <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>자재부적합등록</span></a></div>
+                    <div>
+                        <a href="{% url "qualitycontrols:materialcheckalllist"%}">
+                            <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>수입검사완료목록</span></a></div>
+
+                </div>
+            </div>
+            <div class="font-base text-sm text-left text-orange-100 py-px">
+                <i class="fas fa-bars mr-2 ml-3"></i>계측기관리
+                <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
+                <div class="text-left ml-4 mb-2">
+                    <div>
+                        <a href="{% url "qualitycontrols:checkmeasurelist"%}">
+                            <span class=" font-light text-xs text-orange-100 hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>계측기점검</span></a></div>
+                    <div>
+                        <a href="{% url "qualitycontrols:repairmeasurelist"%}">
+                            <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>계측기수리</span></a></div>
+                    <div>
+                        <a href="{% url "qualitycontrols:measurelist"%}">
+                            <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>계측기정보</span></a></div>
+
+                </div>
+            </div>
+            <div class="font-base text-sm text-left text-orange-100 py-px">
+                <i class="fas fa-bars mr-2 ml-3"></i>자재출고관리
+                <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
+                <div class="text-left ml-4 mb-2">
+                    <div>
+                        <a href="{% url "qualitycontrols:materialoutrequest"%}">
+                            <span class=" font-light text-xs text-orange-100 hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>자재출고요청</span></a></div>
+                    <div>
+                        <a href="{% url "qualitycontrols:managematerialoutrequest"%}">
+                            <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i>자재출고확인</span></a></div>
+
+                </div>
+            </div>
             <div class="font-base text-sm text-left text-orange-100 py-px">
                 <i class="fas fa-bars mr-2 ml-3"></i><a href="{% url "producemanages:producehome"%}">수리</a>
                 <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
@@ -290,96 +386,6 @@
                         <a href="{% url "producemanages:checkdonelist"%}">
                             <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
                                 <i class="fas fa-angle-right mr-1"></i>최종검사확인</span></a></div>
-
-                </div>
-            </div>
-            <div class="font-base text-sm text-left text-orange-100 py-px">
-                <i class="fas fa-bars mr-2 ml-3"></i>자재출고관리
-                <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
-                <div class="text-left ml-4 mb-4">
-                    <div>
-                        <a href="{% url "qualitycontrols:materialoutrequest"%}">
-                            <span class=" font-light text-xs text-orange-100 hover:font-bold">
-                                <i class="fas fa-angle-right mr-1"></i>자재출고요청</span></a></div>
-                    <div>
-                        <a href="{% url "qualitycontrols:managematerialoutrequest"%}">
-                            <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
-                                <i class="fas fa-angle-right mr-1"></i>자재출고확인</span></a></div>
-
-                </div>
-            </div>
-
-        </div>
-    </div>
-    {%elif user.nowPart.pk == 4 or user.nowPart.pk == 64%}
-
-    <div class="flex">
-        <div class="w-32 mx-auto h-10/12 fixed items-center font-semibold justify-center pt-5 bg-gray-700 mt-6">
-            <div class="font-base text-sm text-left text-orange-100 py-px">
-                <i class="fas fa-bars mr-2 ml-3"></i>최종검사
-                <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
-                <div class="text-left ml-4 mb-4">
-                    <div>
-                        <a href="{% url "qualitycontrols:finalchecklist"%}">
-                            <span class=" font-light text-xs text-orange-100 hover:font-bold">
-                                <i class="fas fa-angle-right mr-1"></i>최종검사결과등록 </span></a></div>
-                    <div>
-                        <a href="{% url "qualitycontrols:finalcheckdonelist"%}">
-                            <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
-                                <i class="fas fa-angle-right mr-1"></i>최종검사완료목록</span></a></div>
-
-                </div>
-            </div>
-            <div class="font-base text-sm text-left text-orange-100 py-px">
-                <i class="fas fa-bars mr-2 ml-3"></i>수입검사
-                <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
-                <div class="text-left ml-4 mb-4">
-                    <div>
-                        <a href="{% url "qualitycontrols:materialchecklist"%}">
-                            <span class=" font-light text-xs text-orange-100 hover:font-bold">
-                                <i class="fas fa-angle-right mr-1"></i>수입검사등록</span></a></div>
-                    <div>
-                        <a href="{% url "qualitycontrols:lowmateriallist"%}">
-                            <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
-                                <i class="fas fa-angle-right mr-1"></i>자재부적합등록</span></a></div>
-                    <div>
-                        <a href="{% url "qualitycontrols:materialcheckalllist"%}">
-                            <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
-                                <i class="fas fa-angle-right mr-1"></i>수입검사완료목록</span></a></div>
-
-                </div>
-            </div>
-            <div class="font-base text-sm text-left text-orange-100 py-px">
-                <i class="fas fa-bars mr-2 ml-3"></i>계측기관리
-                <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
-                <div class="text-left ml-4 mb-4">
-                    <div>
-                        <a href="{% url "qualitycontrols:checkmeasurelist"%}">
-                            <span class=" font-light text-xs text-orange-100 hover:font-bold">
-                                <i class="fas fa-angle-right mr-1"></i>계측기점검</span></a></div>
-                    <div>
-                        <a href="{% url "qualitycontrols:repairmeasurelist"%}">
-                            <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
-                                <i class="fas fa-angle-right mr-1"></i>계측기수리</span></a></div>
-                    <div>
-                        <a href="{% url "qualitycontrols:measurelist"%}">
-                            <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
-                                <i class="fas fa-angle-right mr-1"></i>계측기정보</span></a></div>
-
-                </div>
-            </div>
-            <div class="font-base text-sm text-left text-orange-100 py-px">
-                <i class="fas fa-bars mr-2 ml-3"></i>자재출고관리
-                <div class="border-t h-px w-10/12 self-center mx-auto py-px "></div>
-                <div class="text-left ml-4 mb-4">
-                    <div>
-                        <a href="{% url "qualitycontrols:materialoutrequest"%}">
-                            <span class=" font-light text-xs text-orange-100 hover:font-bold">
-                                <i class="fas fa-angle-right mr-1"></i>자재출고요청</span></a></div>
-                    <div>
-                        <a href="{% url "qualitycontrols:managematerialoutrequest"%}">
-                            <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
-                                <i class="fas fa-angle-right mr-1"></i>자재출고확인</span></a></div>
 
                 </div>
             </div>
@@ -510,11 +516,14 @@
                             <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
                                 <i class="fas fa-angle-right mr-1"></i>자재기준정보</span></a></div>
                     <div>
-                        <a href="{% url "stockmanages:singleStandarInformation"%}">
+                        <a href="{% url "StandardInformation:single"%}">
                             <span class=" font-light text-xs justify-center text-orange-100  hover:font-bold">
                                 <i class="fas fa-angle-right mr-1"></i>단품기준정보</span></a></div>
                     <div>
-                    </div>
+                        <a href="{%url "StandardInformation:partner"%}">
+                            <span class=" font-light text-xs text-orange-100  hover:font-bold">
+                                <i class="fas fa-angle-right mr-1"></i></i>거래처</span></a></div>
+
                 </div>
 
 

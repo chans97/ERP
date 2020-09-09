@@ -122,29 +122,41 @@ class FinalCheckRegister(TimeStampedModel):
     검사수준 = models.CharField(max_length=40, null=True,)
     샘플링방식 = models.CharField(max_length=20, null=True,)
     결점수 = models.CharField(max_length=20, null=True,)
-    전원전압 = models.CharField(choices=전원전압_CHOICES, max_length=20, blank=True, null=True)
+    전원전압 = models.CharField(
+        choices=전원전압_CHOICES, max_length=20, null=True, default="DC 24V"
+    )
     POWERTRANS = models.CharField(
-        choices=POWERTRANS_CHOICES, max_length=20, blank=True, null=True
+        choices=POWERTRANS_CHOICES, max_length=20, null=True, default="T-EPD2083-01",
     )
     FUSE_전_ULUSA = models.CharField(
-        choices=FUSE_전_ULUSA_CHOICES, max_length=20, blank=True, null=True,
+        choices=FUSE_전_ULUSA_CHOICES, max_length=20, null=True, default="31.8mm 1A",
     )
     LABEL_인쇄물 = models.CharField(
-        choices=LABEL_인쇄물_CHOICES, max_length=20, blank=True, null=True
+        choices=LABEL_인쇄물_CHOICES, max_length=20, null=True, default="후면 좌측",
     )
     기타출하위치 = models.CharField(max_length=50, null=True, blank=True,)
-    내용물 = models.CharField(choices=있음없음_CHOICES, max_length=20, blank=True, null=True)
-    포장검사 = models.CharField(choices=OKNO_CHOICES, max_length=20, blank=True, null=True)
-    동작검사 = models.CharField(choices=OKNO_CHOICES, max_length=20, blank=True, null=True)
-    내부검사 = models.CharField(choices=OKNO_CHOICES, max_length=20, blank=True, null=True)
-    외관검사 = models.CharField(choices=OKNO_CHOICES, max_length=20, blank=True, null=True)
+    내용물 = models.CharField(choices=있음없음_CHOICES, max_length=20, null=True, default="있음")
+    포장검사 = models.CharField(
+        choices=OKNO_CHOICES, max_length=20, null=True, default="OK"
+    )
+    동작검사 = models.CharField(
+        choices=OKNO_CHOICES, max_length=20, null=True, default="OK"
+    )
+    내부검사 = models.CharField(
+        choices=OKNO_CHOICES, max_length=20, null=True, default="OK"
+    )
+    외관검사 = models.CharField(
+        choices=OKNO_CHOICES, max_length=20, null=True, default="OK"
+    )
     내압검사_DC = models.CharField(
-        choices=OKNO_CHOICES, max_length=20, blank=True, null=True
+        choices=OKNO_CHOICES, max_length=20, null=True, default="OK"
     )
     내압검사_AC = models.CharField(
-        choices=OKNO_CHOICES, max_length=20, blank=True, null=True
+        choices=OKNO_CHOICES, max_length=20, null=True, default="OK"
     )
-    내용물확인 = models.CharField(choices=OKNO_CHOICES, max_length=20, blank=True, null=True)
+    내용물확인 = models.CharField(
+        choices=OKNO_CHOICES, max_length=20, null=True, default="OK"
+    )
     가_감전압 = models.CharField(max_length=50, blank=True, null=True)
     HI_POT_내부검사 = models.CharField(max_length=50, blank=True, null=True)
     특이사항 = models.TextField(max_length=80, blank=True, null=True)
@@ -281,12 +293,6 @@ class MaterialCheckRegister(TimeStampedModel):
 
 
 class MaterialCheck(TimeStampedModel):
-    검사지침서_CHOICES = (
-        ("CAE SHI-16-01", "CAE SHI-16-01"),
-        ("PCB SHI 10-01", "PCB SHI 10-01"),
-        ("트랜스 SHI 11-06", "트랜스 SHI 11-06"),
-        ("사출 성형품 SHI 16-02", "사출 성형품 SHI 16-02"),
-    )
 
     판정기준_CHOICES = (
         ("AC 0", "AC 0"),
@@ -300,15 +306,13 @@ class MaterialCheck(TimeStampedModel):
         on_delete=models.SET_NULL,
         null=True,
     )
-    검사지침서 = models.CharField(
-        choices=검사지침서_CHOICES, max_length=32, null=True, blank=True,
-    )
+    검사지침서 = models.CharField(max_length=100, null=True, blank=True,)
     검사자 = models.ForeignKey(
         users_models.User, related_name="수입검사", on_delete=models.SET_NULL, null=True
     )
     검사일자 = models.DateField(auto_now=False, auto_now_add=False, blank=True, null=True)
     검사항목 = models.CharField(max_length=20, null=True, blank=True,)
-    판정기준 = models.CharField(choices=판정기준_CHOICES, max_length=20, null=True, blank=True,)
+    판정기준 = models.CharField(max_length=20, null=True, blank=True, default="AC=0, RE=1")
     시료크기 = models.IntegerField()
     적합수량 = models.IntegerField()
     부적합수량 = models.IntegerField()

@@ -24,7 +24,7 @@
             <span class="text-red-700 font-light text-sm">{{error}}</span>
             {% endfor %}
             {% endif %}
-            <div class="flex flex-wrap ">
+            <div class="flex flex-wrap mb-10">
                 {% for field in form %}<div class="w-1/2 py-1 pr-40">
 
                     {% include 'mixins/normal/normal_input.html' with field=field %}</div>

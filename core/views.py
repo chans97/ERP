@@ -633,13 +633,16 @@ def materialmigrate(request):
             자재공급업체 = SI_models.SupplyPartner.objects.get_or_none(거래처명=name)
             if 자재공급업체:
                 if num != 1:
-                    SI_models.Material.objects.create(
+                    material = SI_models.Material.objects.create(
                         작성자=request.user,
                         자재코드=aline[0],
                         자재품명=aline[1],
                         규격=aline[2],
                         단위=aline[3],
                         자재공급업체=자재공급업체,
+                    )
+                    SM_models.StockOfMaterial.objects.create(
+                        자재=material, 실수량=0, 입고요청포함수량=0, 출고요청제외수량=0
                     )
             else:
                 messages.error(request, f"{name}(은)는 등록되지 않은 업체입니다.")
@@ -704,6 +707,31 @@ def measuremigrate(request):
         return redirect(reverse("qualitycontrols:measurelist"))
 
     return render(request, "migrate/measuremigrate.html", {"form": form})
+
+
+def makeCompanyPart(request):
+    """데이터 초기화시 회사와 부서를 만들고 슈퍼유저를 사용할 수 있게 만듭니다."""
+    sam = user_models.Company.objects.create(회사명="삼형전자", 사업자등록번호="12345",)
+    user_models.Company.objects.create(
+        회사명="엠에스텔레콤", 사업자등록번호="123456",
+    )
+    user_models.Passward.objects.create(pw="123456")
+    order = user_models.Part.objects.create(해당회사=sam, 부서명="영업부")
+    producemanage = user_models.Part.objects.create(해당회사=sam, 부서명="생산관리부")
+    makemanage = user_models.Part.objects.create(해당회사=sam, 부서명="공정관리부")
+    quality = user_models.Part.objects.create(해당회사=sam, 부서명="품질부")
+    AS = user_models.Part.objects.create(해당회사=sam, 부서명="AS담당부")
+    money = user_models.Part.objects.create(해당회사=sam, 부서명="총무부")
+    stocks = user_models.Part.objects.create(해당회사=sam, 부서명="자재부")
+    now = user_models.Part.objects.create(해당회사=sam, 부서명="현황")
+
+    superuser = user_models.User.objects.get(pk=1)
+    superuser.nowPart = order
+    superuser.first_name = "관리자"
+    superuser.부서.add(order, producemanage, makemanage, quality, AS, money, stocks, now)
+    superuser.save()
+
+    return redirect(reverse("core:migrate"))
 
 
 def managehome(request):

@@ -486,6 +486,66 @@ def rackmakelist(request):
     )
 
 
+def rackmakedonelist(request):
+    user = request.user
+    search = request.GET.get("search")
+
+    if search is None:
+        s_order = (
+            SR_models.StockOfRackProductMaker.objects.filter(랙조립기사=user)
+            .filter(현재공정="완료")
+            .order_by("-created")
+        )
+
+        s_bool = False
+    else:
+        s_bool = True
+        s_order = (
+            SR_models.StockOfRackProductMaker.objects.filter(랙조립기사=user)
+            .filter(현재공정="완료")
+            .filter(
+                Q(랙출하요청__수주__수주코드__contains=search)
+                | Q(랙조립기사__first_name__contains=search)
+                | Q(특이사항__contains=search)
+                | Q(랙__랙모델명__contains=search)
+                | Q(랙__랙시리얼코드__contains=search)
+            )
+            .order_by("-created")
+        )
+
+    pagediv = 7
+
+    totalpage = int(math.ceil(len(s_order) / pagediv))
+    paginator = Paginator(s_order, pagediv, orphans=0)
+    page = request.GET.get("page", "1")
+    s_order = paginator.get_page(page)
+    nextpage = int(page) + 1
+    previouspage = int(page) - 1
+    notsamebool = True
+    nonpage = False
+    if totalpage == 0:
+        nonpage = True
+    if int(page) == totalpage:
+        notsamebool = False
+    if (search is None) or (search == ""):
+        search = "search"
+    return render(
+        request,
+        "producemanages/rackmakedonelist.html",
+        {
+            "s_order": s_order,
+            "search": search,
+            "page": page,
+            "totalpage": totalpage,
+            "notsamebool": notsamebool,
+            "nextpage": nextpage,
+            "previouspage": previouspage,
+            "s_bool": s_bool,
+            "nonpage": nonpage,
+        },
+    )
+
+
 def workorder(request, pk):
     user = request.user
     order = OR_models.OrderRegister.objects.get_or_none(pk=pk)

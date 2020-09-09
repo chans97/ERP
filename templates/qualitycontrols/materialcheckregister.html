@@ -53,6 +53,52 @@
                                             {% if field.name == "검사일자" %}
 
                                             <input type="text" name="검사일자" id="date2" size="10" />
+                                            {%elif field.name == "검사지침서"%}
+                                            <div class="flex w-full">
+                                                <ul id="id_POWERTRANS">
+                                                    <li><label for="id_검사지침서_1"><input type="radio" name="검사지침서"
+                                                                value="CASE SHI-16-01" id="id_검사지침서_1"
+                                                                onclick="hideinput();"
+                                                                {% if 검사지침서 == "CASE SHI-16-01" %} checked {% endif %}>
+                                                            CASE SHI-16-01</label>
+                                                    </li>
+                                                    <li><label for="id_검사지침서_1"><input type="radio" name="검사지침서"
+                                                                value="PCB SHI 10-01" id="id_검사지침서_1"
+                                                                onclick="hideinput();" {% if 검사지침서 == "PCB SHI 10-01" %}
+                                                                checked {% endif %}>
+                                                            PCB SHI 10-01</label>
+                                                    </li>
+                                                    <li><label for="id_검사지침서_1"><input type="radio" name="검사지침서"
+                                                                value="트랜스 SHI 11-06" id="id_검사지침서_1"
+                                                                onclick="hideinput();" {% if 검사지침서 == "트랜스 SHI 11-06" %}
+                                                                checked {% endif %}>
+                                                            트랜스 SHI 11-06</label>
+                                                    </li>
+                                                    <li><label for="id_검사지침서_2"><input type="radio" name="검사지침서"
+                                                                value="사출 성형품 SHI 16-02" id="id_검사지침서_2"
+                                                                onclick="hideinput();"
+                                                                {% if 검사지침서 == "사출 성형품 SHI 16-02" %} checked
+                                                                {% endif %}>
+                                                            사출 성형품 SHI 16-02</label>
+                                                    </li>
+                                                    <li>
+                                                        <label for="id_검사지침서_3 "
+                                                            class="flex flex-row justify-start items-center">
+                                                            <input type="radio" name="검사지침서" value="" id="id_검사지침서_3"
+                                                                onclick="showinput();" {% if 검사지침서 == "이상 없음" %}
+                                                                {%elif 검사지침서 == "의뢰내용과 같음" %} {% else %} checked
+                                                                {% endif %}>
+                                                            <span class="w-10 ml-1">
+                                                                기타
+                                                            </span>
+                                                            <input type="text" name="검사지침서값" id="검사지침서값"
+                                                                class="border ml-2" placeholder="기타 내용을 입력하세요."
+                                                                value={{검사지침서}}>
+
+                                                        </label>
+                                                    </li>
+                                                </ul>
+                                            </div>
 
                                             {%else%}
                                             {{field}}{% endif %}</div>
@@ -77,7 +123,36 @@
                 </form>
             </div>
         </div>
+
+
     </div>
 
 </div>
+
+<script>
+    $("#검사지침서값").hide();
+    var radioVal = document.querySelector('input[name="검사지침서"]:checked').id
+    if (radioVal == "id_검사지침서_3") {
+        $("#검사지침서값").show();
+    }
+    function showinput() {
+        $("#검사지침서값").slideDown(200);
+    }
+    function hideinput() {
+        $("#검사지침서값").slideUp(200);
+    }
+
+
+    $("#검사지침서값").on("change keyup paste", function () {
+        currentVal3 = $("#검사지침서값").val();
+        var oldVal = "-"
+        if (currentVal3 == oldVal) {
+            return;
+        }
+        oldVal = currentVal3;
+        var radio_btn = document.getElementById("검사지침서값");
+        document.getElementById("id_검사지침서_3").value = radio_btn.value;
+        console.log(radio_btn.value)
+    });
+</script>
 {%endblock main_contens %}

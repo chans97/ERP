@@ -983,15 +983,42 @@ def incheck(request):
     result = request.GET
     start = result.get("start")
     end = result.get("end")
-
+    supply_list = SI_models.SupplyPartner.objects.all()
     inchecklist = QC_models.MaterialCheck.objects.filter(created__range=(start, end))
+
     good_num = 0
     bad_num = 0
+    bad_count = 0
     for check in inchecklist:
         bad_num += check.부적합수량
-        good_num += check.적합수량
 
+        good_num += check.적합수량
+        if check.부적합수량 != 0:
+            bad_count += 1
     total_num = good_num + bad_num
+
+    supply_dict_list = []
+    each_bad_count = 0
+    for supply in supply_list:
+        material_list = supply.제공자재.all()
+
+        for material in material_list:
+            qualityCheck_list = material.수입검사.all()
+            for qualityCheck in qualityCheck_list:
+                if qualityCheck.부적합수량 != 0:
+                    each_bad_count += 1
+        supply_dict = {"name": supply.거래처명, "count": each_bad_count}
+        supply_dict_list.append(supply_dict)
+        each_bad_count = 0
+
+    supply_dict_list = sorted(supply_dict_list, key=lambda single: (-single["count"]))
+    maxnum = supply_dict_list[0]["count"]
+    if maxnum == 0:
+        maxnum = 1
+
+    for supply_dict in supply_dict_list:
+        per = (int(supply_dict["count"]) / maxnum) * 100
+        supply_dict.update(per=per)
 
     return render(
         request,
@@ -1003,6 +1030,8 @@ def incheck(request):
             "total_num": total_num,
             "bad_num": bad_num,
             "good_num": good_num,
+            "bad_count": bad_count,
+            "supply_dict_list": supply_dict_list,
         },
     )
 

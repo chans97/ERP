@@ -23,7 +23,7 @@
             {%endif%}
 
             {%if start != none%}
-            <div class="w-full  flex flex-row p-10">
+            <div class="w-full  flex flex-col p-10">
                 <div class="flex flex-col items-center justify-center w-full">
 
 
@@ -32,14 +32,33 @@
                             This browser does not support HTML5 Canvas.
                         </canvas>
                         <ol class="legend flex flex-col items-center ml-0">
-                            <li class="key one">적합수량 : {{good_num}}건</li>
-                            <li class="key two">부적합수량 : {{bad_num}}건</li>
+                            <li class="key one">적합수량 : {{good_num}}개</li>
+                            <li class="key two">부적합수량 : {{bad_num}}개({{bad_count}}건)</li>
                         </ol>
                     </aside>
                     <span class="text-xs">({{start}}~{{end}}) </span>
                     <span class="text-xs">총 {{total_num}}건 </span>
 
                     <span class="font-extrabold text-2xl">적합/부적합 수량</span>
+                </div>
+                <div class="w-full p-3 border">
+                {% for supply in supply_dict_list %}
+                    <div class=" w-full flex flex-row items-center mx-2 my-5">
+                        <span class="label w-2/12">{{supply.name}}</span>
+                        <div class="h-6 w-10/12 bg-gray-200 rounded-lg">
+
+                                {% if supply.count == 0 %}
+
+                                <span class="text-gray-500">{{supply.count}}건</span>
+                                {% endif %}
+
+                                <div style="width: {{supply.per}}%;"
+                                    class="h-6 flex flex-row items-center justify-center bg-blue-800 rounded-lg">
+                                    <span class="text-gray-100">{{supply.count}}건</span></div>
+                            </div>
+                    </div>
+                        
+                {% endfor %}
                 </div>
             </div>
             {%endif%}

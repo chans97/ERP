@@ -39,6 +39,10 @@ Sign Up
                 </thead>
                 <tbody>
                     {%for f in field%}
+
+                    {% if  f.data.label != "삼형전자 - 공정관리부"%}
+
+
                     <tr>
                         <td>
                             <input type="checkbox" name="부서" value={{f.data.value}} id={{f.data.attrs.id}}
@@ -50,6 +54,7 @@ Sign Up
                             </span>
                         </td>
                     </tr>
+                    {%endif%}
                     {%endfor%}
                 </tbody>
             </table>

@@ -1185,9 +1185,9 @@ def finalchecklist(request):
             "-created"
         )
         for s in 최종검사:
-            try:
-                s.수리내역서
-            except:
+            if s.수리내역서.all():
+                pass
+            else:
                 l_order.append(s)
 
         s_bool = False
@@ -1205,9 +1205,9 @@ def finalchecklist(request):
 
         l_order = []
         for s in 최종검사:
-            try:
-                s.수리내역서
-            except:
+            if s.수리내역서.all():
+                pass
+            else:
                 l_order.append(s)
 
     pagediv = 7
@@ -1250,25 +1250,31 @@ def repairregister(request, pk):
     form = forms.UploadRepairForm(request.POST)
 
     if form.is_valid():
-        불량위치및자재 = form.cleaned_data.get("불량위치및자재")
-        수리내용 = form.cleaned_data.get("수리내용")
-        실수리수량 = form.cleaned_data.get("실수리수량")
-        폐기수량 = form.cleaned_data.get("폐기수량")
-        특이사항 = form.cleaned_data.get("특이사항")
+        postedValue = request.POST
+        postDict = dict(postedValue)
 
-        SM = QC_models.RepairRegister.objects.create(
-            최종검사결과=finalcheck,
-            수리최종="최종검사결과",
-            작성자=user,
-            불량위치및자재=불량위치및자재,
-            특이사항=특이사항,
-            수리내용=수리내용,
-            실수리수량=실수리수량,
-            폐기수량=폐기수량,
-            제품=finalcheck.제품,
-        )
+        불량위치및자재_list = postDict["불량위치및자재"]
+        수리내용_list = postDict["수리내용"]
+        실수리수량_list = postDict["실수리수량"]
+        폐기수량_list = postDict["폐기수량"]
+        특이사항_list = postDict["특이사항"]
 
-        messages.success(request, "수리내역서 등록이 완료되었습니다.")
+        lenOflist = len(불량위치및자재_list)
+
+        for repair_num in range(lenOflist):
+            SM = QC_models.RepairRegister.objects.create(
+                수리최종="최종검사결과",
+                작성자=user,
+                불량위치및자재=불량위치및자재_list[repair_num],
+                특이사항=수리내용_list[repair_num],
+                수리내용=실수리수량_list[repair_num],
+                실수리수량=폐기수량_list[repair_num],
+                폐기수량=특이사항_list[repair_num],
+                제품=finalcheck.제품,
+            )
+            SM.최종검사결과.add(finalcheck)
+
+        messages.success(request, "수리내역서가 %d개 등록이 완료되었습니다." % lenOflist)
         return redirect(reverse("producemanages:producehome"))
     return render(
         request,
@@ -1287,7 +1293,7 @@ class repairupdate(user_mixins.LoggedInOnlyView, UpdateView):
         response_kwargs.setdefault("content_type", self.content_type)
         pk = self.kwargs.get("pk")
         repair = QC_models.RepairRegister.objects.get_or_none(pk=pk)
-        finalcheck = repair.최종검사결과
+        finalcheck = repair.최종검사결과.all()[0]
         context["finalcheck"] = finalcheck
         return self.response_class(
             request=self.request,
@@ -1300,7 +1306,7 @@ class repairupdate(user_mixins.LoggedInOnlyView, UpdateView):
     def get_success_url(self):
         pk = self.kwargs.get("pk")
         repair = QC_models.RepairRegister.objects.get_or_none(pk=pk)
-        finalcheck = repair.최종검사결과
+        finalcheck = repair.최종검사결과.all()[0]
         order = finalcheck.최종검사의뢰.작업지시서.작업지시서.생산계획.생산의뢰.생산의뢰수주
         pk = order.pk
         return reverse("producemanages:orderdetailforwork", kwargs={"pk": pk})
@@ -1314,14 +1320,14 @@ class repairupdate(user_mixins.LoggedInOnlyView, UpdateView):
         폐기수량 = form.cleaned_data.get("폐기수량")
         특이사항 = form.cleaned_data.get("특이사항")
         pk = self.kwargs.get("pk")
-        finalcheck = QC_models.RepairRegister.objects.get_or_none(pk=pk)
-        finalcheck.불량위치및자재 = 불량위치및자재
-        finalcheck.수리내용 = 수리내용
-        finalcheck.실수리수량 = 실수리수량
-        finalcheck.폐기수량 = 폐기수량
-        finalcheck.특이사항 = 특이사항
+        repairPaper = QC_models.RepairRegister.objects.get_or_none(pk=pk)
+        repairPaper.불량위치및자재 = 불량위치및자재
+        repairPaper.수리내용 = 수리내용
+        repairPaper.실수리수량 = 실수리수량
+        repairPaper.폐기수량 = 폐기수량
+        repairPaper.특이사항 = 특이사항
         print(실수리수량)
-        finalcheck.save()
+        repairPaper.save()
 
         return super().form_valid(form)
 
@@ -1402,6 +1408,21 @@ def repairdetail(request, pk):
 
 
 class repairupdateindetail(repairupdate):
+    def render_to_response(self, context, **response_kwargs):
+
+        response_kwargs.setdefault("content_type", self.content_type)
+        pk = self.kwargs.get("pk")
+        repair = QC_models.RepairRegister.objects.get_or_none(pk=pk)
+        finalcheck = repair.최종검사결과.all()[0]
+        context["finalcheck"] = finalcheck
+        return self.response_class(
+            request=self.request,
+            template=self.get_template_names(),
+            context=context,
+            using=self.template_engine,
+            **response_kwargs,
+        )
+
     def get_success_url(self):
         pk = self.kwargs.get("pk")
         repair = QC_models.RepairRegister.objects.get_or_none(pk=pk)
@@ -1600,8 +1621,15 @@ def checkdonelist(request):
 def finalcheckdetail(request, pk):
     finalcheck = QC_models.FinalCheckRegister.objects.get_or_none(pk=pk)
     user = request.user
+    if finalcheck.수리내역서.all():
+        repairbool = True
+    else:
+        repairbool = False
+
     return render(
-        request, "producemanages/finalcheckdetail.html", {"finalcheck": finalcheck,},
+        request,
+        "producemanages/finalcheckdetail.html",
+        {"finalcheck": finalcheck, "repairbool": repairbool},
     )
 
 

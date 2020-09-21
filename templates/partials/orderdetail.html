@@ -337,13 +337,13 @@
                             class="font-medium  text-gray-700   text-sm hover:font-bold">수리내역서</span>
                     </div>
                 </a>
-                {%if order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.수리내역서.작성자 ==  user%}
-                {%if order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.수리내역서.finalcheckboolean == "수리완료"%}
+                {%if order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.수리내역서.all.get.작성자 ==  user%}
+                {%if order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.수리내역서.all.get.finalcheckboolean == "수리완료"%}
                 <div class="flex flex-row">
 
                     <div class=" w-full">
                         <a
-                            href="{%url "producemanages:repairupdate" order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.수리내역서.pk %}">
+                            href="{%url "producemanages:repairupdate" order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.수리내역서.all.get.pk %}">
                             <div class="btn-link w-32 bg-blue-800 ml-5 hover:font-bold">
                                 수리내역서수정 </div>
                         </a>
@@ -365,14 +365,15 @@
                     <tr>
                         <td class="border px-4 py-2 hover:font-bold">
                             <a
-                                href="{%url "producemanages:repairdetail" order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.수리내역서.pk %}">{{order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.수리내역서.작성자}}</a>
+                                href="{%url "producemanages:repairdetail" order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.수리내역서.all.get.pk %}">{{order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.수리내역서.all.get.작성자}}</a>
                         </td>.
                         <td class="border px-4 py-2">
-                            {{order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.수리내역서.수리내용}}</td>
+                            {{order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.수리내역서.all.get.수리내용}}</td>
                         <td class="border px-4 py-2">
-                            {{order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.수리내역서.실수리수량}}
+                            {{order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.수리내역서.all.get.실수리수량}}
                         </td>
-                        <td class="border px-4 py-2">{{order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.수리내역서.폐기수량}}</td>
+                        <td class="border px-4 py-2">{{order.생산요청.생산계획.작업지시서.작업지시서등록.최종검사.최종검사등록.수리내역서.all.get.폐기수량}}
+                        </td>
                     </tr>
 
                 </tbody>

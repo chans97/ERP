@@ -141,11 +141,11 @@
 
                         <td class="border px-4 py-2  hover:text-blue-700 hover:font-bold "><a
                                 href="{%url "qualitycontrols:repairdetail" list.pk%}">
-                                {{list.최종검사결과.최종검사코드}}</a></td>
-                        <td class="border px-4 py-2">{{list.최종검사결과.제품.모델코드}}</td>
-                        <td class="border px-4 py-2">{{list.최종검사결과.제품.모델명}}</td>
-                        <td class="border px-4 py-2">{{list.최종검사결과.적합수량}}</td>
-                        <td class="border px-4 py-2">{{list.최종검사결과.부적합수량}}</td>
+                                {{list.최종검사결과.all.get.최종검사코드}}</a></td>
+                        <td class="border px-4 py-2">{{list.최종검사결과.all.get.제품.모델코드}}</td>
+                        <td class="border px-4 py-2">{{list.최종검사결과.all.get.제품.모델명}}</td>
+                        <td class="border px-4 py-2">{{list.최종검사결과.all.get.적합수량}}</td>
+                        <td class="border px-4 py-2">{{list.최종검사결과.all.get.부적합수량}}</td>
                         <td class="border px-4 py-2">{{list.실수리수량}}</td>
                         <td class="border px-4 py-2">{{list.폐기수량}}</td>
                         <td class="border px-4 py-2">{{list.작성자}}</td>

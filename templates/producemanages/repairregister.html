@@ -13,14 +13,25 @@
 {%block main_contens%}
 <div class="w-full h-full pl-32 -mt-6 font-semibold pt-12 flex flex-col ">
 
-    <div class="flex flex-col p-6 w-full ">
-        <span class="border-b w-1/3 mb-3 border-gray-600 pb-2 font-semibold text-base">'{{finalcheck.최종검사코드}}' 검사결과 -
-            수리내역서 등록
-        </span>
+    <div class="flex flex-col p-6 w-full">
+        <div class="w-full flex justify-between">
+            <div>
+                <span
+                    class="border-b w-full mb-3 border-gray-600 pb-2 font-semibold text-base flex flex-col">'{{finalcheck.최종검사코드}}'
+                    검사결과 -
+                    <span>수리내역서 등록 [적합 : {{finalcheck.적합수량}} / 부적합 : {{finalcheck.부적합수량}}]</span>
+                </span>
+            </div>
+            <div>
+                <button class="btn-link felx h-10 w-full mx-4" onclick="addTable();">
+                    <div class="text-sm forn-bold"><i class="far fa-plus-square mr-2"></i>내역서추가</div>
+                </button>
+            </div>
+        </div>
 
         <div class="flex ">
 
-            <div class=" flex flex-col px-12 justify-center">
+            <div class="w-full flex flex-col px-12 justify-center">
 
 
 
@@ -61,6 +72,10 @@
 
                                         {%endfor%}
                                     </td>
+                                </tr>
+
+
+
 
                             </tbody>
                         </table>
@@ -75,4 +90,52 @@
     </div>
 
 </div>
+<script>
+    function addTable() {
+        var context = `
+        <tr>
+            <td class= "border px-4 py-2 bg-gray-200 text-center">
+                <i class="fas fa-plus fa-2x"></i>
+        </td >
+        <td class="border px-4 py-2">
+            <div class="border hover:border-gray-500 w-full">
+                <textarea name="불량위치및자재" cols="40" rows="10" maxlength="300" required=""
+                    id="id_불량위치및자재"></textarea></div>
+            <div class="text-xs text-teal-700">
+            </div>
+        </td>
+        <td class="border px-4 py-2">
+            <div class="border hover:border-gray-500 w-full">
+                <textarea name="수리내용" cols="40" rows="10" maxlength="300"
+                    id="id_수리내용"></textarea></div>
+            <div class="text-xs text-teal-700">
+            </div>
+        </td>
+        <td class="border px-4 py-2">
+            <div class="border hover:border-gray-500 w-full">
+                <input type="number" name="실수리수량" size="10" min="0" required=""
+                    id="id_실수리수량"></div>
+            <div class="text-xs text-teal-700">
+            </div>
+        </td>
+        <td class="border px-4 py-2">
+            <div class="border hover:border-gray-500 w-full">
+                <input type="number" name="폐기수량" size="10" min="0" required="" id="id_폐기수량">
+            </div>
+            <div class="text-xs text-teal-700">
+            </div>
+        </td>
+        <td class="border px-4 py-2">
+            <div class="border hover:border-gray-500 w-full">
+                <textarea name="특이사항" cols="40" rows="10" maxlength="300"
+                    id="id_특이사항"></textarea></div>
+            <div class="text-xs text-teal-700">
+            </div>
+        </td> </tr>`;
+
+        $("tbody").append(context)
+
+
+    };
+</script>
 {%endblock main_contens %}

@@ -212,12 +212,8 @@ class RepairRegister(TimeStampedModel):
         (최종검사결과, "최종검사결과"),
         (AS, "AS"),
     )
-    최종검사결과 = models.OneToOneField(
-        "FinalCheckRegister",
-        related_name="수리내역서",
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
+    최종검사결과 = models.ManyToManyField(
+        "FinalCheckRegister", related_name="수리내역서", null=True,
     )
     AS수리의뢰 = models.OneToOneField(
         AS_models.ASRepairRequest,

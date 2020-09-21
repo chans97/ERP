@@ -132,10 +132,9 @@ class OrderDetail(user_mixins.LoggedInOnlyView, DetailView):
 def finalcheckdetail(request, pk):
     finalcheck = QC_models.FinalCheckRegister.objects.get_or_none(pk=pk)
     user = request.user
-    try:
-        finalcheck.수리내역서
+    if finalcheck.수리내역서.all():
         repairbool = True
-    except:
+    else:
         repairbool = False
 
     return render(

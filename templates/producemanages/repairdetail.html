@@ -8,7 +8,7 @@
 {%block head_title%}
 </a><i class="fas fa-angle-right mx-1 text-base"></i>수리완료목록<i class="fas fa-angle-right text-base mx-1"></i>
 <span class="text-gray-700">{%if repair.수리최종 == "최종검사결과"%}
-    최종검사({{repair.최종검사결과.최종검사코드}})의
+    최종검사({{repair.최종검사결과.all.get.최종검사코드}})의
     {%else%}
     AS요청 ({{repair.AS수리의뢰.수리요청코드}})의
     {%endif%}

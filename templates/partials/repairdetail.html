@@ -5,7 +5,7 @@
             <div class="flex flex-row justify-between w-full ">
                 <div class=" border-b w-7/12 mb-3 font-semibold border-gray-600 pb-2">
                     {%if repair.수리최종 == "최종검사결과"%}
-                    최종검사({{repair.최종검사결과.최종검사코드}})의
+                    최종검사({{repair.최종검사결과.all.get.최종검사코드}})의
                     {%else%}
                     AS요청 ({{repair.AS수리의뢰.수리요청코드}})의
                     {%endif%}
@@ -60,7 +60,8 @@
                 <table class="table-fixed text-sm">
                     <thead>
                         <tr>
-                            <th class="border border-r-0 bg-gray-400  py-2 w-40 text-right">{{repair.최종검사결과.최종검사코드}}
+                            <th class="border border-r-0 bg-gray-400  py-2 w-40 text-right">
+                                {{repair.최종검사결과.all.get.최종검사코드}}
                             </th>
                             <th class="border border-l-0 bg-gray-400  py-2 w-56 text-left">의 최종검사</th>
                         </tr>
@@ -68,112 +69,113 @@
                     <tbody>
                         <tr>
                             <td class="border px-4 py-2 bg-gray-200">최종검사코드</td>
-                            <td class="border px-4 py-2">{{repair.최종검사결과.최종검사코드}}</td>
+                            <td class="border px-4 py-2">{{repair.최종검사결과.all.get.최종검사코드}}</td>
                         </tr>
                         <tr>
                             <td class="border px-4 py-2 bg-gray-200">부적합수량</td>
-                            <td class="border px-4 py-2">{{repair.최종검사결과.부적합수량}}</td>
+                            <td class="border px-4 py-2">{{repair.최종검사결과.all.get.부적합수량}}</td>
                         </tr>
                         <tr>
                             <td class="border px-4 py-2 bg-gray-200">적합수량</td>
-                            <td class="border px-4 py-2">{{repair.최종검사결과.적합수량}}</td>
+                            <td class="border px-4 py-2">{{repair.최종검사결과.all.get.적합수량}}</td>
                         </tr>
                         <tr>
                             <td class="border px-4 py-2 bg-gray-200">검시자</td>
-                            <td class="border px-4 py-2">{{repair.최종검사결과.검시자}}</td>
+                            <td class="border px-4 py-2">{{repair.최종검사결과.all.get.검시자}}</td>
                         </tr>
                         <tr>
                             <td class="border px-4 py-2 bg-gray-200">검시일</td>
                             <td class="border px-4 py-2">
-                                {{repair.최종검사결과.검시일.year}}-{{repair.최종검사결과.검시일.month}}-{{repair.최종검사결과.검시일.day}}</td>
+                                {{repair.최종검사결과.all.get.검시일.year}}-{{repair.최종검사결과.all.get.검시일.month}}-{{repair.최종검사결과.all.get.검시일.day}}
+                            </td>
                         </tr>
                         <tr>
                             <td class="border px-4 py-2 bg-gray-200">치명적불량</td>
-                            <td class="border px-4 py-2">{{repair.최종검사결과.치명적불량}}</td>
+                            <td class="border px-4 py-2">{{repair.최종검사결과.all.get.치명적불량}}</td>
                         </tr>
                         <tr>
                             <td class="border px-4 py-2 bg-gray-200">중불량</td>
-                            <td class="border px-4 py-2">{{repair.최종검사결과.중불량}}</td>
+                            <td class="border px-4 py-2">{{repair.최종검사결과.all.get.중불량}}</td>
                         </tr>
                         <tr>
                             <td class="border px-4 py-2 bg-gray-200">경불량</td>
-                            <td class="border px-4 py-2">{{repair.최종검사결과.경불량}}</td>
+                            <td class="border px-4 py-2">{{repair.최종검사결과.all.get.경불량}}</td>
                         </tr>
                         <tr>
                             <td class="border px-4 py-2 bg-gray-200">검사수준</td>
-                            <td class="border px-4 py-2">{{repair.최종검사결과.검사수준}}</td>
+                            <td class="border px-4 py-2">{{repair.최종검사결과.all.get.검사수준}}</td>
                         </tr>
                         <tr>
                             <td class="border px-4 py-2 bg-gray-200">샘플링방식</td>
-                            <td class="border px-4 py-2">{{repair.최종검사결과.샘플링방식}}</td>
+                            <td class="border px-4 py-2">{{repair.최종검사결과.all.get.샘플링방식}}</td>
                         </tr>
                         <tr>
                             <td class="border px-4 py-2 bg-gray-200">결점수</td>
-                            <td class="border px-4 py-2">{{repair.최종검사결과.결점수}}</td>
+                            <td class="border px-4 py-2">{{repair.최종검사결과.all.get.결점수}}</td>
                         </tr>
                         <tr>
                             <td class="border px-4 py-2 bg-gray-200">전원전압</td>
-                            <td class="border px-4 py-2">{{repair.최종검사결과.전원전압}}</td>
+                            <td class="border px-4 py-2">{{repair.최종검사결과.all.get.전원전압}}</td>
                         </tr>
                         <tr>
                             <td class="border px-4 py-2 bg-gray-200">POWERTRANS</td>
-                            <td class="border px-4 py-2">{{repair.최종검사결과.POWERTRANS}}</td>
+                            <td class="border px-4 py-2">{{repair.최종검사결과.all.get.POWERTRANS}}</td>
                         </tr>
                         <tr>
                             <td class="border px-4 py-2 bg-gray-200">FUSE_전_ULUSA</td>
-                            <td class="border px-4 py-2">{{repair.최종검사결과.FUSE_전_ULUSA}}</td>
+                            <td class="border px-4 py-2">{{repair.최종검사결과.all.get.FUSE_전_ULUSA}}</td>
                         </tr>
                         <tr>
                             <td class="border px-4 py-2 bg-gray-200">LABEL_인쇄물</td>
-                            <td class="border px-4 py-2">{{repair.최종검사결과.LABEL_인쇄물}}</td>
+                            <td class="border px-4 py-2">{{repair.최종검사결과.all.get.LABEL_인쇄물}}</td>
                         </tr>
                         <tr>
                             <td class="border px-4 py-2 bg-gray-200">기타출하위치</td>
-                            <td class="border px-4 py-2">{{repair.최종검사결과.기타출하위치}}</td>
+                            <td class="border px-4 py-2">{{repair.최종검사결과.all.get.기타출하위치}}</td>
                         </tr>
                         <tr>
                             <td class="border px-4 py-2 bg-gray-200">내용물</td>
-                            <td class="border px-4 py-2">{{repair.최종검사결과.내용물}}</td>
+                            <td class="border px-4 py-2">{{repair.최종검사결과.all.get.내용물}}</td>
                         </tr>
                         <tr>
                             <td class="border px-4 py-2 bg-gray-200">포장검사</td>
-                            <td class="border px-4 py-2">{{repair.최종검사결과.포장검사}}</td>
+                            <td class="border px-4 py-2">{{repair.최종검사결과.all.get.포장검사}}</td>
                         </tr>
                         <tr>
                             <td class="border px-4 py-2 bg-gray-200">동작검사</td>
-                            <td class="border px-4 py-2">{{repair.최종검사결과.동작검사}}</td>
+                            <td class="border px-4 py-2">{{repair.최종검사결과.all.get.동작검사}}</td>
                         </tr>
                         <tr>
                             <td class="border px-4 py-2 bg-gray-200">내부검사</td>
-                            <td class="border px-4 py-2">{{repair.최종검사결과.내부검사}}</td>
+                            <td class="border px-4 py-2">{{repair.최종검사결과.all.get.내부검사}}</td>
                         </tr>
                         <tr>
                             <td class="border px-4 py-2 bg-gray-200">외관검사</td>
-                            <td class="border px-4 py-2">{{repair.최종검사결과.외관검사}}</td>
+                            <td class="border px-4 py-2">{{repair.최종검사결과.all.get.외관검사}}</td>
                         </tr>
                         <tr>
                             <td class="border px-4 py-2 bg-gray-200">내압검사_AC</td>
-                            <td class="border px-4 py-2">{{repair.최종검사결과.내압검사_AC}}</td>
+                            <td class="border px-4 py-2">{{repair.최종검사결과.all.get.내압검사_AC}}</td>
                         </tr>
                         <tr>
                             <td class="border px-4 py-2 bg-gray-200">내압검사_DC</td>
-                            <td class="border px-4 py-2">{{repair.최종검사결과.내압검사_DC}}</td>
+                            <td class="border px-4 py-2">{{repair.최종검사결과.all.get.내압검사_DC}}</td>
                         </tr>
                         <tr>
                             <td class="border px-4 py-2 bg-gray-200">내용물확인</td>
-                            <td class="border px-4 py-2">{{repair.최종검사결과.내용물확인}}</td>
+                            <td class="border px-4 py-2">{{repair.최종검사결과.all.get.내용물확인}}</td>
                         </tr>
                         <tr>
                             <td class="border px-4 py-2 bg-gray-200">가_감전압</td>
-                            <td class="border px-4 py-2">{{repair.최종검사결과.가_감전압}}</td>
+                            <td class="border px-4 py-2">{{repair.최종검사결과.all.get.가_감전압}}</td>
                         </tr>
                         <tr>
                             <td class="border px-4 py-2 bg-gray-200">HI_POT_내부검사</td>
-                            <td class="border px-4 py-2">{{repair.최종검사결과.HI_POT_내부검사}}</td>
+                            <td class="border px-4 py-2">{{repair.최종검사결과.all.get.HI_POT_내부검사}}</td>
                         </tr>
                         <tr>
                             <td class="border px-4 py-2 bg-gray-200">특이사항</td>
-                            <td class="border px-4 py-2">{{repair.최종검사결과.특이사항}}</td>
+                            <td class="border px-4 py-2">{{repair.최종검사결과.all.get.특이사항}}</td>
                         </tr>
                     </tbody>
                 </table>

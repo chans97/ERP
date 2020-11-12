@@ -83,34 +83,20 @@ AS완료처리
                                     <td class="border border-gray-400 px-4 py-2">현상</td>
                                     <td class="border border-gray-400 px-4 py-2">{{asregisters.현상}}</td>
                                 </tr>
-                                <tr>
-                                    <td class="border border-gray-400 px-4 py-2">불량분류코드</td>
-                                    <td class="border border-gray-400 px-4 py-2">{{asregisters.불량분류코드}}</td>
-                                </tr>
-                                <tr>
-                                    <td class="border border-gray-400 px-4 py-2">불량분류</td>
-                                    <td class="border border-gray-400 px-4 py-2">{{asregisters.불량분류}}</td>
-                                </tr>
+
                                 <tr>
                                     <td class="border border-gray-400 px-4 py-2">의뢰처</td>
                                     <td class="border border-gray-400 px-4 py-2">{{asregisters.의뢰처}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-gray-400 px-4 py-2">주소</td>
+                                    <td class="border border-gray-400 px-4 py-2">{{asregisters.주소}}</td>
                                 </tr>
                                 <tr>
                                     <td class="border border-gray-400 px-4 py-2">의뢰자전화번호</td>
                                     <td class="border border-gray-400 px-4 py-2">{{asregisters.의뢰자전화번호}}</td>
                                 </tr>
 
-                                {%if asregisters.접수제품분류 == "단품"%}
-                                <tr>
-                                    <td class="border border-gray-400 px-4 py-2">단품</td>
-                                    <td class="border border-gray-400 px-4 py-2">{{asregisters.단품}}</td>
-                                </tr>
-                                {%else%}
-                                <tr>
-                                    <td class="border border-gray-400 px-4 py-2">랙</td>
-                                    <td class="border border-gray-400 px-4 py-2">{{asregisters.랙}}</td>
-                                </tr>
-                                {%endif%}
 
 
 

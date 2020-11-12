@@ -6,20 +6,14 @@ from StandardInformation import models as SI_models
 
 
 class ASRegisters(TimeStampedModel):
-    단품 = "단품"
-    랙 = "랙"
-
     접수제품분류_CHOICES = (
-        (단품, "단품"),
-        (랙, "랙"),
+        ("단품", "단품"),
+        ("랙", "랙"),
     )
 
-    내부처리 = "내부처리"
-    담당자연결 = "담당자연결"
-
     대응유형_CHOICES = (
-        (내부처리, "내부처리"),
-        (담당자연결, "담당자연결"),
+        ("내부처리", "내부처리"),
+        ("담당자연결", "담당자연결"),
     )
 
     비용_CHOICES = (
@@ -28,29 +22,35 @@ class ASRegisters(TimeStampedModel):
     )
 
     인계후_CHOICES = (
-        (내부처리, "내부처리"),
+        ("내부처리", "내부처리"),
         ("현장방문", "현장방문"),
         ("접수보류", "접수보류"),
         ("접수취소", "접수취소"),
         ("택배수령", "택배수령"),
     )
 
-    사용법미숙지 = "사용법미숙지"
-    랙구성케이블오류 = "랙구성케이블오류"
-    단품불량 = "단품불량"
-
     접수번호 = models.CharField(max_length=20, null=True,)
     접수일 = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True)
+    설치연도 = models.DateField(
+        auto_now=False, auto_now_add=False, null=True, blank=True
+    )  # 패치부분
+
     접수자 = models.ForeignKey(
         users_models.User, related_name="AS등록", on_delete=models.SET_NULL, null=True
     )
-    현상 = models.CharField(max_length=100, null=True,)
-    불량분류코드 = models.CharField(max_length=20, null=True,)
-    불량분류 = models.CharField(max_length=30)
-    접수제품분류 = models.CharField(choices=접수제품분류_CHOICES, max_length=10, default=단품)
-    현장명 = models.CharField(max_length=50, null=True,)
-    인계후 = models.CharField(choices=인계후_CHOICES, max_length=10, default="", null=True,)
+    현상 = models.CharField(max_length=100, null=True)
+    비고 = models.CharField(max_length=100, null=True)
+    현장명 = models.CharField(max_length=50, null=True)
+    인계후 = models.CharField(choices=인계후_CHOICES, max_length=10, default="", null=True)
+    첨부파일 = models.FileField(blank=True, null=True, upload_to="ASregister")
+    비용 = models.CharField(choices=비용_CHOICES, max_length=10, default="유상")
+    의뢰자전화번호 = models.CharField(max_length=20, null=True, blank=True)
+    주소 = models.TextField(max_length=120, null=True, blank=True)
 
+    # 논의 및 확인 필요 데이터 삭제요망
+    접수제품분류 = models.CharField(
+        choices=접수제품분류_CHOICES, max_length=10, default="단품", null=True
+    )
     단품 = models.ForeignKey(
         SI_models.SingleProduct,
         related_name="AS등록",
@@ -65,10 +65,6 @@ class ASRegisters(TimeStampedModel):
         null=True,
         blank=True,
     )
-    대응유형 = models.CharField(
-        choices=대응유형_CHOICES, max_length=10, default=담당자연결, blank=True, null=True,
-    )
-    비용 = models.CharField(choices=비용_CHOICES, max_length=10, default="유상")
     의뢰처 = models.ForeignKey(
         SI_models.CustomerPartner,
         related_name="AS등록",
@@ -76,8 +72,13 @@ class ASRegisters(TimeStampedModel):
         null=True,
         blank=True,
     )
-    의뢰자전화번호 = models.CharField(max_length=20, null=True, blank=True)
+    # 삭제요망
+    대응유형 = models.CharField(
+        choices=대응유형_CHOICES, max_length=10, default="담당자연결", blank=True, null=True,
+    )
     방문요청일 = models.DateField(auto_now=False, auto_now_add=False, blank=True, null=True)
+    불량분류코드 = models.CharField(max_length=20, null=True,)
+    불량분류 = models.CharField(max_length=30, null=True)
 
     class Meta:
         verbose_name = "AS접수"

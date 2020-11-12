@@ -105,16 +105,21 @@ def ASregister(request):
         접수번호 = form.cleaned_data.get("접수번호")
         접수일 = form.cleaned_data.get("접수일")
         현상 = form.cleaned_data.get("현상")
-        불량분류코드 = form.cleaned_data.get("불량분류코드")
-        불량분류 = form.cleaned_data.get("불량분류")
-        접수제품분류 = form.cleaned_data.get("접수제품분류")
         대응유형 = form.cleaned_data.get("대응유형")
         인계후 = form.cleaned_data.get("인계후")
         의뢰처 = form.cleaned_data.get("의뢰처")
         의뢰자전화번호 = form.cleaned_data.get("의뢰자전화번호")
-        방문요청일 = form.cleaned_data.get("방문요청일")
         현장명 = form.cleaned_data.get("현장명")
         비용 = form.cleaned_data.get("비용")
+
+        비고 = form.cleaned_data.get("비고")
+        try:
+            첨부파일 = request.FILES["첨부파일"]
+        except:
+            첨부파일 = None
+
+        주소 = form.cleaned_data.get("주소")
+        설치연도 = form.cleaned_data.get("설치연도")
         if 접수일 is None:
             접수일 = timezone.now().date()
         SM = AS_models.ASRegisters.objects.create(
@@ -122,21 +127,22 @@ def ASregister(request):
             접수일=접수일,
             접수자=request.user,
             현상=현상,
-            불량분류코드=불량분류코드,
-            불량분류=불량분류,
-            접수제품분류=접수제품분류,
             대응유형="담당자연결",
             의뢰처=의뢰처,
             의뢰자전화번호=의뢰자전화번호,
-            방문요청일=방문요청일,
             현장명=현장명,
             비용=비용,
             인계후=인계후,
+            설치연도=설치연도,
+            비고=비고,
+            첨부파일=첨부파일,
+            주소=주소,
         )
         AS_models.ASVisitRequests.objects.create(AS접수=SM)
-
-        pk = SM.pk
-
+        messages.success(request, "AS접수가 등록되었습니다.")
+        return redirect(reverse("afterservices:afterserviceshome"))
+        # 삭제요망
+        """
         if SM.접수제품분류 == "단품":
             return redirect(
                 reverse("afterservices:afterservicesingle", kwargs={"pk": pk})
@@ -145,6 +151,7 @@ def ASregister(request):
             return redirect(
                 reverse("afterservices:afterservicesrack", kwargs={"pk": pk})
             )
+            """
 
     pagediv = 10
     totalpage = int(math.ceil(len(customer) / pagediv))
@@ -182,6 +189,7 @@ def ASregister(request):
     )
 
 
+# 삭제요망
 def afterservicesingle(request, pk):
     form = forms.ASSingleForm(request.POST or None)
     search = request.GET.get("search")
@@ -239,6 +247,7 @@ def afterservicesingle(request, pk):
     )
 
 
+# 삭제요망
 def afterservicesrack(request, pk):
     form = forms.ASRackForm(request.POST or None)
 

@@ -110,9 +110,6 @@ AS접수
 
                                     {% if field.name == "의뢰처" %}
                                     {%else%}
-
-
-
                                     <td class="border border-gray-400 px-4 py-2">
                                         {%if field.name == "인계후" %}
                                         처리방법
@@ -172,6 +169,10 @@ AS접수
                                                             id="id_인계후_4">
                                                         접수취소</label>
                                                 </li>
+                                                <li><label for="id_인계후_5"><input type="radio" name="인계후" value="택배수령"
+                                                            id="id_인계후_5">
+                                                        택배수령</label>
+                                                </li>
 
                                             </ul>
                                         </div>
@@ -185,8 +186,8 @@ AS접수
                                             class="flex  {%if field.name not in seletelist %} border hover:border-gray-500 w-full {%endif%} ">
                                             {% if field.name == "접수일" %}
                                             <input type="text" name="접수일" id="date2" size="10" />
-                                            {%elif field.name == "방문요청일"%}
-                                            <input type="text" name="방문요청일" id="date3" size="10" />
+                                            {%elif field.name == "설치연도"%}
+                                            <input type="text" name="설치연도" id="date3" size="10" />
                                             {% else %}
                                             {{field}}
                                             {% endif %}</div>
@@ -200,6 +201,8 @@ AS접수
                                         {% endfor %}
                                         {% endif %}
 
+
+
                                         {% endif %}
                                     </td>
                                     {% endif %}
@@ -208,10 +211,10 @@ AS접수
                             </tbody>
                         </table>
                     </div>
-                    <div class=" flex flex-row justify-around -mx-12">
+                    <div class=" flex flex-row justify-around w-full">
                         <button onclick="go();"
                             class="btn-link bg-blue-800 text-white w-full px-4 h-12 self-center my-3 pt-0 pb-1">
-                            <div class="text-base font-medium">단품/랙 입력하기</div>
+                            <div class="text-base font-medium">입력완료</div>
                         </button> </div>
         </form>
     </div>
@@ -241,7 +244,6 @@ AS접수
         oldVal = currentVal3;
         var radio_btn = document.getElementById("불량분류값");
         document.getElementById("id_불량분류_3").value = radio_btn.value;
-        console.log(radio_btn.value)
     };
 </script>
 

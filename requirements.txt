@@ -16,7 +16,7 @@ get==2019.4.13
 idna==2.7
 jmespath==0.9.5
 pathspec==0.5.9
-Pillow==7.0.0
+Pillow==7.1.0
 pipenv==2018.11.26
 post==2019.4.13
 public==2019.4.13

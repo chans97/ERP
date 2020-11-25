@@ -22,9 +22,9 @@ AS접수 상세보기
                     {%if asregister.process != "AS접수완료"%}<i class="fas fa-angle-double-down text-lg"></i> {%endif%}AS접수
                     정보 - {{asregister.접수번호}} <div class="text-indigo-700">"{{asregister.process}}"
 
-                        {% if asregister.인계후 %}
+                        {% if asregister.처리방법 %}
 
-                        // {{asregister.인계후}}
+                        // {{asregister.처리방법}}
                         {% endif %}
 
                     </div>
@@ -32,7 +32,7 @@ AS접수 상세보기
 
                 <div class="flex flex-row">
                     {%if asregister.process == "AS담당부 인계완료"%}
-                    {%if asregister.인계후 != ""%}
+                    {%if asregister.처리방법 != ""%}
                     <div class="mt-2">
                         <a href="{%url "afterservices:ASconduct" asregister.AS현장방문요청.pk %}">
                             <div class="btn-link bg-blue-700 ml-5 hover:font-bold">
@@ -62,46 +62,54 @@ AS접수 상세보기
             <table class="table-fixed font-light text-xs w-full">
                 <thead>
                     <tr>
-                        <th class="border bg-gray-200 px-4 py-2 w-12">접수번호</th>
-                        <th class="border bg-gray-200 px-4 py-2 w-12">현상</th>
-                        <th class="border bg-gray-200 px-2 py-2 w-12">불량분류코드</th>
-                        <th class="border bg-gray-200 px-4 py-2 w-12">불량분류</th>
-                        <th class="border bg-gray-200 px-4 py-2 w-12">처리유형</th>
-                        <th class="border bg-gray-200 px-4 py-2 w-12">의뢰처</th>
-                        <th class="border bg-gray-200 px-4 py-2 w-12">제품코드</th>
-                        <th class="border bg-gray-200 px-4 py-2 w-12">제품명</th>
-                        <th class="border bg-gray-200 px-2 py-2 w-12">현장명</th>
-                        <th class="border bg-gray-200 px-4 py-2 w-12">접수일</th>
-                        <th class="border bg-gray-200 px-4 py-2 w-12">방문요청일</th>
-                        <th class="border bg-gray-200 px-4 py-2 w-8">비용</th>
+                        <th class="border bg-gray-200 px-2 py-2 w-20">접수번호</th>
+                        <th class="border bg-gray-200 px-2 py-2 w-20">접수일</th>
+                        <th class="border bg-gray-200 px-2 py-2 w-20">설치연도</th>
+                        <th class="border bg-gray-200 px-2 py-2 w-20">비용</th>
+                        <th class="border bg-gray-200 px-2 py-2 w-20">현장명</th>
+                        <th class="border bg-gray-200 px-2 py-2 w-20">전화번호</th>
+                        <th class="border bg-gray-200 px-2 py-2 w-20">주소</th>
+                        <th class="border bg-gray-200 px-2 py-2 w-20">접수내용</th>
+                        <th class="border bg-gray-200 px-2 py-2 w-20">처리방법</th>
+                        <th class="border bg-gray-200 px-2 py-2 w-20">첨부파일</th>
+                        <th class="border bg-gray-200 px-2 py-2 w-20">비고</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="border px-4 py-2 hover:text-blue-700 hover:font-bold">
-                            <a href="{%url "afterservices:ASrequestdetail" asregister.pk%}">
-                                {{asregister.접수번호}}</a></td>
-                        <td class="border px-4 py-2">{{asregister.현상}}</td>
-                        <td class="border px-4 py-2">{{asregister.불량분류코드}}</td>
-                        <td class="border px-4 py-2">{{asregister.불량분류}}</td>
-                        <td class="border px-4 py-2">{{asregister.인계후}}</td>
-                        <td class="border px-4 py-2">{{asregister.의뢰처}}</td>
-                        {%if asregister.접수제품분류 == "단품"%}
-                        <td class="border px-4 py-2">{{asregister.단품.모델코드}}</td>
-                        <td class="border px-4 py-2">{{asregister.단품.모델명}}</td>
-                        {%else%}
-                        <td class="border px-4 py-2">{{asregister.랙.랙시리얼코드}}</td>
-                        <td class="border px-4 py-2">{{asregister.랙.랙모델명}}</td>
-                        {%endif%}
-                        <td class="border px-4 py-2">{{asregister.현장명}}</td>
-                        <td class="border px-4 py-2">
+                        <td class="border px-2 py-2 ">
+                            {{asregister.접수번호}}</a></td>
+                        <td class="border px-2 py-2">
                             {{asregister.접수일.year}}-{{asregister.접수일.month}}-{{asregister.접수일.day}}</td>
-                        <td class="border px-4 py-2">
-                            {%if asregister.방문요청일 is None%}
-                            {%else%}
-                            {{asregister.방문요청일.year}}-{{asregister.방문요청일.month}}-{{asregister.방문요청일.day}}{%endif%}
+
+                        {% if asregister.설치연도 %}
+                        <td class="border px-2 py-2">
+                            {{asregister.설치연도.year}}-{{asregister.설치연도.month}}-{{asregister.설치연도.day}}</td>
+                        {%else%}
+                        <td class="border px-2 py-2">미입력</td>
+
+                        {% endif %}
+
+                        <td class="border px-2 py-2">{{asregister.비용}}</td>
+                        <td class="border px-2 py-2">{{asregister.현장명}}</td>
+                        <td class="border px-2 py-2">{{asregister.의뢰자전화번호}}</td>
+
+                        {% if asregister.주소 %}
+                        <td class="border px-2 py-2">{{asregister.주소}}</td>
+                        {%else%}
+                        <td class="border px-2 py-2">미입력</td>
+                        {% endif %}
+                        <td class="border px-2 py-2">{{asregister.접수내용}}</td>
+                        <td class="border px-2 py-2">{{asregister.처리방법}}</td>
+                        <td class="border px-2 py-2 underline hover:text-indigo-700 hover:font-bold overflow-x-auto">
+                            <a href="{%url "afterservices:asregiserfiledownload" asregister.pk %}">
+                                <script>
+                                    let name = " {{asregister.첨부파일}} ";
+                                    let replaceName = name.replace('ASregister/', '');
+                                    document.write(replaceName);
+                                </script></a>
                         </td>
-                        <td class="border px-4 py-2">{{asregister.비용}}</td>
+                        <td class="border px-2 py-2">{{asregister.비고}}</td>
                     </tr>
 
                 </tbody>
@@ -214,8 +222,8 @@ AS접수 상세보기
                     <a href="{%url "afterservices:costdownload" asregister.AS현장방문요청.AS현장방문.pk %}">
                         <span class="ml-3 underline hover:text-indigo-700 hover:font-bold overflow-x-auto">
                             <script>
-                                var test = "{{asregister.AS현장방문요청.AS현장방문.견적서}}";
-                                var result = test.replace('cost/', '');
+                                let test = "{{asregister.AS현장방문요청.AS현장방문.견적서}}";
+                                let result = test.replace('cost/', '');
                                 document.write(result);
                             </script>
                         </span></a>

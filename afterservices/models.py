@@ -11,17 +11,12 @@ class ASRegisters(TimeStampedModel):
         ("랙", "랙"),
     )
 
-    대응유형_CHOICES = (
-        ("내부처리", "내부처리"),
-        ("담당자연결", "담당자연결"),
-    )
-
     비용_CHOICES = (
         ("유상", "유상"),
         ("무상", "무상"),
     )
 
-    인계후_CHOICES = (
+    처리방법_CHOICES = (
         ("내부처리", "내부처리"),
         ("현장방문", "현장방문"),
         ("접수보류", "접수보류"),
@@ -38,54 +33,23 @@ class ASRegisters(TimeStampedModel):
     접수자 = models.ForeignKey(
         users_models.User, related_name="AS등록", on_delete=models.SET_NULL, null=True
     )
-    현상 = models.CharField(max_length=100, null=True)
-    비고 = models.CharField(max_length=100, null=True)
+    접수내용 = models.CharField(max_length=100, null=True)
     현장명 = models.CharField(max_length=50, null=True)
-    인계후 = models.CharField(choices=인계후_CHOICES, max_length=10, default="", null=True)
-    첨부파일 = models.FileField(blank=True, null=True, upload_to="ASregister")
-    비용 = models.CharField(choices=비용_CHOICES, max_length=10, default="유상")
-    의뢰자전화번호 = models.CharField(max_length=20, null=True, blank=True)
     주소 = models.TextField(max_length=120, null=True, blank=True)
-
-    # 논의 및 확인 필요 데이터 삭제요망
-    접수제품분류 = models.CharField(
-        choices=접수제품분류_CHOICES, max_length=10, default="단품", null=True
+    의뢰자전화번호 = models.CharField(max_length=20, null=True, blank=True)
+    비용 = models.CharField(choices=비용_CHOICES, max_length=10, default="유상")
+    비고 = models.CharField(max_length=100, null=True)
+    첨부파일 = models.FileField(blank=True, null=True, upload_to="ASregister")
+    처리방법 = models.CharField(
+        choices=처리방법_CHOICES, max_length=10, default="담당자연결", blank=False, null=True,
     )
-    단품 = models.ForeignKey(
-        SI_models.SingleProduct,
-        related_name="AS등록",
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-    )
-    랙 = models.ForeignKey(
-        SI_models.RackProduct,
-        related_name="AS등록",
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-    )
-    의뢰처 = models.ForeignKey(
-        SI_models.CustomerPartner,
-        related_name="AS등록",
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-    )
-    # 삭제요망
-    대응유형 = models.CharField(
-        choices=대응유형_CHOICES, max_length=10, default="담당자연결", blank=True, null=True,
-    )
-    방문요청일 = models.DateField(auto_now=False, auto_now_add=False, blank=True, null=True)
-    불량분류코드 = models.CharField(max_length=20, null=True,)
-    불량분류 = models.CharField(max_length=30, null=True)
 
     class Meta:
         verbose_name = "AS접수"
         verbose_name_plural = "AS접수"
 
     def __str__(self):
-        return f"{self.접수번호} : AS접수 -'{self.의뢰처}'"
+        return f"{self.접수번호} : AS접수 -'{self.접수자}'"
 
     def process(self):
         try:
@@ -113,7 +77,7 @@ class ASRegisters(TimeStampedModel):
                     self.AS현장방문요청.AS완료
                     return "AS완료"
                 except:
-                    return "AS담당부 인계완료"
+                    return "AS담당자인계완료"
 
         except:
             try:
@@ -141,7 +105,7 @@ class ASVisitRequests(TimeStampedModel):
         verbose_name_plural = "AS현장방문요청"
 
     def __str__(self):
-        return f"{self.AS접수.접수번호} : AS현장방문요청 -'{self.AS접수.의뢰처}'"
+        return f"{self.AS접수.접수번호} : AS현장방문요청 -'{self.AS접수.접수자}'"
 
 
 class ASVisitContents(TimeStampedModel):
@@ -213,7 +177,7 @@ class ASVisitContents(TimeStampedModel):
         verbose_name_plural = "AS현장방문"
 
     def __str__(self):
-        return f"{self.AS현장방문요청.AS접수.접수번호} : AS현장방문 -'{self.AS현장방문요청.AS접수.의뢰처}'"
+        return f"{self.AS현장방문요청.AS접수.접수번호} : AS현장방문 -'{self.AS현장방문요청.AS접수.접수자}'"
 
     def repair_count(self):
         return len(self.AS수리요청.all())
@@ -258,7 +222,7 @@ class ASRepairRequest(TimeStampedModel):
         verbose_name_plural = "AS수리요청"
 
     def __str__(self):
-        return f"{self.AS현장방문.AS현장방문요청.AS접수.접수번호} : AS수리요청 -'{self.AS현장방문.AS현장방문요청.AS접수.의뢰처}' : {self.신청품목}({self.신청수량}) "
+        return f"{self.AS현장방문.AS현장방문요청.AS접수.접수번호} : AS수리요청 -'{self.AS현장방문.AS현장방문요청.AS접수}' : {self.신청품목}({self.신청수량}) "
 
     def process(self):
         try:
@@ -322,19 +286,15 @@ class ASReVisitContents(TimeStampedModel):
         verbose_name_plural = "AS재현장방문"
 
     def __str__(self):
-        return f"{self.전AS현장방문.AS현장방문요청.AS접수.접수번호} : AS재방문 -'{self.전AS현장방문.AS현장방문요청.AS접수.의뢰처}'"
+        return f"{self.전AS현장방문.AS현장방문요청.AS접수.접수번호} : AS재방문 -'{self.전AS현장방문.AS현장방문요청.AS접수.접수자}'"
 
 
 class ASResults(TimeStampedModel):
-    내부처리 = "내부처리"
-    방문 = "방문"
-    재방문 = "재방문"
-
     완료유형_CHOICES = (
-        (내부처리, "내부처리"),
+        ("내부처리", "내부처리"),
         ("담당자내부처리", "담당자내부처리"),
-        (방문, "방문"),
-        (재방문, "재방문"),
+        ("방문", "방문"),
+        ("재방문", "재방문"),
     )
 
     내부처리 = models.OneToOneField(
@@ -380,13 +340,13 @@ class ASResults(TimeStampedModel):
     def __str__(self):
 
         if self.완료유형 == "재방문":
-            return f"{self.재방문.전AS현장방문.AS현장방문요청.AS접수.접수번호} : AS완료(재방문) -'{self.재방문.전AS현장방문.AS현장방문요청.AS접수.의뢰처}'"
+            return f"{self.재방문.전AS현장방문.AS현장방문요청.AS접수.접수번호} : AS완료(재방문) -'{self.재방문.전AS현장방문.AS현장방문요청.AS접수.접수자}'"
         elif self.완료유형 == "방문":
-            return f"{self.방문.AS현장방문요청.AS접수.접수번호} : AS완료(방문) -'{self.방문.AS현장방문요청.AS접수.의뢰처}'"
+            return f"{self.방문.AS현장방문요청.AS접수.접수번호} : AS완료(방문) -'{self.방문.AS현장방문요청.AS접수.접수자}'"
         elif self.완료유형 == "담당자내부처리":
             return (
-                f"{self.담당자내부처리.AS접수.접수번호} : AS완료(담당자내부처리) -'{self.담당자내부처리.AS접수.의뢰처}'"
+                f"{self.담당자내부처리.AS접수.접수번호} : AS완료(담당자내부처리) -'{self.담당자내부처리.AS접수.접수자}'"
             )
 
         else:
-            return f"{self.내부처리.접수번호} : AS완료(내부처리) - '{self.내부처리.의뢰처}'"
+            return f"{self.내부처리.접수번호} : AS완료(내부처리) - '{self.내부처리.접수자}'"

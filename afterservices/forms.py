@@ -5,10 +5,6 @@ from stocksingle import models as SS_models
 
 
 class ASRegisterForm(forms.ModelForm):
-    의뢰처 = forms.CharField(
-        max_length=20, required=True, help_text="*거래처 코드로 입력해주시길 바랍니다."
-    )
-
     class Meta:
         model = models.ASRegisters
         fields = (
@@ -19,32 +15,25 @@ class ASRegisterForm(forms.ModelForm):
             "현장명",
             "의뢰자전화번호",
             "주소",
-            "현상",
-            "인계후",
+            "접수내용",
+            "처리방법",
             "첨부파일",
             "비고",
-            # "불량분류코드",
-            # "불량분류",
-            # 패치제거부분
         )
         help_texts = {
             "접수번호": "*최종검사코드 앞에 AR을 붙여주시길 바랍니다.(한 번 설정하면, 바꿀 수 없습니다.)",
             "접수일": "*형식 : yyyy-mm-dd(기본값은 오늘입니다.)",
-            "방문요청일": "*형식 : yyyy-mm-dd",
         }
         widgets = {
-            "접수제품분류": forms.RadioSelect(),
-            "대응유형": forms.RadioSelect(),
+            "처리방법": forms.RadioSelect(),
             "비용": forms.RadioSelect(),
         }
 
     def clean(self):
         self.is_bound = False
         code = self.cleaned_data.get("접수번호")
-        codep = self.cleaned_data.get("의뢰처")
         partner = models.ASRegisters.objects.filter(접수번호=code)
         partner = list(partner)
-        의뢰처 = models.SI_models.CustomerPartner.objects.get_or_none(거래처코드=codep)
 
         if code:
             self.is_bound = True
@@ -53,10 +42,7 @@ class ASRegisterForm(forms.ModelForm):
                 self.add_error("접수번호", forms.ValidationError("*해당 접수번호는 이미 존재합니다."))
             elif code != "AR":
                 self.add_error("접수번호", forms.ValidationError("*접수번호는 AR로 시작해야 합니다."))
-            elif 의뢰처 is None:
-                self.add_error("의뢰처", forms.ValidationError("*존재하지 않는 거래처입니다."))
             else:
-                self.cleaned_data["의뢰처"] = 의뢰처
                 return self.cleaned_data
 
     def save(self, *arg, **kwargs):
@@ -119,20 +105,14 @@ class ASRegisterEditForm(forms.ModelForm):
         model = models.ASRegisters
         fields = (
             "접수일",
-            "현상",
-            "불량분류코드",
-            "불량분류",
+            "접수내용",
             "의뢰자전화번호",
-            "방문요청일",
             "비용",
         )
         help_texts = {
             "접수일": "*형식 : yyyy-mm-dd(기본값은 오늘입니다.)",
-            "방문요청일": "*형식 : yyyy-mm-dd",
         }
         widgets = {
-            "불량분류": forms.RadioSelect(),
-            "대응유형": forms.RadioSelect(),
             "비용": forms.RadioSelect(),
         }
 
@@ -322,11 +302,10 @@ class ASdoneinsideForm(forms.ModelForm):
 class ASconductForm(forms.ModelForm):
     class Meta:
         model = models.ASRegisters
-        fields = ("인계후",)
-        widgets = {
-            "인계후": forms.RadioSelect(),
-        }
+        fields = ()
+        widgets = {}
 
     def save(self, *arg, **kwargs):
         order = super().save(commit=False)
         return order
+

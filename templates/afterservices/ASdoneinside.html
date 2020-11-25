@@ -46,15 +46,10 @@ AS완료처리
                                     </td>
                                     <td class="border border-gray-400 px-4 py-2">
 
-                                        <div
-                                            class=" flex {%if field.name not in seletelist %} border hover:border-gray-500 w-full {%endif%} ">
-                                            {% if field.name == "AS날짜" %}
-                                            <input type="text" name="AS날짜" id="date2" size="10" />
-                                            {% else %}
-                                            {{field}}
-                                            {% endif %}</div>
-                                        <div class="text-xs text-green-700 ">
+                                        <div class=" flex border border-gray-400  hover:border-gray-700 w-full  ">
 
+                                            {{field}}</div>
+                                        <div class="text-xs text-green-700 ">
                                             {{field.help_text}}
                                         </div>
                                         {% if field.errors %}
@@ -76,29 +71,49 @@ AS완료처리
                                         {{asregisters.접수일.year}}-{{asregisters.접수일.month}}-{{asregisters.접수일.day}}</td>
                                 </tr>
                                 <tr>
-                                    <td class="border border-gray-400 px-4 py-2">접수자</td>
-                                    <td class="border border-gray-400 px-4 py-2">{{asregisters.접수자}}</td>
+                                    <td class="border border-gray-400 px-4 py-2">설치연도</td>
+                                    {% if asregisters.설치연도 %}
+                                    <td class="border px-4 py-2">
+                                        {{asregisters.설치연도.year}}-{{asregisters.설치연도.month}}-{{asregisters.설치연도.day}}
+                                    </td>
+                                    {%else%}
+                                    <td class="border px-4 py-2">미입력</td>
+
+                                    {% endif %}
                                 </tr>
                                 <tr>
-                                    <td class="border border-gray-400 px-4 py-2">현상</td>
-                                    <td class="border border-gray-400 px-4 py-2">{{asregisters.현상}}</td>
+                                    <td class="border border-gray-400 px-4 py-2">비용</td>
+                                    <td class="border border-gray-400 px-4 py-2">{{asregisters.비용}}</td>
                                 </tr>
 
                                 <tr>
-                                    <td class="border border-gray-400 px-4 py-2">의뢰처</td>
-                                    <td class="border border-gray-400 px-4 py-2">{{asregisters.의뢰처}}</td>
-                                </tr>
-                                <tr>
-                                    <td class="border border-gray-400 px-4 py-2">주소</td>
-                                    <td class="border border-gray-400 px-4 py-2">{{asregisters.주소}}</td>
+                                    <td class="border border-gray-400 px-4 py-2">현장명</td>
+                                    <td class="border border-gray-400 px-4 py-2">{{asregisters.현장명}}</td>
                                 </tr>
                                 <tr>
                                     <td class="border border-gray-400 px-4 py-2">의뢰자전화번호</td>
                                     <td class="border border-gray-400 px-4 py-2">{{asregisters.의뢰자전화번호}}</td>
                                 </tr>
-
-
-
+                                <tr>
+                                    <td class="border border-gray-400 px-4 py-2">주소</td>
+                                    {% if list.주소 %}
+                                    <td class="border px-4 py-2">{{asregisters.주소}}</td>
+                                    {%else%}
+                                    <td class="border px-4 py-2">미입력</td>
+                                    {% endif %}
+                                </tr>
+                                <tr>
+                                    <td class="border border-gray-400 px-4 py-2">접수내용</td>
+                                    <td class="border border-gray-400 px-4 py-2">{{asregisters.접수내용}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-gray-400 px-4 py-2">처리방법</td>
+                                    <td class="border border-gray-400 px-4 py-2">{{asregisters.처리방법}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-gray-400 px-4 py-2">비고</td>
+                                    <td class="border border-gray-400 px-4 py-2">{{asregisters.비고}}</td>
+                                </tr>
 
                             </tbody>
                         </table>

@@ -106,6 +106,7 @@ class ASRegisterEditForm(forms.ModelForm):
         fields = (
             "접수일",
             "접수내용",
+            "처리방법",
             "의뢰자전화번호",
             "비용",
         )
@@ -114,6 +115,7 @@ class ASRegisterEditForm(forms.ModelForm):
         }
         widgets = {
             "비용": forms.RadioSelect(),
+            "처리방법": forms.RadioSelect(),
         }
 
     def save(self, *arg, **kwargs):
@@ -124,13 +126,32 @@ class ASRegisterEditForm(forms.ModelForm):
 class ASvisitRegisterForm(forms.ModelForm):
     class Meta:
         model = models.ASVisitContents
-        fields = ("AS날짜", "AS방법", "처리기사", "처리회사", "AS처리내역", "특이사항", "재방문여부", "하자파일")
+        fields = ("AS날짜", "AS방법", "처리방법", "처리기사", "견적진행여부", "견적서첨부", "특이사항", "첨부파일")
         help_texts = {
             "AS날짜": "*형식 : yyyy-mm-dd(기본값은 오늘입니다.)",
         }
         widgets = {
             "AS방법": forms.RadioSelect(),
-            "재방문여부": forms.RadioSelect(),
+            "처리방법": forms.RadioSelect(),
+            "견적진행여부": forms.RadioSelect(),
+        }
+
+    def save(self, *arg, **kwargs):
+        order = super().save(commit=False)
+        return order
+
+
+class ASvisitEditForm(forms.ModelForm):
+    class Meta:
+        model = models.ASVisitContents
+        fields = ("AS날짜", "AS방법", "처리방법", "처리기사", "견적진행여부", "특이사항")
+        help_texts = {
+            "AS날짜": "*형식 : yyyy-mm-dd(기본값은 오늘입니다.)",
+        }
+        widgets = {
+            "AS방법": forms.RadioSelect(),
+            "처리방법": forms.RadioSelect(),
+            "견적진행여부": forms.RadioSelect(),
         }
 
     def save(self, *arg, **kwargs):

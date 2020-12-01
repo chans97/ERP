@@ -1110,3 +1110,24 @@ def asconduct(request):
             "good_num": good_num,
         },
     )
+
+
+class Filedownload(View):
+    model = AS_models.ASVisitContents
+    filefolderName = "첨부파일"
+    uploadto = "ASVisitContents/"
+
+    def get(self, request, *args, **kwargs):
+        pk = kwargs["pk"]
+        file = self.model.objects.get_or_none(pk=pk)
+        filepath = file.__getattribute__(self.filefolderName).path
+        title = file.__dict__[self.filefolderName].__str__()
+
+        title = urllib.parse.quote(title.encode("utf-8"))
+        title = title.replace(self.uploadto, "")
+
+        with open(filepath, "rb") as f:
+            response = HttpResponse(f, content_type="application/force-download")
+            titling = 'attachment; filename="{}"'.format(title)
+            response["Content-Disposition"] = titling
+            return response

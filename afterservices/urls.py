@@ -10,22 +10,6 @@ urlpatterns = [
         name="afterserviceshome",
     ),
     path("ASregister/", views.ASregister, name="ASregister",),
-    path(
-        "afterservicesingle/<int:pk>/",
-        views.afterservicesingle,
-        name="afterservicesingle",
-    ),
-    path(
-        "afterservicesrack/<int:pk>/",
-        views.afterservicesrack,
-        name="afterservicesrack",
-    ),
-    path(
-        "ASvisitrequestslist/",
-        views.ASvisitrequestslist.as_view(),
-        name="ASvisitrequestslist",
-    ),
-    path("ASvisitrequests/<int:pk>/", views.ASvisitrequests, name="ASvisitrequests",),
     path("ASregisterall/", views.ASregisterall.as_view(), name="ASregisterall",),
     path("ASrequestdetail/<int:pk>/", views.ASrequestdetail, name="ASrequestdetail",),
     path(
@@ -54,6 +38,7 @@ urlpatterns = [
     ),
     path("ASsuccessdelete/<int:pk>/", views.ASsuccessdelete, name="ASsuccessdelete",),
     path("ASvisitneedlist/", views.ASvisitneedlist.as_view(), name="ASvisitneedlist",),
+    path("ASpostlist/", views.ASpostlist.as_view(), name="ASpostlist",),
     path("ASvisitregister/<int:pk>/", views.ASvisitregister, name="ASvisitregister",),
     path("ASvisitedit/<int:pk>/", views.ASvisitedit.as_view(), name="ASvisitedit",),
     path(
@@ -154,20 +139,26 @@ urlpatterns = [
         views.ASsingleoutrequestregisterrack,
         name="ASsingleoutrequestregisterrack",
     ),
-    path("ASoverneedlist/", views.ASoverneedlist.as_view(), name="ASoverneedlist",),
-    path("ASconduct/<int:pk>/", views.ASconduct, name="ASconduct",),
     path("ASdonenonvisit/<int:pk>/", views.ASdonenonvisit, name="ASdonenonvisit",),
     path(
         "AScashcheckneedlist/",
         views.AScashcheckneedlist.as_view(),
         name="AScashcheckneedlist",
     ),
-    path("baddownload/<int:pk>/", views.baddownload, name="baddownload",),
-    path("costdownload/<int:pk>/", views.costdownload, name="costdownload",),
     path("costdelete/<int:pk>/", views.costdelete, name="costdelete",),
     path(
         "asregiserfiledownload/<int:pk>/",
-        views.asregiserfiledownload,
+        views.asregiserfiledownload.as_view(),
         name="asregiserfiledownload",
+    ),
+    path(
+        "ASVCcostdownload/<int:pk>/",
+        views.ASVCcostdownload.as_view(),
+        name="ASVCcostdownload",
+    ),
+    path(
+        "ASVCfiledownload/<int:pk>/",
+        views.ASVCfiledownload.as_view(),
+        name="ASVCfiledownload",
     ),
 ]

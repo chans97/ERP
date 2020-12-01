@@ -8,11 +8,6 @@ class ASRegisters(admin.ModelAdmin):
     empty_value_display = "입력 값 없음"
 
 
-@admin.register(models.ASVisitRequests)
-class ASVisitRequests(admin.ModelAdmin):
-    empty_value_display = "입력 값 없음"
-
-
 @admin.register(models.ASVisitContents)
 class ASVisitContents(admin.ModelAdmin):
     empty_value_display = "입력 값 없음"

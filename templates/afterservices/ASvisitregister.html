@@ -1,15 +1,13 @@
 {%extends "afterservices/afterserviceshome.html"%}
 {%load static%}
 {% block page_title%}
-AS현장방문
+AS{{ASrequest.처리방법}}
 {%endblock%}
 
 
 {%block head_title%}
-<i class="fas fa-angle-right mx-1 text-base"></i>AS담당자<i class="fas fa-angle-right text-base mx-1"></i>
-
-
-AS현장방문
+<i class="fas fa-angle-right text-base mx-1"></i>
+AS{{ASrequest.처리방법}}
 {%endblock head_title %}
 
 
@@ -17,7 +15,7 @@ AS현장방문
 <div class="w-11/12 h-full ml-32 -mt-6 font-normal pt-12 flex flex-row">
 
     <div class="flex flex-col p-6 w-full ">
-        <span class="border-b w-1/3 mb-3 border-gray-600 pb-2 font-semibold text-base">AS현장방문 등록
+        <span class="border-b w-1/3 mb-3 border-gray-600 pb-2 font-semibold text-base">AS{{ASrequest.처리방법}} 등록
             <div>-{{ASrequest}}</div> </span>
 
         <div class="flex ">
@@ -35,11 +33,53 @@ AS현장방문
                             <thead>
                                 <tr>
                                     <th class="border border-r-0 bg-gray-200 px-4 py-2 w-32"></th>
-                                    <th class="border border-l-0 bg-gray-200 px-4 py-2 w-56 text-left">AS현장방문</th>
+                                    <th class="border border-l-0 bg-gray-200 px-4 py-2 w-56 text-left">
+                                        AS{{ASrequest.처리방법}}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for field in form %}
+
+                                {% if field.name == "견적서첨부" %}
+                                <tr>
+                                    <td class="border border-gray-400 px-4 py-2">
+                                    </td>
+                                    <td class="border border-gray-400 px-4 py-2">
+
+                                        <div id="견적서첨부" class=" flex border hover:border-gray-500 w-full ">
+
+                                            {{field}}
+                                            <div class="text-xs text-green-700 ">
+                                                {{field.help_text}}
+                                            </div>
+                                            {% if field.errors %}
+                                            {% for error in field.errors %}
+                                            <div class="text-red-700 font-light text-xs">*{{error}}</div>
+                                            {% endfor %}
+                                            {% endif %}
+                                    </td>
+                                </tr>
+                                {%elif field.name == "처리기사" %}
+                                <tr>
+                                    <td class="border border-gray-400 px-4 py-2">
+                                        <span class="text-red-700" id="처리기사"> 자체처리 </span>
+                                    </td>
+                                    <td class="border border-gray-400 px-4 py-2">
+
+                                        <div class=" flex border hover:border-gray-500 w-full ">
+
+                                            {{field}}
+                                            <div class="text-xs text-green-700 ">
+                                                {{field.help_text}}
+                                            </div>
+                                            {% if field.errors %}
+                                            {% for error in field.errors %}
+                                            <div class="text-red-700 font-light text-xs">*{{error}}</div>
+                                            {% endfor %}
+                                            {% endif %}
+                                    </td>
+                                </tr>
+                                {%else%}
                                 <tr>
                                     <td class="border border-gray-400 px-4 py-2">
                                         {{field.name}}
@@ -54,7 +94,6 @@ AS현장방문
                                             {{field}}
                                             {% endif %}</div>
                                         <div class="text-xs text-green-700 ">
-
                                             {{field.help_text}}
                                         </div>
                                         {% if field.errors %}
@@ -65,13 +104,14 @@ AS현장방문
 
                                     </td>
                                 </tr>
+                                {% endif %}
                                 {%endfor%}
                             </tbody>
                         </table>
                     </div>
                     <div class=" flex flex-row justify-around -mx-12">
                         <button class="btn-link bg-blue-800 text-white w-9/12 h-12 self-center my-3 pt-0 pb-1">
-                            <div class="text-base font-medium">AS현장방문 등록</div>
+                            <div class="text-base font-medium">AS{{ASrequest.처리방법}} 등록</div>
                         </button> </div>
                 </form>
             </div>
@@ -79,5 +119,21 @@ AS현장방문
         </div>
     </div>
 </div>
-</div>
+
+<script>
+    const file = $("#견적서첨부");
+
+    const conductExpert = $("#처리기사");
+    const yesButton = $("#id_견적진행여부_0");
+    const noButton = $("#id_견적진행여부_1");
+    const external = $("#id_처리방법_0");
+    const internal = $("#id_처리방법_1");
+
+    noButton[0].addEventListener("click", () => file.slideUp());
+    yesButton[0].addEventListener("click", () => file.slideDown());
+
+    internal[0].addEventListener("click", () => conductExpert.html("외부처리"));
+    external[0].addEventListener("click", () => conductExpert.html("자체처리"));
+
+</script>
 {%endblock main_contens %}

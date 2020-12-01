@@ -13,7 +13,6 @@ from django.views.generic import (
     CreateView,
     FormView,
 )
-
 from django.contrib.auth import authenticate, login, logout
 from django.core.files.base import ContentFile
 from django.contrib import messages
@@ -50,16 +49,15 @@ class afterserviceshome(core_views.onelist):
             self.s_bool = True
             queryset = AS_models.ASRegisters.objects.filter(
                 Q(접수번호__contains=self.search)
+                | Q(접수일__contains=self.search)
+                | Q(설치연도__contains=self.search)
                 | Q(접수내용__contains=self.search)
-                | Q(처리방법__contains=self.search)
-                | Q(처리방법__contains=self.search)
-                | Q(접수자__first_name__contains=self.search)
-                | Q(단품__모델코드__contains=self.search)
-                | Q(단품__모델명__contains=self.search)
-                | Q(랙__랙시리얼코드__contains=self.search)
-                | Q(랙__랙모델명__contains=self.search)
-                | Q(의뢰처__거래처명__contains=self.search)
                 | Q(현장명__contains=self.search)
+                | Q(주소__contains=self.search)
+                | Q(의뢰자전화번호__contains=self.search)
+                | Q(비용__contains=self.search)
+                | Q(비고__contains=self.search)
+                | Q(처리방법__contains=self.search)
             ).order_by("-created")
         return queryset
 
@@ -125,179 +123,8 @@ def ASregister(request):
     return render(
         request,
         "afterservices/ASregister.html",
-        {"form": form, "seletelist": seletelist,},
+        {"form": form, "seletelist": seletelist},
     )
-
-
-# 삭제요망
-def afterservicesingle(request, pk):
-    form = forms.ASSingleForm(request.POST or None)
-    search = request.GET.get("search")
-    if search is None:
-        customer = SI_models.SingleProduct.objects.all().order_by("-created")
-        s_bool = False
-    else:
-        s_bool = True
-        qs = SI_models.SingleProduct.objects.filter(
-            Q(모델코드=search)
-            | Q(모델명__contains=search)
-            | Q(규격=search)
-            | Q(단위=search)
-            | Q(작성자__first_name=search)
-        ).order_by("-created")
-        customer = qs
-
-    if form.is_valid():
-        단품모델코드 = form.cleaned_data.get("단품모델코드")
-        SM = models.ASRegisters.objects.get(pk=pk)
-        SM.단품 = 단품모델코드
-        SM.save()
-
-        messages.success(request, "AS접수가 등록되었습니다.")
-
-        return redirect(reverse("afterservices:afterserviceshome"))
-
-    pagediv = 10
-    totalpage = int(math.ceil(len(customer) / pagediv))
-    paginator = Paginator(customer, pagediv, orphans=0)
-    page = request.GET.get("page", "1")
-    customer = paginator.get_page(page)
-    nextpage = int(page) + 1
-    previouspage = int(page) - 1
-    notsamebool = True
-
-    if int(page) == totalpage:
-        notsamebool = False
-    if (search is None) or (search == ""):
-        search = "search"
-    return render(
-        request,
-        "afterservices/afterservicesingle.html",
-        {
-            "customer": customer,
-            "form": form,
-            "search": search,
-            "page": page,
-            "totalpage": totalpage,
-            "notsamebool": notsamebool,
-            "nextpage": nextpage,
-            "previouspage": previouspage,
-            "s_bool": s_bool,
-        },
-    )
-
-
-# 삭제요망
-def afterservicesrack(request, pk):
-    form = forms.ASRackForm(request.POST or None)
-
-    search = request.GET.get("search")
-    if search is None:
-        customer = SI_models.RackProduct.objects.all().order_by("-created")
-        s_bool = False
-    else:
-        s_bool = True
-        qs = SI_models.RackProduct.objects.filter(
-            Q(랙시리얼코드=search)
-            | Q(랙모델명__contains=search)
-            | Q(규격=search)
-            | Q(단위=search)
-            | Q(작성자__first_name=search)
-        ).order_by("-created")
-        customer = qs
-
-    if form.is_valid():
-        랙시리얼코드 = form.cleaned_data.get("랙시리얼코드")
-        SM = models.ASRegisters.objects.get(pk=pk)
-        SM.랙 = 랙시리얼코드
-        SM.save()
-
-        messages.success(request, "AS접수가 등록되었습니다.")
-
-        return redirect(reverse("afterservices:afterserviceshome"))
-
-    pagediv = 10
-    totalpage = int(math.ceil(len(customer) / pagediv))
-    paginator = Paginator(customer, pagediv, orphans=0)
-    page = request.GET.get("page", "1")
-    customer = paginator.get_page(page)
-    nextpage = int(page) + 1
-    previouspage = int(page) - 1
-    notsamebool = True
-    if int(page) == totalpage:
-        notsamebool = False
-    if (search is None) or (search == ""):
-        search = "search"
-    return render(
-        request,
-        "afterservices/afterservicesrack.html",
-        {
-            "customer": customer,
-            "form": form,
-            "search": search,
-            "page": page,
-            "totalpage": totalpage,
-            "notsamebool": notsamebool,
-            "nextpage": nextpage,
-            "previouspage": previouspage,
-            "s_bool": s_bool,
-        },
-    )
-
-
-class ASvisitrequestslist(core_views.onelist):
-    templatename = "afterservices/ASvisitrequestslist.html"
-
-    def get_first_queryset(self, request):
-        self.search = request.GET.get("search")
-        if self.search is None:
-            requestslist = AS_models.ASRegisters.objects.exclude(처리방법="내부처리").order_by(
-                "-created"
-            )
-            queryset = []
-            for s in requestslist:
-                try:
-                    s.AS현장방문요청
-                except:
-                    try:
-                        s.AS완료
-                    except:
-                        queryset.append(s)
-            self.s_bool = False
-        else:
-            self.s_bool = True
-            requestslist = (
-                AS_models.ASRegisters.objects.exclude(처리방법="내부처리")
-                .filter(
-                    Q(접수번호__contains=self.search)
-                    | Q(접수내용__contains=self.search)
-                    | Q(처리방법__contains=self.search)
-                    | Q(접수자__first_name__contains=self.search)
-                    | Q(단품__모델코드__contains=self.search)
-                    | Q(단품__모델명__contains=self.search)
-                    | Q(랙__랙시리얼코드__contains=self.search)
-                    | Q(랙__랙모델명__contains=self.search)
-                    | Q(의뢰처__거래처명__contains=self.search)
-                )
-                .order_by("-created")
-            )
-            queryset = []
-            for s in requestslist:
-                try:
-                    s.AS현장방문요청
-                except:
-                    try:
-                        s.AS완료
-                    except:
-                        queryset.append(s)
-        return queryset
-
-
-def ASvisitrequests(request, pk):
-    asregister = AS_models.ASRegisters.objects.get_or_none(pk=pk)
-    AS_models.ASVisitRequests.objects.create(AS접수=asregister)
-    messages.success(request, "AS담당자 인계가 완료되었습니다.")
-    return redirect(reverse("afterservices:ASvisitrequestslist"))
 
 
 class ASregisterall(core_views.onelist):
@@ -334,8 +161,8 @@ def ASrequestdetail(request, pk):
         except:
             견적서 = None
 
-        asregister.AS현장방문요청.AS현장방문.견적서 = 견적서
-        asregister.AS현장방문요청.AS현장방문.save()
+        asregister.AS현장방문.견적서 = 견적서
+        asregister.AS현장방문.save()
 
     return render(
         request, "afterservices/ASrequestdetail.html", {"asregister": asregister,}
@@ -344,8 +171,8 @@ def ASrequestdetail(request, pk):
 
 def costdelete(request, pk):
     asvisit = AS_models.ASRegisters.objects.get_or_none(pk=pk)
-    asvisit.AS현장방문요청.AS현장방문.견적서 = None
-    asvisit.AS현장방문요청.AS현장방문.save()
+    asvisit.AS현장방문.견적서 = None
+    asvisit.AS현장방문.save()
     return redirect(reverse("afterservices:ASrequestdetail", kwargs={"pk": pk}))
 
 
@@ -386,6 +213,7 @@ class ASRegistersedit(user_mixins.LoggedInOnlyView, UpdateView):
         접수내용 = form.cleaned_data.get("접수내용")
         의뢰자전화번호 = form.cleaned_data.get("의뢰자전화번호")
         비용 = form.cleaned_data.get("비용")
+        처리방법 = form.cleaned_data.get("처리방법")
         if 접수일 is None:
             접수일 = timezone.now().date()
 
@@ -395,6 +223,7 @@ class ASRegistersedit(user_mixins.LoggedInOnlyView, UpdateView):
         asregisters.접수내용 = 접수내용
         asregisters.의뢰자전화번호 = 의뢰자전화번호
         asregisters.비용 = 비용
+        asregisters.처리방법 = 처리방법
         asregisters.save()
         messages.success(self.request, "수정이 완료되었습니다.")
         return redirect(reverse("afterservices:ASrequestdetail", kwargs={"pk": pk}))
@@ -428,7 +257,7 @@ class ASregisterdoneinsidelist(core_views.onelist):
             queryset = []
             for s in requestslist:
                 try:
-                    s.AS현장방문요청
+                    s
                 except:
                     try:
                         s.AS완료
@@ -455,7 +284,7 @@ class ASregisterdoneinsidelist(core_views.onelist):
             queryset = []
             for s in requestslist:
                 try:
-                    s.AS현장방문요청
+                    s
                 except:
                     try:
                         s.AS완료
@@ -502,12 +331,10 @@ def ASsuccessdelete(request, pk):
     assuccess = AS_models.ASResults.objects.get_or_none(pk=pk)
     if assuccess.완료유형 == "내부처리":
         pk = assuccess.내부처리.pk
-    elif assuccess.완료유형 == "담당자내부처리":
-        pk = assuccess.담당자내부처리.AS접수.pk
     elif assuccess.완료유형 == "방문":
-        pk = assuccess.방문.AS현장방문요청.AS접수.pk
+        pk = assuccess.방문.AS접수.pk
     else:
-        pk = assuccess.재방문.전AS현장방문.AS현장방문요청.AS접수.pk
+        pk = assuccess.재방문.전AS현장방문.AS접수.pk
 
     assuccess.delete()
     messages.success(request, "AS완료가 철회되었습니다.")
@@ -521,80 +348,126 @@ class ASvisitneedlist(core_views.onelist):
         user = self.request.user
         self.search = request.GET.get("search")
         if self.search is None:
-            order = AS_models.ASVisitRequests.objects.all().order_by("-created")
+            order = AS_models.ASRegisters.objects.all().order_by("-created")
             queryset = []
             for s in order:
                 try:
                     s.AS현장방문
                 except:
-                    if s.AS접수.처리방법 == "현장방문":
+                    if s.처리방법 == "현장방문":
                         queryset.append(s)
 
             self.s_bool = False
         else:
             self.s_bool = True
-            order = AS_models.ASVisitRequests.objects.filter(
-                Q(AS담당자__first_name__contains=self.search)
-                | Q(AS접수__접수번호__contains=self.search)
-                | Q(AS접수__접수내용__contains=self.search)
-                | Q(AS접수__처리방법__contains=self.search)
-                | Q(AS접수__의뢰처__거래처명__contains=self.search)
-                | Q(AS접수__단품__모델명__contains=self.search)
-                | Q(AS접수__단품__모델코드__contains=self.search)
-                | Q(AS접수__랙__랙모델명__contains=self.search)
-                | Q(AS접수__랙__랙시리얼코드__contains=self.search)
+            order = AS_models.ASRegisters.objects.filter(
+                Q(접수번호__contains=self.search)
+                | Q(접수일__contains=self.search)
+                | Q(설치연도__contains=self.search)
+                | Q(접수내용__contains=self.search)
+                | Q(현장명__contains=self.search)
+                | Q(주소__contains=self.search)
+                | Q(의뢰자전화번호__contains=self.search)
+                | Q(비용__contains=self.search)
+                | Q(비고__contains=self.search)
+                | Q(처리방법__contains=self.search)
             ).order_by("-created")
             queryset = []
             for s in order:
                 try:
                     s.AS현장방문
                 except:
-                    if s.AS접수.처리방법 == "현장방문":
+                    if s.처리방법 == "현장방문":
+                        queryset.append(s)
+        return queryset
+
+
+class ASpostlist(core_views.onelist):
+    templatename = "afterservices/ASpostlist.html"
+
+    def get_first_queryset(self, request):
+        user = self.request.user
+        self.search = request.GET.get("search")
+        if self.search is None:
+            order = AS_models.ASRegisters.objects.all().order_by("-created")
+            queryset = []
+            for s in order:
+                try:
+                    s.AS현장방문
+                except:
+                    if s.처리방법 == "택배수령":
+                        queryset.append(s)
+
+            self.s_bool = False
+        else:
+            self.s_bool = True
+            order = AS_models.ASRegisters.objects.filter(
+                Q(접수번호__contains=self.search)
+                | Q(접수일__contains=self.search)
+                | Q(설치연도__contains=self.search)
+                | Q(접수내용__contains=self.search)
+                | Q(현장명__contains=self.search)
+                | Q(주소__contains=self.search)
+                | Q(의뢰자전화번호__contains=self.search)
+                | Q(비용__contains=self.search)
+                | Q(비고__contains=self.search)
+                | Q(처리방법__contains=self.search)
+            ).order_by("-created")
+            queryset = []
+            for s in order:
+                try:
+                    s.AS현장방문
+                except:
+                    if s.처리방법 == "현장방문":
                         queryset.append(s)
         return queryset
 
 
 def ASvisitregister(request, pk):
-    ASrequest = AS_models.ASVisitRequests.objects.get_or_none(pk=pk)
+    ASrequest = AS_models.ASRegisters.objects.get_or_none(pk=pk)
     form = forms.ASvisitRegisterForm(request.POST or None)
 
     if form.is_valid():
         AS날짜 = form.cleaned_data.get("AS날짜")
         AS방법 = form.cleaned_data.get("AS방법")
-        고객이름 = form.cleaned_data.get("고객이름")
-        AS처리내역 = form.cleaned_data.get("AS처리내역")
-        특이사항 = form.cleaned_data.get("특이사항")
-        재방문여부 = form.cleaned_data.get("재방문여부")
+        처리방법 = form.cleaned_data.get("처리방법")
         처리기사 = form.cleaned_data.get("처리기사")
-        처리회사 = form.cleaned_data.get("처리회사")
+        견적진행여부 = form.cleaned_data.get("견적진행여부")
+        견적서첨부 = form.cleaned_data.get("견적서첨부")
+        특이사항 = form.cleaned_data.get("특이사항")
         try:
-            하자파일 = request.FILES["하자파일"]
+            첨부파일 = request.FILES["첨부파일"]
         except:
-            하자파일 = None
+            첨부파일 = None
+        try:
+            견적서첨부 = request.FILES["견적서첨부"]
+        except:
+            견적서첨부 = None
 
         if AS날짜 is None:
             AS날짜 = timezone.now().date()
         SM = AS_models.ASVisitContents.objects.create(
             AS날짜=AS날짜,
             AS방법=AS방법,
-            고객이름=고객이름,
-            AS처리내역=AS처리내역,
+            처리방법=처리방법,
+            견적진행여부=견적진행여부,
+            견적서첨부=견적서첨부,
+            AS접수=ASrequest,
+            입력자=request.user,
             특이사항=특이사항,
-            재방문여부=재방문여부,
-            AS현장방문요청=ASrequest,
-            수리기사=request.user,
-            단품=ASrequest.AS접수.단품,
-            랙=ASrequest.AS접수.랙,
-            처리기사=처리기사,
-            처리회사=처리회사,
-            하자파일=하자파일,
+            첨부파일=첨부파일,
         )
         messages.success(request, "AS현장방문이 등록되었습니다.")
-        return redirect(reverse("afterservices:ASvisitneedlist"))
+        if ASrequest.처리방법 == "현장방문":
+            return redirect(reverse("afterservices:ASvisitneedlist"))
+        else:
+            return redirect(reverse("afterservices:ASpostlist"))
 
     seletelist = [
         "AS방법",
-        "재방문여부",
+        "AS방법",
+        "처리방법",
+        "견적진행여부",
     ]
     return render(
         request,
@@ -606,19 +479,20 @@ def ASvisitregister(request, pk):
 class ASvisitedit(UpdateView):
     model = AS_models.ASVisitContents
     template_name = "afterservices/ASvisitregister.html"
-    form_class = forms.ASvisitRegisterForm
+    form_class = forms.ASvisitEditForm
 
     def render_to_response(self, context, **response_kwargs):
 
         response_kwargs.setdefault("content_type", self.content_type)
         pk = self.kwargs.get("pk")
         visitRegister = AS_models.ASVisitContents.objects.get_or_none(pk=pk)
-        ASrequest = visitRegister.AS현장방문요청
+        ASrequest = visitRegister
         seletelist = [
             "AS방법",
-            "재방문여부",
+            "처리방법",
+            "견적진행여부",
         ]
-        context["ASrequest"] = ASrequest
+        context["ASrequest"] = ASrequest.AS접수
         context["seletelist"] = seletelist
 
         return self.response_class(
@@ -632,39 +506,31 @@ class ASvisitedit(UpdateView):
     def get_success_url(self):
         pk = self.kwargs.get(self.pk_url_kwarg)
         visitRegister = AS_models.ASVisitContents.objects.get_or_none(pk=pk)
-        pk = visitRegister.AS현장방문요청.AS접수.pk
+        pk = visitRegister.AS접수.pk
         return redirect(reverse("afterservices:ASrequestdetail", kwargs={"pk": pk}))
 
     def form_valid(self, form):
         self.object = form.save()
         AS날짜 = form.cleaned_data.get("AS날짜")
         AS방법 = form.cleaned_data.get("AS방법")
-        고객이름 = form.cleaned_data.get("고객이름")
-        AS처리내역 = form.cleaned_data.get("AS처리내역")
-        특이사항 = form.cleaned_data.get("특이사항")
-        재방문여부 = form.cleaned_data.get("재방문여부")
+        처리방법 = form.cleaned_data.get("처리방법")
         처리기사 = form.cleaned_data.get("처리기사")
-        처리회사 = form.cleaned_data.get("처리회사")
-        try:
-            하자파일 = self.request.FILES["하자파일"]
-        except:
-            하자파일 = None
+        견적진행여부 = form.cleaned_data.get("견적진행여부")
+        특이사항 = form.cleaned_data.get("특이사항")
         if AS날짜 is None:
             AS날짜 = timezone.now().date()
+
         pk = self.kwargs.get("pk")
         visitRegister = AS_models.ASVisitContents.objects.get_or_none(pk=pk)
         visitRegister.AS날짜 = AS날짜
         visitRegister.AS방법 = AS방법
-        visitRegister.고객이름 = 고객이름
-        visitRegister.AS처리내역 = AS처리내역
-        visitRegister.특이사항 = 특이사항
-        visitRegister.재방문여부 = 재방문여부
+        visitRegister.처리방법 = 처리방법
         visitRegister.처리기사 = 처리기사
-        visitRegister.처리회사 = 처리회사
-        visitRegister.하자파일 = 하자파일
+        visitRegister.견적진행여부 = 견적진행여부
+        visitRegister.특이사항 = 특이사항
         visitRegister.save()
         messages.success(self.request, "수정이 완료되었습니다.")
-        pk = visitRegister.AS현장방문요청.AS접수.pk
+        pk = visitRegister.AS접수.pk
         return redirect(reverse("afterservices:ASrequestdetail", kwargs={"pk": pk}))
 
 
@@ -791,7 +657,7 @@ class ASrevisitedit(UpdateView):
     def get_success_url(self):
         pk = self.kwargs.get(self.pk_url_kwarg)
         visitRegister = AS_models.ASVisitContents.objects.get_or_none(pk=pk)
-        pk = visitRegister.전AS현장방문.AS현장방문요청.AS접수.pk
+        pk = visitRegister.전AS현장방문.AS접수.pk
         return redirect(reverse("afterservices:ASrequestdetail", kwargs={"pk": pk}))
 
     def form_valid(self, form):
@@ -813,7 +679,7 @@ class ASrevisitedit(UpdateView):
         visitRegister.특이사항 = 특이사항
         visitRegister.save()
         messages.success(self.request, "수정이 완료되었습니다.")
-        pk = visitRegister.전AS현장방문.AS현장방문요청.AS접수.pk
+        pk = visitRegister.전AS현장방문.AS접수.pk
         return redirect(reverse("afterservices:ASrequestdetail", kwargs={"pk": pk}))
 
 
@@ -851,30 +717,31 @@ class ASsuccesslist(core_views.threelist):
             self.s_bool = False
         else:
             self.s_bool = True
-            order = AS_models.ASVisitRequests.objects.filter(
-                Q(AS담당자__first_name__contains=self.search)
-                | Q(AS접수__접수번호__contains=self.search)
-                | Q(AS접수__접수내용__contains=self.search)
-                | Q(AS접수__처리방법__contains=self.search)
-                | Q(AS접수__의뢰처__거래처명__contains=self.search)
-                | Q(AS접수__단품__모델명__contains=self.search)
-                | Q(AS접수__단품__모델코드__contains=self.search)
-                | Q(AS접수__랙__랙모델명__contains=self.search)
-                | Q(AS접수__랙__랙시리얼코드__contains=self.search)
+            order = AS_models.ASRegisters.objects.filter(
+                Q(접수번호__contains=self.search)
+                | Q(접수일__contains=self.search)
+                | Q(설치연도__contains=self.search)
+                | Q(접수내용__contains=self.search)
+                | Q(현장명__contains=self.search)
+                | Q(주소__contains=self.search)
+                | Q(의뢰자전화번호__contains=self.search)
+                | Q(비용__contains=self.search)
+                | Q(비고__contains=self.search)
+                | Q(처리방법__contains=self.search)
             ).order_by("-created")
             queryset = []
             for s in order:
                 try:
                     s.AS완료
                 except:
-                    if s.AS접수.처리방법 == "내부처리":
+                    if s.처리방법 == "내부처리":
                         queryset.append(s)
         return queryset
 
     def get_second_queryset(self, request):
         self.search2 = request.GET.get("search2")
         if self.search2 is None:
-            order = AS_models.ASVisitRequests.objects.all().order_by("-created")
+            order = AS_models.ASRegisters.objects.all().order_by("-created")
             queryset = []
             for s in order:
                 try:
@@ -890,17 +757,19 @@ class ASsuccesslist(core_views.threelist):
 
             self.s_bool2 = False
         else:
+            # here
             self.s_bool2 = True
-            order = AS_models.ASVisitRequests.objects.filter(
-                Q(AS담당자__first_name__contains=self.search2)
-                | Q(AS접수__접수번호__contains=self.search2)
-                | Q(AS접수__접수내용__contains=self.search2)
-                | Q(AS접수__처리방법__contains=self.search2)
-                | Q(AS접수__의뢰처__거래처명__contains=self.search2)
-                | Q(AS접수__단품__모델명__contains=self.search2)
-                | Q(AS접수__단품__모델코드__contains=self.search2)
-                | Q(AS접수__랙__랙모델명__contains=self.search2)
-                | Q(AS접수__랙__랙시리얼코드__contains=self.search2)
+            order = AS_models.ASRegisters.objects.filter(
+                Q(접수번호__contains=self.search2)
+                | Q(접수일__contains=self.search2)
+                | Q(설치연도__contains=self.search2)
+                | Q(접수내용__contains=self.search2)
+                | Q(현장명__contains=self.search2)
+                | Q(주소__contains=self.search2)
+                | Q(의뢰자전화번호__contains=self.search2)
+                | Q(비용__contains=self.search2)
+                | Q(비고__contains=self.search2)
+                | Q(처리방법__contains=self.search2)
             ).order_by("-created")
             queryset = []
             for s in order:
@@ -1029,7 +898,7 @@ class ASexrepairlist(core_views.onelist):
         self.search = request.GET.get("search")
         if self.search is None:
             order = (
-                AS_models.ASVisitContents.objects.filter(수리기사=self.request.user)
+                AS_models.ASVisitContents.objects.filter(입력자=self.request.user)
                 .filter(AS방법="제품수리")
                 .filter(재방문여부="재방문")
                 .order_by("-created")
@@ -1048,7 +917,7 @@ class ASexrepairlist(core_views.onelist):
         else:
             self.s_bool = True
             order = (
-                AS_models.ASVisitContents.objects.filter(수리기사=self.request.user)
+                AS_models.ASVisitContents.objects.filter(입력자=self.request.user)
                 .filter(AS방법="제품수리")
                 .filter(재방문여부="재방문")
                 .filter(
@@ -1312,7 +1181,7 @@ class ASexsingleoutlist(core_views.onelist):
         self.search = request.GET.get("search")
         if self.search is None:
             order = (
-                AS_models.ASVisitContents.objects.filter(수리기사=self.request.user)
+                AS_models.ASVisitContents.objects.filter(입력자=self.request.user)
                 .filter(AS방법="제품교체")
                 .filter(재방문여부="재방문")
                 .order_by("-created")
@@ -1331,7 +1200,7 @@ class ASexsingleoutlist(core_views.onelist):
         else:
             self.s_bool = True
             order = (
-                AS_models.ASVisitContents.objects.filter(수리기사=self.request.user)
+                AS_models.ASVisitContents.objects.filter(입력자=self.request.user)
                 .filter(AS방법="제품교체")
                 .filter(재방문여부="재방문")
                 .filter(
@@ -1405,7 +1274,7 @@ def ASsingleoutrequestregistersingle(request, pk):
             수주AS="AS",
             단품=ASvisit.단품,
             AS=ASvisit,
-            고객사=ASvisit.AS현장방문요청.AS접수.의뢰처,
+            고객사=ASvisit.AS접수.의뢰처,
             출하요청수량=출하요청수량,
             출하요청자=request.user,
             출하희망일=출하희망일,
@@ -1455,7 +1324,7 @@ def ASsingleoutrequestregisterrack(request, pk):
             수주AS="AS",
             단품=신청품목,
             AS=ASvisit,
-            고객사=ASvisit.AS현장방문요청.AS접수.의뢰처,
+            고객사=ASvisit.AS접수.의뢰처,
             출하요청수량=출하요청수량,
             출하요청자=request.user,
             출하희망일=출하희망일,
@@ -1472,75 +1341,6 @@ def ASsingleoutrequestregisterrack(request, pk):
             "singlelist": singlelist,
             "seletelist": seletelist,
         },
-    )
-
-
-class ASoverneedlist(core_views.onelist):
-    templatename = "afterservices/ASoverneedlist.html"
-
-    def get_first_queryset(self, request):
-        user = self.request.user
-        self.search = request.GET.get("search")
-        if self.search is None:
-            order = AS_models.ASVisitRequests.objects.all().order_by("-created")
-            queryset = []
-            for s in order:
-                try:
-                    s.AS현장방문
-                except:
-                    if s.AS접수.처리방법 == "":
-                        queryset.append(s)
-
-            self.s_bool = False
-        else:
-            self.s_bool = True
-            order = AS_models.ASVisitRequests.objects.filter(
-                Q(AS담당자__first_name__contains=self.search)
-                | Q(AS접수__접수번호__contains=self.search)
-                | Q(AS접수__접수내용__contains=self.search)
-                | Q(AS접수__처리방법__contains=self.search)
-                | Q(AS접수__의뢰처__거래처명__contains=self.search)
-                | Q(AS접수__단품__모델명__contains=self.search)
-                | Q(AS접수__단품__모델코드__contains=self.search)
-                | Q(AS접수__랙__랙모델명__contains=self.search)
-                | Q(AS접수__랙__랙시리얼코드__contains=self.search)
-            ).order_by("-created")
-            queryset = []
-            for s in order:
-                try:
-                    s.AS현장방문
-                except:
-                    if s.AS접수.처리방법 == "":
-                        queryset.append(s)
-        return queryset
-
-
-def ASconduct(request, pk):
-    ASrequest = AS_models.ASVisitRequests.objects.get_or_none(pk=pk)
-    ASregister = ASrequest.AS접수
-    form = forms.ASconductForm(request.POST or None)
-
-    if form.is_valid():
-        처리방법 = form.cleaned_data.get("처리방법")
-        ASregister.처리방법 = 처리방법
-        ASregister.save()
-
-        messages.success(request, "AS처리가 완료되었습니다.")
-
-        if 처리방법 == "현장방문":
-            return redirect(reverse("afterservices:ASvisitneedlist"))
-        elif 처리방법 == "내부처리":
-            return redirect(reverse("afterservices:ASsuccesslist"))
-        else:
-            return redirect(reverse("afterservices:afterserviceshome"))
-
-    seletelist = [
-        "처리방법",
-    ]
-    return render(
-        request,
-        "afterservices/ASconduct.html",
-        {"asregisters": ASregister, "form": form, "seletelist": seletelist,},
     )
 
 
@@ -1612,49 +1412,19 @@ class AScashcheckneedlist(core_views.onelist):
         return queryset
 
 
-def baddownload(request, pk):
-    """파일 다운로드 유니코드화 패치"""
-
-    asvisite = models.ASVisitContents.objects.get_or_none(pk=pk)
-    filepath = asvisite.하자파일.path
-    title = asvisite.하자파일.__str__()
-    title = urllib.parse.quote(title.encode("utf-8"))
-    title = title.replace("bad/", "")
-
-    with open(filepath, "rb") as f:
-        response = HttpResponse(f, content_type="application/force-download")
-        titling = 'attachment; filename="{}"'.format(title)
-        response["Content-Disposition"] = titling
-        return response
+class asregiserfiledownload(core_views.Filedownload):
+    model = models.ASRegisters
+    filefolderName = "첨부파일"
+    uploadto = "ASregister/"
 
 
-def costdownload(request, pk):
-    """파일 다운로드 유니코드화 패치"""
-
-    asvisite = models.ASVisitContents.objects.get_or_none(pk=pk)
-    filepath = asvisite.견적서.path
-    title = asvisite.견적서.__str__()
-    title = urllib.parse.quote(title.encode("utf-8"))
-    title = title.replace("cost/", "")
-
-    with open(filepath, "rb") as f:
-        response = HttpResponse(f, content_type="application/force-download")
-        titling = 'attachment; filename="{}"'.format(title)
-        response["Content-Disposition"] = titling
-        return response
+class ASVCcostdownload(core_views.Filedownload):
+    model = models.ASVisitContents
+    filefolderName = "견적서첨부"
+    uploadto = "cost/"
 
 
-def asregiserfiledownload(request, pk):
-    """파일 다운로드 유니코드화 패치"""
-
-    ASregister = models.ASRegisters.objects.get_or_none(pk=pk)
-    filepath = ASregister.첨부파일.path
-    title = ASregister.첨부파일.__str__()
-    title = urllib.parse.quote(title.encode("utf-8"))
-    title = title.replace("ASregister/", "")
-
-    with open(filepath, "rb") as f:
-        response = HttpResponse(f, content_type="application/force-download")
-        titling = 'attachment; filename="{}"'.format(title)
-        response["Content-Disposition"] = titling
-        return response
+class ASVCfiledownload(core_views.Filedownload):
+    model = models.ASVisitContents
+    filefolderName = "첨부파일"
+    uploadto = "ASVisitContents/"

@@ -2,6 +2,10 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from core.models import TimeStampedModel
 
+from django.conf import settings
+from django.contrib.auth.signals import user_logged_in
+from importlib import import_module
+
 
 class User(AbstractUser, TimeStampedModel):
     """custom user """
@@ -25,6 +29,17 @@ class User(AbstractUser, TimeStampedModel):
     def ordercount(self):
         count = self.수주등록.count()
         return count
+
+
+class LoggedInUser(models.Model):
+    user = models.OneToOneField(
+        "User", related_name="logged_in_user", on_delete=models.CASCADE
+    )
+    # Session keys are 32 characters long
+    session_key = models.CharField(max_length=32, null=True, blank=True)
+
+    def __str__(self):
+        return self.user.first_name
 
 
 class Company(TimeStampedModel):

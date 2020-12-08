@@ -38,7 +38,7 @@ class ASRegisters(TimeStampedModel):
     주소 = models.TextField(max_length=120, null=True, blank=True)
     의뢰자전화번호 = models.CharField(max_length=20, null=True, blank=True)
     비용 = models.CharField(choices=비용_CHOICES, max_length=10, default="유상")
-    비고 = models.CharField(max_length=100, null=True)
+    비고 = models.CharField(max_length=100, null=True, blank=True)
     첨부파일 = models.FileField(blank=True, null=True, upload_to="ASregister")
     처리방법 = models.CharField(
         choices=처리방법_CHOICES, max_length=10, default="담당자연결", blank=False, null=True,

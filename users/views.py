@@ -13,6 +13,7 @@ from django.contrib.auth.decorators import login_required
 from . import models, forms
 from django.contrib.messages.views import SuccessMessageMixin
 import urllib.request
+from random import randint
 
 
 class LoginView(FormView):
@@ -26,8 +27,15 @@ class LoginView(FormView):
         user = authenticate(self.request, username=email, password=password)
         if user is not None:
             login(self.request, user)
+            # randomNumber = randint(1, 999999999)
+            # session = models.UserSession.objects.create(
+            #    user=user, session_key=randomNumber
+            # )
+            # for user_session in models.UserSession.objects.filter(user=user):
+            #    user_session.delete()
+
             messages.info(
-                self.request, f"안녕하세요. {self.request.user.first_name} 님. 로그인 되었습니다."
+                self.request, f"안녕하세요. {self.request.user} 님. 로그인 되었습니다.",
             )
         return super().form_valid(form)
 

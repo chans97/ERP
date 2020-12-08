@@ -61,7 +61,10 @@ class ASRegisters(TimeStampedModel):
                     return "AS완료"
 
                 except:
-                    return "재방문완료"
+                    if self.AS현장방문.AS재방문.현장택배 == "현장":
+                        return "수리/교체후AS현장방문"
+                    else:
+                        return "수리/교체후AS택배송부"
 
             except:
                 try:
@@ -181,52 +184,30 @@ class ASRepairRequest(TimeStampedModel):
 
 
 class ASReVisitContents(TimeStampedModel):
-    단품 = "단품"
-    랙 = "랙"
 
-    접수제품분류_CHOICES = (
-        (단품, "단품"),
-        (랙, "랙"),
+    현장택배_CHOICES = (
+        ("현장", "현장"),
+        ("택배", "택배"),
     )
-
-    제품수리 = "제품수리"
-    제품교체 = "제품교체"
-    기타 = "기타"
-
     AS방법_CHOICES = (
-        (제품수리, "제품수리"),
-        (제품교체, "제품교체"),
-        (기타, "기타"),
+        ("제품수리", "제품수리"),
+        ("제품교체", "제품교체"),
+        ("기타", "기타"),
     )
 
     전AS현장방문 = models.OneToOneField(
         "ASVisitContents", related_name="AS재방문", on_delete=models.SET_NULL, null=True
     )
     AS날짜 = models.DateField(auto_now=False, auto_now_add=False, blank=True, null=True)
-    AS방법 = models.CharField(choices=AS방법_CHOICES, max_length=10, default=제품수리)
-    고객이름 = models.CharField(max_length=50, null=True)
+    AS방법 = models.CharField(choices=AS방법_CHOICES, max_length=10, default="제품수리")
+    현장명 = models.CharField(max_length=50, null=True)
     AS처리내역 = models.TextField(null=True)
     특이사항 = models.TextField(null=True, blank=True)
     수리기사 = models.ForeignKey(
         users_models.User, related_name="AS재방문", on_delete=models.SET_NULL, null=True
     )
-    접수제품분류 = models.CharField(
-        choices=접수제품분류_CHOICES, max_length=10, blank=True, default=단품
-    )
-
-    단품 = models.ForeignKey(
-        SI_models.SingleProduct,
-        related_name="AS재방문",
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-    )
-    랙 = models.ForeignKey(
-        SI_models.RackProduct,
-        related_name="AS재방문",
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
+    현장택배 = models.CharField(
+        choices=현장택배_CHOICES, max_length=10, blank=True, default="현장"
     )
 
     class Meta:

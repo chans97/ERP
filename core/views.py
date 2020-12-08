@@ -1044,13 +1044,13 @@ def asconduct(request):
     costnum = []
     freenum = []
 
-    order = AS_models.ASVisitRequests.objects.filter(created__range=(start, end))
+    order = AS_models.ASRegisters.objects.filter(created__range=(start, end))
     for s in order:
         try:
             s.AS완료
-            if s.AS접수.비용 == "유상":
+            if s.비용 == "유상":
                 costnum.append(s)
-            elif s.AS접수.비용 == "무상":
+            elif s.비용 == "무상":
                 freenum.append(s)
             else:
                 pass
@@ -1058,37 +1058,23 @@ def asconduct(request):
             pass
 
         try:
-            s.AS현장방문
-            if s.AS현장방문.재방문여부 == "완료":
-                try:
-                    s.AS현장방문.AS완료
-                    if s.AS접수.비용 == "유상":
-                        costnum.append(s)
-                    elif s.AS접수.비용 == "무상":
-                        freenum.append(s)
-                    else:
-                        pass
-                except:
-                    pass
+            s.AS현장방문.AS완료
+            if s.비용 == "유상":
+                costnum.append(s)
+            elif s.비용 == "무상":
+                freenum.append(s)
+            else:
+                pass
         except:
             pass
-    print(costnum)
-    torder = AS_models.ASVisitContents.objects.filter(재방문여부="재방문").filter(
-        created__range=(start, end)
-    )
-    for s in torder:
+
         try:
-            s.AS재방문
-            try:
-                s.AS재방문.AS완료
-                test = s.AS현장방문요청.AS접수.비용
-                if test == "유상":
-                    costnum.append(s)
-                elif test == "무상":
-                    freenum.append(s)
-                else:
-                    pass
-            except:
+            s.AS현장방문.AS재방문.AS완료
+            if s.비용 == "유상":
+                costnum.append(s)
+            elif s.비용 == "무상":
+                freenum.append(s)
+            else:
                 pass
         except:
             pass

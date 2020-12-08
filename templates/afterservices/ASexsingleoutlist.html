@@ -39,13 +39,15 @@ AS단품출하요청
                                 <tr>
                                     <th class="border bg-gray-200 px-4 py-2 w-24">단품출하요청</th>
                                     <th class="border bg-gray-200 px-4 py-2 w-24">접수번호</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">의뢰처</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">제품코드</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">제품명</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">AS방법</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">고객이름</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">AS처리내역</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">수리기사</th>
+                                    <th class="border bg-gray-200 px-2 py-2 w-20">접수일</th>
+                                    <th class="border bg-gray-200 px-2 py-2 w-20">설치연도</th>
+                                    <th class="border bg-gray-200 px-2 py-2 w-20">비용</th>
+                                    <th class="border bg-gray-200 px-2 py-2 w-20">현장명</th>
+                                    <th class="border bg-gray-200 px-2 py-2 w-20">전화번호</th>
+                                    <th class="border bg-gray-200 px-2 py-2 w-20">주소</th>
+                                    <th class="border bg-gray-200 px-2 py-2 w-20">접수내용</th>
+                                    <th class="border bg-gray-200 px-2 py-2 w-20">처리방법</th>
+                                    <th class="border bg-gray-200 px-2 py-2 w-20">비고</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -65,22 +67,35 @@ AS단품출하요청
                                     </td>
                                     <td class="border px-4 py-2 hover:text-blue-700 hover:font-bold">
                                         <a
-                                            href="{%url "afterservices:ASrequestdetail" list.AS현장방문요청.AS접수.pk%}">{{list.AS현장방문요청.AS접수.접수번호}}</a>
+                                            href="{%url "afterservices:ASrequestdetail" list.AS접수.pk%}">{{list.AS접수.접수번호}}</a>
                                     </td>
-                                    <td class="border px-4 py-2">{{list.AS현장방문요청.AS접수.의뢰처}}</td>
-                                    {%if list.접수제품분류 == "단품"%}
-                                    <td class="border px-4 py-2">{{list.단품.모델코드}}</td>
-                                    <td class="border px-4 py-2">{{list.단품.모델명}}</td>
+                                    <td class="border px-2 py-2">
+                                        {{list.AS접수.접수일.year}}-{{list.AS접수.접수일.month}}-{{list.AS접수.접수일.day}}</td>
+
+                                    {% if list.AS접수.설치연도 %}
+                                    <td class="border px-2 py-2">
+                                        {{list.AS접수.설치연도.year}}-{{list.AS접수.설치연도.month}}-{{list.AS접수.설치연도.day}}</td>
                                     {%else%}
-                                    <td class="border px-4 py-2">{{list.랙.랙시리얼코드}}</td>
-                                    <td class="border px-4 py-2">{{list.랙.랙모델명}}</td>
-                                    {%endif%}
-                                    <td class="border px-4 py-2">{{list.AS방법}}</td>
-                                    <td class="border px-4 py-2">{{list.고객이름}}</td>
-                                    <td class="border px-4 py-2">{{list.AS처리내역}}</td>
-                                    <td class="border px-4 py-2">{{list.수리기사}}</td>
+                                    <td class="border px-2 py-2">미입력</td>
+
+                                    {% endif %}
+
+                                    <td class="border px-2 py-2">{{list.AS접수.비용}}</td>
+                                    <td class="border px-2 py-2">{{list.AS접수.현장명}}</td>
+                                    <td class="border px-2 py-2">{{list.AS접수.의뢰자전화번호}}</td>
+
+                                    {% if list.AS접수.주소 %}
+                                    <td class="border px-2 py-2">{{list.AS접수.주소}}</td>
+                                    {%else%}
+                                    <td class="border px-2 py-2">미입력</td>
+                                    {% endif %}
+                                    <td class="border px-2 py-2">{{list.AS접수.접수내용}}</td>
+                                    <td class="border px-2 py-2">{{list.AS접수.처리방법}}</td>
+                                    <td class="border px-2 py-2">{{list.AS접수.비고}}</td>
+
                                 </tr>
                                 {%endfor%}
+
 
                             </tbody>
                         </table>

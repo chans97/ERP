@@ -45,7 +45,8 @@ AS단품출하요청 목록
                                     <th class="border bg-gray-200 px-4 py-2 w-24">진행상태</th>
                                     <th class="border bg-gray-200 px-4 py-2 w-24">접수번호</th>
                                     <th class="border bg-gray-200 px-4 py-2 w-24">신청자</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">고객사</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">수취인</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">수취인주소</th>
                                     <th class="border bg-gray-200 px-2 py-2 w-24">출하요청수량</th>
                                     <th class="border bg-gray-200 px-4 py-2 w-24">제품코드</th>
                                     <th class="border bg-gray-200 px-4 py-2 w-24">제품명</th>
@@ -68,11 +69,13 @@ AS단품출하요청 목록
                                     </td>
                                     <td class="border px-4 py-2 hover:text-blue-700 hover:font-bold">
                                         <a
-                                            href="{%url "afterservices:ASrequestdetail" list.AS.AS현장방문요청.AS접수.pk%}">{{list.AS.AS현장방문요청.AS접수.접수번호}}</a>
+                                            href="{%url "afterservices:ASrequestdetail" list.AS.AS접수.pk%}">{{list.AS.AS접수.접수번호}}</a>
                                     </td>
 
                                     <td class="border px-4 py-2">{{list.출하요청자.first_name}}</td>
-                                    <td class="border px-4 py-2">{{list.고객사.거래처명}}</td>
+
+                                    <td class="border px-4 py-2">{{list.수취인}}</td>
+                                    <td class="border px-4 py-2 overflow-x-auto">{{list.수취인주소}}</td>
                                     <td class="border px-4 py-2">{{list.출하요청수량}}</td>
                                     <td class="border px-4 py-2">{{list.단품.모델코드}}</td>
                                     <td class="border px-4 py-2">{{list.단품.모델명}}</td>

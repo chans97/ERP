@@ -1,19 +1,24 @@
 {%extends "afterservices/afterserviceshome.html"%}
 {%load static%}
 {% block page_title%}
-단품출하요청
+AS수리의뢰
 {%endblock%}
 
 
 {%block head_title%}
-<i class="fas fa-angle-right text-base mx-1"></i>단품출하요청</div>
+<i class="fas fa-angle-right mx-1 text-base"></i>
+<a href="{%url "afterservices:ASexrepairlist"%}">
+    AS수리의뢰</a><i class="fas fa-angle-right text-base mx-1"></i>
+
+
+AS수리의뢰 등록
 {%endblock head_title %}
 
 
 {%block main_contens%}
 <div class="flex flex-col w-full pt-12 pl-32">
     <div class="flex flex-col pl-6">
-        <span class="border-b w-1/3 mb-3  border-gray-600 pb-2 font-semibold text-base">AS단품출하요청 등록 </span>
+        <span class="border-b w-1/3 mb-3  border-gray-600 pb-2 font-semibold text-base">AS수리의뢰 등록 </span>
         <div class="w-64 border h-6 mb-2">
             <form method="get" action="" class="w-full flex ">
                 <button class="w-4 h-4 mt-1 ml-1  rounded-xl bg-cover bg-center"
@@ -98,8 +103,8 @@
                 <table class="table-fixed text-sm w-full">
                     <thead>
                         <tr>
-                            <th class="border border-r-0 bg-gray-200 px-1 py-2 w-40 text-right">AS단품</th>
-                            <th class="border border-l-0 bg-gray-200 px-0 py-2 w-40 text-left">출하요청</th>
+                            <th class="border border-r-0 bg-gray-200 px-1 py-2 w-40 text-right">AS</th>
+                            <th class="border border-l-0 bg-gray-200 px-0 py-2 w-40 text-left">수리의뢰</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -117,13 +122,8 @@
 
                             <td class="border border-gray-400 px-4 py-2">
 
-                                <div
-                                    class=" {%if field.name != "택배관련"%}border{%endif%}  hover:border-gray-500 w-full flex">
-                                    {% if field.name == "출하희망일" %}
-                                    <input type="text" name="출하희망일" id="date2" size="10" />
-                                    {% else %}
-                                    {{field}}
-                                    {% endif %}</div>
+                                <div class=" {%if field.name != "택배관련"%}border{%endif%}  hover:border-gray-500 w-full ">
+                                    {{field}}</div>
                                 <div class="text-xs text-green-700 ">
 
                                     {{field.help_text}}

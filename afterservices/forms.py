@@ -165,7 +165,7 @@ class ASrevisitRegisterForm(forms.ModelForm):
         fields = (
             "AS날짜",
             "AS방법",
-            "고객이름",
+            "현장명",
             "AS처리내역",
             "특이사항",
         )
@@ -193,12 +193,12 @@ class ASrepairrequestregisterForm(forms.ModelForm):
         model = models.ASRepairRequest
         fields = (
             "수리요청코드",
+            "시리얼번호",
+            "고객팩스",
             "고객성명",
             "고객주소",
             "고객전화",
-            "고객팩스",
             "AS의뢰내용",
-            "시리얼번호",
             "사용자액세서리",
             "택배관련",
             "신청수량",
@@ -238,57 +238,22 @@ class ASrepairrequestregisterForm(forms.ModelForm):
                 return self.cleaned_data
 
 
-class ASrepairrequestregisterRackForm(forms.Form):
-    택배관련_CHOICES = (
-        ("선불", "선불"),
-        ("착불", "착불"),
-    )
-
-    수리요청코드 = forms.CharField(
+class ASsingleoutrequestregistersingleForm(forms.ModelForm):
+    신청품목 = forms.CharField(
         max_length=20,
         required=True,
-        help_text=f"*수리요청코드 앞에 RR을 붙여주시길 바랍니다.(한 번 설정하면, 바꿀 수 없습니다.)",
+        help_text="*모델코드로 입력해주시길 바랍니다.",
         widget=forms.TextInput(attrs={"size": "12"}),
     )
-    신청수량 = forms.IntegerField()
-    신청품목 = forms.CharField()
-    고객성명 = forms.CharField()
-    고객주소 = forms.CharField()
-    고객전화 = forms.CharField()
-    고객팩스 = forms.CharField()
-    AS의뢰내용 = forms.CharField()
-    시리얼번호 = forms.CharField()
-    사용자액세서리 = forms.CharField()
-    택배관련 = forms.ChoiceField(choices=택배관련_CHOICES, widget=forms.RadioSelect())
 
-    def clean(self):
-        self.is_bound = False
-        cleaned_data = super().clean()
-        code = self.cleaned_data.get("수리요청코드")
-        partner = models.ASRepairRequest.objects.filter(수리요청코드=code)
-        partner = list(partner)
-        if code:
-            code = code[0:2]
-            if partner:
-                self.is_bound = True
-                self.add_error("수리요청코드", forms.ValidationError("*해당 수리요청코드는 이미 존재합니다."))
-            elif code != "RR":
-                self.is_bound = True
-                self.add_error("수리요청코드", forms.ValidationError("*수리요청코드 RR로 시작해야 합니다."))
-            else:
-                return self.cleaned_data
-
-    def save(self, *arg, **kwargs):
-        order = super().save(commit=False)
-        return order
-
-
-class ASsingleoutrequestregistersingleForm(forms.ModelForm):
     class Meta:
         model = SS_models.StockOfSingleProductOutRequest
         fields = (
             "출하요청수량",
             "출하희망일",
+            "수취인",
+            "수취인주소",
+            "연락처",
         )
         help_texts = {
             "출하희망일": "*형식 : yyyy-mm-dd(필수가 아닙니다.)",
@@ -298,16 +263,17 @@ class ASsingleoutrequestregistersingleForm(forms.ModelForm):
         order = super().save(commit=False)
         return order
 
-
-class ASsingleoutrequestregisterrackForm(forms.Form):
-
-    출하희망일 = forms.DateField(required=False, help_text="*형식 : yyyy-mm-dd(필수가 아닙니다.)")
-    출하요청수량 = forms.IntegerField(widget=forms.NumberInput(attrs={"min": "0"}))
-    신청품목 = forms.CharField()
-
-    def save(self, *arg, **kwargs):
-        order = super().save(commit=False)
-        return order
+    def clean(self):
+        self.is_bound = False
+        cleaned_data = super().clean()
+        codep = self.cleaned_data.get("신청품목")
+        single = SI_models.SingleProduct.objects.get_or_none(모델코드=codep)
+        if single is None:
+            self.is_bound = True
+            self.add_error("신청품목", forms.ValidationError("*해당 단품을 찾을 수 없습니다."))
+        else:
+            self.cleaned_data["신청품목"] = single
+            return self.cleaned_data
 
 
 class ASdoneinsideForm(forms.ModelForm):

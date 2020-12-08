@@ -1,12 +1,12 @@
 {%extends "afterservices/afterserviceshome.html"%}
 {% load static%}
 {% block page_title%}
-AS현장 재방문
+수리/교체후AS현장방문
 {%endblock%}
 
 
 {%block head_title%}
-</a><i class="fas fa-angle-right mx-1 text-base"></i>AS현장재방문
+</a><i class="fas fa-angle-right mx-1 text-base"></i>수리/교체후AS현장방문
 {%endblock head_title %}
 
 
@@ -15,7 +15,7 @@ AS현장 재방문
     <div class="w-11/12 h-full ml-32 -mt-6 font-semibold pt-12 flex flex-col">
         <div class="flex flex-col">
             <div class="flex flex-col p-6 w-full ">
-                <span class="border-b w-1/3 mb-3 border-gray-600 pb-2 font-semibold text-base">AS현장 재방문
+                <span class="border-b w-1/3 mb-3 border-gray-600 pb-2 font-semibold text-base">수리/교체후AS현장방문
                 </span>
                 <div class="w-64 border h-6 mb-2">
 
@@ -34,17 +34,14 @@ AS현장 재방문
                         <table class="table-fixed font-light text-xs w-full">
                             <thead>
                                 <tr>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">현장재방문</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">수리/교체후<br>AS현장방문</th>
                                     <th class="border bg-gray-200 px-4 py-2 w-24">접수번호</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">의뢰처</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">제품코드</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">제품명</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">AS날짜</th>
                                     <th class="border bg-gray-200 px-4 py-2 w-24">AS방법</th>
-
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">현장명</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">고객이름</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">AS처리내역</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">수리기사</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">처리방법</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">특이사항</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">입력자</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">견적진행여부</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -55,28 +52,20 @@ AS현장 재방문
                                         <a href="{%url "afterservices:ASrevisitregister" list.pk %}">
                                             <div
                                                 class="btn-link hover:bg-blue-800 bg-teal-700 hover:font-bold mt-1 mb-0  w-full">
-                                                현장재방문
+                                                수리/교체후<br>AS현장방문
                                             </div>
                                         </a>
                                     </td>
                                     <td class="border px-4 py-2 hover:text-blue-700 hover:font-bold">
                                         <a
-                                            href="{%url "afterservices:ASrequestdetail" list.AS현장방문요청.AS접수.pk%}">{{list.AS현장방문요청.AS접수.접수번호}}</a>
+                                            href="{%url "afterservices:ASrequestdetail" list.AS접수.pk%}">{{list.AS접수.접수번호}}</a>
                                     </td>
-                                    <td class="border px-4 py-2">{{list.AS현장방문요청.AS접수.의뢰처}}</td>
-                                    {%if list.접수제품분류 == "단품"%}
-                                    <td class="border px-4 py-2">{{list.단품.모델코드}}</td>
-                                    <td class="border px-4 py-2">{{list.단품.모델명}}</td>
-                                    {%else%}
-                                    <td class="border px-4 py-2">{{list.랙.랙시리얼코드}}</td>
-                                    <td class="border px-4 py-2">{{list.랙.랙모델명}}</td>
-                                    {%endif%}
+                                    <td class="border px-4 py-2">{{list.AS날짜}}</td>
                                     <td class="border px-4 py-2">{{list.AS방법}}</td>
-                                    <td class="border px-4 py-2">{{list.AS현장방문요청.AS접수.현장명}}</td>
-
-                                    <td class="border px-4 py-2">{{list.고객이름}}</td>
-                                    <td class="border px-4 py-2">{{list.AS처리내역}}</td>
-                                    <td class="border px-4 py-2">{{list.수리기사}}</td>
+                                    <td class="border px-4 py-2">{{list.처리방법}}</td>
+                                    <td class="border px-4 py-2">{{list.특이사항}}</td>
+                                    <td class="border px-4 py-2">{{list.입력자}}</td>
+                                    <td class="border px-4 py-2">{{list.견적진행여부}}</td>
                                 </tr>
                                 {%endfor%}
 

@@ -36,10 +36,9 @@ AS완료 철회
                         {%if assuccess.완료유형 == "내부처리"%}
                         <a href="{%url "afterservices:ASrequestdetail" assuccess.내부처리.pk%}">
                             {%elif assuccess.완료유형 == "방문"%}
-                            <a href="{%url "afterservices:ASrequestdetail" assuccess.방문.AS현장방문요청.AS접수.pk%}">
+                            <a href="{%url "afterservices:ASrequestdetail" assuccess.방문.AS접수.pk%}">
                                 {%else%}
-                                <a
-                                    href="{%url "afterservices:ASrequestdetail" assuccess.재방문.전AS현장방문.AS현장방문요청.AS접수.pk%}">
+                                <a href="{%url "afterservices:ASrequestdetail" assuccess.재방문.전AS현장방문.AS접수.pk%}">
                                     {%endif%}
                                     <div class="btn-link bg-teal-800">
                                         돌아가기 </div>

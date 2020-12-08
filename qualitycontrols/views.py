@@ -41,7 +41,7 @@ from specials import models as S_models
 
 
 class qualitycontrolshome(core_views.threelist):
-    pass
+    templatename = "qualitycontrols/qualitycontrolshome.html"
 
 
 class OrderDetail(user_mixins.LoggedInOnlyView, DetailView):
@@ -2133,24 +2133,43 @@ def AStotalregister(request, pk):
         return redirect(reverse("qualitycontrols:finalcheckdonelist"))
 
     else:
-        form.cleaned_data = {}
-        최종검사코드 = form.cleaned_data.get("최종검사코드", code)
-        동작이상유무 = form.cleaned_data.get("동작이상유무", "")
-        외형이상유무 = form.cleaned_data.get("외형이상유무", "")
-        수리내역 = form.cleaned_data.get("수리내역", "")
-        특기사항 = form.cleaned_data.get("특기사항", "")
-        수리비 = form.cleaned_data.get("수리비", "")
-        기본요금 = form.cleaned_data.get("기본요금", "")
-        부품비 = form.cleaned_data.get("부품비", "")
-        택배 = form.cleaned_data.get("택배", "")
-        화물 = form.cleaned_data.get("화물", "")
-        발송날짜 = form.cleaned_data.get("발송날짜", "")
-        입금확인 = form.cleaned_data.get("입금확인", "")
-        비고 = form.cleaned_data.get("비고", "")
-        검시일 = form.cleaned_data.get("검시일", "")
-        발송자 = form.cleaned_data.get("발송자", "")
-        검시자 = form.cleaned_data.get("검시자", "")
-        수리자 = form.cleaned_data.get("수리자", "")
+        try:
+            최종검사코드 = form.cleaned_data.get("최종검사코드", code)
+            동작이상유무 = form.cleaned_data.get("동작이상유무", "")
+            외형이상유무 = form.cleaned_data.get("외형이상유무", "")
+            수리내역 = form.cleaned_data.get("수리내역", "")
+            특기사항 = form.cleaned_data.get("특기사항", "")
+            수리비 = form.cleaned_data.get("수리비", "")
+            기본요금 = form.cleaned_data.get("기본요금", "")
+            부품비 = form.cleaned_data.get("부품비", "")
+            택배 = form.cleaned_data.get("택배", "")
+            화물 = form.cleaned_data.get("화물", "")
+            발송날짜 = form.cleaned_data.get("발송날짜", "")
+            입금확인 = form.cleaned_data.get("입금확인", "")
+            비고 = form.cleaned_data.get("비고", "")
+            검시일 = form.cleaned_data.get("검시일", "")
+            발송자 = form.cleaned_data.get("발송자", "")
+            검시자 = form.cleaned_data.get("검시자", "")
+            수리자 = form.cleaned_data.get("수리자", "")
+            form.cleaned_data = {}
+        except:
+            최종검사코드 = code
+            동작이상유무 = ""
+            외형이상유무 = ""
+            수리내역 = ""
+            특기사항 = ""
+            수리비 = ""
+            기본요금 = ""
+            부품비 = ""
+            택배 = ""
+            화물 = ""
+            발송날짜 = ""
+            입금확인 = ""
+            비고 = ""
+            검시일 = ""
+            발송자 = ""
+            검시자 = ""
+            수리자 = ""
 
         messages.error(request, f"정확히 입력해주세요.")
         return render(

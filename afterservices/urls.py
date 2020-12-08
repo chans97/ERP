@@ -53,9 +53,15 @@ urlpatterns = [
         name="ASrevisitneedlist",
     ),
     path(
+        "ASrepostneedlist/", views.ASrepostneedlist.as_view(), name="ASrepostneedlist",
+    ),
+    path(
         "ASrevisitregister/<int:pk>/",
         views.ASrevisitregister,
         name="ASrevisitregister",
+    ),
+    path(
+        "ASrepostregister/<int:pk>/", views.ASrepostregister, name="ASrepostregister",
     ),
     path(
         "ASrevisitedit/<int:pk>/", views.ASrevisitedit.as_view(), name="ASrevisitedit",
@@ -90,16 +96,6 @@ urlpatterns = [
         "singledetail/<int:pk>/", views.SingleDetialView.as_view(), name="singledetail",
     ),
     path(
-        "ASrepairrequestregistersingle/<int:pk>/",
-        views.ASrepairrequestregistersingle,
-        name="ASrepairrequestregistersingle",
-    ),
-    path(
-        "ASrepairrequestregisterrack/<int:pk>/",
-        views.ASrepairrequestregisterrack,
-        name="ASrepairrequestregisterrack",
-    ),
-    path(
         "repairrequestdeleteensure/<int:pk>/",
         views.repairrequestdeleteensure,
         name="repairrequestdeleteensure",
@@ -129,22 +125,7 @@ urlpatterns = [
         views.ASsingleoutrequestregister,
         name="ASsingleoutrequestregister",
     ),
-    path(
-        "ASsingleoutrequestregistersingle/<int:pk>/",
-        views.ASsingleoutrequestregistersingle,
-        name="ASsingleoutrequestregistersingle",
-    ),
-    path(
-        "ASsingleoutrequestregisterrack/<int:pk>/",
-        views.ASsingleoutrequestregisterrack,
-        name="ASsingleoutrequestregisterrack",
-    ),
     path("ASdonenonvisit/<int:pk>/", views.ASdonenonvisit, name="ASdonenonvisit",),
-    path(
-        "AScashcheckneedlist/",
-        views.AScashcheckneedlist.as_view(),
-        name="AScashcheckneedlist",
-    ),
     path("costdelete/<int:pk>/", views.costdelete, name="costdelete",),
     path(
         "asregiserfiledownload/<int:pk>/",

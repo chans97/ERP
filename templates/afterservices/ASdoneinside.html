@@ -68,13 +68,13 @@ AS완료처리
                                 <tr>
                                     <td class="border border-gray-400 px-4 py-2">접수일</td>
                                     <td class="border border-gray-400 px-4 py-2">
-                                        {{asregisters.접수일.year}}-{{asregisters.접수일.month}}-{{asregisters.접수일.day}}</td>
+                                        {{ asregisters.접수일|date:"Y-m-d" }}</td>
                                 </tr>
                                 <tr>
                                     <td class="border border-gray-400 px-4 py-2">설치연도</td>
                                     {% if asregisters.설치연도 %}
                                     <td class="border px-4 py-2">
-                                        {{asregisters.설치연도.year}}-{{asregisters.설치연도.month}}-{{asregisters.설치연도.day}}
+                                        {{ asregisters.설치연도|date:"Y-m-d" }}
                                     </td>
                                     {%else%}
                                     <td class="border px-4 py-2">미입력</td>

@@ -1,12 +1,12 @@
 {%extends "afterservices/afterserviceshome.html"%}
 {% load static%}
 {% block page_title%}
-AS수리의뢰 목록
+수리/교체후AS택배송부
 {%endblock%}
 
 
 {%block head_title%}
-</a><i class="fas fa-angle-right mx-1 text-base"></i> AS수리의뢰 목록
+</a><i class="fas fa-angle-right mx-1 text-base"></i>수리/교체후AS택배송부
 {%endblock head_title %}
 
 
@@ -15,16 +15,8 @@ AS수리의뢰 목록
     <div class="w-11/12 h-full ml-32 -mt-6 font-semibold pt-12 flex flex-col">
         <div class="flex flex-col">
             <div class="flex flex-col p-6 w-full ">
-                <div class="flex justify-between">
-                    <span class="border-b w-1/3 mb-3 border-gray-600 pb-2 font-semibold text-base">나의 AS수리의뢰 목록
-                    </span>
-                    <div class="mr-5">
-                        <a href="{%url "afterservices:ASexrepairlist"%}">
-                            <div class="btn-link bg-teal-800 hover:font-bold">
-                                수리의뢰추가 </div>
-                        </a>
-                    </div>
-                </div>
+                <span class="border-b w-1/3 mb-3 border-gray-600 pb-2 font-semibold text-base">수리/교체후AS택배송부
+                </span>
                 <div class="w-64 border h-6 mb-2">
 
                     <form method="get" action="" class="w-full flex ">
@@ -42,36 +34,38 @@ AS수리의뢰 목록
                         <table class="table-fixed font-light text-xs w-full">
                             <thead>
                                 <tr>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">진행상태</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">수리요청코드</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">수리/교체후<br>AS택배송부</th>
                                     <th class="border bg-gray-200 px-4 py-2 w-24">접수번호</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">신청자</th>
-                                    <th class="border bg-gray-200 px-2 py-2 w-24">신청수량</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">제품코드</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">제품명</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">신청일</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">AS날짜</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">AS방법</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">처리방법</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">특이사항</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">입력자</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">견적진행여부</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {%for list in queryset%}
                                 <tr>
-                                    <td
-                                        class="border px-4 py-2 font-bold {%if list.process == "수리완료"%} text-green-600{%endif%}">
-                                        {{list.process}}</td>
-                                    <td class="border px-4 py-2 hover:text-blue-700 hover:font-bold">
-                                        <a href="{%url "afterservices:repairrequestdetail" list.pk%}">
-                                            {{list.수리요청코드}}</a></td>
+                                    <td class="border px-2 py-2 font-bold 
+                                    text-blue-800 justify-center">
+                                        <a href="{%url "afterservices:ASrepostregister" list.pk %}">
+                                            <div
+                                                class="btn-link hover:bg-blue-800 bg-teal-700 hover:font-bold mt-1 mb-0  w-full">
+                                                수리/교체후<br>AS택배송부
+                                            </div>
+                                        </a>
+                                    </td>
                                     <td class="border px-4 py-2 hover:text-blue-700 hover:font-bold">
                                         <a
-                                            href="{%url "afterservices:ASrequestdetail" list.AS현장방문.AS접수.pk%}">{{list.AS현장방문.AS접수.접수번호}}</a>
+                                            href="{%url "afterservices:ASrequestdetail" list.AS접수.pk%}">{{list.AS접수.접수번호}}</a>
                                     </td>
-
-                                    <td class="border px-4 py-2">{{list.신청자}}</td>
-                                    <td class="border px-4 py-2">{{list.신청수량}}</td>
-                                    <td class="border px-4 py-2">{{list.신청품목.모델코드}}</td>
-                                    <td class="border px-4 py-2">{{list.신청품목.모델명}}</td>
-                                    <td class="border px-4 py-2">
-                                        {{list.created.year}}-{{list.created.month}}-{{list.created.day}}</td>
+                                    <td class="border px-4 py-2">{{list.AS날짜}}</td>
+                                    <td class="border px-4 py-2">{{list.AS방법}}</td>
+                                    <td class="border px-4 py-2">{{list.처리방법}}</td>
+                                    <td class="border px-4 py-2">{{list.특이사항}}</td>
+                                    <td class="border px-4 py-2">{{list.입력자}}</td>
+                                    <td class="border px-4 py-2">{{list.견적진행여부}}</td>
                                 </tr>
                                 {%endfor%}
 

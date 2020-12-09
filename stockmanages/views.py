@@ -967,8 +967,9 @@ class rackoutrequestlist(core_views.onelist):
                 except:
                     try:
                         s.랙조립
-                        if s.랙조립.현재공정 == "소방대기완료":
+                        if s.랙조립.현재공정 == "완료":
                             queryset.append(s)
+
                     except:
                         pass
 
@@ -987,7 +988,7 @@ class rackoutrequestlist(core_views.onelist):
                 except:
                     try:
                         s.랙조립
-                        if s.랙조립.현재공정 == "소방대기완료":
+                        if s.랙조립.현재공정 == "완료":
                             queryset.append(s)
                     except:
                         pass

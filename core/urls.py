@@ -10,6 +10,8 @@ urlpatterns = [
     path("partnermigrate", views.partnermigrate, name="partnermigrate"),
     path("materialmigrate", views.materialmigrate, name="materialmigrate"),
     path("measuremigrate", views.measuremigrate, name="measuremigrate"),
+    path("singlemigrate", views.singlemigrate, name="singlemigrate"),
+    path("makeCompanyPart", views.makeCompanyPart, name="makeCompanyPart"),
     path("managehome", views.managehome, name="managehome"),
     path("totalorder", views.totalorder, name="totalorder"),
     path("orderbar", views.orderbar, name="orderbar"),
@@ -18,5 +20,4 @@ urlpatterns = [
     path("lastchecknum", views.lastchecknum, name="lastchecknum"),
     path("incheck", views.incheck, name="incheck"),
     path("asconduct", views.asconduct, name="asconduct"),
-    path("makeCompanyPart", views.makeCompanyPart, name="makeCompanyPart"),
 ]

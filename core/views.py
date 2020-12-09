@@ -40,21 +40,17 @@ def firstindecide(request):
     user = request.user
     if user.is_authenticated:
 
-        if user.nowPart.pk == 1 or user.nowPart.pk == 61:
+        if user.nowPart.부서명 == "영업부":
             return redirect(reverse("orders:ordershome"))
-        elif user.nowPart.pk == 2 or user.nowPart.pk == 62:
+        elif user.nowPart.부서명 == "생산관리부":
             return redirect(reverse("producemanages:producemanageshome"))
-        elif user.nowPart.pk == 3 or user.nowPart.pk == 63:
-            return redirect(reverse("producemanages:producehome"))
-        elif user.nowPart.pk == 4 or user.nowPart.pk == 64:
+        elif user.nowPart.부서명 == "품질부":
             return redirect(reverse("qualitycontrols:qualitycontrolshome"))
-        elif (user.nowPart.pk == 5 or user.nowPart.pk == 65) or (
-            user.nowPart.pk == 6 or user.nowPart.pk == 66
-        ):
+        elif user.nowPart.부서명 == "AS담당부":
             return redirect(reverse("afterservices:afterserviceshome"))
-        elif user.nowPart.pk == 7 or user.nowPart.pk == 67:
+        elif user.nowPart.부서명 == "재고관리부":
             return redirect(reverse("stockmanages:stockmanageshome"))
-        elif user.nowPart.pk == 8 or user.nowPart.pk == 68:
+        elif user.nowPart.부서명 == "현황":
             return redirect(reverse("core:managehome"))
         else:
             return render(request, "base.html")
@@ -538,7 +534,6 @@ def partnermigrate(request):
                 break
         result.close()
 
-        messages.success(request, "거래처가 등록되었습니다.")
         return redirect(reverse("StandardInformation:partner"))
 
     else:
@@ -591,26 +586,67 @@ def partnermigrate(request):
     return render(request, "migrate/partnermigrate.html", {"form": form})
 
 
-def materialmigrate(request):
+def singlemigrate(request):
     form = forms.partnermigrate(request.POST)
     if form.is_valid():
+        return redirect(reverse("StandardInformation:partner"))
+    else:
         try:
             Excelfile = request.FILES["Excelfile"]
         except:
-            Excelfile = None
-        print(Excelfile)
-
-        result = open(Excelfile, "w")
-
+            return render(request, "migrate/singlemigrate.html", {"form": form})
+        single = models.partnermigrate.objects.create()
+        single.Excelfile = Excelfile
+        single.save()
+        result = open(single.Excelfile.path, "rt", encoding="UTF8")
+        messages.success(request, "엑셀파일을 읽는 중 입니다.")
+        num = 0
         while True:
+            num += 1
             line = result.readline()
-            print(line)
-
             if not line:
                 break
-        result.close()
+            aline = line.split(",")
+            if num != 1:
+                single = SI_models.SingleProduct.objects.create(
+                    작성자=request.user,
+                    모델코드=aline[1],
+                    모델명=aline[2],
+                    규격=aline[3],
+                    단위=aline[4],
+                )
+                aline = aline[8:]
+                walkKey = 0
+                while True:
+                    walkKey += 1
 
-        messages.success(request, "거래처가 등록되었습니다.")
+                    material = SI_models.Material.objects.get_or_none(
+                        자재코드=aline[walkKey * 2 - 2]
+                    )
+                    if material:
+                        SI_models.SingleProductMaterial.objects.create(
+                            단품모델=single, 단품구성자재=material, 수량=aline[walkKey * 2 - 1],
+                        )
+                    try:
+                        aline[walkKey * 2]
+                        if aline[walkKey * 2] == "":
+                            break
+                    except:
+                        break
+
+                SS_models.StockOfSingleProduct.objects.create(
+                    단품=single, 실수량=0, 입고요청포함수량=0, 출하요청제외수량=0
+                )
+
+        result.close()
+        messages.success(request, "완료되었습니다.")
+        return redirect(reverse("stockmanages:singleStandarInformation"))
+    return render(request, "migrate/singlemigrate.html", {"form": form})
+
+
+def materialmigrate(request):
+    form = forms.partnermigrate(request.POST)
+    if form.is_valid():
         return redirect(reverse("StandardInformation:partner"))
     else:
         try:
@@ -645,7 +681,18 @@ def materialmigrate(request):
                         자재=material, 실수량=0, 입고요청포함수량=0, 출고요청제외수량=0
                     )
             else:
-                messages.error(request, f"{name}(은)는 등록되지 않은 업체입니다.")
+                if num != 1:
+                    material = SI_models.Material.objects.create(
+                        작성자=request.user,
+                        자재코드=aline[0],
+                        자재품명=aline[1],
+                        규격=aline[2],
+                        단위=aline[3],
+                    )
+                    SM_models.StockOfMaterial.objects.create(
+                        자재=material, 실수량=0, 입고요청포함수량=0, 출고요청제외수량=0
+                    )
+                    messages.error(request, f"{name}(은)는 등록되지 않은 업체입니다.")
 
         result.close()
         messages.success(request, "완료되었습니다.")
@@ -701,7 +748,6 @@ def measuremigrate(request):
                     설치장소=aline[6],
                     작성자=request.user,
                 )
-            print(num, "done")
         result.close()
         messages.success(request, "완료되었습니다.")
         return redirect(reverse("qualitycontrols:measurelist"))
@@ -718,17 +764,15 @@ def makeCompanyPart(request):
     user_models.Passward.objects.create(pw="123456")
     order = user_models.Part.objects.create(해당회사=sam, 부서명="영업부")
     producemanage = user_models.Part.objects.create(해당회사=sam, 부서명="생산관리부")
-    makemanage = user_models.Part.objects.create(해당회사=sam, 부서명="공정관리부")
     quality = user_models.Part.objects.create(해당회사=sam, 부서명="품질부")
     AS = user_models.Part.objects.create(해당회사=sam, 부서명="AS담당부")
-    money = user_models.Part.objects.create(해당회사=sam, 부서명="총무부")
     stocks = user_models.Part.objects.create(해당회사=sam, 부서명="자재부")
     now = user_models.Part.objects.create(해당회사=sam, 부서명="현황")
 
     superuser = user_models.User.objects.get(pk=1)
     superuser.nowPart = order
     superuser.first_name = "관리자"
-    superuser.부서.add(order, producemanage, makemanage, quality, AS, money, stocks, now)
+    superuser.부서.add(order, producemanage, quality, AS, stocks, now)
     superuser.save()
 
     return redirect(reverse("core:migrate"))

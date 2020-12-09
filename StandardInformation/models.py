@@ -252,11 +252,11 @@ class SingleProduct(TimeStampedModel):
         "users.User", related_name="단품제품작성자", on_delete=models.SET_NULL, null=True
     )
     작성일 = models.DateField(auto_now=True, auto_now_add=False)
-    모델코드 = models.CharField(max_length=80, blank=True)
+    모델코드 = models.CharField(max_length=80)
     모델명 = models.CharField(max_length=30)
-    규격 = models.CharField(max_length=80, blank=True)
-    단위 = models.CharField(max_length=10, blank=True)
-    단가 = models.IntegerField(null=True)
+    규격 = models.CharField(max_length=80, null=True, blank=True)
+    단위 = models.CharField(max_length=10, null=True, blank=True)
+    단가 = models.IntegerField(null=True, blank=True)
 
     class Meta:
         verbose_name = "단품제품"

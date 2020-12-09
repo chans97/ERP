@@ -36,6 +36,7 @@ from qualitycontrols import models as QC_models
 from afterservices import models as AS_models
 
 
+@login_required
 def firstindecide(request):
     user = request.user
     if user.is_authenticated:
@@ -59,6 +60,7 @@ def firstindecide(request):
         return redirect(reverse("users:login"))
 
 
+@login_required
 def parthome(request, pk):
 
     """선택 부서를 nowPart로 바꿔서 저장"""
@@ -512,10 +514,12 @@ class threelist(View, user_mixins.LoggedInOnlyView):
         )
 
 
+@login_required
 def migrate(request):
     return render(request, "migrate/migrate.html")
 
 
+@login_required
 def partnermigrate(request):
     form = forms.partnermigrate(request.POST)
     if form.is_valid():
@@ -586,6 +590,7 @@ def partnermigrate(request):
     return render(request, "migrate/partnermigrate.html", {"form": form})
 
 
+@login_required
 def singlemigrate(request):
     form = forms.partnermigrate(request.POST)
     if form.is_valid():
@@ -644,6 +649,7 @@ def singlemigrate(request):
     return render(request, "migrate/singlemigrate.html", {"form": form})
 
 
+@login_required
 def materialmigrate(request):
     form = forms.partnermigrate(request.POST)
     if form.is_valid():
@@ -700,6 +706,7 @@ def materialmigrate(request):
     return render(request, "migrate/materialmigrate.html", {"form": form})
 
 
+@login_required
 def measuremigrate(request):
     form = forms.partnermigrate(request.POST)
     if form.is_valid():
@@ -755,6 +762,7 @@ def measuremigrate(request):
     return render(request, "migrate/measuremigrate.html", {"form": form})
 
 
+@login_required
 def makeCompanyPart(request):
     """데이터 초기화시 회사와 부서를 만들고 슈퍼유저를 사용할 수 있게 만듭니다."""
     sam = user_models.Company.objects.create(회사명="삼형전자", 사업자등록번호="12345",)
@@ -778,11 +786,13 @@ def makeCompanyPart(request):
     return redirect(reverse("core:migrate"))
 
 
+@login_required
 def managehome(request):
 
     return render(request, "manage/managehome.html",)
 
 
+@login_required
 def totalorder(request):
     result = request.GET
     start = result.get("start")
@@ -841,12 +851,13 @@ def totalorder(request):
     )
 
 
+@login_required
 def orderbar(request):
     result = request.GET
     start = result.get("start")
     end = result.get("end")
 
-    ordermanlist = user_models.User.objects.filter(부서__in=[1, 61])
+    ordermanlist = user_models.User.objects.filter(부서__부서명="영업부")
 
     orderlist = []
 
@@ -886,6 +897,7 @@ def orderbar(request):
     )
 
 
+@login_required
 def outcount(request):
     result = request.GET
     start = result.get("start")
@@ -916,6 +928,7 @@ def outcount(request):
     )
 
 
+@login_required
 def productbar(request):
     result = request.GET
     start = result.get("start")
@@ -959,6 +972,7 @@ def productbar(request):
     )
 
 
+@login_required
 def lastchecknum(request):
     result = request.GET
     start = result.get("start")
@@ -1023,6 +1037,7 @@ def lastchecknum(request):
     )
 
 
+@login_required
 def incheck(request):
     result = request.GET
     start = result.get("start")
@@ -1080,6 +1095,7 @@ def incheck(request):
     )
 
 
+@login_required
 def asconduct(request):
     result = request.GET
     start = result.get("start")

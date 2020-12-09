@@ -31,6 +31,7 @@ from orders import models as OR_models
 from stocksingle import models as SS_models
 
 
+@login_required
 def orderrackout(request):
     user = request.user
     search = request.GET.get("search")
@@ -103,6 +104,7 @@ def orderrackout(request):
     )
 
 
+@login_required
 def orderrackoutregister(request, pk):
     form = forms.UploadRackOutForm(request.POST)
     order = OR_models.OrderRegister.objects.get_or_none(pk=pk)
@@ -139,8 +141,6 @@ def orderrackoutregister(request, pk):
         고객사 = order.고객사명
         출하요청자 = user
         수주.랙조립도면 = 랙조립도면
-        print(랙조립도면)
-        수주.save()
 
         SM = models.StockOfRackProductOutRequest.objects.create(
             출하희망일=출하희망일,
@@ -162,6 +162,7 @@ def orderrackoutregister(request, pk):
     )
 
 
+@login_required
 def orderstockrackdelete(request, pk):
     orderstockrack = models.StockOfRackProductOutRequest.objects.get(pk=pk)
     order = orderstockrack.수주
@@ -186,6 +187,7 @@ def orderstockrackdelete(request, pk):
     return redirect(reverse("orders:orderdetail", kwargs={"pk": pk}))
 
 
+@login_required
 def orderstockrackedit(request, pk):
 
     form = forms.UploadRackOutForm(request.POST)
@@ -286,6 +288,7 @@ def orderstockrackedit(request, pk):
     )
 
 
+@login_required
 def ordersingledfrackinregister(request, pk):
     form = forms.UploadSingleInForm(request.POST)
     outrequest = models.StockOfRackProductOutRequest.objects.get_or_none(pk=pk)

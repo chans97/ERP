@@ -51,14 +51,22 @@
                         <tbody>
                             {%for list in s_order%}
                             <tr>
+
                                 <td class="border px-2 py-2 font-bold 
                             text-blue-800 justify-center">
+
+                                    {% if list.생산요청.생산계획.현재공정 == "검사" and list.생산요청.생산계획.현재공정달성율 == "100%"%}
+
+
                                     <a href="{%url "producemanages:workregister" list.pk %}">
                                         <div
                                             class="btn-link hover:bg-blue-800 bg-teal-700 hover:font-bold mt-1 mb-0  w-full">
                                             공정진행등록
                                         </div>
                                     </a>
+                                    {%else%}
+                                    아직 생산중입니다.
+                                    {% endif %}
                                 </td>
 
 

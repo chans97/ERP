@@ -30,6 +30,7 @@ from StandardInformation import models as SI_models
 from orders import models as OR_models
 
 
+@login_required
 def ordersingleout(request):
     user = request.user
     search = request.GET.get("search")
@@ -102,6 +103,7 @@ def ordersingleout(request):
     )
 
 
+@login_required
 def ordersingleoutregister(request, pk):
     form = forms.UploadSingleOutForm(request.POST)
     order = OR_models.OrderRegister.objects.get_or_none(pk=pk)
@@ -152,6 +154,7 @@ def ordersingleoutregister(request, pk):
     )
 
 
+@login_required
 def orderstocksingledelete(request, pk):
     orderstocksingle = models.StockOfSingleProductOutRequest.objects.get(pk=pk)
     order = orderstocksingle.수주
@@ -167,6 +170,7 @@ def orderstocksingledelete(request, pk):
     return redirect(reverse("orders:orderdetail", kwargs={"pk": pk}))
 
 
+@login_required
 def orderstocksingleedit(request, pk):
     form = forms.UploadSingleOutForm(request.POST)
     orderstocksingle = models.StockOfSingleProductOutRequest.objects.get(pk=pk)
@@ -256,6 +260,7 @@ def orderstocksingleedit(request, pk):
     )
 
 
+@login_required
 def ordersingleinregister(request, pk):
     form = forms.UploadSingleInForm(request.POST)
     outrequest = models.StockOfSingleProductOutRequest.objects.get_or_none(pk=pk)
@@ -319,6 +324,7 @@ def ordersingleinregister(request, pk):
     )
 
 
+@login_required
 def orderstocksinglebackdelete(request, pk):
 
     orderstocksingleback = models.StockOfSingleProductInRequest.objects.get(pk=pk)

@@ -8,6 +8,7 @@ from . import forms
 class OrderRegister(admin.ModelAdmin):
     empty_value_display = "입력 값 없음"
     list_display = (
+        "created",
         "수주코드",
         "영업구분",
         "사업장구분",

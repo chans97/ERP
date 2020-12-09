@@ -33,6 +33,7 @@ from random import randint
 from django.utils import timezone
 
 
+@login_required
 def orderregister(request):
     def give_number():
         while True:
@@ -128,6 +129,7 @@ def orderregister(request):
     )
 
 
+@login_required
 def ordersingle(request, pk):
     form = forms.OrderSingleForm(request.POST)
 
@@ -188,6 +190,7 @@ def ordersingle(request, pk):
     )
 
 
+@login_required
 def orderrack(request, pk):
     form = forms.OrderRackForm(request.POST)
 
@@ -247,6 +250,7 @@ def orderrack(request, pk):
     )
 
 
+@login_required
 def ordershome(request):
     if request.user.__str__() == "AnonymousUser":
         return redirect(reverse("users:login"))
@@ -450,6 +454,7 @@ class OrderDetail(user_mixins.LoggedInOnlyView, DetailView):
         )
 
 
+@login_required
 def orderedit(request, pk):
     입찰 = False
     대리점 = False
@@ -586,6 +591,7 @@ def orderedit(request, pk):
     )
 
 
+@login_required
 def ordersingleedit(request, pk):
     form = forms.OrderSingleForm(request.POST)
     SM = models.OrderRegister.objects.get(pk=pk)
@@ -649,6 +655,7 @@ def ordersingleedit(request, pk):
     )
 
 
+@login_required
 def orderrackedit(request, pk):
     form = forms.OrderRackForm(request.POST)
 
@@ -716,12 +723,14 @@ def orderrackedit(request, pk):
     )
 
 
+@login_required
 def orderdeleteensure(request, pk):
 
     order = models.OrderRegister.objects.get_or_none(pk=pk)
     return render(request, "orders/orderdeleteensure.html", {"order": order},)
 
 
+@login_required
 def orderdelete(request, pk):
     order = models.OrderRegister.objects.get_or_none(pk=pk)
     order.delete()
@@ -731,6 +740,7 @@ def orderdelete(request, pk):
     return redirect(reverse("orders:ordershome"))
 
 
+@login_required
 def orderproduce(request):
     user = request.user
     search = request.GET.get("search")
@@ -809,6 +819,7 @@ def orderproduce(request):
     )
 
 
+@login_required
 def orderproduceregister(request, pk):
     order = models.OrderRegister.objects.get_or_none(pk=pk)
 
@@ -847,6 +858,7 @@ def orderproduceregister(request, pk):
     )
 
 
+@login_required
 def orderproduceedit(request, pk):
     order = models.OrderRegister.objects.get_or_none(pk=pk)
     produce = order.생산요청
@@ -889,6 +901,7 @@ def orderproduceedit(request, pk):
     )
 
 
+@login_required
 def orderproducedeleteensure(request, pk):
     order = models.OrderRegister.objects.get_or_none(pk=pk)
 
@@ -898,6 +911,7 @@ def orderproducedeleteensure(request, pk):
     )
 
 
+@login_required
 def orderproducedelete(request, pk):
     orderproduce = models.OrderProduce.objects.get_or_none(pk=pk)
     pk = orderproduce.생산의뢰수주.pk
@@ -908,6 +922,7 @@ def orderproducedelete(request, pk):
     return redirect(reverse("orders:orderdetail", kwargs={"pk": pk}))
 
 
+@login_required
 def endorder(request):
     user = request.user
     search = request.GET.get("search")
@@ -976,6 +991,7 @@ def endorder(request):
     )
 
 
+@login_required
 def endorderforout(request, pk):
     order = models.OrderRegister.objects.get_or_none(pk=pk)
     order.출하구분 = "출하완료"
@@ -984,6 +1000,7 @@ def endorderforout(request, pk):
     return redirect(reverse("orders:endorder"))
 
 
+@login_required
 def endorderforoutforstock(request, pk):
     order = models.OrderRegister.objects.get_or_none(pk=pk)
     order.출하구분 = "출하완료"
@@ -992,6 +1009,7 @@ def endorderforoutforstock(request, pk):
     return redirect(reverse("stocksingle:ordersingleout"))
 
 
+@login_required
 def endorderlist(request):
     user = request.user
     search = request.GET.get("search")
@@ -1056,6 +1074,7 @@ def endorderlist(request):
     )
 
 
+@login_required
 def endorderforin(request, pk):
     order = models.OrderRegister.objects.get_or_none(pk=pk)
     order.출하구분 = "출하미완료"
@@ -1064,6 +1083,7 @@ def endorderforin(request, pk):
     return redirect(reverse("orders:endorderlist"))
 
 
+@login_required
 def orderproduceforrack(request):
     user = request.user
     search = request.GET.get("search")
@@ -1142,6 +1162,7 @@ def orderproduceforrack(request):
     )
 
 
+@login_required
 def informationforrackproduce(request, pk):
     order = models.OrderRegister.objects.get_or_none(pk=pk)
     rack = order.랙모델
@@ -1167,6 +1188,7 @@ def informationforrackproduce(request, pk):
     )
 
 
+@login_required
 def producesingleforrack(request, pk, spk):
     form = forms.UploadOrderProduceForm(request.POST)
     order = models.OrderRegister.objects.get_or_none(pk=pk)
@@ -1245,6 +1267,7 @@ def producesingleforrack(request, pk, spk):
     )
 
 
+@login_required
 def blueprintdownload(request, pk):
     """파일 다운로드 유니코드화 패치"""
     order = models.OrderRegister.objects.get_or_none(pk=pk)

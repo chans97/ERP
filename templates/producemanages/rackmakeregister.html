@@ -1,0 +1,15 @@
+{%extends "producemanages/producemanageshome.html"%}
+{%load static%}
+{% block page_title%}
+랙조립
+{%endblock%}
+
+
+{%block head_title%}
+<i class="fas fa-angle-right mx-1 text-base"></i> 랙조립
+{%endblock head_title %}
+
+
+{%block main_contens%}
+{%include "partials/formastable.html" with maintitle=orderproduce  tablename=" 랙조립등록" date="랙조립일자" cta="등록"%}
+{%endblock main_contens %}

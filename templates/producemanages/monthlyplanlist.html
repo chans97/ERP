@@ -38,16 +38,17 @@
                                     <td class="border px-4 py-2  hover:text-blue-700 hover:font-bold ">
                                         <a name="yearmonth">
                                             <script>
-                                                var year = parseInt(({{ list }} + {{ startmonth }}) / 12);
+                                                var year = parseInt(({{ list }} + {{ startmonth }}) / 13);
                                                 var resultyear = year + {{ startyear }};
 
                                                 var month = ({{ list }} + {{ startmonth }}) % 12;
-                                                var resultyearS = resultyear.toString()
-                                                var monthS = month.toString()
+                                                if (month == "0") month = "12";
+                                                var resultyearS = resultyear.toString();
+                                                var monthS = month.toString();
                                                 var url = "{% url 'producemanages:monthlyplandetail' ypk=12345 mpk=67890 %}".replace(/12345/, resultyearS).replace(/67890/, monthS);
-                                                var yearlist = document.getElementsByName("yearmonth")
+                                                var yearlist = document.getElementsByName("yearmonth");
                                                 yearlist[yearlist.length - 1].href = "{% url 'producemanages:monthlyplandetail' ypk=12345 mpk=67890 %}".replace(/12345/, resultyearS).replace(/67890/, monthS);
-                                                document.write(resultyear + "년 " + month + "월 생산계획")
+                                                document.write(resultyear + "년 " + month + "월 생산계획");
                                             </script>
 
                                     </td>

@@ -49,6 +49,7 @@ class OrderDetailForWork(OrderDetail):
     templatename = "producemanages/orderdetailforwork.html"
 
 
+@login_required
 def producemanageshome(request):
 
     if request.user.__str__() == "AnonymousUser":
@@ -169,6 +170,7 @@ def producemanageshome(request):
     )
 
 
+@login_required
 def produceplanlist(request):
     user = request.user
     search = request.GET.get("search")
@@ -245,6 +247,7 @@ def produceplanlist(request):
     )
 
 
+@login_required
 def produceplanregister(request, pk):
     user = request.user
     order = OR_models.OrderRegister.objects.get_or_none(pk=pk)
@@ -407,6 +410,7 @@ class produceplantotalupdate(user_mixins.LoggedInOnlyView, UpdateView):
         return super().form_valid(form)
 
 
+@login_required
 def produceplandeleteensure(request, pk):
     plan = models.ProduceRegister.objects.get_or_none(pk=pk)
     order = plan.생산의뢰.생산의뢰수주
@@ -417,6 +421,7 @@ def produceplandeleteensure(request, pk):
     )
 
 
+@login_required
 def produceplandelete(request, pk):
     plan = models.ProduceRegister.objects.get_or_none(pk=pk)
     order = plan.생산의뢰.생산의뢰수주
@@ -428,6 +433,7 @@ def produceplandelete(request, pk):
     return redirect(reverse("producemanages:orderdetail", kwargs={"pk": pk}))
 
 
+@login_required
 def rackmakelist(request):
     user = request.user
     search = request.GET.get("search")
@@ -486,6 +492,7 @@ def rackmakelist(request):
     )
 
 
+@login_required
 def rackmakedonelist(request):
     user = request.user
     search = request.GET.get("search")
@@ -546,6 +553,7 @@ def rackmakedonelist(request):
     )
 
 
+@login_required
 def workorder(request, pk):
     user = request.user
     order = OR_models.OrderRegister.objects.get_or_none(pk=pk)
@@ -640,6 +648,7 @@ class workorderupdate(user_mixins.LoggedInOnlyView, UpdateView):
         return super().form_valid(form)
 
 
+@login_required
 def workorderdeleteensure(request, pk):
     workorder = models.WorkOrder.objects.get_or_none(pk=pk)
     order = workorder.생산계획.생산의뢰.생산의뢰수주
@@ -650,6 +659,7 @@ def workorderdeleteensure(request, pk):
     )
 
 
+@login_required
 def workorderdelete(request, pk):
     workorder = models.WorkOrder.objects.get_or_none(pk=pk)
     order = workorder.생산계획.생산의뢰.생산의뢰수주
@@ -659,6 +669,7 @@ def workorderdelete(request, pk):
     return redirect(reverse("producemanages:orderdetail", kwargs={"pk": pk}))
 
 
+@login_required
 def producehome(request):
     if request.user.__str__() == "AnonymousUser":
         return redirect(reverse("users:login"))
@@ -801,6 +812,7 @@ def producehome(request):
     )
 
 
+@login_required
 def worklist(request):
     user = request.user
     search = request.GET.get("search")
@@ -884,6 +896,7 @@ def worklist(request):
     )
 
 
+@login_required
 def workregister(request, pk):
     user = request.user
     order = OR_models.OrderRegister.objects.get_or_none(pk=pk)
@@ -921,6 +934,7 @@ def workregister(request, pk):
     )
 
 
+@login_required
 def workdonelist(request):
     user = request.user
     search = request.GET.get("search")
@@ -1070,6 +1084,7 @@ def workdonelist(request):
     )
 
 
+@login_required
 def orderfinalcheck(request, pk):
     user = request.user
     order = OR_models.OrderRegister.objects.get_or_none(pk=pk)
@@ -1085,6 +1100,7 @@ def orderfinalcheck(request, pk):
     return redirect(reverse("producemanages:workdonelist"))
 
 
+@login_required
 def orderfinaldelete(request, pk):
     user = request.user
     order = OR_models.OrderRegister.objects.get_or_none(pk=pk)
@@ -1101,6 +1117,7 @@ def orderfinaldelete(request, pk):
     return redirect(reverse("producemanages:orderdetailforwork", kwargs={"pk": pk}))
 
 
+@login_required
 def workdeleteensure(request, pk):
     user = request.user
     order = OR_models.OrderRegister.objects.get_or_none(pk=pk)
@@ -1116,6 +1133,7 @@ def workdeleteensure(request, pk):
     )
 
 
+@login_required
 def workdelete(request, pk):
     user = request.user
     order = OR_models.OrderRegister.objects.get_or_none(pk=pk)
@@ -1175,6 +1193,7 @@ class workupdate(user_mixins.LoggedInOnlyView, UpdateView):
         return super().form_valid(form)
 
 
+@login_required
 def finalchecklist(request):
     user = request.user
     search = request.GET.get("search")
@@ -1243,6 +1262,7 @@ def finalchecklist(request):
     )
 
 
+@login_required
 def repairregister(request, pk):
     user = request.user
     finalcheck = QC_models.FinalCheckRegister.objects.get_or_none(pk=pk)
@@ -1259,6 +1279,17 @@ def repairregister(request, pk):
         폐기수량_list = postDict["폐기수량"]
         특이사항_list = postDict["특이사항"]
 
+        폐기수량_list = [int(x) for x in 폐기수량_list]
+        실수리수량_list = [int(x) for x in 실수리수량_list]
+
+        if (sum(폐기수량_list) + sum(실수리수량_list)) > finalcheck.부적합수량:
+            messages.error(request, "수리수량과 폐기수량의 합이 부적합 수량보다 많을 수 없습니다.")
+            return render(
+                request,
+                "producemanages/repairregister.html",
+                {"form": form, "finalcheck": finalcheck,},
+            )
+
         lenOflist = len(불량위치및자재_list)
 
         for repair_num in range(lenOflist):
@@ -1266,10 +1297,10 @@ def repairregister(request, pk):
                 수리최종="최종검사결과",
                 작성자=user,
                 불량위치및자재=불량위치및자재_list[repair_num],
-                특이사항=수리내용_list[repair_num],
-                수리내용=실수리수량_list[repair_num],
-                실수리수량=폐기수량_list[repair_num],
-                폐기수량=특이사항_list[repair_num],
+                특이사항=특이사항_list[repair_num],
+                수리내용=수리내용_list[repair_num],
+                실수리수량=실수리수량_list[repair_num],
+                폐기수량=폐기수량_list[repair_num],
                 제품=finalcheck.제품,
             )
             SM.최종검사결과.add(finalcheck)
@@ -1332,6 +1363,7 @@ class repairupdate(user_mixins.LoggedInOnlyView, UpdateView):
         return super().form_valid(form)
 
 
+@login_required
 def repairlist(request):
     user = request.user
     search = request.GET.get("search")
@@ -1392,6 +1424,7 @@ def repairlist(request):
     )
 
 
+@login_required
 def repairdetail(request, pk):
     user = request.user
     repair = QC_models.RepairRegister.objects.get_or_none(pk=pk)
@@ -1449,6 +1482,7 @@ class repairupdateindetailAS(repairupdateindetail):
         )
 
 
+@login_required
 def repairdeleteensure(request, pk):
     repair = QC_models.RepairRegister.objects.get_or_none(pk=pk)
     return render(
@@ -1456,6 +1490,7 @@ def repairdeleteensure(request, pk):
     )
 
 
+@login_required
 def repairdelete(request, pk):
     repair = QC_models.RepairRegister.objects.get_or_none(pk=pk)
     repair.delete()
@@ -1463,6 +1498,7 @@ def repairdelete(request, pk):
     return redirect(reverse("producemanages:producehome",))
 
 
+@login_required
 def orderfinalcheckforrepair(request, pk):
     repair = QC_models.RepairRegister.objects.get_or_none(pk=pk)
     SM = QC_models.FinalCheck.objects.create(수리내역서=repair, 제품=repair.제품)
@@ -1472,6 +1508,7 @@ def orderfinalcheckforrepair(request, pk):
     return redirect(reverse("producemanages:workdonelist"))
 
 
+@login_required
 def checkdonelist(request):
     user = request.user
     search = request.GET.get("search")
@@ -1618,6 +1655,7 @@ def checkdonelist(request):
     )
 
 
+@login_required
 def finalcheckdetail(request, pk):
     finalcheck = QC_models.FinalCheckRegister.objects.get_or_none(pk=pk)
     user = request.user
@@ -1633,6 +1671,7 @@ def finalcheckdetail(request, pk):
     )
 
 
+@login_required
 def ASrequestlist(request):
     user = request.user
     search = request.GET.get("search")
@@ -1695,6 +1734,7 @@ def ASrequestlist(request):
     )
 
 
+@login_required
 def repairregisterAS(request, pk):
     user = request.user
     ASrequest = AS_models.ASRepairRequest.objects.get_or_none(pk=pk)
@@ -1729,6 +1769,7 @@ def repairregisterAS(request, pk):
     )
 
 
+@login_required
 def finalcheckrequestdelete(request, pk):
     finalcheckrequest = QC_models.FinalCheck.objects.get_or_none(pk=pk)
     pk = finalcheckrequest.수리내역서.pk
@@ -1737,6 +1778,7 @@ def finalcheckrequestdelete(request, pk):
     return redirect(reverse("producemanages:repairdetail", kwargs={"pk": pk}))
 
 
+@login_required
 def repairrequestdetail(request, pk):
     user = request.user
     repair = AS_models.ASRepairRequest.objects.get_or_none(pk=pk)
@@ -1781,6 +1823,7 @@ class requestrackmakelist(core_views.onelist):
         return queryset
 
 
+@login_required
 def rackmakeregister(request, pk):
     user = request.user
     makerequest = SR_models.StockOfRackProductOutRequest.objects.get_or_none(pk=pk)
@@ -1814,7 +1857,7 @@ def rackmakeregister(request, pk):
     ]
     return render(
         request,
-        "producemanages/produceplanregister.html",
+        "producemanages/rackmakeregister.html",
         {"form": form, "makerequest": makerequest, "selectlist": selectlist,},
     )
 
@@ -1865,6 +1908,7 @@ class rackmakeedit(user_mixins.LoggedInOnlyView, UpdateView):
         return super().form_valid(form)
 
 
+@login_required
 def rackmakedeleteensure(request, pk):
     makerequest = SR_models.StockOfRackProductMaker.objects.get_or_none(pk=pk)
 
@@ -1875,6 +1919,7 @@ def rackmakedeleteensure(request, pk):
     )
 
 
+@login_required
 def rackmakedelete(request, pk):
     makerequest = SR_models.StockOfRackProductMaker.objects.get_or_none(pk=pk)
     order = makerequest.랙출하요청.수주
@@ -1950,6 +1995,7 @@ class monthlyplanlist(core_views.onelist):
         )
 
 
+@login_required
 def monthlyplandetail(request, ypk, mpk):
     listformonth = OR_models.OrderRegister.objects.filter(영업구분="월별생산계획").order_by(
         "-created"
@@ -1988,6 +2034,7 @@ class monthlyplannewlist(core_views.onelist):
         return queryset
 
 
+@login_required
 def monthlyplanregister(request, pk):
     form = forms.monthlyplanregister(request.POST)
     monthlyplan = models.MonthlyProduceList.objects.get_or_none(pk=pk)
@@ -2080,6 +2127,7 @@ def monthlyplanregister(request, pk):
     )
 
 
+@login_required
 def monthlyplanregisternew(request):
     search = request.GET.get("search")
     if search is None:
@@ -2220,6 +2268,7 @@ def monthlyplanregisternew(request):
     )
 
 
+@login_required
 def deleteallplan(request, pk, ypk, mpk):
     order = OR_models.OrderRegister.objects.get_or_none(pk=pk)
     try:

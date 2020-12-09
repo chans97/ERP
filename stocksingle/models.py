@@ -199,7 +199,7 @@ class StockOfSingleProductOutRequest(TimeStampedModel):
     )
 
     고객사 = models.ForeignKey(
-        SI_models.CustomerPartner,
+        SI_models.Partner,
         related_name="단품출하요청",
         on_delete=models.SET_NULL,
         null=True,

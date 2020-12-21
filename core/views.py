@@ -36,7 +36,6 @@ from qualitycontrols import models as QC_models
 from afterservices import models as AS_models
 
 
-@login_required
 def firstindecide(request):
     user = request.user
     if user.is_authenticated:
@@ -55,7 +54,6 @@ def firstindecide(request):
             return redirect(reverse("core:managehome"))
         else:
             return render(request, "base.html")
-
     else:
         return redirect(reverse("users:login"))
 

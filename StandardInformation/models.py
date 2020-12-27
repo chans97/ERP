@@ -222,11 +222,11 @@ class Material(TimeStampedModel):
     )
     자재코드 = models.CharField(max_length=120, blank=True)
     품목 = models.CharField(
-        choices=품목_CHOICES, max_length=10, null=True, blank=True, default=자재
+        choices=품목_CHOICES, max_length=30, null=True, blank=True, default=자재
     )
     자재품명 = models.CharField(max_length=100, blank=True)
     규격 = models.CharField(max_length=40, blank=True)
-    단위 = models.CharField(choices=단위_CHOICES, max_length=4, blank=True, default=EA)
+    단위 = models.CharField(choices=단위_CHOICES, max_length=40, blank=True, default=EA)
     자재공급업체 = models.ForeignKey(
         "SupplyPartner",
         related_name="제공자재",

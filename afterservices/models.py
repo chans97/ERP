@@ -159,7 +159,7 @@ class ASRepairRequest(TimeStampedModel):
         blank=True,
     )
     고객성명 = models.CharField(max_length=50, null=True, blank=True,)
-    고객주소 = models.CharField(max_length=120, null=True, blank=True,)
+    고객주소 = models.TextField(max_length=120, null=True, blank=True,)
     고객전화 = models.CharField(max_length=50, null=True, blank=True,)
     고객팩스 = models.CharField(max_length=50, null=True, blank=True,)
     AS의뢰내용 = models.CharField(max_length=50, null=True, blank=True,)

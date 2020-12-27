@@ -74,7 +74,7 @@ class stockmanageshome(core_views.threelist):
             self.s_bool2 = True
             queryset = SI_models.RackProduct.objects.filter(
                 Q(랙시리얼코드__contains=self.search2)
-                | Q(랙모델명__contains=self.search2)
+                | Q(현장명__contains=self.search2)
                 | Q(규격__contains=self.search2)
                 | Q(단위__contains=self.search2)
                 | Q(단가__contains=self.search2)
@@ -125,7 +125,8 @@ class materialchecklist(core_views.onelist):
             )
         return queryset
 
-@login_required
+
+@login_required(login_url="/")
 def materialcheckdetail(request, pk):
     user = request.user
     materialcheck = QC_models.MaterialCheckRegister.objects.get_or_none(pk=pk)
@@ -135,7 +136,8 @@ def materialcheckdetail(request, pk):
         {"materialcheck": materialcheck, "user": user,},
     )
 
-@login_required
+
+@login_required(login_url="/")
 def materialcheckrequest(request):
     search = request.GET.get("search")
     if search is None:
@@ -213,7 +215,8 @@ def materialcheckrequest(request):
         },
     )
 
-@login_required
+
+@login_required(login_url="/")
 def materialcheckrequestdelete(request, pk):
     materialcheck = QC_models.MaterialCheckRegister.objects.get_or_none(pk=pk)
     materialcheck.delete()
@@ -285,7 +288,8 @@ class materialinrequestlist(core_views.onelist):
 
         return queryset
 
-@login_required
+
+@login_required(login_url="/")
 def materialinregister(request, pk):
     materialinrequest = models.StockOfMaterialInRequest.objects.get_or_none(pk=pk)
 
@@ -316,7 +320,8 @@ def materialinregister(request, pk):
         },
     )
 
-@login_required
+
+@login_required(login_url="/")
 def materialindelete(request, pk):
     materialin = models.StockOfMaterialIn.objects.get_or_none(pk=pk)
     materialin.자재입고요청.자재.자재재고.실수량 -= materialin.입고수량
@@ -388,7 +393,8 @@ class materialoutrequestlist(core_views.onelist):
 
         return queryset
 
-@login_required
+
+@login_required(login_url="/")
 def materialoutregister(request, pk):
     materialoutrequest = models.StockOfMaterialOutRequest.objects.get_or_none(pk=pk)
 
@@ -430,7 +436,8 @@ def materialoutregister(request, pk):
         },
     )
 
-@login_required
+
+@login_required(login_url="/")
 def materialoutdelete(request, pk):
     materialout = models.StockOfMaterialOut.objects.get_or_none(pk=pk)
 
@@ -465,7 +472,8 @@ class stockofmateriallist(core_views.onelist):
             ).order_by("-created")
         return queryset
 
-@login_required
+
+@login_required(login_url="/")
 def updatestockofmaterial(request):
     search = request.GET.get("search")
     if search is None:
@@ -562,7 +570,8 @@ class singleinlist(core_views.onelist):
             )
         return queryset
 
-@login_required
+
+@login_required(login_url="/")
 def singleindelete(request, pk):
     singlein = SS_models.StockOfSingleProductIn.objects.get_or_none(pk=pk)
     singlein.단품입고요청.단품.단품재고.실수량 -= singlein.입고수량
@@ -613,7 +622,8 @@ class singleinrequestlist(core_views.onelist):
 
         return queryset
 
-@login_required
+
+@login_required(login_url="/")
 def singleinregister(request, pk):
     singleinrequest = SS_models.StockOfSingleProductInRequest.objects.get_or_none(pk=pk)
 
@@ -672,7 +682,8 @@ class singleoutlist(core_views.onelist):
             )
         return queryset
 
-@login_required
+
+@login_required(login_url="/")
 def dealdownload(request, pk):
     """파일 다운로드 유니코드화 패치"""
     partner = SS_models.StockOfSingleProductOut.objects.get_or_none(pk=pk)
@@ -687,7 +698,8 @@ def dealdownload(request, pk):
         response["Content-Disposition"] = titling
         return response
 
-@login_required
+
+@login_required(login_url="/")
 def singleoutdelete(request, pk):
     singleout = SS_models.StockOfSingleProductOut.objects.get_or_none(pk=pk)
 
@@ -736,7 +748,8 @@ class singleoutrequestlist(core_views.onelist):
 
         return queryset
 
-@login_required
+
+@login_required(login_url="/")
 def singleoutregister(request, pk):
     singleoutrequest = SS_models.StockOfSingleProductOutRequest.objects.get_or_none(
         pk=pk
@@ -805,7 +818,8 @@ class stockofsinglelist(core_views.onelist):
             ).order_by("-created")
         return queryset
 
-@login_required
+
+@login_required(login_url="/")
 def updatestockofsingle(request):
     search = request.GET.get("search")
     if search is None:
@@ -893,7 +907,7 @@ class rackoutlist(core_views.onelist):
             queryset = (
                 SR_models.StockOfRackProductOut.objects.filter(출하자=user)
                 .filter(
-                    Q(랙출하요청__랙__랙모델명__contains=self.search)
+                    Q(랙출하요청__랙__현장명__contains=self.search)
                     | Q(출하자__first_name__contains=self.search)
                     | Q(랙출하요청__랙__랙시리얼코드__contains=self.search)
                     | Q(랙출하요청__출하요청자__first_name__contains=self.search)
@@ -902,7 +916,8 @@ class rackoutlist(core_views.onelist):
             )
         return queryset
 
-@login_required
+
+@login_required(login_url="/")
 def dealdownloadforrack(request, pk):
     """파일 다운로드 유니코드화 패치"""
     partner = SR_models.StockOfRackProductOut.objects.get_or_none(pk=pk)
@@ -917,7 +932,8 @@ def dealdownloadforrack(request, pk):
         response["Content-Disposition"] = titling
         return response
 
-@login_required
+
+@login_required(login_url="/")
 def rackoutdelete(request, pk):
     rackout = SR_models.StockOfRackProductOut.objects.get_or_none(pk=pk)
     try:
@@ -977,7 +993,7 @@ class rackoutrequestlist(core_views.onelist):
         else:
             self.s_bool = True
             order = SR_models.StockOfRackProductOutRequest.objects.filter(
-                Q(랙__랙모델명__contains=self.search)
+                Q(랙__현장명__contains=self.search)
                 | Q(랙__랙시리얼코드__contains=self.search)
                 | Q(출하요청자__first_name__contains=self.search)
             ).order_by("-created")
@@ -995,7 +1011,8 @@ class rackoutrequestlist(core_views.onelist):
 
         return queryset
 
-@login_required
+
+@login_required(login_url="/")
 def rackoutregister(request, pk):
     rackoutrequest = SR_models.StockOfRackProductOutRequest.objects.get_or_none(pk=pk)
 
@@ -1054,14 +1071,15 @@ class stockofracklist(core_views.onelist):
             self.s_bool = True
             queryset = SI_models.RackProduct.objects.filter(
                 Q(랙시리얼코드__contains=self.search)
-                | Q(랙모델명__contains=self.search)
+                | Q(현장명__contains=self.search)
                 | Q(규격__contains=self.search)
                 | Q(단위__contains=self.search)
                 | Q(단가__contains=self.search)
             ).order_by("-created")
         return queryset
 
-@login_required
+
+@login_required(login_url="/")
 def informationforrack(request, pk):
     rack = SI_models.RackProduct.objects.get_or_none(pk=pk)
     single = rack.랙구성단품.filter(랙구성="단품")
@@ -1096,7 +1114,8 @@ class singleStandarInformation(core_views.onelist):
             ).order_by("-created")
         return queryset
 
-@login_required
+
+@login_required(login_url="/")
 def singleregister(request):
     def give_number():
         while True:
@@ -1127,7 +1146,8 @@ def singleregister(request):
         return redirect(reverse("stockmanages:singlematerial", kwargs={"pk": pk}))
     return render(request, "stockmanages/singleregister.html", {"form": form,},)
 
-@login_required
+
+@login_required(login_url="/")
 def singlematerial(request, pk):
     single = SI_models.SingleProduct.objects.get(pk=pk)
     form = SI_forms.UploadSingleMaterialForm(request.POST or None)
@@ -1184,7 +1204,8 @@ def singlematerial(request, pk):
         },
     )
 
-@login_required
+
+@login_required(login_url="/")
 def donesingleregister(request):
     messages.success(request, "단품이 기준정보에 등록되었습니다.")
 
@@ -1222,13 +1243,15 @@ class singleedit(user_mixins.LoggedInOnlyView, UpdateView):
         pk = self.kwargs.get(self.pk_url_kwarg)
         return reverse("stockmanages:singlematerial", kwargs={"pk": pk})
 
-@login_required
+
+@login_required(login_url="/")
 def singledeleteensure(request, pk):
 
     single = SI_models.SingleProduct.objects.get_or_none(pk=pk)
     return render(request, "stockmanages/singledeleteensure.html", {"single": single},)
 
-@login_required
+
+@login_required(login_url="/")
 def singledelete(request, pk):
     single = SI_models.SingleProduct.objects.get_or_none(pk=pk)
     single.delete()
@@ -1237,7 +1260,8 @@ def singledelete(request, pk):
 
     return redirect(reverse("stockmanages:singleStandarInformation"))
 
-@login_required
+
+@login_required(login_url="/")
 def deletematerialofsingle(request, pk, m_pk):
 
     materialofsingle = SI_models.SingleProductMaterial.objects.get(pk=m_pk)
@@ -1267,7 +1291,8 @@ class materialStandarInformation(core_views.onelist):
             ).order_by("-created")
         return queryset
 
-@login_required
+
+@login_required(login_url="/")
 def materialregister(request):
     def give_number():
         while True:
@@ -1377,7 +1402,8 @@ class materialedit(user_mixins.LoggedInOnlyView, UpdateView):
         pk = self.kwargs.get(self.pk_url_kwarg)
         return reverse("stockmanages:materialdetail", kwargs={"pk": pk})
 
-@login_required
+
+@login_required(login_url="/")
 def materialdeleteensure(request, pk):
 
     material = SI_models.Material.objects.get_or_none(pk=pk)
@@ -1385,7 +1411,8 @@ def materialdeleteensure(request, pk):
         request, "stockmanages/materialdeleteensure.html", {"material": material},
     )
 
-@login_required
+
+@login_required(login_url="/")
 def materialdelete(request, pk):
     material = SI_models.Material.objects.get_or_none(pk=pk)
     material.delete()

@@ -48,7 +48,7 @@ class SingleProductMeterial(admin.ModelAdmin):
 class RackProduct(admin.ModelAdmin):
     empty_value_display = "입력 값 없음"
     list_display = (
-        "랙모델명",
+        "현장명",
         "규격",
         "단위",
     )

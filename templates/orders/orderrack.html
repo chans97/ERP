@@ -38,7 +38,7 @@
                             <tr>
                                 <th class="border bg-gray-200 px-1 py-2 w-12">선택</th>
                                 <th class="border bg-gray-200 px-4 py-2 w-32">랙시리얼코드</th>
-                                <th class="border bg-gray-200 px-4 py-2 w-40">랙모델명</th>
+                                <th class="border bg-gray-200 px-4 py-2 w-40">현장명</th>
                                 <th class="border bg-gray-200 px-4 py-2 w-40">규격</th>
                                 <th class="border bg-gray-200 px-4 py-2 w-24">단위</th>
                                 <th class="border bg-gray-200 px-4 py-2 w-24">단가</th>
@@ -56,7 +56,7 @@
                                     </td>
                                     <td class="border px-4 py-2">{{list.랙시리얼코드}}</td>
                                     <td class="border px-4 py-2 font-medium hover:text-blue-700 hover:font-bold"><a
-                                            href="{%url "StandardInformation:rackdetail" list.pk %}">{{list.랙모델명}}</a>
+                                            href="{%url "StandardInformation:rackdetail" list.pk %}">{{list.현장명}}</a>
                                     </td>
                                     <td class="border px-4 py-2">{{list.규격}}</td>
                                     <td class="border px-4 py-2">{{list.단위}}</td>

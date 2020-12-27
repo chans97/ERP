@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = "cssd1xkjewhis51ukzwo03)ebo2$rdb_p8ve8tz3jcx=j_^bk*"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -73,7 +73,7 @@ ROOT_URLCONF = "mysite.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, "templates")],
+        "DIRS": [os.path.join(BASE_DIR, "templates"), "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -93,14 +93,15 @@ WSGI_APPLICATION = "mysite.wsgi.application"
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 
-"""
+# postgresql_psycopg2연결
+
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "HOST": "erpdemo.cygkdjtf3dkq.ap-northeast-2.rds.amazonaws.com",
-        "NAME": "erpdemo",
-        "USER": "postgresql",
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": "test_db",
+        "USER": "main_user",
         "PASSWORD": "ckstn11!!",
+        "HOST": "127.0.0.1",
         "PORT": "5432",
     }
 }
@@ -110,7 +111,7 @@ DATABASES = {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
     }
-}
+}"""
 """
 DATABASES = {
  'default': {

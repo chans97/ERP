@@ -7,7 +7,7 @@
 
 {%block head_title%}
 <i class="fas fa-angle-right mx-1 text-base"></i>기준정보<i class="fas fa-angle-right text-base mx-1"></i>
-<a class="hover:font-bold" href="{%url "StandardInformation:rack"%}">
+<a class="hover:font-bold" href="{%url 'StandardInformation:rack'%}">
 
     랙
 </a>
@@ -25,7 +25,7 @@
 
             </div>
             <div class="mt-2">
-                <a href="{%url "StandardInformation:rackregister"%}">
+                <a href="{%url 'StandardInformation:rackregister'%}">
                     <div class="btn-link">
                         랙 추가 </div>
                 </a>
@@ -33,9 +33,9 @@
         </div>
         <div class="w-64 border h-6 mb-2">
 
-            <form method="get" action="{%url "StandardInformation:rack" %}" class="w-full flex ">
-                <button class="w-4 h-4 mt-1 ml-1  rounded-xl bg-cover bg-center"
-                    style="background-image:url({% static 'img/search.png' %});"></button>
+            <form method="get" action="{%url 'StandardInformation:rack' %}" class="w-full flex ">
+                <button class="w-4 h-4 mt-1 ml-1  rounded-xl bg-cover bg-center" style="background-image:url({% static "
+                    img/search.png" %});"></button>
 
                 <input name="search" placeholder={{search}}
                     class="ml-1 w-full border-none search-box text-xs font-medium placeholder-red-400 focus: outline-none" />
@@ -47,7 +47,7 @@
                 <thead>
                     <tr>
                         <th class="border bg-gray-200 px-4 py-2 w-32">랙시리얼코드</th>
-                        <th class="border bg-gray-200 px-4 py-2 w-40">랙모델명</th>
+                        <th class="border bg-gray-200 px-4 py-2 w-40">현장명</th>
                         <th class="border bg-gray-200 px-4 py-2 w-40">규격</th>
                         <th class="border bg-gray-200 px-4 py-2 w-24 ">단위</th>
                         <th class="border bg-gray-200 px-4 py-2 w-24">단가</th>
@@ -59,8 +59,8 @@
                     {%for list in lists%}
                     <tr>
                         <td class="border px-4 py-2 font-medium hover:text-blue-700 hover:font-bold"><a
-                                href="{%url "StandardInformation:rackdetail" list.pk %}">{{list.랙시리얼코드}}</a></td>
-                        <td class="border px-4 py-2">{{list.랙모델명}}</td>
+                                href="{%url 'StandardInformation:rackdetail' list.pk %}">{{list.랙시리얼코드}}</a></td>
+                        <td class="border px-4 py-2">{{list.현장명}}</td>
                         <td class="border px-4 py-2">{{list.규격}}</td>
                         <td class="border px-4 py-2">{{list.단위}}</td>
                         <td class="border px-4 py-2">{{list.단가}}</td>

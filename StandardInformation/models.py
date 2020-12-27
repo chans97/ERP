@@ -222,10 +222,10 @@ class Material(TimeStampedModel):
     )
     자재코드 = models.CharField(max_length=120, blank=True)
     품목 = models.CharField(
-        choices=품목_CHOICES, max_length=4, null=True, blank=True, default=자재
+        choices=품목_CHOICES, max_length=10, null=True, blank=True, default=자재
     )
     자재품명 = models.CharField(max_length=100, blank=True)
-    규격 = models.CharField(max_length=30, blank=True)
+    규격 = models.CharField(max_length=40, blank=True)
     단위 = models.CharField(choices=단위_CHOICES, max_length=4, blank=True, default=EA)
     자재공급업체 = models.ForeignKey(
         "SupplyPartner",
@@ -268,7 +268,7 @@ class SingleProduct(TimeStampedModel):
 
 class SingleProductMaterial(TimeStampedModel):
     단품모델 = models.ForeignKey(
-        "SingleProduct", related_name="단품구성자재", on_delete=models.CASCADE,
+        "SingleProduct", related_name="단품구성자재", on_delete=models.CASCADE, null=True
     )
     단품구성자재 = models.ForeignKey(
         "Material", related_name="단품구성자재", on_delete=models.SET_NULL, null=True
@@ -296,17 +296,17 @@ class RackProduct(TimeStampedModel):
     )
     작성일 = models.DateField(auto_now=True, auto_now_add=False)
     랙시리얼코드 = models.CharField(max_length=40, blank=True)
-    랙모델명 = models.CharField(max_length=60, blank=True)
+    현장명 = models.CharField(max_length=60, blank=True)
     규격 = models.CharField(max_length=30, blank=True)
     단위 = models.CharField(max_length=30, blank=True)
-    단가 = models.IntegerField(null=True)
+    단가 = models.IntegerField(null=True, blank=True)
 
     class Meta:
         verbose_name = "랙제품"
         verbose_name_plural = "랙제품"
 
     def __str__(self):
-        return self.랙모델명
+        return self.현장명
 
     def rackstock(self):
         rackstock = [100000000000]
@@ -373,7 +373,11 @@ class RackProductMaterial(TimeStampedModel):
     )
 
     랙모델 = models.ForeignKey(
-        "RackProduct", related_name="랙구성단품", on_delete=models.CASCADE, blank=True,
+        "RackProduct",
+        related_name="랙구성단품",
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
     )
     랙구성 = models.CharField(choices=랙구성_CHOICES, max_length=4, blank=True, default=단품)
     랙구성단품 = models.ForeignKey(

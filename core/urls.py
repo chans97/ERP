@@ -1,7 +1,12 @@
 from django.urls import path
 from . import views
+from django.conf.urls import handler400, handler404, handler500
 
 app_name = "core"
+
+handler400 = views.bad_request_page
+handler404 = views.page_not_found_page
+handler500 = views.server_error_page
 
 urlpatterns = [
     path("", views.firstindecide, name="home"),

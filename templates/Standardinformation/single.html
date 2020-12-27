@@ -22,7 +22,7 @@
 
             </div>
             <div class="mt-2">
-                <a href="{%url "StandardInformation:singleregister"%}">
+                <a href='{%url "StandardInformation:singleregister"%}'>
                     <div class="btn-link">
                         단품 추가 </div>
                 </a>
@@ -30,7 +30,7 @@
         </div>
         <div class="w-64 border h-6 mb-2">
 
-            <form method="get" action="{%url "StandardInformation:single" %}" class="w-full flex ">
+            <form method="get" action='{%url "StandardInformation:single" %}' class="w-full flex ">
                 <button class="w-4 h-4 mt-1 ml-1  rounded-xl bg-cover bg-center"
                     style="background-image:url({% static 'img/search.png' %});"></button>
 
@@ -54,8 +54,8 @@
                 <tbody>
                     {%for list in lists%}
                     <tr>
-                        <td class="border px-4 py-2 font-medium hover:text-blue-700 hover:font-bold"><a
-                                href="{%url "StandardInformation:singledetail" list.pk %}">{{list.모델코드}}</a></td>
+                        <td class="border px-4 py-2 font-medium hover:text-blue-700 hover:font-bold">
+                            <a href='{%url "StandardInformation:singledetail" list.pk %}'>{{list.모델코드}}</a></td>
                         <td class="border px-4 py-2">{{list.모델명}}</td>
                         <td class="border px-4 py-2">{{list.규격}}</td>
                         <td class="border px-4 py-2">{{list.단위}}</td>

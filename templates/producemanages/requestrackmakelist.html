@@ -37,7 +37,7 @@
                                     <th class="border bg-gray-200 px-4 py-2 w-24">수주코드</th>
                                     <th class="border bg-gray-200 px-4 py-2 w-24">출하요청자</th>
                                     <th class="border bg-gray-200 px-4 py-2 w-24">랙시리얼코드</th>
-                                    <th class="border bg-gray-200 px-4 py-2 w-24">랙모델명</th>
+                                    <th class="border bg-gray-200 px-4 py-2 w-24">현장명</th>
                                     <th class="border bg-gray-200 px-4 py-2 w-32">출하요청수량</th>
                                     <th class="border bg-gray-200 px-4 py-2 w-24">출하희망일</th>
                                 </tr>
@@ -62,7 +62,7 @@
                                     <td class="border px-4 py-2 hover:text-blue-700 hover:font-bold"><a
                                             href="{%url "producemanages:rackdetail" list.랙.pk %}">{{list.랙.랙시리얼코드}}
                                         </a></td>
-                                    <td class="border px-4 py-2">{{list.랙.랙모델명}}</td>
+                                    <td class="border px-4 py-2">{{list.랙.현장명}}</td>
                                     <td class="border px-4 py-2">{{list.출하요청수량}}</td>
 
 

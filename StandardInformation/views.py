@@ -88,7 +88,7 @@ class PartnerView(user_mixins.LoggedInOnlyView, ListView):
         return self.render_to_response(context)
 
 
-@login_required
+@login_required(login_url="/")
 def UploadPartnerView(request):
     def give_number():
         while True:
@@ -141,7 +141,7 @@ class PartnerDetialView(user_mixins.LoggedInOnlyView, DetailView):
         )
 
 
-@login_required
+@login_required(login_url="/")
 def file_download(request, pk):
     """파일 다운로드 유니코드화 패치"""
     partner = models.Partner.objects.get_or_none(pk=pk)
@@ -157,7 +157,7 @@ def file_download(request, pk):
         return response
 
 
-@login_required
+@login_required(login_url="/")
 def partnerdeleteensure(request, pk):
 
     partner = models.Partner.objects.get_or_none(pk=pk)
@@ -166,7 +166,7 @@ def partnerdeleteensure(request, pk):
     )
 
 
-@login_required
+@login_required(login_url="/")
 def partnerdelete(request, pk):
     partner = models.Partner.objects.get_or_none(pk=pk)
     code = partner.거래처코드
@@ -300,7 +300,7 @@ class SingleView(ListView):
         return self.render_to_response(context)
 
 
-@login_required
+@login_required(login_url="/")
 def UploadSingleView(request):
     form = forms.UploadSingleForm(request.POST)
 
@@ -338,7 +338,7 @@ class SingleDetialView(user_mixins.LoggedInOnlyView, DetailView):
         )
 
 
-@login_required
+@login_required(login_url="/")
 def singlematerial(request, pk):
     single = models.SingleProduct.objects.get(pk=pk)
     form = forms.UploadSingleMaterialForm(request.POST)
@@ -396,7 +396,7 @@ def singlematerial(request, pk):
     )
 
 
-@login_required
+@login_required(login_url="/")
 def deletematerialofsingle(request, pk, m_pk):
 
     materialofsingle = models.SingleProductMaterial.objects.get(pk=m_pk)
@@ -404,7 +404,7 @@ def deletematerialofsingle(request, pk, m_pk):
     return redirect(reverse("StandardInformation:singlematerial", kwargs={"pk": pk}))
 
 
-@login_required
+@login_required(login_url="/")
 def singledeleteensure(request, pk):
 
     single = models.SingleProduct.objects.get_or_none(pk=pk)
@@ -413,7 +413,7 @@ def singledeleteensure(request, pk):
     )
 
 
-@login_required
+@login_required(login_url="/")
 def singledelete(request, pk):
     single = models.SingleProduct.objects.get_or_none(pk=pk)
     single.delete()
@@ -457,7 +457,7 @@ class RackView(ListView):
         else:
             qs = models.RackProduct.objects.filter(
                 Q(랙시리얼코드=search)
-                | Q(랙모델명__contains=search)
+                | Q(현장명__contains=search)
                 | Q(규격=search)
                 | Q(단위=search)
                 | Q(작성자__first_name=search)
@@ -512,7 +512,7 @@ class RackDetialView(user_mixins.LoggedInOnlyView, DetailView):
         )
 
 
-@login_required
+@login_required(login_url="/")
 def UploadRackView(request):
     def give_number():
         while True:
@@ -544,7 +544,7 @@ def UploadRackView(request):
     return render(request, "Standardinformation/rackregister.html", {"form": form,},)
 
 
-@login_required
+@login_required(login_url="/")
 def racksingle(request, pk):
     rack = models.RackProduct.objects.get(pk=pk)
     form = forms.UploadRackSingleForm(request.POST)
@@ -603,7 +603,7 @@ def racksingle(request, pk):
     )
 
 
-@login_required
+@login_required(login_url="/")
 def rackmaterial(request, pk):
     rack = models.RackProduct.objects.get(pk=pk)
     form = forms.UploadRackMaterialForm(request.POST)
@@ -661,7 +661,7 @@ def rackmaterial(request, pk):
     )
 
 
-@login_required
+@login_required(login_url="/")
 def deletesingleofrack(request, pk, m_pk):
 
     singleofrack = models.RackProductMaterial.objects.get(pk=m_pk)
@@ -669,7 +669,7 @@ def deletesingleofrack(request, pk, m_pk):
     return redirect(reverse("StandardInformation:racksingle", kwargs={"pk": pk}))
 
 
-@login_required
+@login_required(login_url="/")
 def deletematerialofrack(request, pk, m_pk):
 
     materialofrack = models.RackProductMaterial.objects.get(pk=m_pk)
@@ -681,7 +681,7 @@ class EditRackView(user_mixins.LoggedInOnlyView, UpdateView):
     model = models.RackProduct
     fields = (
         "랙시리얼코드",
-        "랙모델명",
+        "현장명",
         "규격",
         "단위",
         "단가",
@@ -693,14 +693,14 @@ class EditRackView(user_mixins.LoggedInOnlyView, UpdateView):
         return reverse("StandardInformation:racksingle", kwargs={"pk": pk})
 
 
-@login_required
+@login_required(login_url="/")
 def rackdeleteensure(request, pk):
 
     rack = models.RackProduct.objects.get_or_none(pk=pk)
     return render(request, "Standardinformation/rackdeleteensure.html", {"rack": rack},)
 
 
-@login_required
+@login_required(login_url="/")
 def rackdelete(request, pk):
     rack = models.RackProduct.objects.get_or_none(pk=pk)
     rack.delete()
@@ -710,14 +710,14 @@ def rackdelete(request, pk):
     return redirect(reverse("StandardInformation:rack"))
 
 
-@login_required
+@login_required(login_url="/")
 def donesingleregister(request):
     messages.success(request, "단품이 기준정보에 등록되었습니다.")
 
     return redirect(reverse("StandardInformation:single"))
 
 
-@login_required
+@login_required(login_url="/")
 def donerackregister(request):
     messages.success(request, "랙이 기준정보에 등록되었습니다.")
 

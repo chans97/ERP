@@ -7,7 +7,7 @@
 
 {%block head_title%}
 </a><i class="fas fa-angle-right mx-1 text-base"></i>기준정보<i class="fas fa-angle-right text-base mx-1"></i><a
-    href="{%url "StandardInformation:rack"%}" class="hover:font-bold">
+    href="{%url 'StandardInformation:rack'%}" class="hover:font-bold">
     랙</a><i class="fas fa-angle-right mx-1 text-base"></i><span class="text-gray-700">{{rack}}</span>
 {%endblock head_title %}
 
@@ -26,13 +26,13 @@
 
                 <div class="flex flex-row">
                     <div class="mt-2">
-                        <a href="{%url "StandardInformation:rackedit" rack.pk%}">
+                        <a href="{%url 'StandardInformation:rackedit' rack.pk%}">
                             <div class="btn-link bg-teal-800">
                                 랙 수정 </div>
                         </a>
                     </div>
                     <div class="mt-2">
-                        <a href="{%url "StandardInformation:rackdeleteensure" rack.pk %}">
+                        <a href="{%url 'StandardInformation:rackdeleteensure' rack.pk %}">
                             <div class="btn-link  bg-red-800 ml-5">
                                 랙 삭제 </div>
                         </a>
@@ -64,8 +64,8 @@
                             <td class="border px-4 py-2">{{rack.랙시리얼코드}}</td>
                         </tr>
                         <tr>
-                            <td class="border px-4 py-2">랙모델명</td>
-                            <td class="border px-4 py-2">{{rack.랙모델명}}</td>
+                            <td class="border px-4 py-2">현장명</td>
+                            <td class="border px-4 py-2">{{rack.현장명}}</td>
                         </tr>
                         <tr>
                             <td class="border px-4 py-2">규격</td>

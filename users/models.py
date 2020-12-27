@@ -10,7 +10,7 @@ from importlib import import_module
 class User(AbstractUser, TimeStampedModel):
     """custom user """
 
-    부서 = models.ManyToManyField("Part", related_name="user", null=True)
+    부서 = models.ManyToManyField("Part", related_name="user")
     nowPart = models.ForeignKey(
         "Part", related_name="nowuser", on_delete=models.SET_NULL, null=True
     )

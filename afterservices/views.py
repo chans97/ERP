@@ -62,6 +62,7 @@ class afterserviceshome(core_views.onelist):
         return queryset
 
 
+@login_required(login_url="/")
 def ASregister(request):
     def give_number():
         while True:
@@ -127,31 +128,7 @@ def ASregister(request):
     )
 
 
-class ASregisterall(core_views.onelist):
-    templatename = "afterservices/ASregisterall.html"
-
-    def get_first_queryset(self, request):
-        self.search = request.GET.get("search")
-        if self.search is None:
-            queryset = AS_models.ASRegisters.objects.order_by("-created")
-
-            self.s_bool = False
-        else:
-            self.s_bool = True
-            queryset = AS_models.ASRegisters.objects.filter(
-                Q(접수번호__contains=self.search)
-                | Q(접수내용__contains=self.search)
-                | Q(처리방법__contains=self.search)
-                | Q(접수자__first_name__contains=self.search)
-                | Q(단품__모델코드__contains=self.search)
-                | Q(단품__모델명__contains=self.search)
-                | Q(랙__랙시리얼코드__contains=self.search)
-                | Q(랙__랙모델명__contains=self.search)
-                | Q(의뢰처__거래처명__contains=self.search)
-            ).order_by("-created")
-        return queryset
-
-
+@login_required(login_url="/")
 def ASrequestdetail(request, pk):
     asregister = AS_models.ASRegisters.objects.get_or_none(pk=pk)
     post = request.POST
@@ -169,6 +146,7 @@ def ASrequestdetail(request, pk):
     )
 
 
+@login_required(login_url="/")
 def costdelete(request, pk):
     asvisit = AS_models.ASRegisters.objects.get_or_none(pk=pk)
     asvisit.AS현장방문.견적서 = None
@@ -229,6 +207,7 @@ class ASRegistersedit(user_mixins.LoggedInOnlyView, UpdateView):
         return redirect(reverse("afterservices:ASrequestdetail", kwargs={"pk": pk}))
 
 
+@login_required(login_url="/")
 def ASRegisterdeleteensure(request, pk):
     asregisters = AS_models.ASRegisters.objects.get_or_none(pk=pk)
     return render(
@@ -238,6 +217,7 @@ def ASRegisterdeleteensure(request, pk):
     )
 
 
+@login_required(login_url="/")
 def ASRegisterdelete(request, pk):
     asregisters = AS_models.ASRegisters.objects.get_or_none(pk=pk)
     asregisters.delete()
@@ -276,7 +256,7 @@ class ASregisterdoneinsidelist(core_views.onelist):
                     | Q(단품__모델코드__contains=self.search)
                     | Q(단품__모델명__contains=self.search)
                     | Q(랙__랙시리얼코드__contains=self.search)
-                    | Q(랙__랙모델명__contains=self.search)
+                    | Q(랙__현장명__contains=self.search)
                     | Q(의뢰처__거래처명__contains=self.search)
                 )
                 .order_by("-created")
@@ -293,6 +273,7 @@ class ASregisterdoneinsidelist(core_views.onelist):
         return queryset
 
 
+@login_required(login_url="/")
 def ASdoneinside(request, pk):
     asregisters = AS_models.ASRegisters.objects.get_or_none(pk=pk)
     form = forms.ASdoneinsideForm(request.POST or None)
@@ -320,6 +301,7 @@ def ASdoneinside(request, pk):
     )
 
 
+@login_required(login_url="/")
 def ASsuccessdeleteensure(request, pk):
     assuccess = AS_models.ASResults.objects.get_or_none(pk=pk)
     return render(
@@ -327,6 +309,7 @@ def ASsuccessdeleteensure(request, pk):
     )
 
 
+@login_required(login_url="/")
 def ASsuccessdelete(request, pk):
     assuccess = AS_models.ASResults.objects.get_or_none(pk=pk)
     if assuccess.완료유형 == "내부처리":
@@ -423,6 +406,7 @@ class ASpostlist(core_views.onelist):
         return queryset
 
 
+@login_required(login_url="/")
 def ASvisitregister(request, pk):
     ASrequest = AS_models.ASRegisters.objects.get_or_none(pk=pk)
     form = forms.ASvisitRegisterForm(request.POST or None)
@@ -450,6 +434,7 @@ def ASvisitregister(request, pk):
             AS날짜=AS날짜,
             AS방법=AS방법,
             처리방법=처리방법,
+            처리기사=처리기사,
             견적진행여부=견적진행여부,
             견적서첨부=견적서첨부,
             AS접수=ASrequest,
@@ -534,6 +519,7 @@ class ASvisitedit(UpdateView):
         return redirect(reverse("afterservices:ASrequestdetail", kwargs={"pk": pk}))
 
 
+@login_required(login_url="/")
 def ASvisitdeleteensure(request, pk):
     visitRegister = AS_models.ASVisitContents.objects.get_or_none(pk=pk)
     return render(
@@ -543,6 +529,7 @@ def ASvisitdeleteensure(request, pk):
     )
 
 
+@login_required(login_url="/")
 def ASvisitdelete(request, pk):
     visitRegister = AS_models.ASVisitContents.objects.get_or_none(pk=pk)
     visitRegister.delete()
@@ -595,6 +582,7 @@ class ASrepostneedlist(ASrevisitneedlist):
     templatename = "afterservices/ASrepostneedlist.html"
 
 
+@login_required(login_url="/")
 def ASrepostregister(request, pk):
     ASvisit = AS_models.ASVisitContents.objects.get_or_none(pk=pk)
     form = forms.ASrevisitRegisterForm(request.POST or None)
@@ -636,6 +624,7 @@ def ASrepostregister(request, pk):
     )
 
 
+@login_required(login_url="/")
 def ASrevisitregister(request, pk):
     ASvisit = AS_models.ASVisitContents.objects.get_or_none(pk=pk)
     form = forms.ASrevisitRegisterForm(request.POST or None)
@@ -731,6 +720,7 @@ class ASrevisitedit(UpdateView):
         return redirect(reverse("afterservices:ASrequestdetail", kwargs={"pk": pk}))
 
 
+@login_required(login_url="/")
 def ASrevisitdeleteensure(request, pk):
     revisitRegister = AS_models.ASReVisitContents.objects.get_or_none(pk=pk)
     return render(
@@ -740,6 +730,7 @@ def ASrevisitdeleteensure(request, pk):
     )
 
 
+@login_required(login_url="/")
 def ASrevisitdelete(request, pk):
     revisitRegister = AS_models.ASReVisitContents.objects.get_or_none(pk=pk)
     revisitRegister.delete()
@@ -869,6 +860,7 @@ class ASsuccesslist(core_views.threelist):
         return queryset
 
 
+@login_required(login_url="/")
 def ASdonevisit(request, pk):
     asvisit = AS_models.ASVisitContents.objects.get_or_none(pk=pk)
     AS_models.ASResults.objects.create(
@@ -878,6 +870,7 @@ def ASdonevisit(request, pk):
     return redirect(reverse("afterservices:ASsuccesslist"))
 
 
+@login_required(login_url="/")
 def ASdonerevisit(request, pk):
     asrevisit = AS_models.ASReVisitContents.objects.get_or_none(pk=pk)
     AS_models.ASResults.objects.create(
@@ -914,6 +907,7 @@ class ASrepairorderalllist(core_views.onelist):
         return queryset
 
 
+@login_required(login_url="/")
 def repairrequestdetail(request, pk):
     user = request.user
     repair = AS_models.ASRepairRequest.objects.get_or_none(pk=pk)
@@ -970,6 +964,7 @@ class ASexrepairlist(core_views.onelist):
         return queryset
 
 
+@login_required(login_url="/")
 def ASrepairrequestregister(request, pk):
     ASvisit = AS_models.ASVisitContents.objects.get_or_none(pk=pk)
     고객주소 = ASvisit.AS접수.주소
@@ -1105,6 +1100,7 @@ class SingleDetialView(user_mixins.LoggedInOnlyView, DetailView):
         )
 
 
+@login_required(login_url="/")
 def repairrequestdeleteensure(request, pk):
     repairrequest = AS_models.ASRepairRequest.objects.get_or_none(pk=pk)
     return render(
@@ -1114,6 +1110,7 @@ def repairrequestdeleteensure(request, pk):
     )
 
 
+@login_required(login_url="/")
 def repairrequestdelete(request, pk):
     repairrequest = AS_models.ASRepairRequest.objects.get_or_none(pk=pk)
     repairrequest.delete()
@@ -1199,6 +1196,7 @@ class ASexsingleoutlist(core_views.onelist):
         return queryset
 
 
+@login_required(login_url="/")
 def orderstocksingledelete(request, pk):
     orderstocksingle = SS_models.StockOfSingleProductOutRequest.objects.get(pk=pk)
     출하요청수량 = orderstocksingle.출하요청수량
@@ -1212,6 +1210,7 @@ def orderstocksingledelete(request, pk):
     return redirect(reverse("afterservices:ASsingleoutalllist"))
 
 
+@login_required(login_url="/")
 def ASsingleoutrequestregister(request, pk):
     ASvisit = AS_models.ASVisitContents.objects.get_or_none(pk=pk)
     고객주소 = ASvisit.AS접수.주소
@@ -1305,6 +1304,7 @@ def ASsingleoutrequestregister(request, pk):
     )
 
 
+@login_required(login_url="/")
 def ASdonenonvisit(request, pk):
     asregisters = AS_models.ASRegisters.objects.get_or_none(pk=pk)
 

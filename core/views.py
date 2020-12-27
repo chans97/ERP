@@ -2,7 +2,7 @@ from django.core.paginator import Paginator
 import os
 import requests, json
 from django.contrib.auth.views import PasswordChangeView
-from django.shortcuts import render, redirect, reverse
+from django.shortcuts import render, redirect, reverse, render_to_response
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import (
@@ -19,7 +19,6 @@ from django.core.files.base import ContentFile
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from . import models, forms
-from django.contrib.messages.views import SuccessMessageMixin
 import urllib.request
 from django.db.models import Q
 from users import mixins as user_mixins
@@ -34,6 +33,29 @@ from orders import models as OR_models
 from django.utils import timezone
 from qualitycontrols import models as QC_models
 from afterservices import models as AS_models
+from django.template import RequestContext
+
+
+# 400에러(Error)
+def bad_request_page(request):
+    messages.success(request, "잘못된 접근입니다.")
+    return redirect(reverse("core:home"))
+
+
+# 404에러(Error)
+def page_not_found_page(request):
+
+    messages.success(request, "잘못된 접근입니다.")
+
+    return redirect(reverse("core:home"))
+
+
+# 500에러(Error)
+def server_error_page(request):
+
+    messages.success(request, "잘못된 접근입니다.")
+
+    return redirect(reverse("core:home"))
 
 
 def firstindecide(request):
@@ -58,7 +80,7 @@ def firstindecide(request):
         return redirect(reverse("users:login"))
 
 
-@login_required
+@login_required(login_url="/")
 def parthome(request, pk):
 
     """선택 부서를 nowPart로 바꿔서 저장"""
@@ -176,7 +198,7 @@ class twolist(View, user_mixins.LoggedInOnlyView):
                 | Q(AS접수__의뢰처__거래처명__contains=self.search)
                 | Q(AS접수__단품__모델명__contains=self.search)
                 | Q(AS접수__단품__모델코드__contains=self.search)
-                | Q(AS접수__랙__랙모델명__contains=self.search)
+                | Q(AS접수__랙__현장명__contains=self.search)
                 | Q(AS접수__랙__랙시리얼코드__contains=self.search)
             ).order_by("-created")
             queryset = []
@@ -213,7 +235,7 @@ class twolist(View, user_mixins.LoggedInOnlyView):
                     | Q(AS현장방문요청__AS접수__의뢰처__거래처명__contains=self.search2)
                     | Q(단품__모델명__contains=self.search2)
                     | Q(단품__모델코드__contains=self.search2)
-                    | Q(랙__랙모델명__contains=self.search2)
+                    | Q(랙__현장명__contains=self.search2)
                     | Q(랙__랙시리얼코드__contains=self.search2)
                 )
                 .order_by("-created")
@@ -327,7 +349,7 @@ class threelist(View, user_mixins.LoggedInOnlyView):
                     | Q(고객사명__거래처명__contains=self.search)
                     | Q(단품모델__모델명__contains=self.search)
                     | Q(단품모델__모델코드__contains=self.search)
-                    | Q(랙모델__랙모델명__contains=self.search)
+                    | Q(랙모델__현장명__contains=self.search)
                     | Q(랙모델__랙시리얼코드__contains=self.search)
                 )
                 .order_by("-created")
@@ -512,12 +534,12 @@ class threelist(View, user_mixins.LoggedInOnlyView):
         )
 
 
-@login_required
+@login_required(login_url="/")
 def migrate(request):
     return render(request, "migrate/migrate.html")
 
 
-@login_required
+@login_required(login_url="/")
 def partnermigrate(request):
     form = forms.partnermigrate(request.POST)
     if form.is_valid():
@@ -588,7 +610,7 @@ def partnermigrate(request):
     return render(request, "migrate/partnermigrate.html", {"form": form})
 
 
-@login_required
+@login_required(login_url="/")
 def singlemigrate(request):
     form = forms.partnermigrate(request.POST)
     if form.is_valid():
@@ -647,7 +669,7 @@ def singlemigrate(request):
     return render(request, "migrate/singlemigrate.html", {"form": form})
 
 
-@login_required
+@login_required(login_url="/")
 def materialmigrate(request):
     form = forms.partnermigrate(request.POST)
     if form.is_valid():
@@ -704,7 +726,7 @@ def materialmigrate(request):
     return render(request, "migrate/materialmigrate.html", {"form": form})
 
 
-@login_required
+@login_required(login_url="/")
 def measuremigrate(request):
     form = forms.partnermigrate(request.POST)
     if form.is_valid():
@@ -760,7 +782,7 @@ def measuremigrate(request):
     return render(request, "migrate/measuremigrate.html", {"form": form})
 
 
-@login_required
+@login_required(login_url="/")
 def makeCompanyPart(request):
     """데이터 초기화시 회사와 부서를 만들고 슈퍼유저를 사용할 수 있게 만듭니다."""
     sam = user_models.Company.objects.create(회사명="삼형전자", 사업자등록번호="12345",)
@@ -784,13 +806,13 @@ def makeCompanyPart(request):
     return redirect(reverse("core:migrate"))
 
 
-@login_required
+@login_required(login_url="/")
 def managehome(request):
 
     return render(request, "manage/managehome.html",)
 
 
-@login_required
+@login_required(login_url="/")
 def totalorder(request):
     result = request.GET
     start = result.get("start")
@@ -849,7 +871,7 @@ def totalorder(request):
     )
 
 
-@login_required
+@login_required(login_url="/")
 def orderbar(request):
     result = request.GET
     start = result.get("start")
@@ -895,7 +917,7 @@ def orderbar(request):
     )
 
 
-@login_required
+@login_required(login_url="/")
 def outcount(request):
     result = request.GET
     start = result.get("start")
@@ -926,7 +948,7 @@ def outcount(request):
     )
 
 
-@login_required
+@login_required(login_url="/")
 def productbar(request):
     result = request.GET
     start = result.get("start")
@@ -970,7 +992,7 @@ def productbar(request):
     )
 
 
-@login_required
+@login_required(login_url="/")
 def lastchecknum(request):
     result = request.GET
     start = result.get("start")
@@ -1035,7 +1057,7 @@ def lastchecknum(request):
     )
 
 
-@login_required
+@login_required(login_url="/")
 def incheck(request):
     result = request.GET
     start = result.get("start")
@@ -1093,7 +1115,7 @@ def incheck(request):
     )
 
 
-@login_required
+@login_required(login_url="/")
 def asconduct(request):
     result = request.GET
     start = result.get("start")

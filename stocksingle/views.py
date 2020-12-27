@@ -30,7 +30,7 @@ from StandardInformation import models as SI_models
 from orders import models as OR_models
 
 
-@login_required
+@login_required(login_url="/")
 def ordersingleout(request):
     user = request.user
     search = request.GET.get("search")
@@ -58,7 +58,7 @@ def ordersingleout(request):
                 | Q(고객사명__거래처명__contains=search)
                 | Q(단품모델__모델명__contains=search)
                 | Q(단품모델__모델코드__contains=search)
-                | Q(랙모델__랙모델명__contains=search)
+                | Q(랙모델__현장명__contains=search)
                 | Q(랙모델__랙시리얼코드__contains=search)
             )
             .order_by("-created")
@@ -103,7 +103,7 @@ def ordersingleout(request):
     )
 
 
-@login_required
+@login_required(login_url="/")
 def ordersingleoutregister(request, pk):
     form = forms.UploadSingleOutForm(request.POST)
     order = OR_models.OrderRegister.objects.get_or_none(pk=pk)
@@ -154,7 +154,7 @@ def ordersingleoutregister(request, pk):
     )
 
 
-@login_required
+@login_required(login_url="/")
 def orderstocksingledelete(request, pk):
     orderstocksingle = models.StockOfSingleProductOutRequest.objects.get(pk=pk)
     order = orderstocksingle.수주
@@ -170,7 +170,7 @@ def orderstocksingledelete(request, pk):
     return redirect(reverse("orders:orderdetail", kwargs={"pk": pk}))
 
 
-@login_required
+@login_required(login_url="/")
 def orderstocksingleedit(request, pk):
     form = forms.UploadSingleOutForm(request.POST)
     orderstocksingle = models.StockOfSingleProductOutRequest.objects.get(pk=pk)
@@ -260,7 +260,7 @@ def orderstocksingleedit(request, pk):
     )
 
 
-@login_required
+@login_required(login_url="/")
 def ordersingleinregister(request, pk):
     form = forms.UploadSingleInForm(request.POST)
     outrequest = models.StockOfSingleProductOutRequest.objects.get_or_none(pk=pk)
@@ -324,7 +324,7 @@ def ordersingleinregister(request, pk):
     )
 
 
-@login_required
+@login_required(login_url="/")
 def orderstocksinglebackdelete(request, pk):
 
     orderstocksingleback = models.StockOfSingleProductInRequest.objects.get(pk=pk)

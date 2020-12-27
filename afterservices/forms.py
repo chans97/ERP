@@ -126,7 +126,7 @@ class ASRegisterEditForm(forms.ModelForm):
 class ASvisitRegisterForm(forms.ModelForm):
     class Meta:
         model = models.ASVisitContents
-        fields = ("AS날짜", "AS방법", "처리방법", "처리기사", "견적진행여부", "견적서첨부", "특이사항", "첨부파일")
+        fields = ("AS날짜", "처리방법", "처리기사", "AS방법", "견적진행여부", "견적서첨부", "특이사항", "첨부파일")
         help_texts = {
             "AS날짜": "*형식 : yyyy-mm-dd(기본값은 오늘입니다.)",
         }

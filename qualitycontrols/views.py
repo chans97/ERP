@@ -128,7 +128,8 @@ class OrderDetail(user_mixins.LoggedInOnlyView, DetailView):
             },
         )
 
-@login_required
+
+@login_required(login_url="/")
 def finalcheckdetail(request, pk):
     finalcheck = QC_models.FinalCheckRegister.objects.get_or_none(pk=pk)
     user = request.user
@@ -143,7 +144,8 @@ def finalcheckdetail(request, pk):
         {"finalcheck": finalcheck, "user": user, "repairbool": repairbool},
     )
 
-@login_required
+
+@login_required(login_url="/")
 def repairdetail(request, pk):
     user = request.user
     repair = QC_models.RepairRegister.objects.get_or_none(pk=pk)
@@ -162,7 +164,8 @@ def repairdetail(request, pk):
 class finalchecklist(core_views.threelist):
     templatename = "qualitycontrols/finalchecklist.html"
 
-@login_required
+
+@login_required(login_url="/")
 def finalcheckregister(request, pk):
 
     user = request.user
@@ -280,7 +283,8 @@ def finalcheckregister(request, pk):
         {"form": form, "finalcheck": finalcheck, "selectlist": selectlist},
     )
 
-@login_required
+
+@login_required(login_url="/")
 def finalcheckregisternotin(request, pk):
 
     user = request.user
@@ -433,7 +437,7 @@ class finalcheckdonelist(core_views.threelist):
                     | Q(고객사명__거래처명__contains=self.search)
                     | Q(단품모델__모델명__contains=self.search)
                     | Q(단품모델__모델코드__contains=self.search)
-                    | Q(랙모델__랙모델명__contains=self.search)
+                    | Q(랙모델__현장명__contains=self.search)
                     | Q(랙모델__랙시리얼코드__contains=self.search)
                 )
                 .order_by("-created")
@@ -643,7 +647,8 @@ class finalcheckedit(user_mixins.LoggedInOnlyView, UpdateView):
 
         return super().form_valid(form)
 
-@login_required
+
+@login_required(login_url="/")
 def finalcheckdeleteensure(request, pk):
     finalcheck = QC_models.FinalCheckRegister.objects.get_or_none(pk=pk)
     return render(
@@ -652,7 +657,8 @@ def finalcheckdeleteensure(request, pk):
         {"finalcheck": finalcheck},
     )
 
-@login_required
+
+@login_required(login_url="/")
 def finalcheckdelete(request, pk):
     finalcheck = QC_models.FinalCheckRegister.objects.get_or_none(pk=pk)
     finalcheck.delete()
@@ -663,7 +669,8 @@ def finalcheckdelete(request, pk):
 class materialchecklist(core_views.onelist):
     pass
 
-@login_required
+
+@login_required(login_url="/")
 def materialcheckregister(request, pk):
     user = request.user
     materialcheck = QC_models.MaterialCheckRegister.objects.get_or_none(pk=pk)
@@ -773,7 +780,8 @@ class lowmateriallist(core_views.onelist):
                     queryset.append(s)
         return queryset
 
-@login_required
+
+@login_required(login_url="/")
 def lowmaterialregister(request, pk):
     user = request.user
     materialcheck = QC_models.MaterialCheck.objects.get_or_none(pk=pk)
@@ -852,7 +860,8 @@ class materialcheckalllist(core_views.onelist):
             ).order_by("-created")
         return queryset
 
-@login_required
+
+@login_required(login_url="/")
 def materialcheckdetail(request, pk):
     materialcheck = QC_models.MaterialCheck.objects.get_or_none(pk=pk)
     user = request.user
@@ -917,7 +926,8 @@ class lowmetarialedit(user_mixins.LoggedInOnlyView, UpdateView):
 
         return super().form_valid(form)
 
-@login_required
+
+@login_required(login_url="/")
 def lowmetarialdeleteensure(request, pk):
     lowmetarial = QC_models.LowMetarial.objects.get_or_none(pk=pk)
     return render(
@@ -926,7 +936,8 @@ def lowmetarialdeleteensure(request, pk):
         {"lowmetarial": lowmetarial},
     )
 
-@login_required
+
+@login_required(login_url="/")
 def lowmetarialdelete(request, pk):
     lowmetarial = QC_models.LowMetarial.objects.get_or_none(pk=pk)
     materialcheck = lowmetarial.수입검사
@@ -994,7 +1005,8 @@ class materialcheckedit(user_mixins.LoggedInOnlyView, UpdateView):
         messages.success(self.request, "수입검사결과 수정이 완료되었습니다.")
         return super().form_valid(form)
 
-@login_required
+
+@login_required(login_url="/")
 def materialcheckdeleteensure(request, pk):
     materialcheck = QC_models.MaterialCheck.objects.get_or_none(pk=pk)
     return render(
@@ -1003,7 +1015,8 @@ def materialcheckdeleteensure(request, pk):
         {"materialcheck": materialcheck},
     )
 
-@login_required
+
+@login_required(login_url="/")
 def materialcheckdelete(request, pk):
     materialcheck = QC_models.MaterialCheck.objects.get_or_none(pk=pk)
     IR = materialcheck.자재입고요청
@@ -1036,7 +1049,8 @@ class checkmeasurelist(core_views.onelist):
             ).order_by("-created")
         return queryset
 
-@login_required
+
+@login_required(login_url="/")
 def measuredetail(request, pk):
     measure = SI_models.Measure.objects.get_or_none(pk=pk)
     user = request.user
@@ -1046,7 +1060,8 @@ def measuredetail(request, pk):
         {"measure": measure, "user": user,},
     )
 
-@login_required
+
+@login_required(login_url="/")
 def file_download(request, pk):
     """파일 다운로드 유니코드화 패치"""
     measure = SI_models.Measure.objects.get_or_none(pk=pk)
@@ -1102,21 +1117,24 @@ class measureedit(user_mixins.LoggedInOnlyView, UpdateView):
         messages.success(self.request, "계측기 수정이 완료되었습니다.")
         return super().form_valid(form)
 
-@login_required
+
+@login_required(login_url="/")
 def measuredeleteensure(request, pk):
     measure = SI_models.Measure.objects.get_or_none(pk=pk)
     return render(
         request, "qualitycontrols/measuredeleteensure.html", {"measure": measure},
     )
 
-@login_required
+
+@login_required(login_url="/")
 def measuredelete(request, pk):
     measure = SI_models.Measure.objects.get_or_none(pk=pk)
     measure.delete()
     messages.success(request, "계측기 삭제가 완료되었습니다.")
     return redirect(reverse("qualitycontrols:qualitycontrolshome"))
 
-@login_required
+
+@login_required(login_url="/")
 def measurecheckdetail(request, pk):
     measurecheck = MS_models.MeasureCheckRegister.objects.get_or_none(pk=pk)
     user = request.user
@@ -1163,7 +1181,8 @@ class measurecheckedit(user_mixins.LoggedInOnlyView, UpdateView):
         messages.success(self.request, "계측기점검 내용 수정이 완료되었습니다.")
         return super().form_valid(form)
 
-@login_required
+
+@login_required(login_url="/")
 def measurecheckdeleteensure(request, pk):
     measurecheck = MS_models.MeasureCheckRegister.objects.get_or_none(pk=pk)
     return render(
@@ -1172,14 +1191,16 @@ def measurecheckdeleteensure(request, pk):
         {"measurecheck": measurecheck},
     )
 
-@login_required
+
+@login_required(login_url="/")
 def measurecheckdelete(request, pk):
     measurecheck = MS_models.MeasureCheckRegister.objects.get_or_none(pk=pk)
     measurecheck.delete()
     messages.success(request, "계측기 삭제가 완료되었습니다.")
     return redirect(reverse("qualitycontrols:qualitycontrolshome"))
 
-@login_required
+
+@login_required(login_url="/")
 def measurecheckdetailregister(request):
     form = forms.measurecheckregisterForm(request.POST or None)
     search = request.GET.get("search")
@@ -1272,7 +1293,8 @@ class repairmeasurelist(core_views.onelist):
             ).order_by("-created")
         return queryset
 
-@login_required
+
+@login_required(login_url="/")
 def measurerepairdetail(request, pk):
     measurerepair = MS_models.MeasureRepairRegister.objects.get_or_none(pk=pk)
     user = request.user
@@ -1321,7 +1343,8 @@ class measurerepairedit(user_mixins.LoggedInOnlyView, UpdateView):
         messages.success(self.request, "계측기점검 내용 수정이 완료되었습니다.")
         return super().form_valid(form)
 
-@login_required
+
+@login_required(login_url="/")
 def measurerepairdeleteensure(request, pk):
     measurerepair = MS_models.MeasureRepairRegister.objects.get_or_none(pk=pk)
     return render(
@@ -1330,14 +1353,16 @@ def measurerepairdeleteensure(request, pk):
         {"measurerepair": measurerepair},
     )
 
-@login_required
+
+@login_required(login_url="/")
 def measurerepairdelete(request, pk):
     measurerepair = MS_models.MeasureRepairRegister.objects.get_or_none(pk=pk)
     measurerepair.delete()
     messages.success(request, "계측기 삭제가 완료되었습니다.")
     return redirect(reverse("qualitycontrols:qualitycontrolshome"))
 
-@login_required
+
+@login_required(login_url="/")
 def file_downloadforrepair(request, pk):
     """파일 다운로드 유니코드화 패치"""
     measure = MS_models.MeasureRepairRegister.objects.get_or_none(pk=pk)
@@ -1352,7 +1377,8 @@ def file_downloadforrepair(request, pk):
         response["Content-Disposition"] = titling
         return response
 
-@login_required
+
+@login_required(login_url="/")
 def measurerepairdetailregister(request):
     form = forms.measurerepairregisterForm(request.POST or None)
     search = request.GET.get("search")
@@ -1453,7 +1479,8 @@ class measurelist(core_views.onelist):
             ).order_by("-created")
         return queryset
 
-@login_required
+
+@login_required(login_url="/")
 def measuredetailregister(request):
     def give_number():
         while True:
@@ -1566,7 +1593,8 @@ class specialrequestlist(core_views.onelist):
                     queryset.append(s)
         return queryset
 
-@login_required
+
+@login_required(login_url="/")
 def specialregister(request, pk):
     user = request.user
     special = S_models.SpecialApplyRegister.objects.get_or_none(pk=pk)
@@ -1598,7 +1626,8 @@ def specialregister(request, pk):
         {"form": form, "special": special,},
     )
 
-@login_required
+
+@login_required(login_url="/")
 def specialdetail(request, pk):
     specialdetail = S_models.SpecialApplyRegister.objects.get_or_none(pk=pk)
     user = request.user
@@ -1609,7 +1638,8 @@ def specialdetail(request, pk):
         {"specialdetail": specialdetail, "user": user,},
     )
 
-@login_required
+
+@login_required(login_url="/")
 def file_download_special(request, pk):
     """파일 다운로드 유니코드화 패치"""
     measure = S_models.SpecialApplyRegister.objects.get_or_none(pk=pk)
@@ -1624,7 +1654,8 @@ def file_download_special(request, pk):
         response["Content-Disposition"] = titling
         return response
 
-@login_required
+
+@login_required(login_url="/")
 def specialconductdelete(request, pk):
     conduct = S_models.SpecialConductRegister.objects.get_or_none(pk=pk)
     special = conduct.특채.특채신청등록
@@ -1633,7 +1664,8 @@ def specialconductdelete(request, pk):
     messages.success(request, "특채처리가 삭제되었습니다.")
     return redirect(reverse("qualitycontrols:specialdetail", kwargs={"pk": pk}))
 
-@login_required
+
+@login_required(login_url="/")
 def specialconductregister(request, pk):
     user = request.user
     specialregister = S_models.SpecialRegister.objects.get_or_none(pk=pk)
@@ -1664,7 +1696,8 @@ def specialconductregister(request, pk):
         {"form": form, "specialregister": specialregister,},
     )
 
-@login_required
+
+@login_required(login_url="/")
 def specialrejectdelete(request, pk):
     conduct = S_models.SpecialRejectRegister.objects.get_or_none(pk=pk)
     special = conduct.특채처리.특채.특채신청등록
@@ -1673,7 +1706,8 @@ def specialrejectdelete(request, pk):
     messages.success(request, "특채반품이 삭제되었습니다.")
     return redirect(reverse("qualitycontrols:specialdetail", kwargs={"pk": pk}))
 
-@login_required
+
+@login_required(login_url="/")
 def specialrejectregister(request, pk):
     user = request.user
     specialconduct = S_models.SpecialConductRegister.objects.get_or_none(pk=pk)
@@ -1739,7 +1773,8 @@ class specialconductlist(core_views.onelist):
                     queryset.append(s)
         return queryset
 
-@login_required
+
+@login_required(login_url="/")
 def materialoutrequest(request):
     form = forms.materialoutrequest(request.POST or None)
 
@@ -1848,7 +1883,8 @@ class managematerialoutrequest(core_views.onelist):
             )
         return queryset
 
-@login_required
+
+@login_required(login_url="/")
 def deletematerialoutrequest(request, pk):
     materialoutrequest = SM_models.StockOfMaterialOutRequest.objects.get_or_none(pk=pk)
     materialoutrequest.자재.자재재고.출고요청제외수량 += materialoutrequest.출고요청수량
@@ -1857,7 +1893,8 @@ def deletematerialoutrequest(request, pk):
     messages.success(request, "자재출고요청이 철회되었습니다.")
     return redirect(reverse("qualitycontrols:managematerialoutrequest"))
 
-@login_required
+
+@login_required(login_url="/")
 def ASrequestlist(request):
     user = request.user
     search = request.GET.get("search")
@@ -1919,7 +1956,8 @@ def ASrequestlist(request):
         },
     )
 
-@login_required
+
+@login_required(login_url="/")
 def repairregisterAS(request, pk):
     user = request.user
     ASrequest = AS_models.ASRepairRequest.objects.get_or_none(pk=pk)
@@ -1954,7 +1992,8 @@ def repairregisterAS(request, pk):
         {"form": form, "ASrequest": ASrequest,},
     )
 
-@login_required
+
+@login_required(login_url="/")
 def repairrequestdetail(request, pk):
     user = request.user
     repair = AS_models.ASRepairRequest.objects.get_or_none(pk=pk)
@@ -1964,7 +2003,8 @@ def repairrequestdetail(request, pk):
         {"repair": repair, "user": user,},
     )
 
-@login_required
+
+@login_required(login_url="/")
 def repairlist(request):
     user = request.user
     search_m = request.GET.get("search_m")
@@ -2025,7 +2065,8 @@ def repairlist(request):
         },
     )
 
-@login_required
+
+@login_required(login_url="/")
 def AStotalregister(request, pk):
 
     user = request.user
@@ -2203,7 +2244,8 @@ def AStotalregister(request, pk):
         {"form": form, "ASrequest": ASrequest, "code": code, "검시자": ""},
     )
 
-@login_required
+
+@login_required(login_url="/")
 def AStotaledit(request, pk):
     user = request.user
     ASrequest = QC_models.FinalCheckRegister.objects.get_or_none(pk=pk)
@@ -2384,14 +2426,16 @@ def AStotaledit(request, pk):
         },
     )
 
-@login_required
+
+@login_required(login_url="/")
 def AStotaldeleteensure(request, pk):
     ASrequest = QC_models.FinalCheckRegister.objects.get_or_none(pk=pk)
     return render(
         request, "qualitycontrols/AStotaldeleteensure.html", {"ASrequest": ASrequest},
     )
 
-@login_required
+
+@login_required(login_url="/")
 def AStotaldelete(request, pk):
     ASrequest = QC_models.FinalCheckRegister.objects.get_or_none(pk=pk)
     ASrepair = ASrequest.최종검사의뢰.수리내역서
@@ -2403,7 +2447,8 @@ def AStotaldelete(request, pk):
 
     return redirect(reverse("qualitycontrols:finalchecklist"))
 
-@login_required
+
+@login_required(login_url="/")
 def file_download_forlow(request, pk):
     """파일 다운로드 유니코드화 패치"""
     low = QC_models.LowMetarial.objects.get_or_none(pk=pk)

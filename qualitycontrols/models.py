@@ -212,9 +212,7 @@ class RepairRegister(TimeStampedModel):
         (최종검사결과, "최종검사결과"),
         (AS, "AS"),
     )
-    최종검사결과 = models.ManyToManyField(
-        "FinalCheckRegister", related_name="수리내역서", null=True,
-    )
+    최종검사결과 = models.ManyToManyField("FinalCheckRegister", related_name="수리내역서",)
     AS수리의뢰 = models.OneToOneField(
         AS_models.ASRepairRequest,
         related_name="수리내역서",
@@ -359,11 +357,7 @@ class LowMetarial(TimeStampedModel):
         users_models.User, related_name="자재부적합보고서", on_delete=models.SET_NULL, null=True
     )
     검토일 = models.DateField(
-        auto_now=False,
-        auto_now_add=False,
-        blank=True,
-        default=timezone.now().date(),
-        null=True,
+        auto_now=False, auto_now_add=False, blank=True, default=timezone.now, null=True,
     )
     부적합자재의내용과검토방안 = models.TextField(max_length=150, null=True, blank=True,)
     처리방안 = models.CharField(choices=처리방안_CHOICES, max_length=10, default=기타, null=True,)

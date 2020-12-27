@@ -33,7 +33,7 @@ from random import randint
 from django.utils import timezone
 
 
-@login_required
+@login_required(login_url="/")
 def orderregister(request):
     def give_number():
         while True:
@@ -129,7 +129,7 @@ def orderregister(request):
     )
 
 
-@login_required
+@login_required(login_url="/")
 def ordersingle(request, pk):
     form = forms.OrderSingleForm(request.POST)
 
@@ -190,7 +190,7 @@ def ordersingle(request, pk):
     )
 
 
-@login_required
+@login_required(login_url="/")
 def orderrack(request, pk):
     form = forms.OrderRackForm(request.POST)
 
@@ -202,7 +202,7 @@ def orderrack(request, pk):
         s_bool = True
         qs = SI_models.RackProduct.objects.filter(
             Q(랙시리얼코드=search)
-            | Q(랙모델명__contains=search)
+            | Q(현장명__contains=search)
             | Q(규격=search)
             | Q(단위=search)
             | Q(작성자__first_name=search)
@@ -250,7 +250,7 @@ def orderrack(request, pk):
     )
 
 
-@login_required
+@login_required(login_url="/")
 def ordershome(request):
     if request.user.__str__() == "AnonymousUser":
         return redirect(reverse("users:login"))
@@ -277,7 +277,7 @@ def ordershome(request):
             | Q(사업장구분=search_m)
             | Q(고객사명__거래처명__contains=search_m)
             | Q(단품모델__모델명=search_m)
-            | Q(랙모델__랙모델명=search_m)
+            | Q(랙모델__현장명=search_m)
         ).order_by("-created")
         my_order_count = order_m.count()
         order_m = qs
@@ -296,7 +296,7 @@ def ordershome(request):
             | Q(사업장구분=search)
             | Q(고객사명__거래처명__contains=search)
             | Q(단품모델__모델명=search)
-            | Q(랙모델__랙모델명=search)
+            | Q(랙모델__현장명=search)
         ).order_by("-created")
         order_count = order.count()
         order = qs
@@ -454,7 +454,7 @@ class OrderDetail(user_mixins.LoggedInOnlyView, DetailView):
         )
 
 
-@login_required
+@login_required(login_url="/")
 def orderedit(request, pk):
     입찰 = False
     대리점 = False
@@ -591,7 +591,7 @@ def orderedit(request, pk):
     )
 
 
-@login_required
+@login_required(login_url="/")
 def ordersingleedit(request, pk):
     form = forms.OrderSingleForm(request.POST)
     SM = models.OrderRegister.objects.get(pk=pk)
@@ -655,7 +655,7 @@ def ordersingleedit(request, pk):
     )
 
 
-@login_required
+@login_required(login_url="/")
 def orderrackedit(request, pk):
     form = forms.OrderRackForm(request.POST)
 
@@ -674,7 +674,7 @@ def orderrackedit(request, pk):
         s_bool = True
         qs = SI_models.RackProduct.objects.filter(
             Q(랙시리얼코드=search)
-            | Q(랙모델명__contains=search)
+            | Q(현장명__contains=search)
             | Q(규격=search)
             | Q(단위=search)
             | Q(작성자__first_name=search)
@@ -723,14 +723,14 @@ def orderrackedit(request, pk):
     )
 
 
-@login_required
+@login_required(login_url="/")
 def orderdeleteensure(request, pk):
 
     order = models.OrderRegister.objects.get_or_none(pk=pk)
     return render(request, "orders/orderdeleteensure.html", {"order": order},)
 
 
-@login_required
+@login_required(login_url="/")
 def orderdelete(request, pk):
     order = models.OrderRegister.objects.get_or_none(pk=pk)
     order.delete()
@@ -740,7 +740,7 @@ def orderdelete(request, pk):
     return redirect(reverse("orders:ordershome"))
 
 
-@login_required
+@login_required(login_url="/")
 def orderproduce(request):
     user = request.user
     search = request.GET.get("search")
@@ -774,7 +774,7 @@ def orderproduce(request):
                 | Q(고객사명__거래처명__contains=search)
                 | Q(단품모델__모델명__contains=search)
                 | Q(단품모델__모델코드__contains=search)
-                | Q(랙모델__랙모델명__contains=search)
+                | Q(랙모델__현장명__contains=search)
                 | Q(랙모델__랙시리얼코드__contains=search)
             )
             .order_by("-created")
@@ -819,7 +819,7 @@ def orderproduce(request):
     )
 
 
-@login_required
+@login_required(login_url="/")
 def orderproduceregister(request, pk):
     order = models.OrderRegister.objects.get_or_none(pk=pk)
 
@@ -858,7 +858,7 @@ def orderproduceregister(request, pk):
     )
 
 
-@login_required
+@login_required(login_url="/")
 def orderproduceedit(request, pk):
     order = models.OrderRegister.objects.get_or_none(pk=pk)
     produce = order.생산요청
@@ -901,7 +901,7 @@ def orderproduceedit(request, pk):
     )
 
 
-@login_required
+@login_required(login_url="/")
 def orderproducedeleteensure(request, pk):
     order = models.OrderRegister.objects.get_or_none(pk=pk)
 
@@ -911,7 +911,7 @@ def orderproducedeleteensure(request, pk):
     )
 
 
-@login_required
+@login_required(login_url="/")
 def orderproducedelete(request, pk):
     orderproduce = models.OrderProduce.objects.get_or_none(pk=pk)
     pk = orderproduce.생산의뢰수주.pk
@@ -922,7 +922,7 @@ def orderproducedelete(request, pk):
     return redirect(reverse("orders:orderdetail", kwargs={"pk": pk}))
 
 
-@login_required
+@login_required(login_url="/")
 def endorder(request):
     user = request.user
     search = request.GET.get("search")
@@ -948,7 +948,7 @@ def endorder(request):
                 | Q(고객사명__거래처명__contains=search)
                 | Q(단품모델__모델명__contains=search)
                 | Q(단품모델__모델코드__contains=search)
-                | Q(랙모델__랙모델명__contains=search)
+                | Q(랙모델__현장명__contains=search)
                 | Q(랙모델__랙시리얼코드__contains=search)
             )
             .order_by("-created")
@@ -991,7 +991,7 @@ def endorder(request):
     )
 
 
-@login_required
+@login_required(login_url="/")
 def endorderforout(request, pk):
     order = models.OrderRegister.objects.get_or_none(pk=pk)
     order.출하구분 = "출하완료"
@@ -1000,7 +1000,7 @@ def endorderforout(request, pk):
     return redirect(reverse("orders:endorder"))
 
 
-@login_required
+@login_required(login_url="/")
 def endorderforoutforstock(request, pk):
     order = models.OrderRegister.objects.get_or_none(pk=pk)
     order.출하구분 = "출하완료"
@@ -1009,7 +1009,7 @@ def endorderforoutforstock(request, pk):
     return redirect(reverse("stocksingle:ordersingleout"))
 
 
-@login_required
+@login_required(login_url="/")
 def endorderlist(request):
     user = request.user
     search = request.GET.get("search")
@@ -1030,7 +1030,7 @@ def endorderlist(request):
                 | Q(고객사명__거래처명__contains=search)
                 | Q(단품모델__모델명__contains=search)
                 | Q(단품모델__모델코드__contains=search)
-                | Q(랙모델__랙모델명__contains=search)
+                | Q(랙모델__현장명__contains=search)
                 | Q(랙모델__랙시리얼코드__contains=search)
             )
             .order_by("-created")
@@ -1074,7 +1074,7 @@ def endorderlist(request):
     )
 
 
-@login_required
+@login_required(login_url="/")
 def endorderforin(request, pk):
     order = models.OrderRegister.objects.get_or_none(pk=pk)
     order.출하구분 = "출하미완료"
@@ -1083,7 +1083,7 @@ def endorderforin(request, pk):
     return redirect(reverse("orders:endorderlist"))
 
 
-@login_required
+@login_required(login_url="/")
 def orderproduceforrack(request):
     user = request.user
     search = request.GET.get("search")
@@ -1117,7 +1117,7 @@ def orderproduceforrack(request):
                 | Q(고객사명__거래처명__contains=search)
                 | Q(단품모델__모델명__contains=search)
                 | Q(단품모델__모델코드__contains=search)
-                | Q(랙모델__랙모델명__contains=search)
+                | Q(랙모델__현장명__contains=search)
                 | Q(랙모델__랙시리얼코드__contains=search)
             )
             .order_by("-created")
@@ -1162,7 +1162,7 @@ def orderproduceforrack(request):
     )
 
 
-@login_required
+@login_required(login_url="/")
 def informationforrackproduce(request, pk):
     order = models.OrderRegister.objects.get_or_none(pk=pk)
     rack = order.랙모델
@@ -1188,7 +1188,7 @@ def informationforrackproduce(request, pk):
     )
 
 
-@login_required
+@login_required(login_url="/")
 def producesingleforrack(request, pk, spk):
     form = forms.UploadOrderProduceForm(request.POST)
     order = models.OrderRegister.objects.get_or_none(pk=pk)
@@ -1267,7 +1267,7 @@ def producesingleforrack(request, pk, spk):
     )
 
 
-@login_required
+@login_required(login_url="/")
 def blueprintdownload(request, pk):
     """파일 다운로드 유니코드화 패치"""
     order = models.OrderRegister.objects.get_or_none(pk=pk)

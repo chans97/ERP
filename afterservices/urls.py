@@ -10,7 +10,6 @@ urlpatterns = [
         name="afterserviceshome",
     ),
     path("ASregister/", views.ASregister, name="ASregister",),
-    path("ASregisterall/", views.ASregisterall.as_view(), name="ASregisterall",),
     path("ASrequestdetail/<int:pk>/", views.ASrequestdetail, name="ASrequestdetail",),
     path(
         "ASRegistersedit/<int:pk>/",

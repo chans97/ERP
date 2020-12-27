@@ -31,7 +31,7 @@ from orders import models as OR_models
 from stocksingle import models as SS_models
 
 
-@login_required
+@login_required(login_url="/")
 def orderrackout(request):
     user = request.user
     search = request.GET.get("search")
@@ -59,7 +59,7 @@ def orderrackout(request):
                 | Q(고객사명__거래처명__contains=search)
                 | Q(단품모델__모델명__contains=search)
                 | Q(단품모델__모델코드__contains=search)
-                | Q(랙모델__랙모델명__contains=search)
+                | Q(랙모델__현장명__contains=search)
                 | Q(랙모델__랙시리얼코드__contains=search)
             )
             .order_by("-created")
@@ -104,7 +104,7 @@ def orderrackout(request):
     )
 
 
-@login_required
+@login_required(login_url="/")
 def orderrackoutregister(request, pk):
     form = forms.UploadRackOutForm(request.POST)
     order = OR_models.OrderRegister.objects.get_or_none(pk=pk)
@@ -162,7 +162,7 @@ def orderrackoutregister(request, pk):
     )
 
 
-@login_required
+@login_required(login_url="/")
 def orderstockrackdelete(request, pk):
     orderstockrack = models.StockOfRackProductOutRequest.objects.get(pk=pk)
     order = orderstockrack.수주
@@ -187,7 +187,7 @@ def orderstockrackdelete(request, pk):
     return redirect(reverse("orders:orderdetail", kwargs={"pk": pk}))
 
 
-@login_required
+@login_required(login_url="/")
 def orderstockrackedit(request, pk):
 
     form = forms.UploadRackOutForm(request.POST)
@@ -288,7 +288,7 @@ def orderstockrackedit(request, pk):
     )
 
 
-@login_required
+@login_required(login_url="/")
 def ordersingledfrackinregister(request, pk):
     form = forms.UploadSingleInForm(request.POST)
     outrequest = models.StockOfRackProductOutRequest.objects.get_or_none(pk=pk)

@@ -124,7 +124,7 @@ class UploadRackForm(forms.ModelForm):
         model = models.RackProduct
         fields = (
             "랙시리얼코드",
-            "랙모델명",
+            "현장명",
             "규격",
             "단위",
             "단가",
